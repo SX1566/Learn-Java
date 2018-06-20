@@ -13,15 +13,15 @@
 
 ## Maven Modules
 
-Name                          | Parent                        | Remark
-------------------------------|-------------------------------|--------
-[gftaxi-traffic-accident-build]        | [simter-build:0.5.0] |
-[gftaxi-traffic-accident-dependencies] | gftaxi-traffic-accident-build          | 依赖管理
-[gftaxi-traffic-accident-parent]       | gftaxi-traffic-accident-dependencies   | 各子模块的父模块
-[gftaxi-traffic-accident-data]         | gftaxi-traffic-accident-parent         | PO、Service、Dao 接口
-[gftaxi-traffic-accident-data-jpa]     | gftaxi-traffic-accident-parent         | Dao 接口的 JPA 实现
-[gftaxi-traffic-accident-rest-webflux] | gftaxi-traffic-accidentparent          | Rest 接口
-[gftaxi-traffic-accident-starter]      | gftaxi-traffic-accident-parent         | 微服务启动器
+Name                                   | Parent                         | Remark
+---------------------------------------|--------------------------------|--------
+[gftaxi-traffic-accident-build]        | [simter-build:0.5.0]           |
+[gftaxi-traffic-accident-dependencies] | gftaxi-traffic-accident-build  | BOM
+[gftaxi-traffic-accident-parent]       | gftaxi-traffic-accident-build  | 各子模块的父模块
+[gftaxi-traffic-accident-data]         | gftaxi-traffic-accident-parent | PO、Service、Dao 接口
+[gftaxi-traffic-accident-data-jpa]     | gftaxi-traffic-accident-parent | Dao 接口的 JPA 实现
+[gftaxi-traffic-accident-rest-webflux] | gftaxi-traffic-accidentparent  | Rest 接口
+[gftaxi-traffic-accident-starter]      | gftaxi-traffic-accident-parent | 微服务启动器
 
 
 [simter-build:0.5.0]: https://github.com/simter/simter-build/tree/0.5.0
