@@ -1,5 +1,5 @@
 simter.rest.context-path.kv: /kv
-gftaxi.rest.context-path.gov-gis: /gov-gis
+gftaxi.rest.context-path.traffic-accident: /traffic-accident
 db:
   platform: @db.platform@
   init-mode: @db.init-mode@
@@ -16,7 +16,7 @@ bc.db:
   username: @bc.db.username@
   password: @bc.db.password@
 server:
-  port: ${port:9101}
+  port: ${port:9102}
   servlet:
     context-path: /
   server-header: @project.artifactId@-@project.version@
