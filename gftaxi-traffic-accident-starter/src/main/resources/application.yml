@@ -1,0 +1,34 @@
+simter.rest.context-path.kv: /kv
+gftaxi.rest.context-path.gov-gis: /gov-gis
+db:
+  platform: @db.platform@
+  init-mode: @db.init-mode@
+  ddl-auto: @db.ddl-auto@
+  host: @db.host@
+  port: @db.port@
+  name: @db.name@
+  username: @db.username@
+  password: @db.password@
+bc.db:
+  host: @bc.db.host@
+  port: @bc.db.port@
+  name: @bc.db.name@
+  username: @bc.db.username@
+  password: @bc.db.password@
+server:
+  port: ${port:9101}
+  servlet:
+    context-path: /
+  server-header: @project.artifactId@-@project.version@
+spring:
+  profiles:
+    active: @spring-active-profiles@
+  application:
+    name: @project.artifactId@-@project.version@
+  jpa:
+    open-in-view: false
+    hibernate.ddl-auto: ${db.ddl-auto:none}  # none | create | create-drop | update | validate
+  datasource:
+    continue-on-error: false
+    sql-script-encoding: UTF-8
+    initialization-mode: ${db.init-mode} # embedded|always|never
