@@ -1,25 +1,20 @@
 package cn.gftaxi.traffic.accident.po
 
-import org.springframework.data.mongodb.core.mapping.Document
+import cn.gftaxi.traffic.accident.po.converter.AccidentDraftStatusConverter
 import java.io.Serializable
 import java.time.OffsetDateTime
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
-import javax.persistence.UniqueConstraint
+import javax.persistence.*
 
 /**
- * 事故报案
+ * 事故报案 PO。
  *
  * @author cjw
+ * @author RJ
  */
 @Entity
 @Table(
   name = "gf_accident_draft ",
-  uniqueConstraints = [UniqueConstraint(columnNames = [
-    "status", "car_plate", "driver_name", "happen_time", "report_time"
-    , "location", "hit_form", "hit_type", "source", "author_name", "author_id"
-  ])]
+  uniqueConstraints = [UniqueConstraint(columnNames = ["car_plate", "happen_time"])]
 )
 data class AccidentDraft(
   /**
@@ -27,30 +22,40 @@ data class AccidentDraft(
    * 格式为 yyyyMMdd_nn'
    * */
   @Id
+  @Column(length = 11)
   val code: String,
-  /** 状态：1-待登记、2-已登记 */
+  /** 状态 */
+  @Convert(converter = AccidentDraftStatusConverter::class)
   val status: Status,
   /** 事故车号，如 "粤A123456" */
+  @Column(length = 8)
   val carPlate: String,
   /** 当事司机 */
+  @Column(length = 8)
   val driverName: String,
   /** 事发时间 */
   val happenTime: OffsetDateTime,
   /** 接案时间 */
   val reportTime: OffsetDateTime,
   /** 事发地点 */
+  @Column(length = 100)
   val location: String,
   /** 事故形态 */
+  @Column(length = 50)
   val hitForm: String,
   /** 碰撞类型 */
+  @Column(length = 50)
   val hitType: String,
   /** 是否逾期报案 */
   val overdue: Boolean,
   /** 报案来源：BC-BC系统Web端、EMAIL-邮件、WEIXIN-微信、SMS-短信、{appId}-应用ID */
+  @Column(length = 10)
   val source: String,
-  /** 结案人姓名 */
+  /** 接案人姓名 */
+  @Column(length = 50)
   val authorName: String,
-  /** 结案人标识：邮件报案为邮箱、短信报案为手机号、其余为对应的登陆账号 */
+  /** 接案人标识：邮件报案为邮箱、短信报案为手机号、其余为对应的登陆账号 */
+  @Column(length = 50)
   val authorId: String,
   /** 简要描述 */
   val describe: String
@@ -65,7 +70,7 @@ data class AccidentDraft(
   /**
    * 案件状态。
    */
-  enum class Status(private val value: Int) {
+  enum class Status(private val value: Short) {
     /**
      * 待登记。
      */
@@ -75,7 +80,7 @@ data class AccidentDraft(
      */
     Done(2);
 
-    fun value(): Int {
+    fun value(): Short {
       return value
     }
   }
