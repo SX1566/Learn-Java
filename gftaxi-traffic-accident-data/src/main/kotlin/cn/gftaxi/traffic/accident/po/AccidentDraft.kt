@@ -61,10 +61,12 @@ data class AccidentDraft(
   val describe: String
 ) : Serializable {
   companion object {
-    /** 事故报案查阅角色 */
+    /** 查询报案信息角色 */
     const val ROLE_READ = "ACCIDENT_DRAFT_READ"
-    /** 事故报案管理角色 */
-    const val ROLE_MANAGE = "ACCIDENT_DRAFT_MANAGE"
+    /** 提交报案信息角色 */
+    const val ROLE_SUBMIT = "ACCIDENT_DRAFT_SUBMIT"
+    /** 提交报案信息角色 */
+    const val ROLE_MODIFY = "ACCIDENT_DRAFT_MODIFY"
   }
 
   /**
