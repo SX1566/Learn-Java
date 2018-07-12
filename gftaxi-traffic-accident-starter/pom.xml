@@ -19,7 +19,7 @@
     <db.ddl-auto>none</db.ddl-auto>
     <db.host>localhost</db.host>
     <db.port>~</db.port>
-    <db.name>test_gis</db.name>
+    <db.name>test_accident</db.name>
     <db.username>test</db.username>
     <db.password>password</db.password>
     <!-- bcsystem database -->
@@ -158,7 +158,7 @@
         <db.ddl-auto>create-drop</db.ddl-auto>
         <db.host>localhost</db.host>
         <db.port>~</db.port>
-        <db.name>test_gd122</db.name>
+        <db.name>test_accident</db.name>
         <db.username>test</db.username>
         <db.password>password</db.password>
       </properties>
@@ -208,8 +208,8 @@
         <db.ddl-auto>none</db.ddl-auto>
         <db.host>localhost</db.host>
         <db.port>5432</db.port>
-        <db.name>traffic-accident</db.name>
-        <db.username>traffic-accident</db.username>
+        <db.name>accident</db.name>
+        <db.username>accident</db.username>
         <db.password>password</db.password>
         <!-- bcsystem database -->
         <bc.db.host>localhost</bc.db.host>

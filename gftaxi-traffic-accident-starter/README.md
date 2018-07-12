@@ -32,8 +32,8 @@ Property Name | Default Value | Remark
 --------------|---------------|--------
 port          | 9102          | Web server port
 db.host       | localhost     | Database host
-db.name       | accident      | Database name
-db.username   | password      | Database connect username
+db.name       | test_accident | Database name
+db.username   | test          | Database connect username
 db.password   | password      | Database connect password
 db.init-mode  | never         | Init database by `spring.datasource.schema/data` config. `never` or `always`
 
