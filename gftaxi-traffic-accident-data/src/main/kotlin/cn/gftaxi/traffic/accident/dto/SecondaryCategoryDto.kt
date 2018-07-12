@@ -13,10 +13,10 @@ import javax.persistence.Id
  */
 @Entity
 data class SecondaryCategoryDto constructor(
-  /** 二级分类排序号 */
-  @Id val sn: String,
   /** 所属一级分类编码 */
-  val belong: String,
+  @Id val belong: String,
+  /** 排序号 */
+  @Id val sn: String,
   /** 名称 */
   val name: String,
   /** 状态 */
