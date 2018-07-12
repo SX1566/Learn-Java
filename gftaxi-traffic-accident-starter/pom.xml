@@ -160,7 +160,7 @@
       <!-- development environment: spring-boot + webflux + hibernate-jpa + hsql) -->
       <id>dev-jpa-hsql</id>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
         <spring-active-profiles>dev,db-hsql,scheduler</spring-active-profiles>
@@ -206,6 +206,66 @@
         <dependency>
           <groupId>org.hsqldb</groupId>
           <artifactId>hsqldb</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <!-- development environment: spring-boot + webflux + hibernate-jpa + postgres) -->
+      <id>dev-jpa-postgres</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <kotlin.compiler.incremental>false</kotlin.compiler.incremental>
+        <spring-active-profiles>dev,db-postgres,scheduler</spring-active-profiles>
+        <!-- traffic-accident database -->
+        <db.platform>postgres</db.platform>
+        <db.init-mode>never</db.init-mode>
+        <db.ddl-auto>none</db.ddl-auto>
+        <db.host>localhost</db.host>
+        <db.port>5432</db.port>
+        <db.name>test_accident</db.name>
+        <db.username>test</db.username>
+        <db.password>password</db.password>
+        <!-- bcsystem database -->
+        <bc.db.host>localhost</bc.db.host>
+        <bc.db.port>5432</bc.db.port>
+        <bc.db.name>test_bcsystem</bc.db.name>
+        <bc.db.username>test</bc.db.username>
+        <bc.db.password>password</bc.db.password>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>tech.simter</groupId>
+          <artifactId>simter-kv-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>tech.simter</groupId>
+          <artifactId>simter-category-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>cn.gftaxi.traffic.accident</groupId>
+          <artifactId>gftaxi-traffic-accident-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.hibernate.javax.persistence</groupId>
+          <artifactId>hibernate-jpa-2.1-api</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-entitymanager</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.hibernate.validator</groupId>
+          <artifactId>hibernate-validator</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
         </dependency>
       </dependencies>
     </profile>
