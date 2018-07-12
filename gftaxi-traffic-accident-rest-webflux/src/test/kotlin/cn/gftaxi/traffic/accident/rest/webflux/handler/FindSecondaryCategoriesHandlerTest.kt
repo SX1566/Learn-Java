@@ -3,7 +3,7 @@ package cn.gftaxi.traffic.accident.rest.webflux.handler
 import cn.gftaxi.traffic.accident.dto.SecondaryCategoryDto
 import cn.gftaxi.traffic.accident.rest.webflux.ModuleConfiguration
 import cn.gftaxi.traffic.accident.rest.webflux.handler.FindSecondaryCategoriesHandler.Companion.REQUEST_PREDICATE
-import cn.gftaxi.traffic.accident.service.TrafficAccidentService
+import cn.gftaxi.traffic.accident.service.AccidentCategoryService
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
@@ -23,9 +23,9 @@ import tech.simter.category.po.Category
  * @author JF
  */
 @SpringJUnitConfig(ModuleConfiguration::class)
-@MockBean(TrafficAccidentService::class)
+@MockBean(AccidentCategoryService::class)
 class FindSecondaryCategoriesHandlerTest @Autowired constructor(
-  private val trafficAccidentService: TrafficAccidentService,
+  private val accidentCategoryService: AccidentCategoryService,
   handler: FindSecondaryCategoriesHandler
 ) {
   private val client = bindToRouterFunction(RouterFunctions.route(REQUEST_PREDICATE, handler)).build()
@@ -37,7 +37,7 @@ class FindSecondaryCategoriesHandlerTest @Autowired constructor(
     val belong = "SGZR"
     val name = "全部责任"
     val status = Category.Status.Enabled
-    `when`(trafficAccidentService.findSecondaryCategories(true, belong))
+    `when`(accidentCategoryService.findSecondaryCategories(true, belong))
       .thenReturn(Flux.just(SecondaryCategoryDto(sn, belong, name, status)))
 
     // invoke
@@ -51,7 +51,7 @@ class FindSecondaryCategoriesHandlerTest @Autowired constructor(
       .jsonPath("$.[0].status").isEqualTo(status.name)
 
     // verify
-    verify(trafficAccidentService).findSecondaryCategories(true, belong)
+    verify(accidentCategoryService).findSecondaryCategories(true, belong)
   }
 
   @Test
@@ -61,7 +61,7 @@ class FindSecondaryCategoriesHandlerTest @Autowired constructor(
     val belong = "SGZR"
     val name = "全部责任"
     val status = Category.Status.Enabled
-    `when`(trafficAccidentService.findSecondaryCategories(false, belong))
+    `when`(accidentCategoryService.findSecondaryCategories(false, belong))
       .thenReturn(Flux.just(SecondaryCategoryDto(sn, belong, name, status)))
 
     // invoke
@@ -75,6 +75,6 @@ class FindSecondaryCategoriesHandlerTest @Autowired constructor(
       .jsonPath("$.[0].status").doesNotExist()
 
     // verify
-    verify(trafficAccidentService).findSecondaryCategories(false, belong)
+    verify(accidentCategoryService).findSecondaryCategories(false, belong)
   }
 }

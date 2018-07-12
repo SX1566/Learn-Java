@@ -1,6 +1,6 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler
 
-import cn.gftaxi.traffic.accident.service.TrafficAccidentService
+import cn.gftaxi.traffic.accident.service.AccidentCategoryService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono
  */
 @Component
 class FindSecondaryCategoriesHandler @Autowired constructor(
-  private val trafficAccidentService: TrafficAccidentService
+  private val accidentCategoryService: AccidentCategoryService
 ) : HandlerFunction<ServerResponse> {
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
     val primaryCategorySn = request.pathVariable("sn")
@@ -24,7 +24,7 @@ class FindSecondaryCategoriesHandler @Autowired constructor(
     return ServerResponse.ok()
       .contentType(MediaType.APPLICATION_JSON_UTF8)
       .body(
-        trafficAccidentService
+        accidentCategoryService
           .findSecondaryCategories(includeDisabledStatus, primaryCategorySn)
           .map {
             val result = hashMapOf(

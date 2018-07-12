@@ -8,7 +8,7 @@ import reactor.core.publisher.Flux
  *
  * @author JF
  */
-interface TrafficAccidentService {
+interface AccidentCategoryService {
   /**
    * 获取指定一级分类下的二级分类列表。
    *

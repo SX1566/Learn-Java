@@ -44,7 +44,7 @@ insert into st_category (pid, status, name, sn)
 -- 交通事故分类标准/碰撞类型/*
 insert into st_category (pid, status, name, sn)
   select (select id from st_category where pid = 2 and name = '碰撞类型'), 2, name, (row_number() over())::text as sn
-  from (select unnest(array['追尾碰撞', '正面碰撞', '变线碰撞', '环岛碰撞', '变道碰撞', '其他']) as name) t;
+  from (select unnest(array['追尾碰撞', '正面碰撞', '环岛碰撞', '变道碰撞', '其他']) as name) t;
 
 -- 交通事故分类标准/行驶方向/*
 insert into st_category (pid, status, name, sn)
