@@ -35,7 +35,7 @@ db.host       | localhost     | Database host
 db.name       | test_accident | Database name
 db.username   | test          | Database connect username
 db.password   | password      | Database connect password
-db.init-mode  | never         | Init database by `spring.datasource.schema/data` config. `never` or `always`
+db.init-mode  | never         | `never` or `always`. If `always`, init main database by `spring.datasource.schema/data` config.  
 
 命令行通过 `-D {property-name}={property-value}` 来覆盖默认值，如：
 
