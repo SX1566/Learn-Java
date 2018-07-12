@@ -19,7 +19,7 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
     {id: "happenTime", label: "事发时间", width: "9.5em"},
     {id: "location", label: "事发地点", width: "20em"},
     {id: "hitForm", label: "事故形态", width: "7em"},
-    {id: "hitType", label: "追尾碰撞", width: "5em"},
+    {id: "hitType", label: "碰撞类型", width: "5em"},
     {id: "authorName", label: "接案人", width: "4em"},
     {id: "reportTime", label: "报案时间", width: "9.5em"},
     {id: "overdue", label: "逾期报案", width: "5em"},
