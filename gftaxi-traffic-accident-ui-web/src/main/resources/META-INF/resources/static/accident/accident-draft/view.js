@@ -65,7 +65,7 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
           if (sel.length === 1) {
             accident.open(resourceKey, {
               mid: `${resourceKey}-${sel[0].code}`,
-              name: `sel[0].carPlate ${resourceName}`,
+              name: `${sel[0].code} ${resourceName}`,
               data: sel[0].code,
               afterClose: (status) => {
                 if (status) this.reload();
@@ -73,6 +73,16 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
             });
           } else if (sel.length === 0) bc.msg.slide("请先选择！");
           else if (sel.length > 1) bc.msg.slide("只能选择一条！");
+        },
+        dblclickRow: function (row) {
+          accident.open(resourceKey, {
+            mid: `${resourceKey}-${row.code}`,
+            name: `${row.code} ${resourceName}`,
+            data: row.code,
+            afterClose: (status) => {
+              if (status) this.reload();
+            }
+          });
         }
       }
     });
