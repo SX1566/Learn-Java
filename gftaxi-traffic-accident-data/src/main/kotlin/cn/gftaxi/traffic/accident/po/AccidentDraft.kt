@@ -16,7 +16,7 @@ import javax.persistence.*
 @Entity
 @Table(
   name = "gf_accident_draft ",
-  uniqueConstraints = [UniqueConstraint(columnNames = ["car_plate", "happen_time"])]
+  uniqueConstraints = [UniqueConstraint(columnNames = ["carPlate", "happenTime"])]
 )
 data class AccidentDraft(
   /**
