@@ -17,5 +17,6 @@ data class AccidentDraftDto4Submit(
   val describe: String,
   val source: String,
   val authorName: String,
-  val authorId: String
+  val authorId: String,
+  val reportTime: OffsetDateTime = OffsetDateTime.now()
 )
