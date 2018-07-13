@@ -48,6 +48,10 @@
     </dependency>
     <dependency>
       <groupId>cn.gftaxi.traffic.accident</groupId>
+      <artifactId>gftaxi-traffic-accident-data-mail</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>cn.gftaxi.traffic.accident</groupId>
       <artifactId>gftaxi-traffic-accident-rest-webflux</artifactId>
     </dependency>
     <dependency>
