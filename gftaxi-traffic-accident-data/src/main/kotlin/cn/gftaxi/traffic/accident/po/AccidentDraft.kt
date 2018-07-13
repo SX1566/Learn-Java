@@ -50,7 +50,7 @@ data class AccidentDraft(
   val hitType: String,
   /** 是否逾期报案 */
   val overdue: Boolean,
-  /** 报案来源：BC-BC系统Web端、EMAIL-邮件、WEIXIN-微信、SMS-短信、{appId}-应用ID */
+  /** 报案来源：BC-BC系统Web端、MAIL-邮件、WEIXIN-微信、SMS-短信、{appId}-应用ID */
   @Column(length = 10)
   val source: String,
   /** 接案人姓名 */
