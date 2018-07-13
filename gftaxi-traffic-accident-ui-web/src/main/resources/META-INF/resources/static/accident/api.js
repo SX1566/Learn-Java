@@ -5,7 +5,8 @@
  */
 define(["bc", "context"], function (bc, context) {
   "use strict";
-  // let accidentDataServer = `${context.services.accident.address}`;  // 数据服务地址
+  let accidentDataServer = `${context.services.accident.address}`;  // 交通事故数据服务地址
+  let categoryDataServer = `${context.services.category.address}`;  // 分类标准数据服务地址
   let accidentStaticServer = `${bc.root}/static/accident`;  // 静态文件服务地址
 
   /**
@@ -60,13 +61,13 @@ define(["bc", "context"], function (bc, context) {
   //==== 一些常数定义 ====
   const api = {
     /** 数据服务地址 */
-    // dataServer: accidentDataServer,
+    dataServer: accidentDataServer,
     /** 前端静态文件服务地址 */
     staticServer: accidentStaticServer,
 
     /**
      * 打开模块的表单窗口。
-     * @param module 模块标识，如出租方为 'leaser'
+     * @param module 模块标识，如事故报案为 'accident-draft'
      * @param option 窗口配置参数
      * @option mid 窗口ID
      * @option name 任务栏标题
@@ -81,6 +82,57 @@ define(["bc", "context"], function (bc, context) {
       require([url], function success(html) {
         bc.page.newWin(Object.assign({html: html}, option));
       });
+    },
+    /** 获取指定路径资源 */
+    get: function (url, method, data) {
+      return cors(url,method,data);
+    },
+    /**
+     * 获取模块指定主键的信息
+     * @param module 模块标识，如违法信息为 'accident-draft'
+     * @param id 主键
+     * @param [可选] throwError 是否冒泡异常，默认 false：true-异常由使用者通过 catch 自行处理，false-直接弹出框显示异常信息
+     * @return {Promise}
+     */
+    getByModule: function (module, id, throwError) {
+      let p = cors(`${accidentDataServer}/${module}/${id}`, "GET");
+
+      // 冒泡异常
+      if (!throwError) p.catch(error => bc.msg.info(error.message));
+
+      return p;
+    },
+    /**
+     * 保存信息
+     * @param module 模块标识，如事故报案为 'accident-draft'
+     * @param id [可选] 主键，如果指定主键代表更新数据，否则代表创建数据
+     * @param data [可选] 要保存的数据，json 格式
+     * @param throwError [可选] 是否冒泡异常，默认 false：true-异常由使用者通过 catch 自行处理，false-直接弹出框显示异常信息
+     * @return {Promise}
+     */
+    save: function (module, id, data, throwError) {
+      let url = `${accidentDataServer}/${module}`;
+      let method;
+      if (id) {
+        url += `/${id}`;
+        method = 'PUT';
+      } else method = 'POST';
+
+      let p = cors(url, method, data ? JSON.stringify(data) : null, "application/json");
+
+      // 冒泡异常
+      if (!throwError) p.catch(error => bc.msg.info(error.message));
+
+      return p;
+    },
+    /**
+     * 获取分类列表。
+     * @param sn 分类编码，如 "SGXZ"（事故性质）
+     * @param includeDisabled 是否包含 Disabled 状态的二级分类，不指定默认仅返回 Enabled 状态
+     * @return {Promise}
+     */
+    findCategory: function (sn, includeDisabled) {
+      return  cors(`${categoryDataServer}/${sn}/children`, "GET", {"include-disabled": includeDisabled});
     }
   };
   return api;
