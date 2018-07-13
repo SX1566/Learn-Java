@@ -38,7 +38,8 @@ class DataSourceConfiguration {
     return if (embed) { // for development
       EmbeddedDatabaseBuilder()
         .setType(EmbeddedDatabaseType.HSQL)
-        .addScript("classpath:cn/gftaxi/bc/sql/hsql/schema.sql") // from gftaxi-gov-gis-data
+        .addScript("classpath:cn/gftaxi/bc/sql/hsql/schema.sql") // from data module
+        .addScript("classpath:cn/gftaxi/bc/sql/hsql/data.sql")   // from data module
         .build()
     } else {            // for production
       bcDataSourceProperties().initializeDataSourceBuilder().build()
