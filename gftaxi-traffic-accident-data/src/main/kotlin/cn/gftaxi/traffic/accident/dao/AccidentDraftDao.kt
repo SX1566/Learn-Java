@@ -1,7 +1,7 @@
 package cn.gftaxi.traffic.accident.dao
 
 import cn.gftaxi.traffic.accident.po.AccidentDraft
-import javafx.animation.Animation.Status
+import cn.gftaxi.traffic.accident.po.AccidentDraft.Status
 import org.springframework.data.domain.Page
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -18,9 +18,9 @@ interface AccidentDraftDao {
    * 返回的列表信息按报案时间逆序排序，模糊搜索事故编号、车号、司机。
    *
    * @param[status] 案件状态，为空代表不限定
-   * @param[fuzzySearch] 模糊搜索的条件值
+   * @param[fuzzySearch] 模糊搜索的条件值，为空则忽略
    */
-  fun find(pageNo: Int, pageSize: Int, status: Status, fuzzySearch: String): Flux<Page<AccidentDraft>>
+  fun find(pageNo: Int, pageSize: Int, status: Status?, fuzzySearch: String?): Flux<Page<AccidentDraft>>
 
   /**
    * 获取所有待登记的报案信息，按报案时间逆序排序。
@@ -48,5 +48,5 @@ interface AccidentDraftDao {
    * @param[data] 要更新的信息，key 为 PO 的属性名，value 为相应的 PO 属性值
    * @return 更新成功返回 true，否则返回 false
    */
-  fun update(code: String, data: Map<String, Object>): Mono<Boolean>
+  fun update(code: String, data: Map<String, Any>): Mono<Boolean>
 }

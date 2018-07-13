@@ -3,7 +3,7 @@ package cn.gftaxi.traffic.accident.service
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Modify
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
 import cn.gftaxi.traffic.accident.po.AccidentDraft
-import javafx.animation.Animation.Status
+import cn.gftaxi.traffic.accident.po.AccidentDraft.Status
 import org.springframework.data.domain.Page
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -20,10 +20,10 @@ interface AccidentDraftService {
    * 返回的列表信息按报案时间逆序排序，模糊搜索事故编号、车号、司机。
    *
    * @param[status] 案件状态，为空代表不限定
-   * @param[fuzzySearch] 模糊搜索的条件值
+   * @param[fuzzySearch] 模糊搜索的条件值，为空则忽略
    * @throws [SecurityException] 无 [AccidentDraft.ROLE_READ] 查询报案信息权限
    */
-  fun find(pageNo: Int, pageSize: Int, status: Status, fuzzySearch: String): Flux<Page<AccidentDraft>>
+  fun find(pageNo: Int, pageSize: Int, status: Status?, fuzzySearch: String?): Flux<Page<AccidentDraft>>
 
   /**
    * 获取所有待登记的报案信息，按报案时间逆序排序。
