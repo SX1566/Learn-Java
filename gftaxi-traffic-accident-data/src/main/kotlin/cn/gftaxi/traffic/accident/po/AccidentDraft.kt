@@ -2,7 +2,9 @@ package cn.gftaxi.traffic.accident.po
 
 import cn.gftaxi.traffic.accident.po.converter.AccidentDraftStatusConverter
 import java.io.Serializable
+import java.time.Duration
 import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
 import javax.persistence.*
 
 /**
@@ -67,6 +69,11 @@ data class AccidentDraft(
     const val ROLE_SUBMIT = "ACCIDENT_DRAFT_SUBMIT"
     /** 提交报案信息角色 */
     const val ROLE_MODIFY = "ACCIDENT_DRAFT_MODIFY"
+
+    /** 判断是否是预期报案 */
+    fun isOverdue(happenTime: OffsetDateTime, reportTime: OffsetDateTime, overdueSeconds: Long): Boolean {
+      return Duration.between(happenTime, reportTime).get(ChronoUnit.SECONDS) > overdueSeconds
+    }
   }
 
   /**
