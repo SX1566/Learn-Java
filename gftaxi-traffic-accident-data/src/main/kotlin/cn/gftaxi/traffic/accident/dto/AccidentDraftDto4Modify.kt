@@ -14,5 +14,5 @@ data class AccidentDraftDto4Modify(
   val location: String,
   val hitForm: String,
   val hitType: String,
-  val describe: String
+  val describe: String?
 )

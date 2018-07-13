@@ -14,7 +14,7 @@ data class AccidentDraftDto4Submit(
   val location: String,
   val hitForm: String,
   val hitType: String,
-  val describe: String,
+  val describe: String?,
   val source: String,
   val authorName: String,
   val authorId: String,

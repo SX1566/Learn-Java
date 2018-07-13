@@ -60,7 +60,7 @@ data class AccidentDraft(
   @Column(length = 50)
   val authorId: String,
   /** 简要描述 */
-  val describe: String
+  val describe: String?
 ) : Serializable {
   companion object {
     /** 查询报案信息角色 */
