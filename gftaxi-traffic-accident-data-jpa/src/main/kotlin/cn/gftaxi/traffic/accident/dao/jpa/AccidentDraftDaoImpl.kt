@@ -9,6 +9,8 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
@@ -92,5 +94,19 @@ class AccidentDraftDaoImpl @Autowired constructor(
 
     val count = updateQuery.executeUpdate()
     return if (count == 1) Mono.just(true) else Mono.just(false)
+  }
+
+  override fun nextCode(happenTime: OffsetDateTime): Mono<String> {
+    val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+    val ymd = happenTime.format(formatter)
+    val code = "${ymd}_%"
+    val hql = "select code from AccidentDraft where code like :code order by code desc"
+    val preCodes = em.createQuery(hql, String::class.java).setParameter("code", code).setMaxResults(1).resultList
+
+    return if (preCodes.isEmpty()) Mono.just("${ymd}_01")
+    else {
+      val sn = preCodes[0].takeLast(2).toInt() + 1
+      Mono.just("${ymd}_${if (sn < 10) "0$sn" else "$sn"}")
+    }
   }
 }

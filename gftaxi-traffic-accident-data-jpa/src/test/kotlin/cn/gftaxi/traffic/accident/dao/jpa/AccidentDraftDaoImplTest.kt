@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import reactor.test.StepVerifier
 import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import kotlin.test.assertEquals
@@ -150,5 +151,29 @@ class AccidentDraftDaoImplTest @Autowired constructor(
     assertEquals(data["authorId"], actual.authorId)
 
     StepVerifier.create(dao.update(code, mapOf())).expectNext(true).verifyComplete()
+  }
+
+  @Test
+  fun nextCode() {
+    // mock
+    val now = OffsetDateTime.now()
+    val ymd = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+
+    // invoke and verify
+    StepVerifier.create(dao.nextCode(now)).expectNext("${ymd}_01").verifyComplete()
+
+    // mock
+    em.persist(AccidentDraft("${ymd}_01", Status.Done, "plate1", "driver", now, now, "", "", "", true, "", "", "", ""))
+    em.flush(); em.clear()
+
+    // invoke and verify
+    StepVerifier.create(dao.nextCode(now)).expectNext("${ymd}_02").verifyComplete()
+
+    // mock
+    em.persist(AccidentDraft("${ymd}_10", Status.Done, "plate2", "driver", now, now, "", "", "", true, "", "", "", ""))
+    em.flush(); em.clear()
+
+    // invoke and verify
+    StepVerifier.create(dao.nextCode(now)).expectNext("${ymd}_11").verifyComplete()
   }
 }

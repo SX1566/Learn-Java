@@ -5,6 +5,7 @@ import cn.gftaxi.traffic.accident.po.AccidentDraft.Status
 import org.springframework.data.domain.Page
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.OffsetDateTime
 
 /**
  * 事故报案 Dao。
@@ -49,4 +50,12 @@ interface AccidentDraftDao {
    * @return 更新成功返回 true，否则返回 false
    */
   fun update(code: String, data: Map<String, Any>): Mono<Boolean>
+
+  /**
+   * 根据事发时间生成未使用的事故编号。
+   *
+   * @param happenTime 事发时间
+   * @return 事故编号，格式为 yyyyMMdd_nn
+   */
+  fun nextCode(happenTime: OffsetDateTime): Mono<String>
 }

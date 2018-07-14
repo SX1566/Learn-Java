@@ -53,6 +53,7 @@ interface AccidentDraftService {
    *
    * @param[code] 要修改案件的编号
    * @throws [SecurityException] 无 [AccidentDraft.ROLE_MODIFY] 修改报案信息权限
+   * @throws [IllegalArgumentException] 指定的案件编号不存在
    */
   fun modify(code: String, dto: AccidentDraftDto4Modify): Mono<Void>
 }
