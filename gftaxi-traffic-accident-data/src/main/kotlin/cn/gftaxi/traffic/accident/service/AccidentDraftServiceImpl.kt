@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import tech.simter.security.SecurityService
+import java.util.concurrent.TimeUnit
 
 /**
  * 事故报案 Service 实现。
@@ -24,7 +25,7 @@ class AccidentDraftServiceImpl @Autowired constructor(
   private val securityService: SecurityService,
   private val accidentDraftDao: AccidentDraftDao
 ) : AccidentDraftService {
-  override fun find(pageNo: Int, pageSize: Int, status: Status?, fuzzySearch: String?): Flux<Page<AccidentDraft>> {
+  override fun find(pageNo: Int, pageSize: Int, status: Status?, fuzzySearch: String?): Mono<Page<AccidentDraft>> {
     securityService.verifyHasRole(AccidentDraft.ROLE_READ)
     return accidentDraftDao.find(pageNo, pageSize, status, fuzzySearch)
   }
@@ -48,8 +49,8 @@ class AccidentDraftServiceImpl @Autowired constructor(
           .create(
             AccidentDraft(
               it, Status.Done, dto.carPlate, dto.driverName, dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
-              dto.hitType, AccidentDraft.isOverdue(dto.happenTime, dto.reportTime, 1L), dto.source, dto.authorName,
-              dto.authorId, dto.describe
+              dto.hitType, AccidentDraft.isOverdue(dto.happenTime, dto.reportTime, TimeUnit.HOURS.toSeconds(12)),
+              dto.source, dto.authorName, dto.authorId, dto.describe
             )
           )
           .thenReturn(it)

@@ -23,7 +23,7 @@ interface AccidentDraftService {
    * @param[fuzzySearch] 模糊搜索的条件值，为空则忽略
    * @throws [SecurityException] 无 [AccidentDraft.ROLE_READ] 查询报案信息权限
    */
-  fun find(pageNo: Int, pageSize: Int, status: Status?, fuzzySearch: String?): Flux<Page<AccidentDraft>>
+  fun find(pageNo: Int, pageSize: Int, status: Status?, fuzzySearch: String?): Mono<Page<AccidentDraft>>
 
   /**
    * 获取所有待登记的报案信息，按报案时间逆序排序。

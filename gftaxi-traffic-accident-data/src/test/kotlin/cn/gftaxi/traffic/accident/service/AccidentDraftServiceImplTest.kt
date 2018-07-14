@@ -41,7 +41,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     val po = AccidentDraft("code", Status.Done, "plate", "driver", now, now, "", "", "", true, "", "", "", "")
     val expected = PageImpl(listOf(po), PageRequest.of(pageNo, pageSize), 1)
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_READ)
-    `when`(accidentDraftDao.find(pageNo, pageSize, Status.Todo, "search")).thenReturn(Flux.just(expected))
+    `when`(accidentDraftDao.find(pageNo, pageSize, Status.Todo, "search")).thenReturn(Mono.just(expected))
 
     // invoke
     val actual = accidentDraftService.find(pageNo, pageSize, Status.Todo, "search")
@@ -103,8 +103,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     val dto = AccidentDraftDto4Submit("plate", "driver", OffsetDateTime.now(), "location", "", "", "", "", "", "")
     val po = AccidentDraft(
       expected, Status.Done, dto.carPlate, dto.driverName, dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
-      dto.hitType, AccidentDraft.isOverdue(dto.happenTime, dto.reportTime, 1L), dto.source, dto.authorName,
-      dto.authorId, dto.describe
+      dto.hitType, false, dto.source, dto.authorName, dto.authorId, dto.describe
     )
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
     `when`(accidentDraftDao.nextCode(dto.happenTime)).thenReturn(Mono.just(expected))
@@ -130,7 +129,6 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     assertThrows(SecurityException::class.java, { accidentDraftService.submit(dto).subscribe() })
   }
 
-
   @Test
   fun submitWithException() {
     // mock
@@ -138,8 +136,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     val dto = AccidentDraftDto4Submit("plate", "driver", OffsetDateTime.now(), "location", "", "", "", "", "", "")
     val po = AccidentDraft(
       expected, Status.Done, dto.carPlate, dto.driverName, dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
-      dto.hitType, AccidentDraft.isOverdue(dto.happenTime, dto.reportTime, 1L), dto.source, dto.authorName,
-      dto.authorId, dto.describe
+      dto.hitType, false, dto.source, dto.authorName, dto.authorId, dto.describe
     )
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
     `when`(accidentDraftDao.nextCode(dto.happenTime)).thenReturn(Mono.just(expected))

@@ -24,7 +24,7 @@ class AccidentDraftDaoImpl @Autowired constructor(
   @PersistenceContext private val em: EntityManager,
   private val repository: AccidentDraftJpaRepository
 ) : AccidentDraftDao {
-  override fun find(pageNo: Int, pageSize: Int, status: AccidentDraft.Status?, fuzzySearch: String?): Flux<Page<AccidentDraft>> {
+  override fun find(pageNo: Int, pageSize: Int, status: AccidentDraft.Status?, fuzzySearch: String?): Mono<Page<AccidentDraft>> {
     val hasStatus = null != status
     val hasFuzzySearch = null != fuzzySearch
     var rowsQl = "select a from AccidentDraft a where 0 = 0"
@@ -48,7 +48,7 @@ class AccidentDraftDaoImpl @Autowired constructor(
       countQuery.setParameter("search", search)
     }
 
-    return Flux.just(
+    return Mono.just(
       PageImpl(
         rowsQuery.resultList as List<AccidentDraft>,
         PageRequest.of(pageNo - 1, pageSize),
