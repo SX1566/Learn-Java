@@ -1,5 +1,6 @@
 package cn.gftaxi.traffic.accident.rest.webflux
 
+import cn.gftaxi.traffic.accident.rest.webflux.handler.AccidentDraftHandler
 import cn.gftaxi.traffic.accident.rest.webflux.handler.FindSecondaryCategoriesHandler
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,7 +29,8 @@ private const val MODULE = "cn.gftaxi.traffic.accident.rest.webflux"
 @EnableWebFlux
 class ModuleConfiguration @Autowired constructor(
   @Value("\${gftaxi.rest.context-path.traffic-accident:/}") private val contextPath: String,
-  private val findSecondaryCategoriesHandler: FindSecondaryCategoriesHandler
+  private val findSecondaryCategoriesHandler: FindSecondaryCategoriesHandler,
+  private val accidentDraftHandler: AccidentDraftHandler
 ) {
   private val logger = LoggerFactory.getLogger(ModuleConfiguration::class.java)
 
@@ -43,7 +45,13 @@ class ModuleConfiguration @Autowired constructor(
     contextPath.nest {
       // GET /category/{sn}/children 获取指定一级分类下的二级分类列表（按一级分类的编码）
       FindSecondaryCategoriesHandler.REQUEST_PREDICATE.invoke(findSecondaryCategoriesHandler::handle)
-      // GET /
+
+      // GET /accident-draft 获取事故报案独立视图的分页数据
+      AccidentDraftHandler.FIND_REQUEST_PREDICATE.invoke(accidentDraftHandler::find)
+      // GET /accident-draft/{code} 获取指定编号的报案信息
+      AccidentDraftHandler.GET_REQUEST_PREDICATE.invoke(accidentDraftHandler::get)
+
+      // GET
       GET("/", { ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).syncBody("gftaxi-traffic-accident module") })
       // OPTIONS /*
       OPTIONS("/**", { ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).syncBody("options") })
