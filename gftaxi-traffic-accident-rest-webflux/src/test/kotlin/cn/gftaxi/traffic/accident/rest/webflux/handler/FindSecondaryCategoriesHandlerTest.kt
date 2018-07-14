@@ -38,7 +38,7 @@ class FindSecondaryCategoriesHandlerTest @Autowired constructor(
     val name = "全部责任"
     val status = Category.Status.Enabled
     `when`(accidentCategoryService.findSecondaryCategories(true, belong))
-      .thenReturn(Flux.just(SecondaryCategoryDto(sn, belong, name, status)))
+      .thenReturn(Flux.just(SecondaryCategoryDto(belong, sn, name, status)))
 
     // invoke
     client.get().uri("/category/$belong/children?include-disabled=true")
@@ -62,7 +62,7 @@ class FindSecondaryCategoriesHandlerTest @Autowired constructor(
     val name = "全部责任"
     val status = Category.Status.Enabled
     `when`(accidentCategoryService.findSecondaryCategories(false, belong))
-      .thenReturn(Flux.just(SecondaryCategoryDto(sn, belong, name, status)))
+      .thenReturn(Flux.just(SecondaryCategoryDto(belong, sn, name, status)))
 
     // invoke
     client.get().uri("/category/$belong/children")
