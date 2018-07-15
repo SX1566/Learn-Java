@@ -28,7 +28,7 @@ class AccidentDraftDaoImpl @Autowired constructor(
     val hasStatus = null != status
     val hasFuzzySearch = null != fuzzySearch
     var rowsQl = "select a from AccidentDraft a where 0 = 0"
-    var countQl = "select count(0) from AccidentDraft where 0 = 0"
+    var countQl = "select count(code) from AccidentDraft where 0 = 0"
     var whereQl = if (hasStatus) "\n  and status = :status" else ""
     if (hasFuzzySearch) whereQl += "\n  and (code like :search or carPlate like :search or driverName like :search)"
     countQl += whereQl

@@ -2,7 +2,7 @@ package cn.gftaxi.traffic.accident.service
 
 import cn.gftaxi.traffic.accident.dto.SecondaryCategoryDto
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import tech.simter.category.po.Category.Status
@@ -13,7 +13,7 @@ import tech.simter.category.service.CategoryService
  *
  * @author JF
  */
-@Component
+@Service
 @Transactional
 class AccidentCategoryServiceImpl @Autowired constructor(
   private val categoryService: CategoryService
