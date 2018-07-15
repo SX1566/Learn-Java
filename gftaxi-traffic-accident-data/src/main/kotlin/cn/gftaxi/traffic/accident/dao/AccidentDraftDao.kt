@@ -49,7 +49,7 @@ interface AccidentDraftDao {
    * @param[data] 要更新的信息，key 为 PO 的属性名，value 为相应的 PO 属性值
    * @return 更新成功返回 true，否则返回 false
    */
-  fun update(code: String, data: Map<String, Any>): Mono<Boolean>
+  fun update(code: String, data: Map<String, Any?>): Mono<Boolean>
 
   /**
    * 根据事发时间生成未使用的事故编号。

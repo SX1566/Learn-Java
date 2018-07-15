@@ -79,7 +79,7 @@ class AccidentDraftDaoImpl @Autowired constructor(
     return Mono.empty()
   }
 
-  override fun update(code: String, data: Map<String, Any>): Mono<Boolean> {
+  override fun update(code: String, data: Map<String, Any?>): Mono<Boolean> {
     val filteredData = data.filterKeys { it.isNotEmpty() }
     if (filteredData.isEmpty()) return Mono.just(true)
 
