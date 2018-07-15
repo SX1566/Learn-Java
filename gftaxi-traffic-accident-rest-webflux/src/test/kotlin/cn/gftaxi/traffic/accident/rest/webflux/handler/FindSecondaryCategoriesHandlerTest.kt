@@ -4,6 +4,7 @@ import cn.gftaxi.traffic.accident.dto.SecondaryCategoryDto
 import cn.gftaxi.traffic.accident.rest.webflux.ModuleConfiguration
 import cn.gftaxi.traffic.accident.rest.webflux.handler.FindSecondaryCategoriesHandler.Companion.REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.service.AccidentCategoryService
+import cn.gftaxi.traffic.accident.service.AccidentDraftService
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
@@ -23,7 +24,7 @@ import tech.simter.category.po.Category
  * @author JF
  */
 @SpringJUnitConfig(ModuleConfiguration::class)
-@MockBean(AccidentCategoryService::class)
+@MockBean(AccidentDraftService::class, AccidentCategoryService::class)
 class FindSecondaryCategoriesHandlerTest @Autowired constructor(
   private val accidentCategoryService: AccidentCategoryService,
   handler: FindSecondaryCategoriesHandler
