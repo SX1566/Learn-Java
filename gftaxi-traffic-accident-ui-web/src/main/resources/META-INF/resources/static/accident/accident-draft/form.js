@@ -1,4 +1,4 @@
-define(["bc", "bs", "vue", "context", 'static/accident/api'], function (bc, bs, Vue, context, accident) {
+define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], function (bc, bs, carMan, Vue, context, accident) {
   "use strict";
   let resourceKey = "accident-draft";
   let isManager = context.isAny("ACCIDENT_DRAFT_MODIFY", "ACCIDENT_DRAFT_SUBMIT");
@@ -26,7 +26,7 @@ define(["bc", "bs", "vue", "context", 'static/accident/api'], function (bc, bs, 
           });
         } else {
           Vue.set(this.e, "authorName", context.userName);
-          Vue.set(this.e, "authorId", context.userId);
+          Vue.set(this.e, "authorId", context.userCode);
         }
         if (isManager) {
           this.loadHitForms();
@@ -95,9 +95,10 @@ define(["bc", "bs", "vue", "context", 'static/accident/api'], function (bc, bs, 
               // 设置车辆和车队
               Vue.set(this.vm.e, "carPlate", car.plate);
               Vue.set(this.vm.e, "motorcade", car.motorcadeName);
-              //选择司机
-              accident.get(`${bc.root}/bs/carman/findByCar`, "GET", {car: car.id, working: true})
-                .then(drivers => Vue.set(this.vm.ui, "driverNames", drivers.map(d => d.name)));
+              // 加载车辆的营运司机
+              carMan.findByCar(car.id, true).then(drivers =>
+                Vue.set(this.vm.ui, "driverNames", drivers.map(d => d.name))
+              )
             }
           })
         },

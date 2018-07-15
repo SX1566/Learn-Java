@@ -6,7 +6,6 @@
 define(["bc", "context"], function (bc, context) {
   "use strict";
   let accidentDataServer = `${context.services.accident.address}`;  // 交通事故数据服务地址
-  let categoryDataServer = `${context.services.category.address}`;  // 分类标准数据服务地址
   let accidentStaticServer = `${bc.root}/static/accident`;  // 静态文件服务地址
 
   /**
@@ -118,7 +117,7 @@ define(["bc", "context"], function (bc, context) {
         method = 'PUT';
       } else method = 'POST';
 
-      let p = cors(url, method, data ? JSON.stringify(data) : null, "application/json");
+      let p = cors(url, method, data ? JSON.stringify(data) : null, "application/json;charset=UTF-8");
 
       // 冒泡异常
       if (!throwError) p.catch(error => bc.msg.info(error.message));
@@ -132,7 +131,7 @@ define(["bc", "context"], function (bc, context) {
      * @return {Promise}
      */
     findCategory: function (sn, includeDisabled) {
-      return  cors(`${categoryDataServer}/${sn}/children`, "GET", {"include-disabled": includeDisabled});
+      return  cors(`${accidentDataServer}/category/${sn}/children`, "GET", {"include-disabled": includeDisabled});
     }
   };
   return api;
