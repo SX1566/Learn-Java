@@ -41,7 +41,7 @@ insert into bc_identity_resource (status_, inner_, type_, order_, name, iconclas
 -- 资源：营运系统/交通事故/*
 with p(id) as (select id from bc_identity_resource where name = '交通事故')
 , cfg(type, sn, name, url, iconclass) as (
-        select 2, '072001', '事故报案'::text, '/static/accident/accident-draft/view.html', 'i0100'
+        select 2, '072001', '事故报案'::text, '/static/accident/accident-draft/view.html', 'i0707'
 )
 insert into bc_identity_resource (status_, inner_, type_, order_, name, url, iconclass, belong, id)
   select 0, false, c.type, c.sn, c.name, c.url, c.iconclass, (select id from p), nextval('core_sequence')
