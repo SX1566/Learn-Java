@@ -19,6 +19,11 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.jsoup</groupId>
+        <artifactId>jsoup</artifactId>
+        <version>1.11.3</version>
+      </dependency>
+      <dependency>
         <groupId>de.flapdoodle.embed</groupId>
         <artifactId>de.flapdoodle.embed.mongo</artifactId>
         <version>${flapdoodle-embed-mongo.version}</version>
