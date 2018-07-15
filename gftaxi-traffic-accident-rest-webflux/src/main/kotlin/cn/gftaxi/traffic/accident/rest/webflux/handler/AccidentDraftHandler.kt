@@ -10,6 +10,10 @@ import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.*
 import reactor.core.publisher.Mono
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
+import javax.json.Json
 
 /**
  * 事故报案的 [HandlerFunction]。
@@ -43,10 +47,56 @@ class AccidentDraftHandler @Autowired constructor(
     }
   }
 
+  fun submit(request: ServerRequest): Mono<ServerResponse> {
+    return request.bodyToMono<Map<String, String>>()
+      .flatMap {
+        ServerResponse.created(request.uri()).contentType(MediaType.APPLICATION_JSON_UTF8)
+          .body(
+            accidentDraftService.submit(
+            AccidentDraftDto4Submit(
+              it["carPlate"]!!, it["driverName"]!!, toOffsetDateTime(it["happenTime"]!!), it["location"]!!,
+              it["hitForm"]!!, it["hitType"]!!, if (it.size == 7) it["describe"]!! else "", it["source"]!!,
+              it["authorName"]!!, it["authorId"]!!, toOffsetDateTime(it["reportTime"]!!)
+            )
+          ).map {
+              val body = Json.createObjectBuilder()
+              body.add("code", it)
+              body.build().toString()
+            })
+      }
+  }
+
+  fun update(request: ServerRequest): Mono<ServerResponse> {
+    return request.bodyToMono<Map<String, String>>()
+      .flatMap {
+        accidentDraftService
+          .modify(
+            request.pathVariable("code"),
+            AccidentDraftDto4Modify(
+              it["carPlate"]!!, it["driverName"]!!, toOffsetDateTime(it["happenTime"]!!), it["location"]!!,
+              it["hitForm"]!!, it["hitType"]!!, if (it.size == 7) it["describe"]!! else ""
+            )
+          )
+      }
+      .then(ServerResponse.noContent().build())
+  }
+
+  /** 时间字符串转 OffsetDateTime 类型 */
+  private fun toOffsetDateTime(dateTime: String): OffsetDateTime {
+    return OffsetDateTime.of(
+      LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+      OffsetDateTime.now().offset
+    )
+  }
+
   companion object {
     val FIND_REQUEST_PREDICATE: RequestPredicate = RequestPredicates.GET("/accident-draft")
       .and(RequestPredicates.contentType(MediaType.APPLICATION_JSON_UTF8))
     val GET_REQUEST_PREDICATE: RequestPredicate = RequestPredicates.GET("/accident-draft/{code}")
+      .and(RequestPredicates.contentType(MediaType.APPLICATION_JSON_UTF8))
+    val SUBMIT_REQUEST_PREDICATE: RequestPredicate = RequestPredicates.POST("/accident-draft")
+      .and(RequestPredicates.contentType(MediaType.APPLICATION_JSON_UTF8))
+    val UPDATE_REQUEST_PREDICATE: RequestPredicate = RequestPredicates.PUT("/accident-draft/{code}")
       .and(RequestPredicates.contentType(MediaType.APPLICATION_JSON_UTF8))
   }
 }
