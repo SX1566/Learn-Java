@@ -30,7 +30,7 @@ class AccidentDraftHandler @Autowired constructor(
     val status = AccidentDraft.Status.valueOf(request.queryParam("status").orElse(AccidentDraft.Status.Todo.name))
     val search = request.queryParam("search").orElse(null)
     return ServerResponse.ok().body(
-      accidentDraftService.find(pageNo.minus(1), pageSize, status, search).map {
+      accidentDraftService.find(pageNo, pageSize, status, search).map {
         hashMapOf(
           "count" to it.count(),
           "pageNo" to it.pageable.pageNumber,
@@ -91,9 +91,7 @@ class AccidentDraftHandler @Autowired constructor(
 
   companion object {
     val FIND_REQUEST_PREDICATE: RequestPredicate = RequestPredicates.GET("/accident-draft")
-      .and(RequestPredicates.contentType(MediaType.APPLICATION_JSON_UTF8))
     val GET_REQUEST_PREDICATE: RequestPredicate = RequestPredicates.GET("/accident-draft/{code}")
-      .and(RequestPredicates.contentType(MediaType.APPLICATION_JSON_UTF8))
     val SUBMIT_REQUEST_PREDICATE: RequestPredicate = RequestPredicates.POST("/accident-draft")
       .and(RequestPredicates.contentType(MediaType.APPLICATION_JSON_UTF8))
     val UPDATE_REQUEST_PREDICATE: RequestPredicate = RequestPredicates.PUT("/accident-draft/{code}")
