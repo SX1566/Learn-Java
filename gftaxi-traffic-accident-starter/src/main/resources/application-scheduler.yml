@@ -1,4 +1,4 @@
 #### 定时任务 cron 配置 ####
 app.cron:
-  # 会话保持
-  keep-session: "0 0/10 * * * ? *"
+  # 收取报案邮件
+  receive-mail: "0 0/5 * * * ? *"

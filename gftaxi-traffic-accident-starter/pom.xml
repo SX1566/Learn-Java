@@ -48,6 +48,10 @@
     </dependency>
     <dependency>
       <groupId>cn.gftaxi.traffic.accident</groupId>
+      <artifactId>gftaxi-traffic-accident-data-mail</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>cn.gftaxi.traffic.accident</groupId>
       <artifactId>gftaxi-traffic-accident-rest-webflux</artifactId>
     </dependency>
     <dependency>
@@ -61,6 +65,10 @@
     <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-kotlin</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>javax.mail</artifactId>
     </dependency>
     <!-- log -->
     <dependency>

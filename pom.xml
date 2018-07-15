@@ -25,6 +25,7 @@
     <module>gftaxi-traffic-accident-parent</module>
     <module>gftaxi-traffic-accident-data</module>
     <module>gftaxi-traffic-accident-data-jpa</module>
+    <module>gftaxi-traffic-accident-data-mail</module>
     <module>gftaxi-traffic-accident-rest-webflux</module>
     <module>gftaxi-traffic-accident-scheduler</module>
     <module>gftaxi-traffic-accident-starter</module>
