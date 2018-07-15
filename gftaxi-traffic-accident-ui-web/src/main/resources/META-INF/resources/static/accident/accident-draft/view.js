@@ -31,7 +31,7 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
     new Vue({
       el: $page[0],
       data: {
-        url: `http://127.0.0.1:9000/accident/${resourceKey}`,
+        url: `${accident.dataServer}/${resourceKey}`,
         columns: columns,
         status: 'Todo',
         statuses: [{id: 'Todo', label: '待登记'}, {id: 'Done', label: '已登记'}, {id: '', label: '全部'}],

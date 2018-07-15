@@ -56,12 +56,11 @@ class AccidentDraftHandlerTest @Autowired constructor(
       code, AccidentDraft.Status.Todo, "car", "driver", OffsetDateTime.now(),
       OffsetDateTime.now(), "location", "hitForm", "hitType", false,
       "source", "authorName", "authorId", ""))
-    `when`(accidentDraftService.find(pageNo.minus(1), pageSize, status, search))
+    `when`(accidentDraftService.find(pageNo, pageSize, status, search))
       .thenReturn(Mono.just(PageImpl(list, PageRequest.of(pageNo, pageSize), list.size.toLong())))
 
     // invoke
     client.get().uri("/accident-draft?pageNo=$pageNo&pageSize=$pageSize&status=$status&search=$search")
-      .header("Content-Type", APPLICATION_JSON_UTF8.toString())
       .exchange()
       .expectStatus().isOk
       .expectHeader().contentType(APPLICATION_JSON_UTF8)
@@ -72,7 +71,7 @@ class AccidentDraftHandlerTest @Autowired constructor(
       .jsonPath("$.rows[0].code").isEqualTo(code)    // verify AccidentDraft.code
 
     // verify
-    verify(accidentDraftService).find(pageNo.minus(1), pageSize, status, search)
+    verify(accidentDraftService).find(pageNo, pageSize, status, search)
   }
 
   @Test
@@ -88,7 +87,6 @@ class AccidentDraftHandlerTest @Autowired constructor(
 
     // invoke
     client.get().uri("/accident-draft/$code")
-      .header("Content-Type", APPLICATION_JSON_UTF8.toString())
       .exchange()
       .expectStatus().isOk
       .expectHeader().contentType(APPLICATION_JSON_UTF8)
