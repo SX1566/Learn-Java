@@ -102,7 +102,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     val expected = "code"
     val dto = AccidentDraftDto4Submit("plate", "driver", OffsetDateTime.now(), "location", "", "", "", "", "", "")
     val po = AccidentDraft(
-      expected, Status.Done, dto.carPlate, dto.driverName, dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
+      expected, Status.Todo, dto.carPlate, dto.driverName, dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
       dto.hitType, false, dto.source, dto.authorName, dto.authorId, dto.describe
     )
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
@@ -135,7 +135,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     val expected = "code"
     val dto = AccidentDraftDto4Submit("plate", "driver", OffsetDateTime.now(), "location", "", "", "", "", "", "")
     val po = AccidentDraft(
-      expected, Status.Done, dto.carPlate, dto.driverName, dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
+      expected, Status.Todo, dto.carPlate, dto.driverName, dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
       dto.hitType, false, dto.source, dto.authorName, dto.authorId, dto.describe
     )
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
