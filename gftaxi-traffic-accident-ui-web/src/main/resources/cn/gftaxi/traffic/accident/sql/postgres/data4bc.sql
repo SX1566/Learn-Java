@@ -88,10 +88,10 @@ cfg(role_code, user_codes) as (
   -- 查询报案信息角色
   select 'ACCIDENT_DRAFT_READ'::text, array['baochengzongbu']
   -- 提交报案信息角色
-  union select 'ACCIDENT_DRAFT_MODIFY'::text,
-    array_cat(array['fenGongSi1AQY', 'fenGongSi2AQY'], (select cap_array from captain_motorcade))
-  -- 提交报案信息角色
   union select 'ACCIDENT_DRAFT_SUBMIT'::text,
+    array_cat(array['fenGongSi1AQY', 'fenGongSi2AQY'], (select cap_array from captain_motorcade))
+  -- 修改报案信息角色
+  union select 'ACCIDENT_DRAFT_MODIFY'::text,
     array_cat(array['fenGongSi1AQY', 'fenGongSi2AQY'], (select cap_array from captain_motorcade))
 )
 insert into bc_identity_role_actor (rid, aid)
