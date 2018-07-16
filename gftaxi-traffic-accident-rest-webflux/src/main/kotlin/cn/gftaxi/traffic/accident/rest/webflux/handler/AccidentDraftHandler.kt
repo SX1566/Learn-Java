@@ -39,7 +39,7 @@ class AccidentDraftHandler @Autowired constructor(
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
             mapOf(
               "code" to it.code,
-              "status" to it.status.value(),
+              "status" to it.status.name,
               "carPlate" to it.carPlate,
               "driverName" to it.driverName,
               "happenTime" to it.happenTime.format(formatter),
@@ -65,7 +65,7 @@ class AccidentDraftHandler @Autowired constructor(
       ServerResponse.ok().contentType(APPLICATION_JSON_UTF8).syncBody(
         mapOf(
           "code" to it.code,
-          "status" to it.status.value(),
+          "status" to it.status.name,
           "carPlate" to it.carPlate,
           "driverName" to it.driverName,
           "happenTime" to it.happenTime.format(formatter),
