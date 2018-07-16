@@ -11,6 +11,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import reactor.test.StepVerifier
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import kotlin.test.assertEquals
@@ -116,12 +117,13 @@ class AccidentDraftDaoImplTest @Autowired constructor(
     // mock
     val now = OffsetDateTime.now()
     val po = AccidentDraft("20180713_01", Status.Done, "search", "driver", now, now, "", "", "", true, "", "", "", "")
+    val expected = po.copy(happenTime = po.happenTime.truncatedTo(ChronoUnit.MINUTES))
 
     // invoke
     StepVerifier.create(dao.create(po)).expectNext().verifyComplete()
 
     // verify
-    assertEquals(po, em.createQuery("select a from AccidentDraft a", AccidentDraft::class.java).singleResult)
+    assertEquals(expected, em.createQuery("select a from AccidentDraft a", AccidentDraft::class.java).singleResult)
     assertThrows(IllegalArgumentException::class.java, { dao.create(po).block() })
   }
 
@@ -144,7 +146,7 @@ class AccidentDraftDaoImplTest @Autowired constructor(
     val actual = em.createQuery("select a from AccidentDraft a", AccidentDraft::class.java).singleResult
     assertEquals(data["carPlate"], actual.carPlate)
     assertEquals(data["driverName"], actual.driverName)
-    assertEquals(data["happenTime"], actual.happenTime)
+    assertEquals((data["happenTime"] as OffsetDateTime).truncatedTo(ChronoUnit.MINUTES), actual.happenTime)
     assertEquals(data["describe"], actual.describe)
     assertEquals(data["reportTime"], actual.reportTime)
     assertEquals(data["location"], actual.location)

@@ -11,6 +11,7 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
@@ -70,18 +71,23 @@ class AccidentDraftDaoImpl @Autowired constructor(
   }
 
   override fun create(po: AccidentDraft): Mono<Void> {
+    val accidentDraft = po.copy(happenTime = po.happenTime.truncatedTo(ChronoUnit.MINUTES))
     val isNotExists =
       em.createQuery("select 0 from AccidentDraft where carPlate = :carPlate and happenTime = :happenTime")
-        .setParameter("carPlate", po.carPlate)
-        .setParameter("happenTime", po.happenTime)
+        .setParameter("carPlate", accidentDraft.carPlate)
+        .setParameter("happenTime", accidentDraft.happenTime)
         .resultList.isEmpty()
-    if (isNotExists) repository.save(po) else throw IllegalArgumentException("指定车号和事发时间的案件已经存在！")
+    if (isNotExists) repository.save(accidentDraft) else throw IllegalArgumentException("指定车号和事发时间的案件已经存在！")
     return Mono.empty()
   }
 
   override fun update(code: String, data: Map<String, Any?>): Mono<Boolean> {
-    val filteredData = data.filterKeys { it.isNotEmpty() }
+    val filteredData = data.filterKeys { it.isNotEmpty() }.toMutableMap()
     if (filteredData.isEmpty()) return Mono.just(true)
+
+    if (filteredData.containsKey("happenTime")) {
+      filteredData["happenTime"] = (filteredData["happenTime"] as OffsetDateTime).truncatedTo(ChronoUnit.MINUTES)
+    }
 
     var setQl = "\n  set "
     val filteredDataKeys = filteredData.keys.toList()
