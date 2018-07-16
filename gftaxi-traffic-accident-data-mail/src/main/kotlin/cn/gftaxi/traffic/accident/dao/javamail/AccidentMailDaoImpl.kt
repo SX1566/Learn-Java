@@ -138,7 +138,7 @@ class AccidentMailDaoImpl @Autowired constructor(
     if (content == null) return map
 
     // 按邮件模板要求拆分各个项目
-    val items = Jsoup.parse(content).text().trim().split("，", ",", "。")
+    val items = content.trim().split("，", ",", "。")
     items.forEach {
       val kv = it.split("：", ":").map { it.trim() }
       if (logger.isDebugEnabled) logger.debug(kv.toString())
@@ -165,7 +165,7 @@ class AccidentMailDaoImpl @Autowired constructor(
 
   // 解析邮件内容
   private fun getText(p: Part): String? {
-    return when {
+    val content = when {
       p.isMimeType("text/*") -> p.content as String
       p.isMimeType("multipart/alternative") -> {
         // prefer html text over plain text
@@ -193,5 +193,7 @@ class AccidentMailDaoImpl @Autowired constructor(
       }
       else -> null
     }
+
+    return Jsoup.parse(content).text().trim()
   }
 }
