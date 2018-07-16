@@ -1,3 +1,7 @@
+-- module version
+insert into st_kv (key, value) values ('module-version-simter-category', '0.1-SNAPSHOT');
+insert into st_kv (key, value) values ('module-version-gftaxi-traffic-accident', '${project.version}');
+
 -- 初始化事故分类标准的数据
 -- 交通事故分类标准（ID=2，附加到 ID=1 的 ROOT 节点下）
 insert into st_category (pid, status, name, sn) values (1, 2, '交通事故分类标准', 'JTSG_CATEGORY');
