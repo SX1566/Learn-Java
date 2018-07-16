@@ -31,7 +31,7 @@ class WebFluxConfiguration : WebFluxConfigurer {
     registry!!.addMapping("/**")
       .allowedOrigins("*")
       .allowedMethods("*")
-      .allowedHeaders("Authorization")
+      .allowedHeaders("Authorization", "Content-Type")
       //.exposedHeaders("header1")
       .allowCredentials(false)
       .maxAge(1800) // seconds
