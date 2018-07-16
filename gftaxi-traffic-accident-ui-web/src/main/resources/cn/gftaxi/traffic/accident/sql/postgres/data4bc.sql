@@ -79,21 +79,20 @@ insert into bc_identity_role_resource (rid, sid)
   and not exists (select 0 from bc_identity_role_resource rs where rs.rid = r.id and rs.sid = s.id);
 
 -- 用户与角色的关联
-with cfg(role_code, user_codes) as (
-  -- 查询报案
+with captain_motorcade(cap_array) as (
+  select regexp_split_to_array(string_agg(a.code,','),',') from bc_identity_actor a
+  inner join bs_motorcade m on m.principal_id = a.id and (m.name like '一分%' or m.name like '二分%')
+    and m.status_ = 0
+),
+cfg(role_code, user_codes) as (
+  -- 查询报案信息角色
   select 'ACCIDENT_DRAFT_READ'::text, array['baochengzongbu']
-  -- 提交报案
-  union select 'ACCIDENT_DRAFT_SUBMIT'::text,
-    array[
-      'foy', 'zws', 'zeng', 'jon', 'kelvin', 'owen', 'zsk',
-      'lys', 'eagle', 'mars', 'wjb', 'cmy', 'hyp', 'hjx', 'zhong', 'DevelopmentGroup'
-    ]
-  -- 修改报案
+  -- 提交报案信息角色
   union select 'ACCIDENT_DRAFT_MODIFY'::text,
-    array[
-      'foy', 'zws', 'zeng', 'jon', 'kelvin', 'owen', 'zsk',
-      'lys', 'eagle', 'mars', 'wjb', 'cmy', 'hyp', 'hjx', 'zhong', 'DevelopmentGroup'
-    ]
+    array_cat(array['fenGongSi1AQY', 'fenGongSi2AQY'], (select cap_array from captain_motorcade))
+  -- 提交报案信息角色
+  union select 'ACCIDENT_DRAFT_SUBMIT'::text,
+    array_cat(array['fenGongSi1AQY', 'fenGongSi2AQY'], (select cap_array from captain_motorcade))
 )
 insert into bc_identity_role_actor (rid, aid)
   select r.id, a.id
