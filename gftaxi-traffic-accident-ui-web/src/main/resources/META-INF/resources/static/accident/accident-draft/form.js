@@ -24,6 +24,8 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           accident.getByModule(resourceKey, code).then(json => {
             Object.keys(json).forEach(key => Vue.set(this.e, key, json[key]));
           });
+          // 初始化"简要描述"栏自动行高
+          setTimeout(()=>{$page.parent().find(".autoHeight").keyup()},200);
         } else {
           Vue.set(this.e, "authorName", context.userName);
           Vue.set(this.e, "authorId", context.userCode);
@@ -121,7 +123,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
   }
 
   // 自定义窗口的 data-option 配置
-  Page.option = {width: 500, minWidth: 500, minHeight: 290};
+  Page.option = {width: 500, minWidth: 500};
   Page.option.buttons = [
     {id: "save", text: "保存", click: "save", style: "display:none"},
     {id: "submit", text: "提交", click: "save", style: "display:none"}
