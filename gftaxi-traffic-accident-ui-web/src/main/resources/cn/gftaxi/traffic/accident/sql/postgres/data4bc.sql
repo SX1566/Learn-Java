@@ -1,10 +1,10 @@
 -- 清除插入的资源
 with p(id) as ( -- 交通事故父目录
-  select id from bc_identity_resource where name = '交通事故'
+  select distinct id from bc_identity_resource where name in ('交通事故', '事故(新版)')
 )
 ,resource(id) as (
   select id from p
-  union select id from bc_identity_resource where name = '事故报案' and belong = (select id from p)
+  union select id from bc_identity_resource where name = '事故报案' and belong in (select id from p)
 ) -- select * from resource
 , delete_role_resource(id) as ( -- 删除资源与角色的关联
   delete from bc_identity_role_resource where sid in (select id from resource)
@@ -31,15 +31,18 @@ select (select count(*) from delete_role_resource) delete_role_resource
 -- 资源：营运系统/交通事故
 with p(id) as (select id from bc_identity_resource where name = '营运系统')
 , cfg(type, sn, name, iconclass) as (
-  select 1, '072000', '交通事故', 'i0100'
+  select 1, '031200-2', '事故(新版)', 'i0100'
 )
 insert into bc_identity_resource (status_, inner_, type_, order_, name, iconclass, belong, id)
   select 0, false, c.type, c.sn, c.name, c.iconclass, (select id from p), nextval('core_sequence')
   from cfg c
   where not exists (select 0 from bc_identity_resource s where s.name = c.name::text and s.belong = (select id from p));
 
+-- 将原来的 "事故理赔" 更名为 "事故(旧版)"
+update bc_identity_resource set name = '事故(旧版)' where name = '事故理赔';
+
 -- 资源：营运系统/交通事故/*
-with p(id) as (select id from bc_identity_resource where name = '交通事故')
+with p(id) as (select id from bc_identity_resource where name = '事故(新版)')
 , cfg(type, sn, name, url, iconclass) as (
   select 2, '072001', '事故报案'::text, '/static/accident/accident-draft/view.html', 'i0707'
 )
@@ -51,11 +54,11 @@ insert into bc_identity_resource (status_, inner_, type_, order_, name, url, ico
 -- 角色
 with cfg(sn, name, code) as (
   -- 查询报案信息角色
-         select '4011', '查询报案信息角色'::text, 'ACCIDENT_DRAFT_READ'::text
+         select '4011', '交通事故查询报案'::text, 'ACCIDENT_DRAFT_READ'::text
   -- 提交报案信息角色
-  union select '4012', '提交报案信息角色'::text, 'ACCIDENT_DRAFT_SUBMIT'::text
+  union select '4012', '交通事故提交报案'::text, 'ACCIDENT_DRAFT_SUBMIT'::text
   -- 修改报案信息角色
-  union select '4013', '修改报案信息角色'::text, 'ACCIDENT_DRAFT_MODIFY'::text
+  union select '4013', '交通事故修改报案'::text, 'ACCIDENT_DRAFT_MODIFY'::text
 )
 insert into bc_identity_role (status_, inner_, type_, order_, code, name, id)
   select 0, false, 0, c.sn, c.code, c.name, nextval('core_sequence')
@@ -65,7 +68,7 @@ insert into bc_identity_role (status_, inner_, type_, order_, code, name, id)
 -- 资源与角色的关联
 with p(id) as (
   select id from bc_identity_resource
-  where name = '交通事故'
+  where name = '事故(新版)'
 ), cfg(resource_name, role_codes) as (
   select '事故报案'::text, array['ACCIDENT_DRAFT_MODIFY', 'ACCIDENT_DRAFT_SUBMIT','ACCIDENT_DRAFT_READ']
 )
@@ -77,19 +80,19 @@ insert into bc_identity_role_resource (rid, sid)
 
 -- 用户与角色的关联
 with cfg(role_code, user_codes) as (
-  -- 查询报案信息角色
+  -- 查询报案
   select 'ACCIDENT_DRAFT_READ'::text, array['baochengzongbu']
-  -- 提交报案信息角色
-  union select 'ACCIDENT_DRAFT_MODIFY'::text,
-    array[
-      'foy', 'zws', 'zeng', 'jon', 'kelvin', 'owen', 'zsk',
-      'lys', 'eagle', 'mars', 'wjb', 'cmy', 'hyp', 'hjx', 'zhong'
-    ]
-  -- 提交报案信息角色
+  -- 提交报案
   union select 'ACCIDENT_DRAFT_SUBMIT'::text,
     array[
       'foy', 'zws', 'zeng', 'jon', 'kelvin', 'owen', 'zsk',
-      'lys', 'eagle', 'mars', 'wjb', 'cmy', 'hyp', 'hjx', 'zhong'
+      'lys', 'eagle', 'mars', 'wjb', 'cmy', 'hyp', 'hjx', 'zhong', 'DevelopmentGroup'
+    ]
+  -- 修改报案
+  union select 'ACCIDENT_DRAFT_MODIFY'::text,
+    array[
+      'foy', 'zws', 'zeng', 'jon', 'kelvin', 'owen', 'zsk',
+      'lys', 'eagle', 'mars', 'wjb', 'cmy', 'hyp', 'hjx', 'zhong', 'DevelopmentGroup'
     ]
 )
 insert into bc_identity_role_actor (rid, aid)
