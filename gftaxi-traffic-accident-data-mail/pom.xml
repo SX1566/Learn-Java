@@ -30,9 +30,8 @@
       <artifactId>spring-boot-autoconfigure</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>javax.mail-api</artifactId>
-      <scope>provided</scope>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>javax.mail</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jsoup</groupId>
@@ -46,11 +45,6 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <dependencies>
-        <dependency>
-          <groupId>com.sun.mail</groupId>
-          <artifactId>javax.mail</artifactId>
-          <scope>test</scope>
-        </dependency>
         <dependency>
           <groupId>io.projectreactor</groupId>
           <artifactId>reactor-test</artifactId>

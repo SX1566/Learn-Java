@@ -2,6 +2,8 @@ package cn.gftaxi.traffic.accident.dao.javamail
 
 import cn.gftaxi.traffic.accident.dao.AccidentMailDao
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
+import com.sun.mail.imap.IMAPFolder
+import com.sun.mail.imap.IMAPMessage
 import org.jsoup.Jsoup
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
+import java.io.File
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -17,8 +20,9 @@ import java.util.*
 import javax.mail.*
 import javax.mail.internet.InternetAddress
 import javax.mail.search.ComparisonTerm.GE
-import javax.mail.search.ReceivedDateTerm
+import javax.mail.search.SentDateTerm
 import kotlin.collections.HashMap
+
 
 /**
  * 事故邮件 Dao 的 JavaMail 实现。
@@ -28,6 +32,8 @@ import kotlin.collections.HashMap
 class AccidentMailDaoImpl @Autowired constructor(
   @Value("\${app.mail.imap-host:imap.139.com}")
   private val mailHost: String,
+  @Value("\${app.mail.imap-timeout:25000}") // default 25s
+  private val mailTimeout: Long,
   @Value("\${app.mail.username:gftaxi}") // gftaxi@139.com
   private val mailUsername: String,
   @Value("\${app.mail.password:gf81800088}")
@@ -35,9 +41,22 @@ class AccidentMailDaoImpl @Autowired constructor(
   @Value("\${app.mail.receive-subject:BC事故报案}") // 报案邮件的标题
   private val receiveMailSubject: String,
   @Value("\${app.mail.receive-last-minutes:60}")   // default 1 hour
-  private val receiveLastMinutes: Long
+  private val receiveLastMinutes: Long,
+  @Value("\${app.mail.mail-id-file:/data/accident/mail-id.txt}")   // mail-id cache file
+  private val mailIdCacheFile: String
 ) : AccidentMailDao {
   private val logger: Logger = LoggerFactory.getLogger(AccidentMailDaoImpl::class.java)
+  private val storedUIDs = UIDStore(File(mailIdCacheFile))
+
+  init {
+    logger.warn("app.mail.imap-host=$mailHost")
+    logger.warn("app.mail.imap-timeout=$mailTimeout")
+    logger.warn("app.mail.username=$mailUsername")
+    logger.warn("app.mail.password=$mailPassword")
+    logger.warn("app.mail.receive-subject=$receiveMailSubject")
+    logger.warn("app.mail.receive-last-minutes=$receiveLastMinutes")
+    logger.warn("storedUIDs.count=${storedUIDs.size}")
+  }
 
   override fun receiveMail(): Flux<AccidentDraftDto4Submit> {
     return Flux.fromIterable(receiveMail(
@@ -54,6 +73,9 @@ class AccidentMailDaoImpl @Autowired constructor(
     props.setProperty("mail.imap.socketFactory.fallback", "false")
     props.setProperty("mail.imap.socketFactory.port", "993") // 邮件服务器端口号
     props.setProperty("mail.imap.host", host)                // 邮件服务器
+    props.setProperty("mail.imap.ssl.enable", "true")
+    props.setProperty("mail.imap.timeout", mailTimeout.toString())
+    props.setProperty("mail.imaps.timeout", props.getProperty("mail.imap.timeout"))
 
     // 创建Session实例对象
     val session = Session.getInstance(props)
@@ -63,22 +85,16 @@ class AccidentMailDaoImpl @Autowired constructor(
     store.connect(host, username, password)
 
     // 获得收件箱
-    val folder = store.getFolder("INBOX") //as IMAPFolder
+    val folder = store.getFolder("INBOX") as IMAPFolder
 
-    // 以读写模式打开收件箱
-    folder.open(Folder.READ_WRITE)
-
-    // debug
-    if (logger.isDebugEnabled) {
-      logger.debug("folder.hasNewMessages=${folder.hasNewMessages()}")
-      logger.debug("folder.newMessageCount=${folder.newMessageCount}")
-      logger.debug("folder.unreadMessageCount=${folder.unreadMessageCount}")
-      logger.debug("folder.messageCount=${folder.messageCount}")
-    }
+    // 打开收件箱
+    folder.open(Folder.READ_ONLY)
 
     // 获得收件箱中邮件 （不要使用 [SubjectTerm] 条件，实测奇慢）
     // 服务器最近 N 分钟收取的邮件
-    val lastNMinutesTerm = ReceivedDateTerm(GE, Date.from(OffsetDateTime.now().minusMinutes(receiveLastMinutes).toInstant()))
+    val minInstant = OffsetDateTime.now().minusMinutes(receiveLastMinutes).toInstant()
+    logger.debug("minInstant=$minInstant")
+    val lastNMinutesTerm = SentDateTerm(GE, Date.from(minInstant))
 
     // 获取邮件
     val messages = folder.search(lastNMinutesTerm)
@@ -86,11 +102,23 @@ class AccidentMailDaoImpl @Autowired constructor(
 
     // 解析邮件
     val result = messages
-      .filter { it.subject.contains(receiveMailSubject) } // 过滤邮件标题
+      // 过滤已经收取过的邮件
+      .map { it as IMAPMessage }
+      .filter {
+        val isNew = !storedUIDs.contains(it.messageID)
+        if (isNew) storedUIDs.add(it.messageID)
+        isNew
+      }
+      // 再次过滤邮件时间，因为 SentDateTerm 过滤得不彻底
+      .filter { minInstant.isBefore(it.sentDate.toInstant()) }
+      // 过滤邮件标题
+      .filter { it.subject.contains(receiveMailSubject) }
+      // 转换为 dto
       .map { message2Dto(it) }
 
     logger.info("match mail result size=${result.size}")
 
+    storedUIDs.store()
     folder.close(false)
     store.close()
     return result
@@ -103,9 +131,14 @@ class AccidentMailDaoImpl @Autowired constructor(
     // 解析邮件内容
     val content = getText(message)
 
-    logger.debug("---------------------------------")
-    logger.debug("mail.subject=${message.subject}")
-    logger.debug("mail.content=$content")
+    if (logger.isDebugEnabled) {
+      logger.debug("---------------------------------")
+      logger.debug("mail.sentDate=${message.sentDate}")
+      logger.debug("mail.receivedDate=${message.receivedDate}")
+      logger.debug("mail.subject=${message.subject}")
+      logger.debug("mail.content=$content")
+      message.allHeaders.iterator().forEach { logger.debug("mail.header.${it.name}=${it.value}") }
+    }
 
     // 按邮件模板格式解析邮件信息
     val map = analyticContent(content)

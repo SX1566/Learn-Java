@@ -15,6 +15,14 @@ bc.db:
   name: @bc.db.name@
   username: @bc.db.username@
   password: @bc.db.password@
+app.mail:
+  imap-host: imap.139.com
+  imap-timeout: 25000
+  username: gftaxi
+  password: gf81800088
+  receive-subject: BC事故报案
+  receive-last-minutes: 10
+  app.mail.mail-id-file: /data/accident/mail-id.txt
 server:
   port: ${port:9102}
   servlet:
