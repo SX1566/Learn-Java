@@ -35,7 +35,25 @@ class AccidentDraftHandler @Autowired constructor(
           "count" to it.count(),
           "pageNo" to it.pageable.pageNumber,
           "pageSize" to it.pageable.pageSize,
-          "rows" to it.content
+          "rows" to it.content.map {
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+            mapOf(
+              "code" to it.code,
+              "status" to it.status.value(),
+              "carPlate" to it.carPlate,
+              "driverName" to it.driverName,
+              "happenTime" to it.happenTime.format(formatter),
+              "reportTime" to it.reportTime.format(formatter),
+              "location" to it.location,
+              "hitForm" to it.hitForm,
+              "hitType" to it.hitType,
+              "overdue" to it.overdue,
+              "source" to it.source,
+              "authorName" to it.authorName,
+              "authorId" to it.authorId,
+              "describe" to it.describe
+            )
+          }.toList()
         )
       }
     )
@@ -43,7 +61,25 @@ class AccidentDraftHandler @Autowired constructor(
 
   fun get(request: ServerRequest): Mono<ServerResponse> {
     return accidentDraftService.get(request.pathVariable("code")).flatMap {
-      ServerResponse.ok().contentType(APPLICATION_JSON_UTF8).syncBody(it)
+      val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+      ServerResponse.ok().contentType(APPLICATION_JSON_UTF8).syncBody(
+        mapOf(
+          "code" to it.code,
+          "status" to it.status.value(),
+          "carPlate" to it.carPlate,
+          "driverName" to it.driverName,
+          "happenTime" to it.happenTime.format(formatter),
+          "reportTime" to it.reportTime.format(formatter),
+          "location" to it.location,
+          "hitForm" to it.hitForm,
+          "hitType" to it.hitType,
+          "overdue" to it.overdue,
+          "source" to it.source,
+          "authorName" to it.authorName,
+          "authorId" to it.authorId,
+          "describe" to it.describe
+        )
+      )
     }
   }
 
