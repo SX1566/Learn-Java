@@ -48,7 +48,7 @@
       <dependency>
         <groupId>tech.simter</groupId>
         <artifactId>simter-category-dependencies</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>${simter-category.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
