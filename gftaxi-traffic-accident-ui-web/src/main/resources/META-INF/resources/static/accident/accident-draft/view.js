@@ -20,9 +20,14 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
     {id: "location", label: "事发地点", width: "20em"},
     {id: "hitForm", label: "事故形态", width: "7em"},
     {id: "hitType", label: "碰撞类型", width: "5em"},
-    {id: "authorName", label: "接案人", width: "4em"},
+    {id: "authorName", label: "接案人", width: "5em"},
     {id: "reportTime", label: "报案时间", width: "9.5em"},
-    {id: "overdue", label: "逾期报案", width: "5em"},
+    {
+      id: "overdue", label: "逾期报案", width: "5em",
+      filter: function (value) {
+        return value ? "是" : "否";
+      }
+    },
     {id: "motorcade", label: "所属车队", width: "5em"},
     {id: "source", label: "报案来源", width: "5em"},
   ];
