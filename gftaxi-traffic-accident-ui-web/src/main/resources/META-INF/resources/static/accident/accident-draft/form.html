@@ -14,7 +14,7 @@
           <tr>
             <td class="label">*事发时间：</td>
             <td class="value">
-              <input v-if="ui.readOnly" type="text" v-model="e.happenTime" class="ui-widget-content" readOnly>
+              <input v-if="readOnly" type="text" v-model="e.happenTime" class="ui-widget-content" readOnly>
               <input v-else type="datetime-local" v-model="ui.happenTime" class="ui-widget-content"
                      data-validate="required" style="width: 13em">
             </td>
@@ -28,7 +28,7 @@
             <td class="label">*事故车号：</td>
             <td class="value relative">
               <input type="text" v-model="e.carPlate" data-validate="required" class="ui-widget-content" readonly>
-              <ul v-if="!ui.readOnly" class="inputIcons">
+              <ul v-if="!readOnly" class="inputIcons">
                 <li class="inputIcon ui-icon ui-icon-circle-plus" title="点击选择" @click="selectCar"></li>
               </ul>
             </td>
@@ -41,7 +41,7 @@
           <tr>
             <td class="label">*当事司机：</td>
             <td class="value">
-              <input v-if="ui.readOnly" type="text" v-model="e.driverName" class="ui-widget-content" readonly>
+              <input v-if="readOnly" type="text" v-model="e.driverName" class="ui-widget-content" readonly>
               <template v-else>
                 <input list="drivers" v-model="e.driverName" class="ui-widget-content" data-validate="required">
                 <datalist id="drivers">
@@ -57,7 +57,7 @@
           <tr>
             <td class="label">*事故形态：</td>
             <td class="value">
-              <input v-if="ui.readOnly" type="text" v-model="e.hitForm" class="ui-widget-content" readOnly>
+              <input v-if="readOnly" type="text" v-model="e.hitForm" class="ui-widget-content" readOnly>
               <select v-else class="ui-widget-content" v-model="e.hitForm" data-validate="required">
                 <option v-for="hitForm in ui.hitForms" :value="hitForm">{{hitForm}}</option>
               </select>
@@ -71,7 +71,7 @@
           <tr>
             <td class="label">*碰撞类型：</td>
             <td class="value">
-              <input v-if="ui.readOnly" type="text" v-model="e.hitType" class="ui-widget-content" readOnly>
+              <input v-if="readOnly" type="text" v-model="e.hitType" class="ui-widget-content" readOnly>
               <select v-else class="ui-widget-content" v-model="e.hitType" data-validate="required">
                 <option v-for="hitType in ui.hitTypes" :value="hitType">{{hitType}}</option>
               </select></td>
@@ -82,13 +82,13 @@
             <td class="label">*事发地点：</td>
             <td class="value" colspan="3">
               <input type="text" v-model="e.location" class="ui-widget-content"
-                     data-validate="required" :readOnly="ui.readOnly">
+                     data-validate="required" :readOnly="readOnly">
             </td>
           </tr>
           <tr>
             <td class="label">简要描述：</td>
             <td class="value"colspan="3">
-              <textarea v-model="e.describe" class="ui-widget-content autoHeight" :readOnly="ui.readOnly"/>
+              <textarea v-model="e.describe" class="ui-widget-content autoHeight" :readOnly="readOnly"/>
             </td>
           </tr>
           </tbody>

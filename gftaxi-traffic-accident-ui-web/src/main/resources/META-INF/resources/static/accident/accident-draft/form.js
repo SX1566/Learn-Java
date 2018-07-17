@@ -1,7 +1,9 @@
 define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], function (bc, bs, carMan, Vue, context, accident) {
   "use strict";
   let resourceKey = "accident-draft";
-  let isManager = context.isAny("ACCIDENT_DRAFT_MODIFY", "ACCIDENT_DRAFT_SUBMIT");
+  let isSubmitter = context.is("ACCIDENT_DRAFT_SUBMIT");
+  let isEditor = context.is("ACCIDENT_DRAFT_MODIFY");
+  let isManager = isEditor || isSubmitter;
 
   function Page($page) {
     this["vm"] = new Vue({
@@ -9,7 +11,6 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
       data: {
         ui: {
           statuses: {"Todo": "待登记", "Done": "已登记"},
-          readOnly: !isManager,
           hitForms: [""],
           hitTypes: [""],
           driverNames: [],
@@ -60,6 +61,11 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
             if (happenTime) return this.getInervalHour(happenTime, new Date()) > 12 ? "是" : "否";
             return "";
           }
+        },
+        readOnly: function () {
+          if (!isManager) return true;
+          if (this.e.code) return !isEditor; // 待登记状态时没有修改权限则为只读
+          else return !isSubmitter; // 未上报状态时没有上报权限则为只读
         }
       },
       methods: {
