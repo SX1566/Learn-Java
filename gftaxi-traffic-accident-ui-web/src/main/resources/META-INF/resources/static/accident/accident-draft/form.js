@@ -13,7 +13,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           hitForms: [""],
           hitTypes: [""],
           driverNames: [],
-          happenTime:""
+          happenTime: ""
         },
         e: {status: "Todo", source: "BC"}
       },
@@ -28,7 +28,9 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
             this.loadCarMans(this.e["carPlate"]);
           });
           // 初始化"简要描述"栏自动行高
-          setTimeout(()=>{$page.parent().find(".autoHeight").keyup()},200);
+          setTimeout(() => {
+            $page.parent().find(".autoHeight").keyup()
+          }, 200);
         } else {
           Vue.set(this.e, "authorName", context.userName);
           Vue.set(this.e, "authorId", context.userCode);
@@ -39,12 +41,12 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           this.showHideButtons();
         }
       },
-      watch:{
+      watch: {
         'ui.happenTime': function (value) {
-          Vue.set(this.e,"happenTime",value.replace("T", " "));
+          Vue.set(this.e, "happenTime", value.replace("T", " "));
         },
-        'e.happenTime':function (value) {
-          Vue.set(this.ui,"happenTime",value.replace(" ", "T"));
+        'e.happenTime': function (value) {
+          Vue.set(this.ui, "happenTime", value.replace(" ", "T"));
         }
       },
       computed: {
@@ -94,14 +96,16 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
         save: function () {
           if (!bc.validator.validate($page)) return;
           let isNew = !this.e.code;
-          let saveKeys = ["carPlate","driverName","happenTime","location","hitForm","hitType","describe"];
+          let saveKeys = ["carPlate", "driverName", "happenTime", "location", "hitForm", "hitType", "describe"];
           if (isNew) saveKeys = saveKeys.concat(["source", "authorName", "authorId"]);
           let data = {};
           Object.keys(this.e).forEach(key => {
-            if(saveKeys.includes(key)) data[key] = this.e[key];
+            if (saveKeys.includes(key)) {
+              data[key] = this.e[key];
+            }
           });
           // 如果是保存请求则移除"报案来源","接案人姓名"和"接案人账号"
-          accident.save(resourceKey,this.e.code,data).then(result => {
+          accident.save(resourceKey, this.e.code, data).then(result => {
             if (isNew) {
               Vue.set(this.e, "code", result.code);
               Vue.set(this.e, "reportTime", result.reportTime);
@@ -111,7 +115,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           });
         },
         /** 选择车辆 */
-        selectCar:function () {
+        selectCar: function () {
           bs.selectCar({
             vm: this,
             status: "-1,0", multiple: false,
