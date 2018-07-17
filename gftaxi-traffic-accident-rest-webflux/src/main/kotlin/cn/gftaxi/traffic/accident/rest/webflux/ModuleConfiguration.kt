@@ -50,7 +50,7 @@ class ModuleConfiguration @Autowired constructor(
       AccidentDraftHandler.FIND_REQUEST_PREDICATE.invoke(accidentDraftHandler::find)
       // GET /accident-draft/{code} 获取指定编号的报案信息
       AccidentDraftHandler.GET_REQUEST_PREDICATE.invoke(accidentDraftHandler::get)
-      // POST /accident-draft 提交事故报案信息
+      // POST /accident-draft 上报案件信息
       AccidentDraftHandler.SUBMIT_REQUEST_PREDICATE.invoke(accidentDraftHandler::submit)
       // PUT /accident-draft/{code} 更新事故报案信息
       AccidentDraftHandler.UPDATE_REQUEST_PREDICATE.invoke(accidentDraftHandler::update)

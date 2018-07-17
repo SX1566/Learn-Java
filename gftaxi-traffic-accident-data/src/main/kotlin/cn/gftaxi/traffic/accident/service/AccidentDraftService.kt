@@ -40,10 +40,10 @@ interface AccidentDraftService {
   fun get(code: String): Mono<AccidentDraft>
 
   /**
-   * 提交新的报案。
+   * 上报新的报案。
    *
    * @return 自动生成的事故编号
-   * @throws [SecurityException] 无 [AccidentDraft.ROLE_SUBMIT] 提交报案信息权限
+   * @throws [SecurityException] 无 [AccidentDraft.ROLE_SUBMIT] 上报案件信息权限
    * @throws [IllegalArgumentException] 指定车号和事发时间的案件已经存在
    */
   fun submit(dto: AccidentDraftDto4Submit): Mono<String>

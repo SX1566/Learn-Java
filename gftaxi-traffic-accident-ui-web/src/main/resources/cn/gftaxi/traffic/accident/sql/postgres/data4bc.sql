@@ -55,8 +55,8 @@ insert into bc_identity_resource (status_, inner_, type_, order_, name, url, ico
 with cfg(sn, name, code) as (
   -- 查询报案信息角色
          select '4011', '交通事故查询报案'::text, 'ACCIDENT_DRAFT_READ'::text
-  -- 提交报案信息角色
-  union select '4012', '交通事故提交报案'::text, 'ACCIDENT_DRAFT_SUBMIT'::text
+  -- 上报案件信息角色
+  union select '4012', '交通事故上报案件'::text, 'ACCIDENT_DRAFT_SUBMIT'::text
   -- 修改报案信息角色
   union select '4013', '交通事故修改报案'::text, 'ACCIDENT_DRAFT_MODIFY'::text
 )
@@ -87,7 +87,7 @@ with captain_motorcade(cap_array) as (
 cfg(role_code, user_codes) as (
   -- 查询报案信息角色
   select 'ACCIDENT_DRAFT_READ'::text, array['baochengzongbu']
-  -- 提交报案信息角色
+  -- 上报案件信息角色
   union select 'ACCIDENT_DRAFT_SUBMIT'::text,
     array_cat(array['fenGongSi1AQY', 'fenGongSi2AQY'], (select cap_array from captain_motorcade))
   -- 修改报案信息角色

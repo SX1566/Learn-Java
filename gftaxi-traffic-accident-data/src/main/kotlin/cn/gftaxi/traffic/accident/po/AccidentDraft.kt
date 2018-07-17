@@ -65,9 +65,9 @@ data class AccidentDraft(
   companion object {
     /** 查询报案信息角色 */
     const val ROLE_READ = "ACCIDENT_DRAFT_READ"
-    /** 提交报案信息角色 */
+    /** 上报案件信息角色 */
     const val ROLE_SUBMIT = "ACCIDENT_DRAFT_SUBMIT"
-    /** 提交报案信息角色 */
+    /** 修改报案信息角色 */
     const val ROLE_MODIFY = "ACCIDENT_DRAFT_MODIFY"
 
     /** 判断是否是预期报案 */

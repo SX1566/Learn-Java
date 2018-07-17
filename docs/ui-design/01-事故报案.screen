@@ -32,7 +32,7 @@
       </widgets>
       <widgets xsi:type="model:Icon" id="23" x="148" y="3" measuredWidth="16" measuredHeight="16" icon="download2 (small)"/>
     </widgets>
-    <widgets xsi:type="model:Table" id="7" y="55" width="1057" text="(w:30). ,(w:20).状态,(w:20).事故编号,(w:20).事故车号,(w:20).当事司机,(w:20).事发时间,(w:20).事发地点,(w:20).事故形态,(w:20).碰撞类型,(w:20).接案人,(w:20).报案时间,(w:20).逾期报案,(w:20).所属车队,报案来源&#xD;&#xA;1,待登记,20180709_01,粤A.0F7J0,林河,2018-07-09 07:50,荔湾区南岸路荔港南湾路口,车辆间事故,追尾碰撞,韩智勇,2018-07-09 20:00,否,一分二队,BC&#xD;&#xA;2,待登记,20180709_02,粤A.24R55,戴晴川,2018-07-09 08:16,越秀区区庄广东工大公交站,车辆间事故,环岛碰撞,韩智勇,2018-07-09 19:15,否,一分一队,BC&#xD;&#xA;3,待登记,20180709_03,粤A.R3ST7,何田明,2018-07-09 09:05,越秀区环市中路肇庆大厦,车辆与人事故,其他,韩智勇,2018-07-09 19:00,否,二分二队,BC&#xD;&#xA;4,待登记,20180709_04,粤A.4RG57,陈桂铭,2018-07-09 09:27,天河区体育东路正佳广场路口,车辆与人事故,变道碰撞,韩智勇,2018-07-09 18:25,否,一分一队,EMAIL&#xD;&#xA;5,待登记,20180709_05,粤A.N35N7,黄英苏,2018-07-09 16:44,天河区广州大道中1305号,单车事故,变道碰撞,韩智勇,2018-07-09 18:19,是,一分一队,BC&#xD;&#xA;6,待登记,20180509_06,粤A.0O1L3,苏佑铭,2018-07-09 06:30,越秀区东风中路305号,车辆间事故,追尾碰撞,韩智勇,2018-07-09 18:09,否,二分二队,EMAIL&#xD;&#xA;7,待登记,20180509_07,粤A.01L3E,权智勋,2018-07-09 10:24,海珠区宝岗大道277号,车辆间事故,追尾碰撞,韩智勇,2018-07-09 17:50,否,二分二队,EMAIL&#xD;&#xA;8,待登记,20180509_08,粤A.3R256,何志龙,2018-07-09 09:20,荔湾区花地大道中238号,车辆与人事故,正面碰撞,韩智勇,2018-07-09 16:30,否,一分二队,BC" measuredWidth="1057" measuredHeight="211" alternative="#eee">
+    <widgets xsi:type="model:Table" id="7" y="55" width="1057" text="(w:30). ,(w:20).状态,(w:20).事故编号,(w:20).事故车号,(w:20).当事司机,(w:20).事发时间,(w:20).事发地点,(w:20).事故形态,(w:20).碰撞类型,(w:20).接案人,(w:20).报案时间,(w:20).逾期报案,(w:20).所属车队,报案来源&#xD;&#xA;1,待登记,20180709_01,粤A.0F7J0,林河,2018-07-09 07:50,荔湾区南岸路荔港南湾路口,车辆间事故,追尾碰撞,韩智勇,2018-07-09 20:00,否,一分二队,BC&#xD;&#xA;2,待登记,20180709_02,粤A.24R55,戴晴川,2018-07-09 08:16,越秀区区庄广东工大公交站,车辆间事故,环岛碰撞,韩智勇,2018-07-09 19:15,否,一分一队,BC&#xD;&#xA;3,待登记,20180709_03,粤A.R3ST7,何田明,2018-07-09 09:05,越秀区环市中路肇庆大厦,车辆与人事故,其他,韩智勇,2018-07-09 19:00,否,二分二队,BC&#xD;&#xA;4,待登记,20180709_04,粤A.4RG57,陈桂铭,2018-07-09 09:27,天河区体育东路正佳广场路口,车辆与人事故,变道碰撞,韩智勇,2018-07-09 18:25,否,一分一队,EMAIL&#xD;&#xA;5,待登记,20180709_05,粤A.N35N7,黄英苏,2018-07-09 16:44,天河区广州大道中1305号,单车事故,变道碰撞,韩智勇,2018-07-09 18:19,是,一分一队,BC&#xD;&#xA;6,待登记,20180509_06,粤A.0O1L3,苏佑铭,2018-07-09 06:30,越秀区东风中路305号,车辆间事故,追尾碰撞,韩智勇,2018-07-09 18:09,否,二分二队,EMAIL&#xD;&#xA;7,待登记,20180509_07,粤A.01L3E,权智勋,2018-07-09 10:24,海珠区宝岗大道277号,车辆间事故,追尾碰撞,韩智勇,2018-07-09 17:50,否,二分二队,EMAIL&#xD;&#xA;8,待登记,20180509_08,粤A.3R256,何志龙,2018-07-09 09:20,荔湾区花地大道中238号,车辆与人事故,正面碰撞,韩智勇,2018-07-09 16:30,否,一分二队,BC" measuredWidth="1057" measuredHeight="211" alternative="#eeeeee">
       <font bold="false"/>
     </widgets>
     <widgets xsi:type="model:VScrollbar" id="25" x="1055" y="55" height="211" measuredWidth="17" measuredHeight="211"/>
@@ -117,28 +117,28 @@
       <font/>
     </widgets>
     <widgets xsi:type="model:HLine" id="218" y="210" width="405" measuredWidth="405" measuredHeight="6"/>
-    <widgets xsi:type="model:Text" id="219" x="238" y="218" text="状态：待登记，报案来源：BC" measuredWidth="161" measuredHeight="17" textAlignment="Right" foreground="#666">
+    <widgets xsi:type="model:Text" id="219" x="238" y="218" text="状态：待登记，报案来源：BC" measuredWidth="161" measuredHeight="17" textAlignment="Right" foreground="#666666">
       <font/>
     </widgets>
-    <widgets xsi:type="model:Button" id="221" x="294" y="244" width="51" height="28" text="提交" measuredWidth="51" measuredHeight="28">
+    <widgets xsi:type="model:Button" id="221" x="294" y="244" width="51" height="28" text="上报" measuredWidth="51" measuredHeight="28">
       <font/>
     </widgets>
   </widgets>
-  <widgets xsi:type="model:Arrow" id="232" x="382" y="575" width="8" height="47" measuredWidth="8" measuredHeight="47" foreground="#f0f" lineStyle="dashed" left="false"/>
-  <widgets xsi:type="model:Arrow" id="233" x="359" y="621" width="23" height="8" measuredWidth="23" measuredHeight="8" foreground="#f0f" lineStyle="dashed" direction="bottom"/>
-  <widgets xsi:type="model:Label" id="234" x="153" y="610" text="提交后如要修改需要修改报案信息权限" measuredWidth="210" measuredHeight="25" foreground="#00f">
+  <widgets xsi:type="model:Arrow" id="232" x="382" y="575" width="8" height="47" measuredWidth="8" measuredHeight="47" foreground="#ff00ff" lineStyle="dashed" left="false"/>
+  <widgets xsi:type="model:Arrow" id="233" x="359" y="621" width="23" height="8" measuredWidth="23" measuredHeight="8" foreground="#ff00ff" lineStyle="dashed" direction="bottom"/>
+  <widgets xsi:type="model:Label" id="234" x="120" y="612" text="上报案件后如要修改需要修改报案信息权限" measuredWidth="234" measuredHeight="25" foreground="#0000ff">
     <font/>
   </widgets>
-  <widgets xsi:type="model:Arrow" id="236" x="326" y="575" width="8" height="30" measuredWidth="8" measuredHeight="30" foreground="#f0f" lineStyle="dashed" left="false"/>
-  <widgets xsi:type="model:Arrow" id="237" x="303" y="604" width="23" height="8" measuredWidth="23" measuredHeight="8" foreground="#f0f" lineStyle="dashed" direction="bottom"/>
-  <widgets xsi:type="model:Label" id="238" x="37" y="593" text="需合提交报案信息权限，确认提交后自动关闭表单" measuredWidth="270" measuredHeight="25" foreground="#00f">
+  <widgets xsi:type="model:Arrow" id="236" x="326" y="575" width="8" height="30" measuredWidth="8" measuredHeight="30" foreground="#ff00ff" lineStyle="dashed" left="false"/>
+  <widgets xsi:type="model:Arrow" id="237" x="303" y="604" width="23" height="8" measuredWidth="23" measuredHeight="8" foreground="#ff00ff" lineStyle="dashed" direction="bottom"/>
+  <widgets xsi:type="model:Label" id="238" x="37" y="593" text="需上报案件信息权限，确认上报后自动关闭表单" measuredWidth="258" measuredHeight="25" foreground="#0000ff">
     <font/>
   </widgets>
-  <widgets xsi:type="model:Arrow" id="239" x="305" y="448" width="128" height="8" measuredWidth="128" measuredHeight="8" foreground="#f0f" lineStyle="dashed" left="false" right="true"/>
-  <widgets xsi:type="model:Label" id="240" x="437" y="437" text="提交后如果事发时间距离报案时间超过12小时则为逾期" measuredWidth="296" measuredHeight="25" foreground="#00f">
+  <widgets xsi:type="model:Arrow" id="239" x="305" y="448" width="128" height="8" measuredWidth="128" measuredHeight="8" foreground="#ff00ff" lineStyle="dashed" left="false" right="true"/>
+  <widgets xsi:type="model:Label" id="240" x="437" y="437" text="上报案件后如果事发时间距离报案时间超过12小时则为逾期" measuredWidth="320" measuredHeight="25" foreground="#0000ff">
     <font/>
   </widgets>
-  <widgets xsi:type="model:CurlyBrace" id="241" x="409" y="338" width="141" height="87" text="提交后系统自动生成" measuredWidth="141" measuredHeight="87" foreground="#00f">
+  <widgets xsi:type="model:CurlyBrace" id="241" x="409" y="338" width="141" height="87" text="上报案件后系统自动生成" measuredWidth="141" measuredHeight="87" foreground="#0000ff">
     <font/>
   </widgets>
   <hRuler/>

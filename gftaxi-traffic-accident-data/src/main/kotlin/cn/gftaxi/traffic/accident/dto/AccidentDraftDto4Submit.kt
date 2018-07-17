@@ -3,7 +3,7 @@ package cn.gftaxi.traffic.accident.dto
 import java.time.OffsetDateTime
 
 /**
- * 提交报案信息用 DTO。
+ * 上报案件信息用 DTO。
  *
  * @author RJ
  */
