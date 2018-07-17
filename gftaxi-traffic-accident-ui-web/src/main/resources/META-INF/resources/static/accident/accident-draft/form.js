@@ -112,7 +112,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
             }
             $page.data("status", "saved");
             bc.msg.slide("保存成功！");
-            if (isNew) $page.dialog("close");      // 提交保存后关闭表单
+            if (isNew) $page.dialog("close");      // 上报案件后关闭表单
           });
         },
         /** 选择车辆 */
@@ -140,7 +140,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           if (!isManager) return;
           if (this.e.code && context.is("ACCIDENT_DRAFT_MODIFY"))// 有事故编号且有修改权限则显示保存按钮
             $page.parent().find("button#save").show();
-          else if (!this.e.code && context.is("ACCIDENT_DRAFT_SUBMIT"))// 无事故编号且有提交权限则显示提交按钮
+          else if (!this.e.code && context.is("ACCIDENT_DRAFT_SUBMIT"))// 无事故编号且有上报权限则显示上报按钮
             $page.parent().find("button#submit").show();
         }
       }
@@ -151,7 +151,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
   Page.option = {width: 500, minWidth: 500};
   Page.option.buttons = [
     {id: "save", text: "保存", click: "save", style: "display:none"},
-    {id: "submit", text: "提交", click: "save", style: "display:none"}
+    {id: "submit", text: "上报", click: "save", style: "display:none"}
   ];
   return Page;
 });
