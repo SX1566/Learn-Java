@@ -60,7 +60,7 @@
             <td class="value">
               <input v-if="ui.readOnly" type="text" v-model="e.hitForm" class="ui-widget-content" readOnly>
               <select v-else class="ui-widget-content" v-model="e.hitForm" data-validate="required">
-                <option v-for="hitForm in ui.hitForms" :value="hitForm.name">{{hitForm.name}}</option>
+                <option v-for="hitForm in ui.hitForms" :value="hitForm">{{hitForm}}</option>
               </select>
             </td>
             <td class="label">报案时间：</td>
@@ -74,7 +74,7 @@
             <td class="value">
               <input v-if="ui.readOnly" type="text" v-model="e.hitType" class="ui-widget-content" readOnly>
               <select v-else class="ui-widget-content" v-model="e.hitType" data-validate="required">
-                <option v-for="hitType in ui.hitTypes" :value="hitType.name">{{hitType.name}}</option>
+                <option v-for="hitType in ui.hitTypes" :value="hitType">{{hitType}}</option>
               </select></td>
             <td class="label">逾期报案：</td>
             <td class="value">{{overdueLabel}}</td>

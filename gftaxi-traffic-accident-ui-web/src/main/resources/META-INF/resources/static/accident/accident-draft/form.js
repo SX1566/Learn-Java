@@ -10,8 +10,8 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
         ui: {
           statuses: {"Todo": "待登记", "Done": "已登记"},
           readOnly: !isManager,
-          hitForms: [{sn: "", name: ""}],
-          hitTypes: [{sn: "", name: ""}],
+          hitForms: [""],
+          hitTypes: [""],
           driverNames: [],
           happenTime:""
         },
@@ -23,6 +23,8 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           Vue.set(this.e, "code", code);
           accident.getByModule(resourceKey, code).then(json => {
             Object.keys(json).forEach(key => Vue.set(this.e, key, json[key]));
+            this.ui.hitForms.push(this.e.hitForm);
+            this.ui.hitTypes.push(this.e.hitType);
           });
           // 初始化"简要描述"栏自动行高
           setTimeout(()=>{$page.parent().find(".autoHeight").keyup()},200);
@@ -61,12 +63,20 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
         /** 获取事故形态列表 */
         loadHitForms: function () {
           accident.findCategory("SGXT", false)
-            .then(json => {Vue.set(this.ui, "hitForms", this.ui.hitForms.concat(json))});
+            .then(json => {
+              Vue.set(this.ui, "hitForms", this.ui.hitForms.concat(
+                json.filter(h => !this.ui.hitForms.includes(h.name)).map(h => h.name)
+              ))
+            });
         },
         /** 获取碰撞类型列表 */
         loadHitTypes: function () {
           accident.findCategory("PZLX", false)
-            .then(json => {Vue.set(this.ui, "hitTypes", this.ui.hitTypes.concat(json))});
+            .then(json => {
+              Vue.set(this.ui, "hitTypes", this.ui.hitTypes.concat(
+                json.filter(h => !this.ui.hitTypes.includes(h.name)).map(h => h.name)
+              ))
+            });
         },
         /** 保存 */
         save: function () {
