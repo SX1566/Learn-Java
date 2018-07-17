@@ -104,16 +104,22 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
               data[key] = this.e[key];
             }
           });
-          // 如果是保存请求则移除"报案来源","接案人姓名"和"接案人账号"
-          accident.save(resourceKey, this.e.code, data).then(result => {
-            if (isNew) {
-              Vue.set(this.e, "code", result.code);
-              Vue.set(this.e, "reportTime", result.reportTime);
-            }
-            $page.data("status", "saved");
-            bc.msg.slide("保存成功！");
-            if (isNew) $page.dialog("close");      // 上报案件后关闭表单
-          });
+          // 上报操作
+          if (isNew) {
+            bc.msg.confirm("确定上报案件信息吗？", () =>
+              accident.save(resourceKey, this.e.code, data).then(result => {
+                Vue.set(this.e, "code", result.code);
+                Vue.set(this.e, "reportTime", result.reportTime);
+                bc.msg.slide("上报成功！");
+                $page.data("status", "saved");
+                $page.dialog("close");      // 上报案件后关闭表单
+              }));
+          } else {// 保存操作
+            accident.save(resourceKey, this.e.code, data).then(() => {
+              $page.data("status", "saved");
+              bc.msg.slide("保存成功！");
+            });
+          }
         },
         /** 选择车辆 */
         selectCar: function () {
