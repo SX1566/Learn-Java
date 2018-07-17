@@ -3,11 +3,9 @@
      data-option='{"width":1264, "height":386, "minHeight":386, "minWidth":889, "maxWidth":1264, "minimizable":true, "maximizable":true}'>
   <bc-grid v-ref:grid :columns="columns" :url="url" :query.sync="condition" :pageable="true" @dblclick-row="dblclickRow">
     <bc-toolbar slot="top">
-      <template v-if="isManager">
-        <bc-button icon-class="ui-icon-document" text="新建" @click="create"></bc-button>
-        <bc-button icon-class="ui-icon-pencil" text="编辑" @click="open"></bc-button>
-      </template>
-      <bc-button v-else icon-class="ui-icon-pencil" text="查看" @click="open"></bc-button>
+      <bc-button v-if="isSubmitter" icon-class="ui-icon-document" text="新建" @click="create"></bc-button>
+      <bc-button v-if="isEditor" icon-class="ui-icon-pencil" text="编辑" @click="open"></bc-button>
+      <bc-button v-if="!isSubmitter&&!isEditor" icon-class="ui-icon-pencil" text="查看" @click="open"></bc-button>
 
       <bc-button-set :value.sync="status" @change="reload" :items="statuses"></bc-button-set>
       <bc-search placeholder="输入关键字" align="right" @search="reload" :value.sync="fuzzySearch"></bc-search>

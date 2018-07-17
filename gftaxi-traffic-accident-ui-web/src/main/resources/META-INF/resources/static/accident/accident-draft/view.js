@@ -41,7 +41,8 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
         status: 'Todo',
         statuses: [{id: 'Todo', label: '待登记'}, {id: 'Done', label: '已登记'}, {id: '', label: '全部'}],
         fuzzySearch: '',
-        isManager: context.isAny("ACCIDENT_DRAFT_MODIFY", "ACCIDENT_DRAFT_SUBMIT")
+        isSubmitter: context.is("ACCIDENT_DRAFT_SUBMIT"),
+        isEditor: context.is("ACCIDENT_DRAFT_MODIFY")
       },
       computed: {
         // 视图所有查询条件的封装
