@@ -112,6 +112,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
             }
             $page.data("status", "saved");
             bc.msg.slide("保存成功！");
+            if (isNew) $page.dialog("close");      // 提交保存后关闭表单
           });
         },
         /** 选择车辆 */
