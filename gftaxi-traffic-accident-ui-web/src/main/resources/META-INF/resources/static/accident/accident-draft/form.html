@@ -27,8 +27,7 @@
           <tr>
             <td class="label">*事故车号：</td>
             <td class="value relative">
-              <input type="text" v-model="e.carPlate" data-validate="required" class="ui-widget-content"
-                     :readOnly="ui.readOnly">
+              <input type="text" v-model="e.carPlate" data-validate="required" class="ui-widget-content" readonly>
               <ul v-if="!ui.readOnly" class="inputIcons">
                 <li class="inputIcon ui-icon ui-icon-circle-plus" title="点击选择" @click="selectCar"></li>
               </ul>
