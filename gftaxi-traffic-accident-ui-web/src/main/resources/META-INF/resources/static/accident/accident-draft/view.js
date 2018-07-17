@@ -14,10 +14,10 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
       }
     },
     {id: "code", label: "事故编号", width: "7.5em"},
-    {id: "carPlate", label: "事故车号", width: "6.5em"},
+    {id: "carPlate", label: "事故车号", width: "5.5em", rowCellClass: "monospace"},
     {id: "driverName", label: "当事司机", width: "5em"},
     {id: "happenTime", label: "事发时间", width: "9.5em"},
-    {id: "location", label: "事发地点", width: "20em"},
+    {id: "location", label: "事发地点", width: "13em"},
     {id: "hitForm", label: "事故形态", width: "7em"},
     {id: "hitType", label: "碰撞类型", width: "5em"},
     {id: "authorName", label: "接案人", width: "5em"},
