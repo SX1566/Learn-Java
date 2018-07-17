@@ -25,6 +25,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
             Object.keys(json).forEach(key => Vue.set(this.e, key, json[key]));
             this.ui.hitForms.push(this.e.hitForm);
             this.ui.hitTypes.push(this.e.hitType);
+            this.loadCarMans(this.e["carPlate"]);
           });
           // 初始化"简要描述"栏自动行高
           setTimeout(()=>{$page.parent().find(".autoHeight").keyup()},200);
@@ -78,6 +79,17 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
               ))
             });
         },
+        /**
+         * 加载车辆的营运司机
+         *
+         * @params carKey 车辆关键信息，如车辆ID、车牌[粤A12345或12345]
+         * */
+        loadCarMans: function (carKey) {
+          carKey = carKey.replace(".", ""); // 将车号的"粤A.12345" 改为 "粤A12345"
+          carMan.findByCar(carKey, true).then(drivers =>
+            Vue.set(this.ui, "driverNames", drivers.map(d => d.name))
+          )
+        },
         /** 保存 */
         save: function () {
           if (!bc.validator.validate($page)) return;
@@ -108,9 +120,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
               Vue.set(this.vm.e, "carPlate", car.plate);
               Vue.set(this.vm.e, "motorcade", car.motorcadeName);
               // 加载车辆的营运司机
-              carMan.findByCar(car.id, true).then(drivers =>
-                Vue.set(this.vm.ui, "driverNames", drivers.map(d => d.name))
-              )
+              this.vm.loadCarMans(car.id);
             }
           })
         },
