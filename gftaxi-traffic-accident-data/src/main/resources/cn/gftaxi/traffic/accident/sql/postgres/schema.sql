@@ -118,18 +118,21 @@ $BODY$ language plpgsql immutable;
 
 -- create views
 create or replace view bs_car as
-  select plate_type, plate_no, factory_type, operate_date, company, motorcade, charger, driver, code, manage_no
+  select id, status, plate_type, plate_no, factory_type, operate_date, company, motorcade, charger, driver, code, manage_no
   from dblink(
     'dbname=bcsystem host=192.168.0.7 user=reader password=reader',
-    'select c.plate_type, c.plate_no, c.factory_type, c.operate_date, c.company, m.name, c.charger, c.driver, c.code, c.manage_no
+    'select c.id, c.status_, c.plate_type, c.plate_no, c.factory_type, c.operate_date, c.company, m.name, c.charger,
+       c.driver, c.code, c.manage_no
      from bs_car c
      inner join bs_motorcade m on m.id = c.motorcade_id'
   )
   as t(
-    plate_type varchar(255), plate_no varchar(255), factory_type varchar(255), operate_date timestamp, company varchar(255),
-    motorcade varchar(255), charger varchar(255), driver varchar(255), code varchar(255), manage_no integer
+    id integer, status integer, plate_type varchar(255), plate_no varchar(255), factory_type varchar(255),
+    operate_date date, company varchar(255), motorcade varchar(255), charger varchar(255), driver varchar(255),
+    code varchar(255), manage_no integer
   );
 comment on view bs_car                is '车辆视图';
+comment on column bs_car.status       is '状态：-2:新购,-1:草稿,0-在案,1-注销';
 comment on column bs_car.plate_type   is '车牌归属，如"粤A"';
 comment on column bs_car.plate_no     is '车牌号码，如"C4X74"';
 comment on column bs_car.factory_type is '厂牌类型，如"现代"';
@@ -142,22 +145,28 @@ comment on column bs_car.code         is '自编号';
 comment on column bs_car.manage_no    is '管理号';
 
 create or replace view bs_carman as
-  select name, sex, origin, cert_identity, cert_driving_first_date, model_, work_date, cert_fwzg, phone
+  select id, uid, status, type, name, sex, origin, cert_identity, cert_driving_first_date, model, work_date, cert_fwzg, phone
   from dblink(
     'dbname=bcsystem host=192.168.0.7 user=reader password=reader',
-    'select name, sex, origin, cert_identity, cert_driving_first_date, model_, work_date, cert_fwzg, phone from bs_carman'
+    'select id, uid_, status_, type_, name, sex, origin, cert_identity, cert_driving_first_date, model_, work_date,
+       cert_fwzg, phone
+     from bs_carman'
   )
   as t(
-    name varchar(255), sex integer, origin varchar(255), cert_identity varchar(255), cert_driving_first_date timestamp,
-    model_ varchar(255), work_date timestamp, cert_fwzg varchar(255), phone varchar(255)
+    id integer, uid varchar(36), status integer, type integer, name varchar(255), sex integer, origin varchar(255),
+    cert_identity varchar(255), cert_driving_first_date date, model varchar(255), work_date date,
+    cert_fwzg varchar(255), phone varchar(255)
   );
 comment on view bs_carman                           is '司机责任人视图';
+comment on column bs_carman.uid                     is 'UID';
+comment on column bs_carman.status                  is '状态：-1:草稿,0-启用中,1-已禁用,2-已删除';
+comment on column bs_carman.type                    is '类别：0-司机,1-责任人,2-司机和责任人';
 comment on column bs_carman.name                    is '姓名';
 comment on column bs_carman.sex                     is '性别：0-未设置,1-男,2-女';
 comment on column bs_carman.origin                  is '籍贯';
 comment on column bs_carman.cert_identity           is '身份证号';
 comment on column bs_carman.cert_driving_first_date is '初次领证日期';
-comment on column bs_carman.model_                  is '准驾车型';
+comment on column bs_carman.model                   is '准驾车型';
 comment on column bs_carman.work_date               is '入职日期';
 comment on column bs_carman.cert_fwzg               is '服务资格证号';
 comment on column bs_carman.phone                   is '电话';
