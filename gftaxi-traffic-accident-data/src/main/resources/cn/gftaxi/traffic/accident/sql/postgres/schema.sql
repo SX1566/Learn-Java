@@ -140,3 +140,24 @@ comment on column bs_car.charger      is '责任人信息';
 comment on column bs_car.driver       is '司机信息';
 comment on column bs_car.code         is '自编号';
 comment on column bs_car.manage_no    is '管理号';
+
+create or replace view bs_carman as
+  select name, sex, origin, cert_identity, cert_driving_first_date, model_, work_date, cert_fwzg, phone
+  from dblink(
+    'dbname=bcsystem host=192.168.0.7 user=reader password=reader',
+    'select name, sex, origin, cert_identity, cert_driving_first_date, model_, work_date, cert_fwzg, phone from bs_carman'
+  )
+  as t(
+    name varchar(255), sex integer, origin varchar(255), cert_identity varchar(255), cert_driving_first_date timestamp,
+    model_ varchar(255), work_date timestamp, cert_fwzg varchar(255), phone varchar(255)
+  );
+comment on view bs_carman                           is '司机责任人视图';
+comment on column bs_carman.name                    is '姓名';
+comment on column bs_carman.sex                     is '性别：0-未设置,1-男,2-女';
+comment on column bs_carman.origin                  is '籍贯';
+comment on column bs_carman.cert_identity           is '身份证号';
+comment on column bs_carman.cert_driving_first_date is '初次领证日期';
+comment on column bs_carman.model_                  is '准驾车型';
+comment on column bs_carman.work_date               is '入职日期';
+comment on column bs_carman.cert_fwzg               is '服务资格证号';
+comment on column bs_carman.phone                   is '电话';
