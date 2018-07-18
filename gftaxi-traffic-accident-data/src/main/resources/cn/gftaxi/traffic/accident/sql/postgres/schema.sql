@@ -2,6 +2,8 @@
 
 -- drop tables/sequences
 drop table if exists gf_accident_draft;
+-- create extension
+create extension if not exists dblink;
 
 -- create tables
 create table gf_accident_draft (
@@ -113,3 +115,28 @@ create or replace function cn_first_char(s varchar) returns varchar as $BODY$
     return retval;
   end;
 $BODY$ language plpgsql immutable;
+
+-- create views
+create or replace view bs_car as
+  select plate_type, plate_no, factory_type, operate_date, company, motorcade, charger, driver, code, manage_no
+  from dblink(
+    'dbname=bcsystem host=192.168.0.7 user=reader password=reader',
+    'select c.plate_type, c.plate_no, c.factory_type, c.operate_date, c.company, m.name, c.charger, c.driver, c.code, c.manage_no
+     from bs_car c
+     inner join bs_motorcade m on m.id = c.motorcade_id'
+  )
+  as t(
+    plate_type varchar(255), plate_no varchar(255), factory_type varchar(255), operate_date timestamp, company varchar(255),
+    motorcade varchar(255), charger varchar(255), driver varchar(255), code varchar(255), manage_no integer
+  );
+comment on view bs_car                is '车辆视图';
+comment on column bs_car.plate_type   is '车牌归属，如"粤A"';
+comment on column bs_car.plate_no     is '车牌号码，如"C4X74"';
+comment on column bs_car.factory_type is '厂牌类型，如"现代"';
+comment on column bs_car.operate_date is '投产日期';
+comment on column bs_car.company      is '所属公司';
+comment on column bs_car.motorcade    is '所属车队';
+comment on column bs_car.charger      is '责任人信息';
+comment on column bs_car.driver       is '司机信息';
+comment on column bs_car.code         is '自编号';
+comment on column bs_car.manage_no    is '管理号';
