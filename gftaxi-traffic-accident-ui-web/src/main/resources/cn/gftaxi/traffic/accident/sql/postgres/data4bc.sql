@@ -4,7 +4,7 @@ with p(id) as ( -- 交通事故父目录
 )
 ,resource(id) as (
   select id from p
-  union select id from bc_identity_resource where name = '事故报案' and belong in (select id from p)
+  union select id from bc_identity_resource where name in ('事故报案', '事故登记') and belong in (select id from p)
 ) -- select * from resource
 , delete_role_resource(id) as ( -- 删除资源与角色的关联
   delete from bc_identity_role_resource where sid in (select id from resource)
@@ -45,6 +45,7 @@ update bc_identity_resource set name = '事故(旧版)' where name = '事故理�
 with p(id) as (select id from bc_identity_resource where name = '事故(新版)')
 , cfg(type, sn, name, url, iconclass) as (
   select 2, '072001', '事故报案'::text, '/static/accident/accident-draft/view.html', 'i0707'
+  union select 2, '072002', '事故登记'::text, '/static/accident/accident-register/view.html', 'i0001'
 )
 insert into bc_identity_resource (status_, inner_, type_, order_, name, url, iconclass, belong, id)
   select 0, false, c.type, c.sn, c.name, c.url, c.iconclass, (select id from p), nextval('core_sequence')
@@ -53,12 +54,16 @@ insert into bc_identity_resource (status_, inner_, type_, order_, name, url, ico
 
 -- 角色
 with cfg(sn, name, code) as (
-  -- 查询报案信息角色
+  -- 事故报案相关角色
          select '4011', '交通事故查询报案'::text, 'ACCIDENT_DRAFT_READ'::text
-  -- 上报案件信息角色
   union select '4012', '交通事故上报案件'::text, 'ACCIDENT_DRAFT_SUBMIT'::text
-  -- 修改报案信息角色
   union select '4013', '交通事故修改报案'::text, 'ACCIDENT_DRAFT_MODIFY'::text
+
+  -- 事故登记相关角色
+  union select '4021', '交通事故登记信息查询'::text, 'ACCIDENT_REGISTER_READ'::text
+  union select '4022', '交通事故报案信息登记'::text, 'ACCIDENT_REGISTER_RECORD'::text
+  union select '4023', '交通事故登记信息修改'::text, 'ACCIDENT_REGISTER_MODIFY'::text
+  union select '4024', '交通事故登记信息审核'::text, 'ACCIDENT_REGISTER_CHECK'::text
 )
 insert into bc_identity_role (status_, inner_, type_, order_, code, name, id)
   select 0, false, 0, c.sn, c.code, c.name, nextval('core_sequence')
@@ -71,6 +76,8 @@ with p(id) as (
   where name = '事故(新版)'
 ), cfg(resource_name, role_codes) as (
   select '事故报案'::text, array['ACCIDENT_DRAFT_MODIFY', 'ACCIDENT_DRAFT_SUBMIT','ACCIDENT_DRAFT_READ']
+  union select '事故登记'::text,
+    array['ACCIDENT_REGISTER_MODIFY', 'ACCIDENT_REGISTER_RECORD','ACCIDENT_REGISTER_READ', 'ACCIDENT_REGISTER_CHECK']
 )
 insert into bc_identity_role_resource (rid, sid)
   select r.id, s.id
@@ -93,6 +100,21 @@ cfg(role_code, user_codes) as (
   -- 修改报案信息角色
   union select 'ACCIDENT_DRAFT_MODIFY'::text,
     array_cat(array['fenGongSi1AQY', 'fenGongSi2AQY'], (select cap_array from captain_motorcade))
+
+  -- 交通事故登记信息查询角色
+  union select 'ACCIDENT_REGISTER_READ'::text,
+    array_cat((select cap_array from captain_motorcade), array['fenGongSi1AQY', 'fenGongSi2AQY', 'fenGongSi1Manager',
+      'fenGongSi2Manager', 'anquanguanlizu', 'yingyunzongjian', 'cjl'])
+  -- 交通事故报案信息登记角色
+  union select 'ACCIDENT_REGISTER_RECORD'::text,
+    array_cat(array['fenGongSi1AQY', 'fenGongSi2AQY', 'fenGongSi1Manager', 'fenGongSi2Manager'],
+      (select cap_array from captain_motorcade))
+  -- 交通事故登记信息修改角色
+  union select 'ACCIDENT_REGISTER_MODIFY'::text,
+    array_cat(array['fenGongSi1AQY', 'fenGongSi2AQY', 'fenGongSi1Manager', 'fenGongSi2Manager'],
+      (select cap_array from captain_motorcade))
+  -- 交通事故登记信息审核角色
+  union select 'ACCIDENT_REGISTER_CHECK'::text, array['anquanguanlizu']
 )
 insert into bc_identity_role_actor (rid, aid)
   select r.id, a.id
