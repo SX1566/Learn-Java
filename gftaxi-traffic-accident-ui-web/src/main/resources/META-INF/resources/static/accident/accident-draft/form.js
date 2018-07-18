@@ -26,7 +26,13 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
             Object.keys(json).forEach(key => Vue.set(this.e, key, json[key]));
             this.ui.hitForms.push(this.e.hitForm);
             this.ui.hitTypes.push(this.e.hitType);
-            this.loadCarMans(this.e["carPlate"]);
+
+            if (isManager) {
+              this.loadHitForms();
+              this.loadHitTypes();
+              this.loadCarMans(this.e["carPlate"]);
+              this.showHideButtons();
+            }
           });
           // 初始化"简要描述"栏自动行高
           setTimeout(() => {
@@ -35,11 +41,6 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
         } else {
           Vue.set(this.e, "authorName", context.userName);
           Vue.set(this.e, "authorId", context.userCode);
-        }
-        if (isManager) {
-          this.loadHitForms();
-          this.loadHitTypes();
-          this.showHideButtons();
         }
       },
       watch: {
