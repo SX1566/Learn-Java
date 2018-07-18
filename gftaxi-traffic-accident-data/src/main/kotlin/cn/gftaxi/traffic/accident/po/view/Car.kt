@@ -1,6 +1,8 @@
 package cn.gftaxi.traffic.accident.po.view
 
+import cn.gftaxi.traffic.accident.po.view.converter.CarStatusConverter
 import java.time.LocalDate
+import javax.persistence.Convert
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Table
@@ -14,8 +16,8 @@ import javax.persistence.Table
 @Table(name = "bs_car")
 data class Car constructor(
   @Id val id: Int,
-  /** 状态：-2:新购，-1:草稿，0-在案，1-注销 */
-  val status: Int,
+  /** 状态 */
+  @Convert(converter = CarStatusConverter::class) val status: Status,
   /** 车牌归属，如"粤A" */
   val plateType: String,
   /** 车牌号码，如"C4X74" */
@@ -27,7 +29,7 @@ data class Car constructor(
   /** 所属公司 */
   val company: String,
   /** 所属车队 */
-  val motorcade: String,
+  val motorcadeName: String,
   /** 责任人信息 */
   val charger: String,
   /** 司机信息 */
@@ -36,4 +38,30 @@ data class Car constructor(
   val code: String,
   /** 管理号 */
   val manageNo: Int
-)
+) {
+  /**
+   * 状态。
+   */
+  enum class Status(private val value: Short) {
+    /**
+     * 新购。
+     */
+    NewBuy(-2),
+    /**
+     * 草稿。
+     */
+    Draft(-1),
+    /**
+     * 在案。
+     */
+    Enabled(0),
+    /**
+     * 注销。
+     */
+    Disabled(1);
+
+    fun value(): Short {
+      return value
+    }
+  }
+}
