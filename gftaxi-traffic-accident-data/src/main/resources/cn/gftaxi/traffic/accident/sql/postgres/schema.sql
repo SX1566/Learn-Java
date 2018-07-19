@@ -1,6 +1,7 @@
 -- 交通事故数据库构建脚本
 
 -- drop tables/sequences
+drop table if exists gf_accident_register;
 drop table if exists gf_accident_draft;
 -- create extension
 create extension if not exists dblink;
@@ -38,6 +39,96 @@ comment on column gf_accident_draft.source      is '报案来源：BC-BC系统We
 comment on column gf_accident_draft.author_name is '接案人姓名';
 comment on column gf_accident_draft.author_id   is '接案人标识：邮件报案为邮箱、短信报案为手机号、其余为对应的登陆账号';
 comment on column gf_accident_draft.describe    is '简要描述';
+
+create table gf_accident_register (
+  code              varchar(11) primary key,
+  status            smallint     not null,
+  car_id            int          not null,
+  car_plate         varchar(8)   not null,
+  motorcade_name    varchar(8)   not null,
+  party_driver_name varchar(8)   not null,
+  outside_driver    boolean      not null,
+  duty_driver_id    int          not null,
+  duty_driver_name  varchar(8)   not null,
+  happen_time       timestamp    not null,
+  describe          text,
+  -- 分类信息
+  hit_form          varchar(50)  not null,
+  hit_type          varchar(50)  not null,
+  weather           varchar(50),
+  light             varchar(50),
+  driving_direction varchar(50),
+  road_type         varchar(50),
+  road_structure    varchar(50),
+  road_state        varchar(50),
+  -- 当事车辆、人、物的数量
+  car_count         smallint,
+  people_count      smallint,
+  other_count       smallint,
+  -- 处理部门相关
+  deal_department   varchar(50),
+  deal_way          varchar(50),
+  -- 保险相关
+  insurance_company varchar(50),
+  insurance_code    varchar(50),
+  -- 事发地点
+  location_level1   varchar(50)  not null,
+  location_level2   varchar(50)  not null,
+  location_level3   varchar(50)  not null,
+  location_other    varchar(255) not null,
+  gps_longitude     decimal(9, 6),
+  gps_latitude      decimal(9, 6),
+  gps_speed         smallint,
+  -- 报案、登记的相关标记
+  register_time     timestamp    not null,
+  overdue_register  boolean      not null,
+  draft_time        timestamp    not null,
+  -- 车号+事发时间唯一
+  constraint uk_gf_accident_register__car_plate_happen_time unique (car_plate, happen_time)
+);
+comment on table gf_accident_register                    is '事故登记';
+comment on column gf_accident_register.code              is '事故编号，格式为 yyyyMMdd_nn';
+comment on column gf_accident_register.status            is '状态：1-待提交、2-待审核、4-审核不通过、8-审核通过';
+comment on column gf_accident_register.car_id            is '车辆ID，对应BC系统车辆ID';
+comment on column gf_accident_register.car_plate         is '事故车号，如 "粤A123456';
+comment on column gf_accident_register.motorcade_name    is '事发车队';
+comment on column gf_accident_register.party_driver_name is '当事司机姓名';
+comment on column gf_accident_register.outside_driver    is '当事司机是否是非编司机';
+comment on column gf_accident_register.duty_driver_id    is '当班司机ID，对应BC系统司机ID';
+comment on column gf_accident_register.duty_driver_name  is '当班司机姓名';
+comment on column gf_accident_register.happen_time       is '事发时间';
+comment on column gf_accident_register.describe          is '事发经过';
+-- 分类信息
+comment on column gf_accident_register.hit_form          is '事故形态';
+comment on column gf_accident_register.hit_type          is '碰撞类型';
+comment on column gf_accident_register.weather           is '天气情况';
+comment on column gf_accident_register.light             is '光线条件';
+comment on column gf_accident_register.driving_direction is '行驶方向';
+comment on column gf_accident_register.road_type         is '道路类型';
+comment on column gf_accident_register.road_structure    is '路面状况';
+comment on column gf_accident_register.road_state        is '路表状况';
+-- 广东省/广州市/荔湾区/芳村上市路
+-- 北京市/市辖区/东城区/东华门街道
+-- 广西壮族自治区/南宁市/兴宁区/民生街道
+comment on column gf_accident_register.location_level1   is '事发地点的省级';
+comment on column gf_accident_register.location_level2   is '事发地点的地级';
+comment on column gf_accident_register.location_level3   is '事发地点的县级';
+comment on column gf_accident_register.location_other    is '事发地点的县级下面的详细地点';
+comment on column gf_accident_register.gps_longitude     is '事发地点的经度';
+comment on column gf_accident_register.gps_latitude      is '事发地点的纬度';
+comment on column gf_accident_register.gps_speed         is 'GPS车速，km/h';
+
+comment on column gf_accident_register.register_time     is '登记时间，等于首次提交审核的时间';
+comment on column gf_accident_register.overdue_register  is '是否逾期登记';
+comment on column gf_accident_register.draft_time        is '报案时间';
+
+comment on column gf_accident_register.car_count         is '当事车数';
+comment on column gf_accident_register.people_count      is '当事人数';
+comment on column gf_accident_register.other_count       is '其他物体数';
+comment on column gf_accident_register.deal_department   is '处理部门';
+comment on column gf_accident_register.deal_way          is '处理方式';
+comment on column gf_accident_register.insurance_company is '保险公司';
+comment on column gf_accident_register.insurance_code    is '保险报案编号';
 
 -- 获取汉字拼音首字母的大写 select cn_first_char('事故性质') > SGXZ
 -- 来源：http://blog.qdac.cc/?p=1281
