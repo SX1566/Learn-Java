@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:WidgetGroup" id="1" x="16" y="15" measuredWidth="1523" measuredHeight="612">
+    <widgets xsi:type="model:Window" id="2" width="1015" height="570" text="事故登记 - 视图" measuredWidth="1015" measuredHeight="570" minimizeButton="true" maximizeButton="true"/>
+    <widgets xsi:type="model:WidgetGroup" id="26" x="830" y="25" measuredWidth="177" measuredHeight="137">
+      <widgets xsi:type="model:WidgetGroup" id="27" width="177" measuredWidth="177" measuredHeight="25">
+        <widgets xsi:type="model:Panel" id="28" y="2" width="177" height="21" measuredWidth="177" measuredHeight="21"/>
+        <widgets xsi:type="model:WidgetGroup" id="29" x="8" width="156" measuredWidth="155" measuredHeight="25">
+          <widgets xsi:type="model:WidgetGroup" id="80" width="156" measuredWidth="155" measuredHeight="25">
+            <widgets xsi:type="model:Label" id="30" x="37" width="80" text="2018 年 7 月" measuredWidth="80" measuredHeight="25" textAlignment="Center">
+              <font bold="true"/>
+            </widgets>
+            <widgets xsi:type="model:Icon" id="31" y="8" width="13" height="9" measuredWidth="13" measuredHeight="9" icon="filled-arrow-left (small)"/>
+            <widgets xsi:type="model:Icon" id="32" x="142" y="8" width="13" height="9" measuredWidth="13" measuredHeight="9" icon="filled-arrow-right (small)"/>
+            <widgets xsi:type="model:Icon" id="79" x="113" y="7" width="9" height="9" measuredWidth="9" measuredHeight="9" icon="asc (small)" iconRotation="180"/>
+          </widgets>
+        </widgets>
+      </widgets>
+      <widgets xsi:type="model:WidgetGroup" id="33" y="21" width="177" measuredWidth="177" measuredHeight="116">
+        <widgets xsi:type="model:Panel" id="34" width="177" height="116" measuredWidth="177" measuredHeight="116"/>
+        <widgets xsi:type="model:WidgetGroup" id="35" x="8" y="3" width="156" measuredWidth="158" measuredHeight="113">
+          <widgets xsi:type="model:WidgetGroup" id="36" width="156" measuredWidth="155" measuredHeight="25">
+            <widgets xsi:type="model:Label" id="37" width="20" text="日" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font bold="true"/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="38" x="20" width="20" text="一" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font bold="true"/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="39" x="43" width="20" text="二" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font bold="true"/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="40" x="66" width="20" text="三" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font bold="true"/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="41" x="89" width="20" text="四" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font bold="true"/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="42" x="112" width="20" text="五" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font bold="true"/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="43" x="135" width="20" text="六" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font bold="true"/>
+            </widgets>
+          </widgets>
+          <widgets xsi:type="model:WidgetGroup" id="44" x="43" y="17" width="116" measuredWidth="115" measuredHeight="25">
+            <widgets xsi:type="model:Label" id="45" width="21" text="1" measuredWidth="21" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="46" x="21" width="21" text="2" measuredWidth="21" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="47" x="45" width="21" text="3" measuredWidth="21" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="48" x="70" width="21" text="4" measuredWidth="21" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="49" x="94" width="21" text="5" measuredWidth="21" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+          </widgets>
+          <widgets xsi:type="model:WidgetGroup" id="50" y="35" width="156" measuredWidth="155" measuredHeight="25">
+            <widgets xsi:type="model:Label" id="51" width="20" text="6" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="52" x="20" width="20" text="7" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="53" x="43" width="20" text="8" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="54" x="66" width="20" text="9" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="55" x="89" text="10" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="56" x="112" text="11" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="57" x="135" text="12" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+          </widgets>
+          <widgets xsi:type="model:WidgetGroup" id="58" y="53" width="156" measuredWidth="155" measuredHeight="25">
+            <widgets xsi:type="model:Panel" id="112" x="111" y="1" width="20" height="20" measuredWidth="20" measuredHeight="20" background="#cccccc" foreground="#cccccc"/>
+            <widgets xsi:type="model:Label" id="59" text="13" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="60" x="20" text="14" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="61" x="43" text="15" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="62" x="66" text="16" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="63" x="89" text="17" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="64" x="112" text="18" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="65" x="135" text="19" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+          </widgets>
+          <widgets xsi:type="model:WidgetGroup" id="66" y="71" width="156" measuredWidth="155" measuredHeight="25">
+            <widgets xsi:type="model:Label" id="67" text="20" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="68" x="20" text="21" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="69" x="43" text="22" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="70" x="66" text="23" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="71" x="89" text="24" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="72" x="112" text="25" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="73" x="135" text="26" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+          </widgets>
+          <widgets xsi:type="model:WidgetGroup" id="74" y="88" width="87" measuredWidth="86" measuredHeight="25">
+            <widgets xsi:type="model:Label" id="75" text="27" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="76" x="20" text="28" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="77" x="43" text="29" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+            <widgets xsi:type="model:Label" id="78" x="66" text="30" measuredWidth="20" measuredHeight="25" textAlignment="Center">
+              <font/>
+            </widgets>
+          </widgets>
+        </widgets>
+      </widgets>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="82" x="8" y="38" measuredWidth="815" measuredHeight="124">
+      <widgets xsi:type="model:Table" id="18" y="30" width="815" height="94" text="(w:20). 期间,事故总数,已登已审,已登在审,尚待登记,逾期报案,逾期登记&#xD;&#xA;本月,50,5,10,30,6,4&#xD;&#xA;上月,34,12,16,2,4,0&#xD;&#xA;本年,224,136,54,10,10,4" measuredWidth="815" measuredHeight="94" alternative="#eeeeee">
+        <font bold="false"/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="19" x="2" width="127" text="A、汇总统计" measuredWidth="127" measuredHeight="29">
+        <font size="16px"/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="81" x="758" y="8" text="单位：宗" measuredWidth="54" measuredHeight="25">
+        <font/>
+      </widgets>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="91" x="8" y="175" measuredWidth="999" measuredHeight="194">
+      <widgets xsi:type="model:WidgetGroup" id="7" x="834" y="169" measuredWidth="164" measuredHeight="25">
+        <widgets xsi:type="model:Icon" id="8" y="4" width="16" height="16" measuredWidth="16" measuredHeight="16" icon="refresh (small)"/>
+        <widgets xsi:type="model:WidgetGroup" id="9" x="22" measuredWidth="122" measuredHeight="25">
+          <widgets xsi:type="model:Icon" id="10" y="4" measuredWidth="16" measuredHeight="16" icon="previous (small)"/>
+          <widgets xsi:type="model:Icon" id="11" x="18" y="4" width="16" height="16" measuredWidth="16" measuredHeight="16" icon="rewind (small)"/>
+          <widgets xsi:type="model:Label" id="12" x="40" text="1/2(30)" measuredWidth="47" measuredHeight="25">
+            <font/>
+          </widgets>
+          <widgets xsi:type="model:Icon" id="13" x="88" y="4" width="16" height="16" measuredWidth="16" measuredHeight="16" icon="fast-forward (small)"/>
+          <widgets xsi:type="model:Icon" id="14" x="106" y="4" measuredWidth="16" measuredHeight="16" icon="skip (small)"/>
+        </widgets>
+        <widgets xsi:type="model:Icon" id="15" x="148" y="3" measuredWidth="16" measuredHeight="16" icon="download2 (small)"/>
+      </widgets>
+      <widgets xsi:type="model:WidgetGroup" id="83" width="999" measuredWidth="999" measuredHeight="170">
+        <widgets xsi:type="model:Label" id="85" x="2" y="2" width="127" text="B、待登记" measuredWidth="127" measuredHeight="29">
+          <font size="16px"/>
+        </widgets>
+        <widgets xsi:type="model:WidgetGroup" id="107" y="31" width="999" measuredWidth="999" measuredHeight="139">
+          <widgets xsi:type="model:Table" id="84" width="999" height="139" text="(w:20). 序号,(w:20). 事故编号,(w:20). 事故车号,(w:20). 当事司机,(w:20). 事故发生时间,事故发生地点,(w:20). 事故形态,(w:20). 碰撞类型,(w:20). 接案人,(w:20). 系统报案时间,(w:20). 逾期报案,(w:16). &#xD;&#xA;1, [20180524_01],1JJ43,郑秋明,2018-05-24 10:48,海珠区三窖路22号,车辆间事故,追尾碰撞,韩智勇,2018-05-25 11:25,是&#xD;&#xA;2, [20180526_02],1G523,何维,2018-05-26 09:48,越秀区犀牛路32号,车辆间事故,正面碰撞,韩智勇,2018-05-26 11:25,否&#xD;&#xA;3, [20180602_03],1T8I0,陈晓秋,2018-06-02 17:48,荔湾区夫利鹿程琦大厦,车辆与人事故,其他,韩智勇,2018-06-03 03:25,是&#xD;&#xA;4, [20180610_04],J78T56,黄小辉,2018-06-10 11:28,越秀区越秀南路,车辆间事故,变道碰撞,韩智勇,2018-06-11 11:25,是&#xD;&#xA;5, [20180612_05],L091C,曾德宇,2018-06-12 08:55,黄大大道珠江隧道口方向,车辆间事故,追尾碰撞,韩智勇,2018-06-12 11:25,否" measuredWidth="999" measuredHeight="139" alternative="#eeeeee">
+            <font bold="false"/>
+          </widgets>
+          <widgets xsi:type="model:VScrollbar" id="106" x="982" y="22" height="117" measuredWidth="17" measuredHeight="117"/>
+        </widgets>
+        <widgets xsi:type="model:WidgetGroup" id="121" x="843" y="3" height="28" measuredWidth="153" measuredHeight="25">
+          <widgets xsi:type="model:SearchField" id="122" width="153" measuredWidth="153" measuredHeight="25">
+            <font/>
+          </widgets>
+        </widgets>
+        <widgets xsi:type="model:WidgetGroup" id="148" x="272" measuredWidth="237" measuredHeight="29">
+          <widgets xsi:type="model:WidgetGroup" id="149" measuredWidth="105" measuredHeight="28">
+            <widgets xsi:type="model:WidgetGroup" id="150" measuredWidth="105" measuredHeight="28">
+              <widgets xsi:type="model:Panel" id="151" width="105" height="28" measuredWidth="105" measuredHeight="28"/>
+              <widgets xsi:type="model:Label" id="152" x="7" y="1" text="2018-04-01" measuredWidth="72" measuredHeight="25">
+                <font/>
+              </widgets>
+            </widgets>
+            <widgets xsi:type="model:Icon" id="153" x="79" y="4" width="18" height="18" measuredWidth="18" measuredHeight="18" icon="calendar2 (large)"/>
+          </widgets>
+          <widgets xsi:type="model:Label" id="154" x="112" y="1" text="至" measuredWidth="21" measuredHeight="28">
+            <font size="15px"/>
+          </widgets>
+          <widgets xsi:type="model:WidgetGroup" id="155" x="132" measuredWidth="105" measuredHeight="28">
+            <widgets xsi:type="model:WidgetGroup" id="156" measuredWidth="105" measuredHeight="28">
+              <widgets xsi:type="model:Panel" id="157" width="105" height="28" measuredWidth="105" measuredHeight="28"/>
+              <widgets xsi:type="model:Label" id="158" x="7" y="1" text="2018-06-18" measuredWidth="72" measuredHeight="25">
+                <font/>
+              </widgets>
+            </widgets>
+            <widgets xsi:type="model:Icon" id="159" x="79" y="4" width="18" height="18" measuredWidth="18" measuredHeight="18" icon="calendar2 (large)"/>
+          </widgets>
+        </widgets>
+        <widgets xsi:type="model:ButtonBar" id="160" x="104" width="165" height="28" text="待登记,待审核,全部" measuredWidth="165" measuredHeight="28" selection="2">
+          <font/>
+          <items x="0" y="0" width="58" height="28" text="待登记"/>
+          <items x="58" y="0" width="57" height="28" text="待审核"/>
+          <items x="115" y="0" width="50" height="28" text="全部"/>
+        </widgets>
+      </widgets>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="105" x="8" y="374" measuredWidth="999" measuredHeight="194">
+      <widgets xsi:type="model:WidgetGroup" id="87" y="3" width="999" measuredWidth="999" measuredHeight="167">
+        <widgets xsi:type="model:Table" id="88" y="28" width="999" height="139" text="(w:20). 序号,(w:20). 事故编号,(w:20). 事故车号,(w:20). 当事司机,审核意见,(w:20). 附件,(w:20). 审核标记,(w:20). 审核人,(w:20). 审核次数,(w:16). &#xD;&#xA;1, [20180414_01],1JJ43,郑秋明,信息不完整以及有部分错误,[20180414_01_审核意见.pdf],修正,陈纪铭,1,&#xD;&#xA;2, [20180506_01],1G523,何维,登记信息与事实不符,[20180506_01_审核意见.pdf],退回,陈纪铭,1,&#xD;&#xA;3, [20180515_01],1T8I0,陈晓秋,信息不完整以及有部分错误,[20180515_01_审核意见.pdf],修正,陈纪铭,3,&#xD;&#xA;4, [20180518_01],J78T56,黄小辉,信息不完整以及有部分错误,[20180518_01_审核意见.pdf],退回,陈纪铭,2,&#xD;&#xA;5, [20180601_01],L091C,曾德宇,信息不完整以及有部分错误,[20180601_01_审核意见.pdf],退回,陈纪铭,1," measuredWidth="999" measuredHeight="139" alternative="#eeeeee">
+          <font bold="false"/>
+        </widgets>
+        <widgets xsi:type="model:Label" id="89" x="2" width="127" text="C、审核" measuredWidth="127" measuredHeight="29">
+          <font size="16px"/>
+        </widgets>
+        <widgets xsi:type="model:VScrollbar" id="108" x="982" y="50" height="117" measuredWidth="17" measuredHeight="117"/>
+      </widgets>
+      <widgets xsi:type="model:WidgetGroup" id="96" x="834" y="169" measuredWidth="164" measuredHeight="25">
+        <widgets xsi:type="model:Icon" id="97" y="4" width="16" height="16" measuredWidth="16" measuredHeight="16" icon="refresh (small)"/>
+        <widgets xsi:type="model:WidgetGroup" id="98" x="22" measuredWidth="122" measuredHeight="25">
+          <widgets xsi:type="model:Icon" id="99" y="4" measuredWidth="16" measuredHeight="16" icon="previous (small)"/>
+          <widgets xsi:type="model:Icon" id="100" x="18" y="4" width="16" height="16" measuredWidth="16" measuredHeight="16" icon="rewind (small)"/>
+          <widgets xsi:type="model:Label" id="101" x="40" text="1/1(10)" measuredWidth="47" measuredHeight="25">
+            <font/>
+          </widgets>
+          <widgets xsi:type="model:Icon" id="102" x="88" y="4" width="16" height="16" measuredWidth="16" measuredHeight="16" icon="fast-forward (small)"/>
+          <widgets xsi:type="model:Icon" id="103" x="106" y="4" measuredWidth="16" measuredHeight="16" icon="skip (small)"/>
+        </widgets>
+        <widgets xsi:type="model:Icon" id="104" x="148" y="3" measuredWidth="16" measuredHeight="16" icon="download2 (small)"/>
+      </widgets>
+      <widgets xsi:type="model:ButtonBar" id="109" x="104" width="320" height="28" text="审核为退回,审核为修改,审核为通过,      全部      " measuredWidth="320" measuredHeight="28" selection="3">
+        <font/>
+        <items x="0" y="0" width="82" height="28" text="审核为退回"/>
+        <items x="82" y="0" width="81" height="28" text="审核为修改"/>
+        <items x="163" y="0" width="81" height="28" text="审核为通过"/>
+        <items x="244" y="0" width="76" height="28" text="     全部      "/>
+      </widgets>
+      <widgets xsi:type="model:WidgetGroup" id="144" x="428" measuredWidth="237" measuredHeight="29">
+        <widgets xsi:type="model:WidgetGroup" id="137" measuredWidth="105" measuredHeight="28">
+          <widgets xsi:type="model:WidgetGroup" id="136" measuredWidth="105" measuredHeight="28">
+            <widgets xsi:type="model:Panel" id="133" width="105" height="28" measuredWidth="105" measuredHeight="28"/>
+            <widgets xsi:type="model:Label" id="134" x="7" y="1" text="2018-04-01" measuredWidth="72" measuredHeight="25">
+              <font/>
+            </widgets>
+          </widgets>
+          <widgets xsi:type="model:Icon" id="132" x="79" y="4" width="18" height="18" measuredWidth="18" measuredHeight="18" icon="calendar2 (large)"/>
+        </widgets>
+        <widgets xsi:type="model:Label" id="138" x="112" y="1" text="至" measuredWidth="21" measuredHeight="28">
+          <font size="15px"/>
+        </widgets>
+        <widgets xsi:type="model:WidgetGroup" id="139" x="132" measuredWidth="105" measuredHeight="28">
+          <widgets xsi:type="model:WidgetGroup" id="140" measuredWidth="105" measuredHeight="28">
+            <widgets xsi:type="model:Panel" id="141" width="105" height="28" measuredWidth="105" measuredHeight="28"/>
+            <widgets xsi:type="model:Label" id="142" x="7" y="1" text="2018-06-18" measuredWidth="72" measuredHeight="25">
+              <font/>
+            </widgets>
+          </widgets>
+          <widgets xsi:type="model:Icon" id="143" x="79" y="4" width="18" height="18" measuredWidth="18" measuredHeight="18" icon="calendar2 (large)"/>
+        </widgets>
+      </widgets>
+      <widgets xsi:type="model:WidgetGroup" id="146" x="843" y="3" measuredWidth="153" measuredHeight="25">
+        <widgets xsi:type="model:SearchField" id="147" width="153" measuredWidth="153" measuredHeight="25">
+          <font/>
+        </widgets>
+      </widgets>
+    </widgets>
+    <widgets xsi:type="model:HLine" id="123" x="2" y="168" width="1012" measuredWidth="1012" measuredHeight="6" foreground="#eeeeee"/>
+    <widgets xsi:type="model:HLine" id="124" x="2" y="367" width="1012" measuredWidth="1012" measuredHeight="6" foreground="#eeeeee"/>
+    <widgets xsi:type="model:Note" id="164" x="1075" y="337" width="447" height="275" text="审核视图标题和状态显示说明：&#xD;&#xA;1. 用户是报案信息登记员时：&#xD;&#xA;- 标题：已审核&#xD;&#xA;- 状态按钮组：审核为退回、审核为修改、审核为通过&#xD;&#xA;- 默认显示的状态：审核为退回、审核为修改&#xD;&#xA;&#xD;&#xA;2. 用户是登记信息审核员时：&#xD;&#xA;- 标题：已审核&#xD;&#xA;- 状态按钮组：审核为退回、审核为修改、审核为通过&#xD;&#xA;- 默认显示的状态：审核为退回、审核为修改、审核为通过&#xD;&#xA;&#xD;&#xA;3. 用户同时是报案信息登记员和登记信息审核员时：&#xD;&#xA;- 标题：已审核&#xD;&#xA;- 状态按钮组：审核为退回、审核为修改、审核为通过&#xD;&#xA;- 默认显示的状态：审核为退回、审核为修改、审核为通过" measuredWidth="447" measuredHeight="275" textAlignment="Left">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Note" id="169" x="1075" y="51" width="448" height="271" text="待登记视图标题和状态显示说明：&#xD;&#xA;1. 用户是报案信息登记员时：&#xD;&#xA;- 标题：待登记/已登待审&#xD;&#xA;- 状态按钮组：待登记、待审核&#xD;&#xA;- 默认显示的状态：待登记&#xD;&#xA;&#xD;&#xA;2. 用户是登记信息审核员时：&#xD;&#xA;- 标题：待审核&#xD;&#xA;- 状态按钮组：不显示&#xD;&#xA;- 默认显示的状态：待审核&#xD;&#xA;&#xD;&#xA;3. 用户同时是报案信息登记员和登记信息审核员时：&#xD;&#xA;- 标题：待登记/待审核&#xD;&#xA;- 状态按钮组：待登记、待审核&#xD;&#xA;- 默认显示的状态：待登记、待审核" measuredWidth="448" measuredHeight="271" textAlignment="Left">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="176" x="5" y="361" measuredWidth="1071" measuredHeight="50">
+      <widgets xsi:type="model:WidgetGroup" id="174" height="49" measuredWidth="436" measuredHeight="50">
+        <widgets xsi:type="model:Arrow" id="170" y="1" width="428" height="8" measuredWidth="428" measuredHeight="8" foreground="#ff00ff" lineStyle="dotted" left="false"/>
+        <widgets xsi:type="model:Arrow" id="171" width="8" height="42" measuredWidth="8" measuredHeight="42" foreground="#ff00ff" lineStyle="dotted" left="false" direction="bottom"/>
+        <widgets xsi:type="model:Arrow" id="172" x="1" y="42" width="427" height="8" measuredWidth="427" measuredHeight="8" foreground="#ff00ff" lineStyle="dotted" left="false"/>
+        <widgets xsi:type="model:Arrow" id="173" x="428" width="8" height="42" measuredWidth="8" measuredHeight="42" foreground="#ff00ff" lineStyle="dotted" left="false" direction="bottom"/>
+      </widgets>
+      <widgets xsi:type="model:Arrow" id="175" x="430" y="4" width="641" height="8" measuredWidth="641" measuredHeight="8" foreground="#ff00ff" lineStyle="dotted" left="false" right="true" direction="bottom"/>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="177" x="5" y="162" measuredWidth="1068" measuredHeight="50">
+      <widgets xsi:type="model:WidgetGroup" id="178" width="281" measuredWidth="281" measuredHeight="50">
+        <widgets xsi:type="model:Arrow" id="179" y="1" width="273" height="8" measuredWidth="273" measuredHeight="8" foreground="#ff00ff" lineStyle="dotted" left="false"/>
+        <widgets xsi:type="model:Arrow" id="180" width="8" height="42" measuredWidth="8" measuredHeight="42" foreground="#ff00ff" lineStyle="dotted" left="false" direction="bottom"/>
+        <widgets xsi:type="model:Arrow" id="181" y="42" width="273" height="8" measuredWidth="273" measuredHeight="8" foreground="#ff00ff" lineStyle="dotted" left="false"/>
+        <widgets xsi:type="model:Arrow" id="182" x="273" width="8" height="42" measuredWidth="8" measuredHeight="42" foreground="#ff00ff" lineStyle="dotted" left="false" direction="bottom"/>
+      </widgets>
+      <widgets xsi:type="model:Arrow" id="183" x="275" y="5" width="793" height="8" measuredWidth="793" measuredHeight="8" foreground="#ff00ff" lineStyle="dotted" left="false" right="true" direction="bottom"/>
+    </widgets>
+  </widgets>
+  <hRuler/>
+  <vRuler/>
+  <font size="12px"/>
+</model:Screen>
