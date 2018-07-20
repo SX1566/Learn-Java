@@ -41,7 +41,8 @@ comment on column gf_accident_draft.author_id   is '接案人标识：邮件报�
 comment on column gf_accident_draft.describe    is '简要描述';
 
 create table gf_accident_register (
-  code              varchar(11) primary key,
+  id                serial primary key,
+  code              varchar(11) unique,
   status            smallint     not null,
   car_id            int          not null,
   car_plate         varchar(8)   not null,
