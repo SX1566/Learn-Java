@@ -6,6 +6,7 @@ create extension if not exists dblink;
 -- drop tables/sequences
 drop table if exists gf_accident_car;
 drop table if exists gf_accident_people;
+drop table if exists gf_accident_other;
 drop table if exists gf_accident_register;
 drop table if exists gf_accident_draft;
 
@@ -199,6 +200,35 @@ comment on column gf_accident_people.treatment_money  is '医疗费用（元）'
 comment on column gf_accident_people.compensate_money is '赔偿损失（元）';
 comment on column gf_accident_people.follow_type      is '跟进形式';
 comment on column gf_accident_people.updatedTime      is '更新时间';
+
+create table gf_accident_other (
+  id            serial primary key,
+  pid           int references gf_accident_register,
+  sn            smallint    not null,
+  type          varchar(50) not null,
+  name          varchar(50) not null,
+  belong        varchar(50),
+  linkman_name  varchar(50),
+  linkman_phone varchar(50),
+  damage_state  varchar(50),
+  damage_money  decimal(10, 2),
+  actual_money  decimal(10, 2),
+  follow_type   varchar(50),
+  updatedTime   timestamp   not null
+);
+comment on table gf_accident_other                is '事故其他物体';
+comment on column gf_accident_other.pid           is '所属事故ID';
+comment on column gf_accident_other.sn            is '同一事故内的序号';
+comment on column gf_accident_other.type          is '物品分类';
+comment on column gf_accident_other.name          is '物品名称';
+comment on column gf_accident_other.belong        is '归属';
+comment on column gf_accident_other.linkman_name  is '联系人';
+comment on column gf_accident_other.linkman_phone is '联系电话';
+comment on column gf_accident_other.damage_state  is '受损情况';
+comment on column gf_accident_other.damage_money  is '损失预估（元）';
+comment on column gf_accident_other.actual_money  is '实际损失（元）';
+comment on column gf_accident_other.follow_type   is '跟进形式';
+comment on column gf_accident_other.updatedTime   is '更新时间';
 
 -- 获取汉字拼音首字母的大写 select cn_first_char('事故性质') > SGXZ
 -- 来源：http://blog.qdac.cc/?p=1281
