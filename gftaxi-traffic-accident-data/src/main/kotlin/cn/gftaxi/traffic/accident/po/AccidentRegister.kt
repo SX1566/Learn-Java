@@ -138,6 +138,8 @@ data class AccidentRegister(
     const val ROLE_MODIFY = "ACCIDENT_REGISTER_MODIFY"
     /** 审核角色 */
     const val ROLE_CHECK = "ACCIDENT_REGISTER_CHECK"
+    /** 有查阅权限的相关角色，包括 [ROLE_READ]、[ROLE_SUBMIT]、[ROLE_MODIFY]、[ROLE_CHECK] */
+    val READ_ROLES = arrayOf(ROLE_READ, ROLE_SUBMIT, ROLE_MODIFY, ROLE_CHECK)
 
     /** 判断是否是预期登记 */
     fun isOverdue(happenTime: OffsetDateTime, registerTime: OffsetDateTime, overdueSeconds: Long): Boolean {
