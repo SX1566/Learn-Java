@@ -2,6 +2,7 @@ package cn.gftaxi.traffic.accident.rest.webflux
 
 import cn.gftaxi.traffic.accident.rest.webflux.handler.AccidentDraftHandler
 import cn.gftaxi.traffic.accident.rest.webflux.handler.FindSecondaryCategoriesHandler
+import cn.gftaxi.traffic.accident.rest.webflux.handler.register.StatSummaryHandler
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -31,7 +32,8 @@ class ModuleConfiguration @Autowired constructor(
   @Value("\${gftaxi.rest.context-path.traffic-accident:/}") private val contextPath: String,
   private val findSecondaryCategoriesHandler: FindSecondaryCategoriesHandler,
   @Value("\${app.version.traffic-accident:NOT_SET}") private val version: String,
-  private val accidentDraftHandler: AccidentDraftHandler
+  private val accidentDraftHandler: AccidentDraftHandler,
+  private val accidentRegisterStatSummaryHandler: StatSummaryHandler
 ) {
   private val logger = LoggerFactory.getLogger(ModuleConfiguration::class.java)
 
@@ -47,6 +49,7 @@ class ModuleConfiguration @Autowired constructor(
       // GET /category/{sn}/children 获取指定一级分类下的二级分类列表（按一级分类的编码）
       FindSecondaryCategoriesHandler.REQUEST_PREDICATE.invoke(findSecondaryCategoriesHandler::handle)
 
+      //==== 事故报案相关 ====
       // GET /accident-draft 获取事故报案独立视图的分页数据
       AccidentDraftHandler.FIND_REQUEST_PREDICATE.invoke(accidentDraftHandler::find)
       // GET /accident-draft/{code} 获取指定编号的报案信息
@@ -56,6 +59,11 @@ class ModuleConfiguration @Autowired constructor(
       // PUT /accident-draft/{code} 更新事故报案信息
       AccidentDraftHandler.UPDATE_REQUEST_PREDICATE.invoke(accidentDraftHandler::update)
 
+      //==== 事故登记相关 ====
+      // GET /accident-register/stat/summary 获取汇总统计信息
+      StatSummaryHandler.REQUEST_PREDICATE.invoke(accidentRegisterStatSummaryHandler::handle)
+
+      //==== 全局 ====
       // GET
       GET("/", { ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).syncBody("gftaxi-traffic-accident module v$version") })
       // OPTIONS /*
