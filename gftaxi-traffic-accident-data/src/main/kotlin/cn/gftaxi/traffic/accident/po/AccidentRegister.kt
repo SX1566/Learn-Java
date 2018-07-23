@@ -2,7 +2,9 @@ package cn.gftaxi.traffic.accident.po
 
 import cn.gftaxi.traffic.accident.po.converter.AccidentRegisterStatusConverter
 import java.math.BigDecimal
+import java.time.Duration
 import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
 import javax.persistence.*
 
 /**
@@ -127,6 +129,22 @@ data class AccidentRegister(
   /** 报案时间 */
   val draftTime: OffsetDateTime
 ) {
+  companion object {
+    /** 查询角色 */
+    const val ROLE_READ = "ACCIDENT_REGISTER_READ"
+    /** 提交角色 */
+    const val ROLE_SUBMIT = "ACCIDENT_REGISTER_SUBMIT"
+    /** 修改角色 */
+    const val ROLE_MODIFY = "ACCIDENT_REGISTER_MODIFY"
+    /** 审核角色 */
+    const val ROLE_CHECK = "ACCIDENT_REGISTER_CHECK"
+
+    /** 判断是否是预期登记 */
+    fun isOverdue(happenTime: OffsetDateTime, registerTime: OffsetDateTime, overdueSeconds: Long): Boolean {
+      return Duration.between(happenTime, registerTime).get(ChronoUnit.SECONDS) > overdueSeconds
+    }
+  }
+
   /**
    * 登记状态。
    */
