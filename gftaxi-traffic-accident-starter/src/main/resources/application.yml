@@ -23,6 +23,8 @@ app.mail:
   receive-subject: BC事故报案
   receive-last-minutes: 10
   app.mail.mail-id-file: /data/accident/mail-id.txt
+app.version:
+  traffic-accident: @project.version@
 server:
   port: ${port:9102}
   servlet:

@@ -30,6 +30,7 @@ private const val MODULE = "cn.gftaxi.traffic.accident.rest.webflux"
 class ModuleConfiguration @Autowired constructor(
   @Value("\${gftaxi.rest.context-path.traffic-accident:/}") private val contextPath: String,
   private val findSecondaryCategoriesHandler: FindSecondaryCategoriesHandler,
+  @Value("\${app.version.traffic-accident:NOT_SET}") private val version: String,
   private val accidentDraftHandler: AccidentDraftHandler
 ) {
   private val logger = LoggerFactory.getLogger(ModuleConfiguration::class.java)
@@ -56,7 +57,7 @@ class ModuleConfiguration @Autowired constructor(
       AccidentDraftHandler.UPDATE_REQUEST_PREDICATE.invoke(accidentDraftHandler::update)
 
       // GET
-      GET("/", { ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).syncBody("gftaxi-traffic-accident module") })
+      GET("/", { ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).syncBody("gftaxi-traffic-accident module v$version") })
       // OPTIONS /*
       OPTIONS("/**", { ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).syncBody("options") })
     }
