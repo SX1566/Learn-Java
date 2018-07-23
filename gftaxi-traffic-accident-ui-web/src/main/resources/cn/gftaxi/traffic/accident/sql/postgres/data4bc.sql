@@ -61,7 +61,7 @@ with cfg(sn, name, code) as (
 
   -- 事故登记相关角色
   union select '4021', '交通事故登记信息查询'::text, 'ACCIDENT_REGISTER_READ'::text
-  union select '4022', '交通事故报案信息登记'::text, 'ACCIDENT_REGISTER_RECORD'::text
+  union select '4022', '交通事故报案信息登记'::text, 'ACCIDENT_REGISTER_SUBMIT'::text
   union select '4023', '交通事故登记信息修改'::text, 'ACCIDENT_REGISTER_MODIFY'::text
   union select '4024', '交通事故登记信息审核'::text, 'ACCIDENT_REGISTER_CHECK'::text
 )
@@ -75,9 +75,9 @@ with p(id) as (
   select id from bc_identity_resource
   where name = '事故(新版)'
 ), cfg(resource_name, role_codes) as (
-  select '事故报案'::text, array['ACCIDENT_DRAFT_MODIFY', 'ACCIDENT_DRAFT_SUBMIT','ACCIDENT_DRAFT_READ']
+  select '事故报案'::text, array['ACCIDENT_DRAFT_READ', 'ACCIDENT_DRAFT_SUBMIT', 'ACCIDENT_DRAFT_MODIFY']
   union select '事故登记'::text,
-    array['ACCIDENT_REGISTER_MODIFY', 'ACCIDENT_REGISTER_RECORD','ACCIDENT_REGISTER_READ', 'ACCIDENT_REGISTER_CHECK']
+    array['ACCIDENT_REGISTER_READ', 'ACCIDENT_REGISTER_SUBMIT', 'ACCIDENT_REGISTER_MODIFY', 'ACCIDENT_REGISTER_CHECK']
 )
 insert into bc_identity_role_resource (rid, sid)
   select r.id, s.id
@@ -106,7 +106,7 @@ cfg(role_code, user_codes) as (
     array_cat((select cap_array from captain_motorcade), array['fenGongSi1AQY', 'fenGongSi2AQY', 'fenGongSi1Manager',
       'fenGongSi2Manager', 'anquanguanlizu', 'yingyunzongjian', 'cjl'])
   -- 交通事故报案信息登记角色
-  union select 'ACCIDENT_REGISTER_RECORD'::text,
+  union select 'ACCIDENT_REGISTER_SUBMIT'::text,
     array_cat(array['fenGongSi1AQY', 'fenGongSi2AQY', 'fenGongSi1Manager', 'fenGongSi2Manager'],
       (select cap_array from captain_motorcade))
   -- 交通事故登记信息修改角色
