@@ -39,7 +39,8 @@ comment on column gf_accident_operation.attachment_name is '附件名称';
 
 -- create tables
 create table gf_accident_draft (
-  code        varchar(11) primary key,
+  id          serial primary key,
+  code        varchar(11) unique,
   status      smallint     not null,
   car_plate   varchar(8)   not null,
   driver_name varchar(8)   not null,

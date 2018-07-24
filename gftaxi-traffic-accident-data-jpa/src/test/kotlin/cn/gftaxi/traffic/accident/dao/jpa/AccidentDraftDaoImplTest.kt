@@ -31,10 +31,10 @@ class AccidentDraftDaoImplTest @Autowired constructor(
   fun find() {
     // mock
     val now = OffsetDateTime.now()
-    val po1 = AccidentDraft("20180713_01", Status.Done, "search", "driver1", now, now, "", "", "", true, "", "", "", "")
-    val po2 = AccidentDraft("20180713_02", Status.Done, "plate1", "search", now, now.plusHours(1), "", "", "", true, "", "", "", "")
-    val po3 = AccidentDraft("20180713_03", Status.Todo, "plate2", "driver2", now, now.plusHours(2), "", "", "", true, "", "", "", "")
-    val po4 = AccidentDraft("search", Status.Done, "plate3", "driver3", now, now.plusHours(3), "", "", "", true, "", "", "", "")
+    val po1 = AccidentDraft(null, "20180713_01", Status.Done, "search", "driver1", now, now, "", "", "", true, "", "", "", "")
+    val po2 = AccidentDraft(null, "20180713_02", Status.Done, "plate1", "search", now, now.plusHours(1), "", "", "", true, "", "", "", "")
+    val po3 = AccidentDraft(null, "20180713_03", Status.Todo, "plate2", "driver2", now, now.plusHours(2), "", "", "", true, "", "", "", "")
+    val po4 = AccidentDraft(null, "search", Status.Done, "plate3", "driver3", now, now.plusHours(3), "", "", "", true, "", "", "", "")
     em.persist(po1); em.persist(po2); em.persist(po3); em.persist(po4)
     em.flush(); em.clear()
 
@@ -82,9 +82,9 @@ class AccidentDraftDaoImplTest @Autowired constructor(
   fun findTodo() {
     // mock
     val now = OffsetDateTime.now()
-    val po1 = AccidentDraft("20180713_01", Status.Done, "car1", "a", now, now, "", "", "", true, "", "", "", "")
-    val po2 = AccidentDraft("20180713_02", Status.Todo, "car2", "a", now, now.plusHours(1), "", "", "", true, "", "", "", "")
-    val po3 = AccidentDraft("20180713_03", Status.Todo, "car3", "a", now, now.plusHours(2), "", "", "", true, "", "", "", "")
+    val po1 = AccidentDraft(null, "20180713_01", Status.Done, "car1", "a", now, now, "", "", "", true, "", "", "", "")
+    val po2 = AccidentDraft(null, "20180713_02", Status.Todo, "car2", "a", now, now.plusHours(1), "", "", "", true, "", "", "", "")
+    val po3 = AccidentDraft(null, "20180713_03", Status.Todo, "car3", "a", now, now.plusHours(2), "", "", "", true, "", "", "", "")
     em.persist(po1); em.persist(po2); em.persist(po3)
     em.flush(); em.clear()
 
@@ -102,7 +102,7 @@ class AccidentDraftDaoImplTest @Autowired constructor(
   fun get() {
     // mock
     val now = OffsetDateTime.now()
-    val po1 = AccidentDraft("20180713_01", Status.Done, "search", "driver", now, now, "", "", "", true, "", "", "", "")
+    val po1 = AccidentDraft(null, "20180713_01", Status.Done, "search", "driver", now, now, "", "", "", true, "", "", "", "")
     em.persist(po1); em.flush(); em.clear()
 
     // invoke
@@ -115,12 +115,12 @@ class AccidentDraftDaoImplTest @Autowired constructor(
   @Test
   fun create() {
     // mock
-    val now = OffsetDateTime.now()
-    val po = AccidentDraft("20180713_01", Status.Done, "search", "driver", now, now, "", "", "", true, "", "", "", "")
+    val now = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES)
+    val po = AccidentDraft(null, "20180713_01", Status.Done, "search", "driver", now, now, "", "", "", true, "", "", "", "")
     val expected = po.copy(happenTime = po.happenTime.truncatedTo(ChronoUnit.MINUTES))
 
     // invoke
-    StepVerifier.create(dao.create(po)).expectNext().verifyComplete()
+    StepVerifier.create(dao.create(expected)).expectNext().verifyComplete()
 
     // verify
     assertEquals(expected, em.createQuery("select a from AccidentDraft a", AccidentDraft::class.java).singleResult)
@@ -132,7 +132,7 @@ class AccidentDraftDaoImplTest @Autowired constructor(
     // mock
     val now = OffsetDateTime.now()
     val code = "20180713_01"
-    val po = AccidentDraft(code, Status.Done, "a", "a", now, now, "a", "a", "a", true, "a", "a", "a", "a")
+    val po = AccidentDraft(null, code, Status.Done, "a", "a", now, now, "a", "a", "a", true, "a", "a", "a", "a")
     em.persist(po); em.flush(); em.clear()
     val data = mapOf(
       "carPlate" to "nPlate", "driverName" to "nDriver", "happenTime" to now.plusHours(1), "describe" to "nDescribe",
@@ -165,14 +165,14 @@ class AccidentDraftDaoImplTest @Autowired constructor(
     StepVerifier.create(dao.nextCode(now)).expectNext("${ymd}_01").verifyComplete()
 
     // mock
-    em.persist(AccidentDraft("${ymd}_01", Status.Done, "plate1", "driver", now, now, "", "", "", true, "", "", "", ""))
+    em.persist(AccidentDraft(null, "${ymd}_01", Status.Done, "plate1", "driver", now, now, "", "", "", true, "", "", "", ""))
     em.flush(); em.clear()
 
     // invoke and verify
     StepVerifier.create(dao.nextCode(now)).expectNext("${ymd}_02").verifyComplete()
 
     // mock
-    em.persist(AccidentDraft("${ymd}_10", Status.Done, "plate2", "driver", now, now, "", "", "", true, "", "", "", ""))
+    em.persist(AccidentDraft(null, "${ymd}_10", Status.Done, "plate2", "driver", now, now, "", "", "", true, "", "", "", ""))
     em.flush(); em.clear()
 
     // invoke and verify
