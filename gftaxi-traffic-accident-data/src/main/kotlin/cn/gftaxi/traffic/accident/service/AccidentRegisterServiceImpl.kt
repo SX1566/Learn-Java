@@ -4,11 +4,8 @@ import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Checked
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
-import cn.gftaxi.traffic.accident.po.AccidentRegister
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.ROLE_CHECK
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.ROLE_MODIFY
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.ROLE_READ
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.ROLE_SUBMIT
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.stereotype.Service
@@ -29,12 +26,13 @@ class AccidentRegisterServiceImpl @Autowired constructor(
   private val accidentRegisterDao: AccidentRegisterDao
 ) : AccidentRegisterService {
   override fun statSummary(): Flux<AccidentRegisterDto4StatSummary> {
-    securityService.verifyHasAnyRole(ROLE_READ, ROLE_SUBMIT, ROLE_MODIFY, ROLE_CHECK)
+    securityService.verifyHasAnyRole(*READ_ROLES)
     return accidentRegisterDao.statSummary()
   }
 
-  override fun findTodo(status: AccidentRegister.Status?): Flux<AccidentRegisterDto4Todo> {
-    TODO("not implemented")
+  override fun findTodo(status: Status?): Flux<AccidentRegisterDto4Todo> {
+    securityService.verifyHasAnyRole(*READ_ROLES)
+    return accidentRegisterDao.findTodo(status)
   }
 
   override fun findChecked(pageNo: Int, pageSize: Int, status: AccidentRegister.Status?, search: String?): Mono<Page<AccidentRegisterDto4Checked>> {

@@ -2,9 +2,14 @@ package cn.gftaxi.traffic.accident.service
 
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
+import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Draft
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.ToCheck
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -12,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
 import tech.simter.security.SecurityService
+import java.time.OffsetDateTime
 import java.util.*
 
 fun random(start: Int, end: Int) = Random().nextInt(end + 1 - start) + start
@@ -64,5 +70,65 @@ class AccidentRegisterServiceImplTest @Autowired constructor(
     assertThrows(SecurityException::class.java, { accidentRegisterService.statSummary().subscribe() })
     verify(securityService).verifyHasAnyRole(*READ_ROLES)
     verify(accidentRegisterDao, times(0)).statSummary()
+  }
+
+  private fun randomTodoDto(code: String): AccidentRegisterDto4Todo {
+    val now = OffsetDateTime.now()
+    return AccidentRegisterDto4Todo(code = code,
+      carPlate = "粤A.00001",
+      driverName = "driver1",
+      outsideDriver = false,
+      happenTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset),
+      hitForm = "车辆间事故",
+      hitType = "追尾碰撞",
+      location = "芳村上市路",
+      authorName = "小明",
+      authorId = "Ming",
+      reportTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset),
+      overdueReport = false,
+      registerTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset),
+      overdueRegister = false,
+      submitTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset)
+    )
+  }
+
+  @Test
+  fun findTodoWithRole() {
+    findTodoByStatus(null)
+    findTodoByStatus(Draft)
+    findTodoByStatus(ToCheck)
+  }
+
+  @Test
+  fun findTodoWithoutRole() {
+    // mock
+    doThrow(SecurityException()).`when`(securityService).verifyHasAnyRole(*READ_ROLES)
+
+    // invoke and verify
+    assertThrows(SecurityException::class.java, { accidentRegisterService.findTodo(null).subscribe() })
+    verify(securityService).verifyHasAnyRole(*READ_ROLES)
+    verify(accidentRegisterDao, times(0)).findTodo(null)
+  }
+
+  private fun findTodoByStatus(status: Status?) {
+    Mockito.reset(securityService)
+    Mockito.reset(accidentRegisterDao)
+    // mock
+    var code = 1
+    val dto = randomTodoDto(code = "20180101_0$code")
+
+    val expected = listOf(dto.copy(code = "20180101_0${++code}"), dto)
+    `when`(accidentRegisterDao.findTodo(status)).thenReturn(Flux.fromIterable(expected))
+    doNothing().`when`(securityService).verifyHasAnyRole(*READ_ROLES)
+
+    // invoke
+    val actual = accidentRegisterService.findTodo(status)
+
+    // verify
+    StepVerifier.create(actual)
+      .expectNextSequence(expected)
+      .verifyComplete()
+    verify(securityService).verifyHasAnyRole(*READ_ROLES)
+    verify(accidentRegisterDao).findTodo(status)
   }
 }
