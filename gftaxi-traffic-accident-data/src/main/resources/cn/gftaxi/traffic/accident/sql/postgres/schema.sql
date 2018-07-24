@@ -39,12 +39,12 @@ comment on column gf_accident_operation.attachment_name is '附件名称';
 
 -- create tables
 create table gf_accident_draft (
-  code        varchar(11)  primary key,
+  code        varchar(11) primary key,
   status      smallint     not null,
   car_plate   varchar(8)   not null,
   driver_name varchar(8)   not null,
-  happen_time timestamp    not null,
-  report_time timestamp    not null,
+  happen_time timestamptz  not null,
+  report_time timestamptz  not null,
   location    varchar(100) not null,
   hit_form    varchar(50)  not null,
   hit_type    varchar(50)  not null,
@@ -112,9 +112,9 @@ create table gf_accident_register (
   gps_latitude      decimal(9, 6),
   gps_speed         smallint,
   -- 报案、登记的相关标记
-  register_time     timestamp    not null,
+  register_time     timestamptz  not null,
   overdue_register  boolean      not null,
-  draft_time        timestamp    not null,
+  draft_time        timestamptz  not null,
   -- 车号+事发时间唯一
   constraint uk_gf_accident_register__car_plate_happen_time unique (car_plate, happen_time)
 );
@@ -176,7 +176,7 @@ create table gf_accident_car (
   damage_state varchar(50),
   damage_money decimal(10, 2),
   follow_type  varchar(50),
-  updatedTime  timestamp   not null
+  updatedTime  timestamptz not null
 );
 comment on table gf_accident_car               is '事故当事车辆';
 comment on column gf_accident_car.pid          is '所属事故ID';
@@ -209,7 +209,7 @@ create table gf_accident_people (
   treatment_money  decimal(10, 2),
   compensate_money decimal(10, 2),
   follow_type      varchar(50),
-  updatedTime      timestamp   not null
+  updatedTime      timestamptz not null
 );
 comment on table gf_accident_people                   is '事故当事人';
 comment on column gf_accident_people.pid              is '所属事故ID';
@@ -241,7 +241,7 @@ create table gf_accident_other (
   damage_money  decimal(10, 2),
   actual_money  decimal(10, 2),
   follow_type   varchar(50),
-  updatedTime   timestamp   not null
+  updatedTime   timestamptz not null
 );
 comment on table gf_accident_other                is '事故其他物体';
 comment on column gf_accident_other.pid           is '所属事故ID';
