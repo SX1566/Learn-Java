@@ -19,7 +19,19 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
   ];
   // 待登记视图列
   let todoColumns = [
-    {id: "code", label: "事故编号", width: "7.5em"},
+    {
+      id: "code", label: "事故编号", width: "7.5em", rowCellStyle: "cursor: pointer; text-decoration: underline",
+      rowCellClick: function (value) {
+        accident.open("accident-draft", {
+          mid: `accident-draft-${value}`,
+          name: `${value} 事故报案`,
+          data: value,
+          afterClose: (status) => {
+            if (status) this.reload();
+          }
+        });
+      }
+    },
     {id: "carPlate", label: "事故车号", width: "5.5em", rowCellClass: "monospace"},
     {id: "driverName", label: "当事司机", width: "5em"},
     {id: "happenTime", label: "事发时间", width: "9.5em"},
@@ -35,14 +47,30 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
       }
     }
   ];
-
   // 已审核视图列
   let checkedColumns = [
-    {id: "code", label: "事故编号", width: "7.5em"},
+    {
+      id: "code", label: "事故编号", width: "7.5em", rowCellStyle: "cursor: pointer; text-decoration: underline",
+      rowCellClick: function (value) {
+        accident.open("accident-draft", {
+          mid: `accident-draft-${value}`,
+          name: `${value} 事故报案`,
+          data: value,
+          afterClose: (status) => {
+            if (status) this.reload();
+          }
+        });
+      }
+    },
     {id: "carPlate", label: "事故车号", width: "5.5em", rowCellClass: "monospace"},
     {id: "driverName", label: "当事司机", width: "5em"},
     {id: "checkedComment", label: "审核意见", width: "20em"},
-    {id: "attachmentName", label: "附件", width: "14em"},
+    {
+      id: "attachmentName", label: "附件", width: "14em", rowCellStyle: "cursor: pointer; text-decoration: underline",
+      rowCellClick: function (value, row) {
+        accident.inline(row.attachmentId);
+      }
+    },
     {id: "checkedResult", label: "审核标记", width: "5em"},
     {id: "checkerName", label: "审核人", width: "5em"},
     {id: "checkedCount", label: "审核次数", width: "5em"},
