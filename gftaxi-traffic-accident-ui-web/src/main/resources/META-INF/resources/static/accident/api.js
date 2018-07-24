@@ -7,6 +7,7 @@ define(["bc", "context"], function (bc, context) {
   "use strict";
   let accidentDataServer = `${context.services.accident.address}`;  // 交通事故数据服务地址
   let accidentStaticServer = `${bc.root}/static/accident`;  // 静态文件服务地址
+  let fileDataServer = `${context.services.file.address}`;  // 文件服务器数据服务地址
 
   /**
    * 定义超时用的 Promise。
@@ -172,6 +173,13 @@ define(["bc", "context"], function (bc, context) {
      */
     findCategory: function (sn, includeDisabled) {
       return  cors(`${accidentDataServer}/category/${sn}/children`, "GET", {"include-disabled": includeDisabled});
+    },
+    /**
+     * 在线查看附件
+     * @param id 附件Id
+     */
+    inline: function (id) {
+      window.open(`${fileDataServer}/inline/${id}`);
     },
     /**
      * 计算两个时间之间相差的小时数
