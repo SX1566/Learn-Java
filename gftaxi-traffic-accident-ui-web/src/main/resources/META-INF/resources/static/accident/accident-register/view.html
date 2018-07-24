@@ -1,0 +1,55 @@
+<div title="事故登记" class="bc-page" data-type='list'
+     data-js='["static/accident/accident-register/view.js"]'
+     data-option='{"width":1198, "height":526, "minHeight":526, "minWidth":900, "maxWidth":1300, "minimizable":true, "maximizable":true}'>
+  <div class="ui-widget-content vlayout" style="border:none;height: 100%">
+    <!-- 汇总统计 -->
+    <div class="ui-widget-header title" style="position: relative;border:none" class="unflex">
+      <span class="text">汇总统计：（单位宗）</span>
+      <span class="ui-icon ui-icon-refresh verticalMiddle" style="margin-right: 1.5em" title="刷新"
+            @click="reloadStatSum"/>
+      <span
+        :class="{'verticalMiddle' : true,'ui-icon':true, 'ui-icon-carat-1-n':statSumView.ui.isOpen, 'ui-icon-carat-1-s':!statSumView.ui.isOpen}"
+        :title="statSumView.ui.isOpen ? '点击隐藏内容' : '点击展示内容'" @click="showHideView('statSumView')"/>
+    </div>
+    <bc-grid v-if="statSumView.ui.isOpen" v-ref:stat :columns="statSumView.columns" :url="statSumView.url"
+             :refreshable="false" class="unflex" style="border-bottom: none" :single-choice="true"></bc-grid>
+
+    <!-- 待登记 -->
+    <div class="ui-widget-header title" style="position: relative;border:none" class="unflex">
+      <span class="text">{{todoView.title}}</span>
+      <template v-if="isRecorder" v-for="status in todoView.statuses">
+        <label style="vertical-align:middle">
+          <input type="radio" name="todoStatus" :value="status.id" v-model="todoView.status" class="ui-widget-content"
+                 style="width:auto;vertical-align:middle;margin-top:-1px">{{status.label}}
+        </label>
+      </template>
+      <span class="ui-icon ui-icon-refresh verticalMiddle" style="margin-right: 1.5em" title="刷新"
+            @click="reloadTodo"></span>
+      <span
+        :class="{'verticalMiddle' : true,'ui-icon':true, 'ui-icon-carat-1-n':statSumView.ui.isOpen, 'ui-icon-carat-1-s':!statSumView.ui.isOpen}"
+        :title="statSumView.ui.isOpen ? '点击隐藏内容' : '点击展示内容'" @click="showHideView('todoView')"></span>
+    </div>
+    <bc-grid v-if="todoView.ui.isOpen" v-ref:todo :columns="todoView.columns" :url="todoView.url"
+             :query.sync="todoViewCondition" :refreshable="false" class="flex" style="border-bottom: none"
+             :single-choice="true" @dblclick-row="dblclickRow"></bc-grid>
+
+    <!-- 审核 -->
+    <div class="ui-widget-header title" style="position: relative;border:none" class="unflex">
+      <span class="text">已审核案件</span>
+      <template v-for="status in checkedView.statuses">
+        <label style="vertical-align:middle">
+          <input type="radio" name="checkedStatus" :value="status.id" v-model="checkedView.status"
+                 class="ui-widget-content" style="width:auto;vertical-align:middle;margin-top:-1px">{{status.label}}
+        </label>
+      </template>
+      <span class="ui-icon ui-icon-refresh verticalMiddle" style="margin-right: 1.5em" title="刷新"
+            @click="reloadChecked"></span>
+      <span
+        :class="{'verticalMiddle' : true,'ui-icon':true, 'ui-icon-carat-1-n':statSumView.ui.isOpen, 'ui-icon-carat-1-s':!statSumView.ui.isOpen}"
+        :title="checkedView.ui.isOpen ? '点击隐藏内容' : '点击展示内容'" @click="showHideView('checkedView')"></span>
+    </div>
+    <bc-grid v-if="checkedView.ui.isOpen" v-ref:checked :columns="checkedView.columns" :url="checkedView.url"
+             :pageable="true" :refreshable="false" :query.sync="checkedViewCondition" class="flex"
+             :single-choice="true" @dblclick-row="dblclickRow"></bc-grid>
+  </div>
+</div>
