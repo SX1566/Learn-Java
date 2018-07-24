@@ -20,7 +20,7 @@
             </td>
             <td class="label">事故编号：</td>
             <td class="value">
-              <input type="text" v-model="e.code" class="ui-widget-content ui-state-disabled"
+              <input type="text" v-model="e.code" :class="{'ui-widget-content':true, 'ui-state-disabled':!readOnly}"
                      placeholder="上报案件后自动生成" readonly>
             </td>
           </tr>
@@ -34,7 +34,7 @@
             </td>
             <td class="label">所属车队：</td>
             <td class="value">
-              <input type="text" v-model="e.motorcade" class="ui-widget-content ui-state-disabled"
+              <input type="text" v-model="e.motorcade" :class="{'ui-widget-content':true, 'ui-state-disabled':!readOnly}"
                      placeholder="上报案件后自动生成" readonly>
             </td>
           </tr>
@@ -51,7 +51,7 @@
             </td>
             <td class="label">接案人：</td>
             <td class="value">
-              <input type="text" v-model="e.authorName" class="ui-widget-content ui-state-disabled"
+              <input type="text" v-model="e.authorName" :class="{'ui-widget-content':true, 'ui-state-disabled':!readOnly}"
                      placeholder="上报案件后自动生成" readonly></td>
           </tr>
           <tr>
@@ -64,7 +64,7 @@
             </td>
             <td class="label">报案时间：</td>
             <td class="value">
-              <input type="text" v-model="e.reportTime" class="ui-widget-content ui-state-disabled"
+              <input type="text" v-model="e.reportTime" :class="{'ui-widget-content':true, 'ui-state-disabled':!readOnly}"
                      placeholder="上报案件后自动生成" readonly>
             </td>
           </tr>
