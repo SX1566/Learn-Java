@@ -56,6 +56,15 @@ define(["bc", "context"], function (bc, context) {
       });
     });
   }
+  /** 附加 URL 参数 */
+  function appendUrlParams(url, params) {
+    if (!params) return url;
+
+    let kv = [];
+    for (let key in params) kv.push(key + '=' + encodeURIComponent(params[key]));
+    if (kv.length) url += (url.indexOf('?') !== -1 ? '&' : '?') + kv.join('&');
+    return url;
+  }
 
   //==== 一些常数定义 ====
   const api = {
@@ -85,6 +94,37 @@ define(["bc", "context"], function (bc, context) {
     /** 获取指定路径资源 */
     get: function (url, method, data) {
       return cors(url,method,data);
+    },
+    /**
+     * 获取模块列表信息。
+     *
+     * @param module 模块标识，如出租方为 'accident-draft'
+     * @param params [可选] 附加的查询参数，使用 json 格式，如 {status: 'Enabled'}，注意参数值不需要 uri 编码
+     * @param throwError [可选] 是否冒泡异常，默认 false：true-异常由使用者通过 catch 自行处理，false-直接弹出框显示异常信息
+     * @return {Promise}
+     */
+    find: function (module, params, throwError) {
+      let url = `${accidentDataServer}/${module}`;
+
+      // 附加 URL 参数
+      url = appendUrlParams(url, params);
+
+      // 获取数据
+      return fetch(url, {
+        headers: getAuthorizationHeaders(),
+        method: "GET"
+      }).then(res => {
+        if (res.ok) {
+          // 解析并返回 json 信息
+          return res.status === 204 ? null : res.json();
+        } else {
+          // 解析异常信息并进行相应处理
+          return res.text().then(msg => {
+            if (throwError) throw new Error(msg); // 冒泡异常
+            else bc.msg.info(error.message);      // 直接显示异常信息
+          })
+        }
+      });
     },
     /**
      * 获取模块指定主键的信息
@@ -143,6 +183,17 @@ define(["bc", "context"], function (bc, context) {
       if (ms < 0) return 0;
       return Math.round(ms / 1000 / 60 / 60);
     },
+    /**
+     * 计算两个时间之间相差的天数和小时
+     * @param startDate 开始时间
+     * @param endDate 结束事件
+     * @return 相差的天数和小时，格式如: 1d8h (表示相差1天8小时)
+     */
+    calcInervalDayAndHour: function (startDate, endDate) {
+      let hours = this.calcInervalHour(startDate, endDate);
+      if (hours > 24) return `${Math.floor(hours / 24)}d${hours % 24}h`;
+      else if (hours < 24) return `${hours % 24}h`;
+      else return "1d";
     }
   };
   return api;
