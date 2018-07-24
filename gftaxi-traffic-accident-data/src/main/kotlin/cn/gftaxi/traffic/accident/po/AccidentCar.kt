@@ -16,9 +16,9 @@ data class AccidentCar constructor(
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Int?,
   /** 所属事故ID */
-  @ManyToOne
-  @JoinColumn(name = "id")
-  val pid: AccidentRegister,
+  @ManyToOne(cascade = [CascadeType.REMOVE])
+  @JoinColumn(name = "pid")
+  val parent: AccidentRegister,
   /** 同一事故内的序号 */
   val sn: Short,
   /** 车辆分类：自车、三者 */
@@ -31,25 +31,25 @@ data class AccidentCar constructor(
   @Column(length = 50)
   val carType: String,
   /** 拖车次数 */
-  val towCount: Short,
+  val towCount: Short?,
   /** 拖车费（元） */
   @Column(precision = 10, scale = 2)
-  val towMoney: BigDecimal,
+  val towMoney: BigDecimal?,
   /** 维修分类：厂修、外修 */
   @Column(length = 50)
-  val repairType: String,
+  val repairType: String?,
   /** 维修费（元） */
   @Column(precision = 10, scale = 2)
-  val repairMoney: BigDecimal,
+  val repairMoney: BigDecimal?,
   /** 受损情况 */
   @Column(length = 50)
-  val damageState: String,
+  val damageState: String?,
   /** 损失预估（元） */
   @Column(precision = 10, scale = 2)
-  val damageMoney: BigDecimal,
+  val damageMoney: BigDecimal?,
   /** 跟进形式 */
   @Column(length = 50)
-  val followType: String,
+  val followType: String?,
   /** 更新时间 */
   val updatedTime: OffsetDateTime
 )

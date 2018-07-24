@@ -16,9 +16,9 @@ data class AccidentPeople constructor(
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Int?,
   /** 所属事故ID */
-  @ManyToOne
-  @JoinColumn(name = "id")
-  val pid: AccidentRegister,
+  @ManyToOne(cascade = [CascadeType.REMOVE])
+  @JoinColumn(name = "pid")
+  val parent: AccidentRegister,
   /** 同一事故内的序号 */
   val sn: Short,
   /** 车辆分类：自车、三者 */
@@ -31,31 +31,31 @@ data class AccidentPeople constructor(
   val sex: Sex,
   /** 联系电话 */
   @Column(length = 50)
-  val phone: String,
+  val phone: String?,
   /** 交通方式 */
   @Column(length = 50)
-  val transportType: String,
+  val transportType: String?,
   /** 事故责任 */
   @Column(length = 50)
-  val duty: String,
+  val duty: String?,
   /** 人员情况 */
   @Column(length = 50)
-  val personState: String,
+  val personState: String?,
   /** 伤亡情况 */
   @Column(length = 50)
-  val damageState: String,
+  val damageState: String?,
   /** 损失预估（元） */
   @Column(precision = 10, scale = 2)
-  val damageMoney: BigDecimal,
+  val damageMoney: BigDecimal?,
   /** 医疗费用（元） */
   @Column(precision = 10, scale = 2)
-  val treatmentMoney: BigDecimal,
+  val treatmentMoney: BigDecimal?,
   /** 赔偿损失（元） */
   @Column(precision = 10, scale = 2)
-  val compensateMoney: BigDecimal,
+  val compensateMoney: BigDecimal?,
   /** 跟进形式 */
   @Column(length = 50)
-  val followType: String,
+  val followType: String?,
   /** 更新时间 */
   val updatedTime: OffsetDateTime
 ) {

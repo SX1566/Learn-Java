@@ -164,7 +164,7 @@ comment on column gf_accident_register.insurance_code    is '保险报案编号'
 
 create table gf_accident_car (
   id           serial primary key,
-  pid          int references gf_accident_register,
+  pid          int references gf_accident_register on delete cascade,
   sn           smallint    not null,
   type         varchar(50) not null,
   car_plate    varchar(8)  not null,
@@ -195,7 +195,7 @@ comment on column gf_accident_car.updatedTime  is '更新时间';
 
 create table gf_accident_people (
   id               serial primary key,
-  pid              int references gf_accident_register,
+  pid              int references gf_accident_register on delete cascade,
   sn               smallint    not null,
   type             varchar(50) not null,
   name             varchar(50) not null,
@@ -230,7 +230,7 @@ comment on column gf_accident_people.updatedTime      is '更新时间';
 
 create table gf_accident_other (
   id            serial primary key,
-  pid           int references gf_accident_register,
+  pid           int references gf_accident_register on delete cascade,
   sn            smallint    not null,
   type          varchar(50) not null,
   name          varchar(50) not null,
