@@ -67,17 +67,20 @@ class AccidentDraftDaoImpl @Autowired constructor(
   }
 
   override fun get(code: String): Mono<AccidentDraft> {
-    return Mono.just(repository.getOne(code))
+    return Mono.just(
+      em.createQuery("select a from AccidentDraft a where code = :code", AccidentDraft::class.java)
+        .setParameter("code", code)
+        .singleResult
+    )
   }
 
   override fun create(po: AccidentDraft): Mono<Void> {
-    val accidentDraft = po.copy(happenTime = po.happenTime.truncatedTo(ChronoUnit.MINUTES))
     val isNotExists =
       em.createQuery("select 0 from AccidentDraft where carPlate = :carPlate and happenTime = :happenTime")
-        .setParameter("carPlate", accidentDraft.carPlate)
-        .setParameter("happenTime", accidentDraft.happenTime)
+        .setParameter("carPlate", po.carPlate)
+        .setParameter("happenTime", po.happenTime)
         .resultList.isEmpty()
-    if (isNotExists) repository.save(accidentDraft) else throw IllegalArgumentException("指定车号和事发时间的案件已经存在！")
+    if (isNotExists) repository.save(po) else throw IllegalArgumentException("指定车号和事发时间的案件已经存在！")
     return Mono.empty()
   }
 

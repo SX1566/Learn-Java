@@ -47,7 +47,7 @@ class AccidentDraftServiceImpl @Autowired constructor(
       .flatMap {
         accidentDraftDao
           .create(
-            AccidentDraft(
+            AccidentDraft(null,
               it, Status.Todo, dto.carPlate, dto.driverName, dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
               dto.hitType, AccidentDraft.isOverdue(dto.happenTime, dto.reportTime, TimeUnit.HOURS.toSeconds(12)),
               dto.source, dto.authorName, dto.authorId, dto.describe

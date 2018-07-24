@@ -38,7 +38,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     val now = OffsetDateTime.now()
     val pageNo = 1
     val pageSize = 25
-    val po = AccidentDraft("code", Status.Done, "plate", "driver", now, now, "", "", "", true, "", "", "", "")
+    val po = AccidentDraft(null, "code", Status.Done, "plate", "driver", now, now, "", "", "", true, "", "", "", "")
     val expected = PageImpl(listOf(po), PageRequest.of(pageNo, pageSize), 1)
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_READ)
     `when`(accidentDraftDao.find(pageNo, pageSize, Status.Todo, "search")).thenReturn(Mono.just(expected))
@@ -65,7 +65,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
   fun findTodo() {
     // mock
     val now = OffsetDateTime.now()
-    val expected = AccidentDraft("code", Status.Done, "plate", "driver", now, now, "", "", "", true, "", "", "", "")
+    val expected = AccidentDraft(null, "code", Status.Done, "plate", "driver", now, now, "", "", "", true, "", "", "", "")
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_READ)
     `when`(accidentDraftDao.findTodo()).thenReturn(Flux.just(expected))
 
@@ -83,7 +83,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     // mock
     val code = "code"
     val now = OffsetDateTime.now()
-    val expected = AccidentDraft(code, Status.Done, "plate", "driver", now, now, "", "", "", true, "", "", "", "")
+    val expected = AccidentDraft(null, code, Status.Done, "plate", "driver", now, now, "", "", "", true, "", "", "", "")
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_READ)
     `when`(accidentDraftDao.get(code)).thenReturn(Mono.just(expected))
 
@@ -101,7 +101,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     // mock
     val expected = "code"
     val dto = AccidentDraftDto4Submit("plate", "driver", OffsetDateTime.now(), "location", "", "", "", "", "", "")
-    val po = AccidentDraft(
+    val po = AccidentDraft(null,
       expected, Status.Todo, dto.carPlate, dto.driverName, dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
       dto.hitType, false, dto.source, dto.authorName, dto.authorId, dto.describe
     )
@@ -134,7 +134,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     // mock
     val expected = "code"
     val dto = AccidentDraftDto4Submit("plate", "driver", OffsetDateTime.now(), "location", "", "", "", "", "", "")
-    val po = AccidentDraft(
+    val po = AccidentDraft(null,
       expected, Status.Todo, dto.carPlate, dto.driverName, dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
       dto.hitType, false, dto.source, dto.authorName, dto.authorId, dto.describe
     )
