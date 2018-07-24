@@ -30,7 +30,8 @@ class AccidentCategoryServiceImplTest @Autowired constructor(
     val parentSNs = arrayOf("Sn")
     val enabled = arrayOf(Category.Status.Enabled)
     val enabledAndDisabled = arrayOf(Category.Status.Enabled, Category.Status.Disabled)
-    val category1 = Category(null, null, Category.Status.Enabled, "category1", "2")
+    val category0 = Category(null, null, Category.Status.Enabled, "category0", "2")
+    val category1 = Category(null, category0, Category.Status.Enabled, "category1", "2")
     val category2 = Category(null, category1, Category.Status.Disabled, "category2", "1")
     val category3 = Category(null, category2, Category.Status.Enabled, "category3", "2")
     `when`(categoryService.findChild(parentParentId, parentSNs, enabled))
@@ -56,6 +57,7 @@ class AccidentCategoryServiceImplTest @Autowired constructor(
         assertEquals(category3.name, it.name)
         assertEquals(category3.status, it.status)
       }
+      .verifyComplete()
     StepVerifier.create(actualIncludeDisabled)
       .consumeNextWith {
         assertEquals(category1.pid!!.sn, it.belong)
@@ -75,6 +77,7 @@ class AccidentCategoryServiceImplTest @Autowired constructor(
         assertEquals(category3.name, it.name)
         assertEquals(category3.status, it.status)
       }
+      .verifyComplete()
     verify(categoryService).findChild(parentParentId, parentSNs, enabled)
     verify(categoryService).findChild(parentParentId, parentSNs, enabledAndDisabled)
   }
