@@ -58,7 +58,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           if (this.e.code) return this.e.overdue ? "是" : "否";
           else {
             let happenTime = this.e.happenTime ? new Date(this.e.happenTime) : null;
-            if (happenTime) return this.getInervalHour(happenTime, new Date()) > 12 ? "是" : "否";
+            if (happenTime) return accident.calcInervalHour(happenTime, new Date()) > 12 ? "是" : "否";
             return "";
           }
         },
@@ -140,12 +140,6 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
               this.vm.loadCarMans(car.id);
             }
           })
-        },
-        /** 计算时间相差的小时 */
-        getInervalHour: function (startDate, endDate) {
-          var ms = endDate.getTime() - startDate.getTime();
-          if (ms < 0) return 0;
-          return Math.floor(ms / 1000 / 60 / 60);
         },
         /** 显示隐藏按钮 */
         showHideButtons: function () {
