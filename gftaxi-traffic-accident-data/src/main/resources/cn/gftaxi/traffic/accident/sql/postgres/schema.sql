@@ -4,11 +4,38 @@
 create extension if not exists dblink;
 
 -- drop tables/sequences
+drop table if exists gf_accident_operation;
 drop table if exists gf_accident_car;
 drop table if exists gf_accident_people;
 drop table if exists gf_accident_other;
 drop table if exists gf_accident_register;
 drop table if exists gf_accident_draft;
+
+-- create tables
+create table gf_accident_operation (
+  id              serial primary key,
+  operator_id     int         not null,
+  operator_name   varchar(50) not null,
+  operate_time    timestamptz not null,
+  operation_type  smallint    not null,
+  target_type     smallint    not null,
+  target_id       int         not null,
+  tag             smallint    not null default 0,
+  comment         text,
+  attachment_id   varchar(36),
+  attachment_name varchar(100)
+);
+comment on table gf_accident_operation                  is '事故相关事务操作记录';
+comment on column gf_accident_operation.operator_id     is '操作人ID';
+comment on column gf_accident_operation.operator_name   is '操作人姓名';
+comment on column gf_accident_operation.operate_time    is '操作时间';
+comment on column gf_accident_operation.operation_type  is '操作类型：10-创建、20-修改、30-提交、40-审核通过、50-审核不通过、90-删除';
+comment on column gf_accident_operation.target_type     is '事务类型：10-事故报案、20-事故登记、30-事故报告、40-事故处理、50-事故结案';
+comment on column gf_accident_operation.target_id       is '事务ID，如事故登记ID';
+comment on column gf_accident_operation.tag             is '操作类型的扩展标记';
+comment on column gf_accident_operation.comment         is '操作结果描述，如审核意见、审计日志描述等';
+comment on column gf_accident_operation.attachment_id   is '附件ID';
+comment on column gf_accident_operation.attachment_name is '附件名称';
 
 -- create tables
 create table gf_accident_draft (
