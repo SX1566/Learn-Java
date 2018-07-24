@@ -35,7 +35,9 @@ class AccidentRegisterServiceImpl @Autowired constructor(
     return accidentRegisterDao.findTodo(status)
   }
 
-  override fun findChecked(pageNo: Int, pageSize: Int, status: AccidentRegister.Status?, search: String?): Mono<Page<AccidentRegisterDto4Checked>> {
-    TODO("not implemented")
+  override fun findChecked(pageNo: Int, pageSize: Int, status: Status?, search: String?)
+    : Mono<Page<AccidentRegisterDto4Checked>> {
+    securityService.verifyHasAnyRole(*READ_ROLES)
+    return accidentRegisterDao.findChecked(pageNo, pageSize, status, search)
   }
 }

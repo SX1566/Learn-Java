@@ -5,8 +5,7 @@ import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Approved
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Rejected
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.*
 import org.springframework.data.domain.Page
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -34,7 +33,7 @@ interface AccidentRegisterService {
   fun findTodo(status: Status?): Flux<AccidentRegisterDto4Todo>
 
   /**
-   * 获取已审核案件信息。
+   * 获取已审核案件的最后审核信息。
    *
    * @param[status] 案件状态，只支持 [Approved] 和 [Rejected] 两种状态，为 null 则返回这两种状态的案件
    * @param[search] 模糊搜索的条件值，为空则忽略
