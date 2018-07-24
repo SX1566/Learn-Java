@@ -20,9 +20,9 @@ data class AccidentRegisterDto4Checked constructor(
   /** 是否非编司机 */
   val outsideDriver: Boolean,
   /** 审核结果：[Approved] 或 [Rejected] */
-  val checkResult: Status,
+  val checkedResult: Status,
   /** 审核意见 */
-  val checkComment: String?,
+  val checkedComment: String?,
   /** 审核人姓名 */
   val checkerName: String,
   /** 审核次数 */
