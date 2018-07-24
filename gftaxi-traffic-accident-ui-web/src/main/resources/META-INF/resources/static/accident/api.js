@@ -132,6 +132,17 @@ define(["bc", "context"], function (bc, context) {
      */
     findCategory: function (sn, includeDisabled) {
       return  cors(`${accidentDataServer}/category/${sn}/children`, "GET", {"include-disabled": includeDisabled});
+    },
+    /**
+     * 计算两个时间之间相差的小时数
+     * @param startDate 开始时间
+     * @param endDate 结束事件
+     */
+    calcInervalHour: function (startDate, endDate) {
+      var ms = endDate.getTime() - startDate.getTime();
+      if (ms < 0) return 0;
+      return Math.round(ms / 1000 / 60 / 60);
+    },
     }
   };
   return api;
