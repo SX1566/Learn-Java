@@ -71,7 +71,14 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
         accident.inline(row.attachmentId);
       }
     },
-    {id: "checkedResult", label: "审核标记", width: "5em"},
+    {
+      id: "checkedResult", label: "审核标记", width: "5em",
+      filter: function (value) {
+        if (value === "Approved") return "通过";
+        else if (value === "Rejected") return "不通过";
+        else return value;
+      }
+    },
     {id: "checkerName", label: "审核人", width: "5em"},
     {id: "checkedCount", label: "审核次数", width: "5em"},
     {id: "checkedTime", label: "审核时间", width: "9.5em"},
