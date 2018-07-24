@@ -3,12 +3,10 @@ package cn.gftaxi.traffic.accident.rest.webflux.handler
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Modify
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
 import cn.gftaxi.traffic.accident.po.AccidentDraft
-import cn.gftaxi.traffic.accident.rest.webflux.ModuleConfiguration
 import cn.gftaxi.traffic.accident.rest.webflux.handler.AccidentDraftHandler.Companion.FIND_REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.rest.webflux.handler.AccidentDraftHandler.Companion.GET_REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.rest.webflux.handler.AccidentDraftHandler.Companion.SUBMIT_REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.rest.webflux.handler.AccidentDraftHandler.Companion.UPDATE_REQUEST_PREDICATE
-import cn.gftaxi.traffic.accident.service.AccidentCategoryService
 import cn.gftaxi.traffic.accident.service.AccidentDraftService
 import com.nhaarman.mockito_kotlin.any
 import org.junit.jupiter.api.Test
@@ -35,8 +33,8 @@ import javax.json.Json
  *
  * @author cjw
  */
-@SpringJUnitConfig(ModuleConfiguration::class)
-@MockBean(AccidentDraftService::class, AccidentCategoryService::class)
+@SpringJUnitConfig(AccidentDraftHandler::class)
+@MockBean(AccidentDraftService::class)
 class AccidentDraftHandlerTest @Autowired constructor(
   private val accidentDraftService: AccidentDraftService,
   private val handler: AccidentDraftHandler
@@ -52,7 +50,7 @@ class AccidentDraftHandlerTest @Autowired constructor(
     val status = AccidentDraft.Status.Todo
     val code = "20180709_01"
     val list = ArrayList<AccidentDraft>()
-    list.add(AccidentDraft(
+    list.add(AccidentDraft(null,
       code, AccidentDraft.Status.Todo, "car", "driver", OffsetDateTime.now(),
       OffsetDateTime.now(), "location", "hitForm", "hitType", false,
       "source", "authorName", "authorId", ""))
@@ -80,7 +78,7 @@ class AccidentDraftHandlerTest @Autowired constructor(
     // mock
     val code = "20180709_01"
     `when`(accidentDraftService.get(code))
-      .thenReturn(Mono.just(AccidentDraft(
+      .thenReturn(Mono.just(AccidentDraft(null,
         code, AccidentDraft.Status.Todo, "car", "driver", OffsetDateTime.now(),
         OffsetDateTime.now(), "location", "hitForm", "hitType", false,
         "source", "authorName", "authorId", "")))
@@ -98,7 +96,7 @@ class AccidentDraftHandlerTest @Autowired constructor(
   }
 
   @Test
-  fun submit(){
+  fun submit() {
     val client = bindToRouterFunction(RouterFunctions.route(SUBMIT_REQUEST_PREDICATE, HandlerFunction(handler::submit))).build()
     // mock
     val code = "20180909_01"
@@ -108,17 +106,17 @@ class AccidentDraftHandlerTest @Autowired constructor(
       "车辆间事故", "追尾碰撞", "撞车", "BC", "韩智勇",
       "hzy", now)
     val data = Json.createObjectBuilder()
-    `data`.add("carPlate",dto.carPlate)
-    `data`.add("driverName",dto.driverName)
-    `data`.add("happenTime",dto.happenTime.format(formatter))
-    `data`.add("location",dto.location)
-    `data`.add("hitForm",dto.hitForm)
-    `data`.add("hitType",dto.hitType)
-    `data`.add("describe",dto.describe)
-    `data`.add("source",dto.source)
-    `data`.add("authorName",dto.authorName)
-    `data`.add("authorId",dto.authorId)
-    `data`.add("reportTime",dto.reportTime.format(formatter))
+    `data`.add("carPlate", dto.carPlate)
+    `data`.add("driverName", dto.driverName)
+    `data`.add("happenTime", dto.happenTime.format(formatter))
+    `data`.add("location", dto.location)
+    `data`.add("hitForm", dto.hitForm)
+    `data`.add("hitType", dto.hitType)
+    `data`.add("describe", dto.describe)
+    `data`.add("source", dto.source)
+    `data`.add("authorName", dto.authorName)
+    `data`.add("authorId", dto.authorId)
+    `data`.add("reportTime", dto.reportTime.format(formatter))
 
     `when`(accidentDraftService.submit(any())).thenReturn(Mono.just(code))
 

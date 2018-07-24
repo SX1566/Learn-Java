@@ -1,10 +1,8 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler
 
 import cn.gftaxi.traffic.accident.dto.SecondaryCategoryDto
-import cn.gftaxi.traffic.accident.rest.webflux.ModuleConfiguration
 import cn.gftaxi.traffic.accident.rest.webflux.handler.FindSecondaryCategoriesHandler.Companion.REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.service.AccidentCategoryService
-import cn.gftaxi.traffic.accident.service.AccidentDraftService
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
@@ -22,9 +20,10 @@ import tech.simter.category.po.Category
  * 测试获取指定一级分类下的二级分类列表（按一级分类的编码）的 [HandlerFunction]。
  *
  * @author JF
+ * @author RJ
  */
-@SpringJUnitConfig(ModuleConfiguration::class)
-@MockBean(AccidentDraftService::class, AccidentCategoryService::class)
+@SpringJUnitConfig(FindSecondaryCategoriesHandler::class)
+@MockBean(AccidentCategoryService::class)
 class FindSecondaryCategoriesHandlerTest @Autowired constructor(
   private val accidentCategoryService: AccidentCategoryService,
   handler: FindSecondaryCategoriesHandler
