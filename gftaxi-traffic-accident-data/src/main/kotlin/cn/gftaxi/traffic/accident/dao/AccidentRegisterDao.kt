@@ -29,6 +29,8 @@ interface AccidentRegisterDao {
   /**
    * 获取已审核案件的最后审核信息。
    *
+   * 返回的信息按编号逆序排序，模糊搜索编号、车号。
+   *
    * @param[status] 案件状态，只支持 [Approved] 和 [Rejected] 两种状态，为 null 则返回这两种状态的案件
    * @param[search] 模糊搜索的条件值，为空则忽略
    * @throws [IllegalArgumentException] 如果指定的状态条件 [status] 不在允许的范围内

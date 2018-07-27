@@ -9,6 +9,8 @@ import cn.gftaxi.traffic.accident.po.AccidentOperation
 import cn.gftaxi.traffic.accident.po.AccidentRegister
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -127,8 +129,61 @@ class AccidentRegisterDaoImpl @Autowired constructor(
     return Flux.fromIterable(query.resultList as List<AccidentRegisterDto4Todo>)
   }
 
+  @Suppress("UNCHECKED_CAST")
   override fun findChecked(pageNo: Int, pageSize: Int, status: AccidentRegister.Status?, search: String?)
     : Mono<Page<AccidentRegisterDto4Checked>> {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    if (null != status && status != AccidentRegister.Status.Rejected && status != AccidentRegister.Status.Approved) {
+      throw IllegalArgumentException("指定的状态条件 $status 不在允许的范围内！")
+    }
+    val hasSearch = null != search
+    val where =
+      "where r.status in (:status) ${if (hasSearch) "and (r.code like :search or r.car_plate like :search)" else ""}"
+    val rowsSql = """
+      with last_operation(target_id, checked_time, checked_count) as (
+        select target_id, max(operate_time), count(operate_time)
+        from gf_accident_operation
+        where target_type = :targetType and operation_type in (:operationType)
+        group by target_type, target_id
+      )
+      select distinct r.code, r.car_plate, r.party_driver_name driver_name,
+        not exists(select 0 from bs_carman c where c.name = r.party_driver_name) outside_driver,
+        r.status checked_result, o.comment checked_comment, o.operator_name checker_name, l.checked_count,
+        l.checked_time, o.attachment_name, o.attachment_id
+      from gf_accident_register r
+        inner join last_operation l on l.target_id = r.id
+        inner join gf_accident_operation o on o.target_type = :targetType and o.operation_type in (:operationType)
+          and o.target_id = r.id and o.operate_time = l.checked_time
+      $where
+      order by r.code desc
+      """.trimIndent()
+    val countSql = "select count(r.code) from gf_accident_register r $where"
+
+    val rowsQuery = em.createNativeQuery(rowsSql, AccidentRegisterDto4Checked::class.java)
+      .setParameter("targetType", AccidentOperation.TargetType.Register.value())
+      .setParameter("operationType",
+        listOf(AccidentOperation.OperationType.Approval.value(), AccidentOperation.OperationType.Rejection.value())
+      )
+      .setParameter("status",
+        status?.value() ?: listOf(AccidentRegister.Status.Approved.value(), AccidentRegister.Status.Rejected.value())
+      )
+      .setFirstResult(tech.simter.data.Page.calculateOffset(pageNo, pageSize))
+      .setMaxResults(tech.simter.data.Page.toValidCapacity(pageSize))
+    val countQuery = em.createNativeQuery(countSql)
+      .setParameter("status",
+        status?.value() ?: listOf(AccidentRegister.Status.Approved.value(), AccidentRegister.Status.Rejected.value())
+      )
+    if (hasSearch) {
+      val fuzzySearch = if (!search!!.contains("%")) "%$search%" else search
+      rowsQuery.setParameter("search", fuzzySearch)
+      countQuery.setParameter("search", fuzzySearch)
+    }
+
+    return Mono.just(
+      PageImpl(
+        rowsQuery.resultList as List<AccidentRegisterDto4Checked>,
+        PageRequest.of(pageNo - 1, pageSize),
+        (countQuery.singleResult as Number).toLong()
+      )
+    )
   }
 }
