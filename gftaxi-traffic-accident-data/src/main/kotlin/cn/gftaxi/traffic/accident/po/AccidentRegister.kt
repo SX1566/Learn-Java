@@ -20,7 +20,7 @@ import javax.persistence.*
 data class AccidentRegister(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  val id: Int?,
+  val id: Int? = null,
   /** 事故编号，格式为 yyyyMMdd_nn */
   @Column(unique = true, length = 11)
   val code: String,
