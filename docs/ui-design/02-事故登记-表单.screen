@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
-  <widgets xsi:type="model:Window" id="1" x="8" y="10" width="969" height="1234" text="事故登记/审核" measuredWidth="969" measuredHeight="1234" minimizeButton="true" maximizeButton="true"/>
+  <widgets xsi:type="model:Window" id="1" x="8" y="10" width="969" height="1209" text="事故登记/审核" measuredWidth="969" measuredHeight="1209" minimizeButton="true" maximizeButton="true"/>
   <widgets xsi:type="model:Shape" id="136" x="8" y="29" width="969" height="36" text="基本情况：（事故编号 20180418_06）" measuredWidth="969" measuredHeight="36" background="#ccc" textAlignment="Left" shapeType="rectangle">
     <font/>
   </widgets>
-  <widgets xsi:type="model:Button" id="299" x="899" y="1209" text="审核确认" measuredWidth="72" measuredHeight="29">
+  <widgets xsi:type="model:Button" id="299" x="899" y="1184" text="审核确认" measuredWidth="72" measuredHeight="29">
     <font size="13px"/>
   </widgets>
-  <widgets xsi:type="model:Button" id="243" x="822" y="1209" text="确认提交" measuredWidth="72" measuredHeight="29">
+  <widgets xsi:type="model:Button" id="243" x="822" y="1184" text="确认提交" measuredWidth="72" measuredHeight="29">
     <font size="13px"/>
   </widgets>
   <widgets xsi:type="model:WidgetGroup" id="810" x="13" y="70" measuredWidth="601" measuredHeight="107">
@@ -38,10 +38,10 @@
     <widgets xsi:type="model:Label" id="528" x="243" y="45" width="71" text="投产日期：" measuredWidth="71" measuredHeight="25" textAlignment="Right">
       <font bold="false"/>
     </widgets>
-    <widgets xsi:type="model:TextField" id="529" x="78" y="72" width="156" text="黄战通、黄新" measuredWidth="156" measuredHeight="25" state="disabled">
+    <widgets xsi:type="model:TextField" id="529" x="78" y="72" width="156" text="承包合同" measuredWidth="156" measuredHeight="25" state="disabled">
       <font/>
     </widgets>
-    <widgets xsi:type="model:Label" id="530" x="15" y="72" width="71" text="责任人：" measuredWidth="71" measuredHeight="25" textAlignment="Right">
+    <widgets xsi:type="model:Label" id="530" x="15" y="72" width="71" text="合同性质：" measuredWidth="71" measuredHeight="25" textAlignment="Right">
       <font bold="false"/>
     </widgets>
     <widgets xsi:type="model:TextField" id="533" x="307" y="72" width="287" text="黄战通、黄新" measuredWidth="287" measuredHeight="25" state="disabled">
@@ -52,12 +52,12 @@
     </widgets>
     <widgets xsi:type="model:Icon" id="535" x="214" y="23" width="16" height="16" measuredWidth="16" measuredHeight="16" icon="add (custom)"/>
   </widgets>
-  <widgets xsi:type="model:WidgetGroup" id="696" x="8" y="715" measuredWidth="969" measuredHeight="397">
+  <widgets xsi:type="model:WidgetGroup" id="696" x="8" y="690" measuredWidth="969" measuredHeight="397">
     <widgets xsi:type="model:WidgetGroup" id="491" measuredWidth="969" measuredHeight="143">
       <widgets xsi:type="model:Shape" id="313" width="969" height="30" text="当事车辆：" measuredWidth="969" measuredHeight="30" background="#ccc" textAlignment="Left" shapeType="rectangle">
         <font/>
       </widgets>
-      <widgets xsi:type="model:Table" id="316" y="28" width="969" height="115" text="=(w:30). 序号,=.分类,=.车号,=.车型,=.拖车次数,=.维修分类,=.受损情况,>.损失预估(元),>.维修费(元),>.拖车费(元),=(w:65).跟进形式,=(w:112).更新时间&#xD;&#xA;1,>. 自车 {desc},粤AZ0F41,>. 出租车 {desc},>. 1 {neutral},>. 厂修 {desc},>. 车头受损 {desc},1600.00,1000.00,100.00,>. 系统 {desc}, %(color:gray)2018-03-25 10:00%&#xD;&#xA;2,>. 三者 {desc},粤AA12U4,>. 小轿车 {desc},>. 0 {neutral},>. 外修 {desc},>. 尾部受损 {desc},3000.00,600.00,200.00,>. 电话 {desc}, %(color:gray)2018-03-25 10:00%&#xD;&#xA;{circled-plus}," measuredWidth="969" measuredHeight="115" rowHeight="28" horizontalLines="true" alternative="#eee">
+      <widgets xsi:type="model:Table" id="316" y="28" width="969" height="115" text="=(w:30). 序号,=.分类,=.车号,=.车型,=.拖车次数,=.维修分类,=.受损情况,>.损失预估(元),>.维修费(元),>.拖车费(元),=(w:65).跟进形式,=(w:112).更新时间&#xD;&#xA;1,>. 自车 {desc},粤AZ0F41,>. 出租车 {desc},>. 1 {neutral},>. 自厂修复 {desc},>. 前部 {desc},1600.00,1000.00,100.00,>. 系统 {desc}, %(color:gray)2018-03-25 10:00%&#xD;&#xA;2,>. 三者 {desc},粤AA12U4,>. 小轿车 {desc},>. 0 {neutral},>. 外厂修复 {desc},>. 后部 {desc},3000.00,600.00,200.00,>. 电话 {desc}, %(color:gray)2018-03-25 10:00%&#xD;&#xA;{circled-plus}," measuredWidth="969" measuredHeight="115" rowHeight="28" horizontalLines="true" alternative="#eee">
         <font/>
       </widgets>
       <widgets xsi:type="model:Label" id="475" x="897" y="3" text="{arrow-up}  {arrow-down}  {delete}" measuredWidth="70" measuredHeight="25" foreground="#999">
@@ -253,13 +253,13 @@
     <widgets xsi:type="model:Label" id="678" x="243" y="156" width="72" text="*保险公司：" measuredWidth="72" measuredHeight="25" textAlignment="Right">
       <font bold="false"/>
     </widgets>
-    <widgets xsi:type="model:Combo" id="679" x="78" y="158" width="156" text="中保芳村" measuredWidth="156" measuredHeight="25">
+    <widgets xsi:type="model:Combo" id="679" x="78" y="158" width="156" text="快赔中心" measuredWidth="156" measuredHeight="25">
       <font/>
     </widgets>
-    <widgets xsi:type="model:Combo" id="680" x="78" y="185" width="156" text="快处快赔" measuredWidth="156" measuredHeight="25">
+    <widgets xsi:type="model:Combo" id="680" x="78" y="185" width="156" text="快撤快赔" measuredWidth="156" measuredHeight="25">
       <font/>
     </widgets>
-    <widgets xsi:type="model:Combo" id="681" x="307" y="158" width="287" text="中保芳村" measuredWidth="287" measuredHeight="25">
+    <widgets xsi:type="model:Combo" id="681" x="307" y="158" width="287" text="芳村人保" measuredWidth="287" measuredHeight="25">
       <font/>
     </widgets>
     <widgets xsi:type="model:Label" id="682" x="5" y="72" text="{location}GPS车速：" measuredWidth="81" measuredHeight="25" textAlignment="Right">
@@ -281,7 +281,7 @@
     <widgets xsi:type="model:HLine" id="731" x="573" y="133" width="20" measuredWidth="20" measuredHeight="6" foreground="#666"/>
     <widgets xsi:type="model:VLine" id="732" x="570" y="135" height="20" measuredWidth="6" measuredHeight="20" foreground="#666"/>
   </widgets>
-  <widgets xsi:type="model:WidgetGroup" id="828" x="8" y="595" measuredWidth="969" measuredHeight="120">
+  <widgets xsi:type="model:WidgetGroup" id="828" x="8" y="595" measuredWidth="969" measuredHeight="93">
     <widgets xsi:type="model:Shape" id="227" width="969" height="36" text="分类信息：" measuredWidth="969" measuredHeight="36" background="#ccc" textAlignment="Left" shapeType="rectangle">
       <font/>
     </widgets>
@@ -290,9 +290,6 @@
     </widgets>
     <widgets xsi:type="model:Combo" id="735" x="70" y="66" width="120" text="载客" measuredWidth="120" measuredHeight="25">
       <font/>
-    </widgets>
-    <widgets xsi:type="model:Label" id="737" x="11" y="95" text="下面的金额合计情况：自车损失预估：1700 元，医疗费用：250 元" measuredWidth="363" measuredHeight="25">
-      <font bold="false"/>
     </widgets>
     <widgets xsi:type="model:Label" id="751" x="393" y="40" width="72" text="*天气：" measuredWidth="72" measuredHeight="25" textAlignment="Right">
       <font bold="false"/>
@@ -303,7 +300,7 @@
     <widgets xsi:type="model:Label" id="753" x="393" y="67" width="72" text="*行驶方向：" measuredWidth="72" measuredHeight="25" textAlignment="Right">
       <font bold="false"/>
     </widgets>
-    <widgets xsi:type="model:Combo" id="754" x="455" y="66" width="120" text="    由南向北" measuredWidth="120" measuredHeight="25">
+    <widgets xsi:type="model:Combo" id="754" x="455" y="66" width="120" text="由南向北" measuredWidth="120" measuredHeight="25">
       <font/>
     </widgets>
     <widgets xsi:type="model:Label" id="755" x="781" y="41" width="72" text="*路面状况：" measuredWidth="72" measuredHeight="25" textAlignment="Right">
@@ -356,14 +353,14 @@
   <widgets xsi:type="model:Text" id="780" x="625" y="558" text="历史事故 3 宗，交通违法 1 次，&#xD;&#xA;营运违章 1 次，服务投诉 1 次。" measuredWidth="175" measuredHeight="34">
     <font/>
   </widgets>
-  <widgets xsi:type="model:WidgetGroup" id="789" x="8" y="1110" measuredWidth="969" measuredHeight="97">
+  <widgets xsi:type="model:WidgetGroup" id="789" x="8" y="1085" measuredWidth="969" measuredHeight="97">
     <widgets xsi:type="model:Label" id="291" x="8" y="40" text="审核结果：" measuredWidth="66" measuredHeight="25">
       <font/>
     </widgets>
     <widgets xsi:type="model:TextField" id="292" x="67" y="65" width="896" measuredWidth="896" measuredHeight="25">
       <font/>
     </widgets>
-    <widgets xsi:type="model:Label" id="295" x="312" y="40" text="{image} 错误截图1.png{trash}、{image} 错误截图2.png{trash}" measuredWidth="252" measuredHeight="25">
+    <widgets xsi:type="model:Label" id="295" x="312" y="40" text="{image} 审核截图.png{trash}" measuredWidth="116" measuredHeight="25">
       <font/>
     </widgets>
     <widgets xsi:type="model:RadioButton" id="296" x="70" y="40" text="通过" measuredWidth="44" measuredHeight="25">
@@ -384,25 +381,22 @@
     </widgets>
     <widgets xsi:type="model:HLine" id="786" x="1" y="91" width="968" measuredWidth="968" measuredHeight="6"/>
   </widgets>
-  <widgets xsi:type="model:Button" id="787" x="771" y="1209" text="保存" measuredWidth="46" measuredHeight="29">
+  <widgets xsi:type="model:Button" id="787" x="771" y="1184" text="保存" measuredWidth="46" measuredHeight="29">
     <font size="13px"/>
   </widgets>
-  <widgets xsi:type="model:CurlyBrace" id="788" x="976" y="1126" width="141" height="65" text="审核时方显示" measuredWidth="141" measuredHeight="65" foreground="#f00">
+  <widgets xsi:type="model:Arrow" id="793" x="784" y="1213" width="8" height="30" measuredWidth="8" measuredHeight="30" foreground="#f00" lineStyle="dashed" left="false"/>
+  <widgets xsi:type="model:Arrow" id="794" x="755" y="1242" width="29" height="8" measuredWidth="29" measuredHeight="8" foreground="#f00" lineStyle="dashed" direction="bottom"/>
+  <widgets xsi:type="model:Label" id="795" x="449" y="1231" text="提交前可以临时保存信息，或提交后有修改权限继续修改" measuredWidth="306" measuredHeight="25" textAlignment="Right" foreground="#f00">
     <font/>
   </widgets>
-  <widgets xsi:type="model:Arrow" id="793" x="784" y="1238" width="8" height="30" measuredWidth="8" measuredHeight="30" foreground="#f00" lineStyle="dashed" left="false"/>
-  <widgets xsi:type="model:Arrow" id="794" x="755" y="1267" width="29" height="8" measuredWidth="29" measuredHeight="8" foreground="#f00" lineStyle="dashed" direction="bottom"/>
-  <widgets xsi:type="model:Label" id="795" x="449" y="1256" text="提交前可以临时保存信息，或提交后有修改权限继续修改" measuredWidth="306" measuredHeight="25" textAlignment="Right" foreground="#f00">
+  <widgets xsi:type="model:Arrow" id="796" x="838" y="1212" width="8" height="48" measuredWidth="8" measuredHeight="48" foreground="#f00" lineStyle="dashed" left="false"/>
+  <widgets xsi:type="model:Arrow" id="797" x="809" y="1259" width="29" height="8" measuredWidth="29" measuredHeight="8" foreground="#f00" lineStyle="dashed" direction="bottom"/>
+  <widgets xsi:type="model:Label" id="798" x="672" y="1248" text="需要报案信息的登记权限" measuredWidth="138" measuredHeight="25" textAlignment="Right" foreground="#f00">
     <font/>
   </widgets>
-  <widgets xsi:type="model:Arrow" id="796" x="838" y="1237" width="8" height="59" measuredWidth="8" measuredHeight="59" foreground="#f00" lineStyle="dashed" left="false"/>
-  <widgets xsi:type="model:Arrow" id="797" x="809" y="1295" width="29" height="8" measuredWidth="29" measuredHeight="8" foreground="#f00" lineStyle="dashed" direction="bottom"/>
-  <widgets xsi:type="model:Label" id="798" x="672" y="1284" text="需要报案信息的登记权限" measuredWidth="138" measuredHeight="25" textAlignment="Right" foreground="#f00">
-    <font/>
-  </widgets>
-  <widgets xsi:type="model:Arrow" id="799" x="917" y="1237" width="8" height="89" measuredWidth="8" measuredHeight="89" foreground="#f00" lineStyle="dashed" left="false"/>
-  <widgets xsi:type="model:Arrow" id="800" x="889" y="1325" width="29" height="8" measuredWidth="29" measuredHeight="8" foreground="#f00" lineStyle="dashed" direction="bottom"/>
-  <widgets xsi:type="model:Label" id="801" x="753" y="1314" text="需要登记信息的审核权限" measuredWidth="138" measuredHeight="25" textAlignment="Right" foreground="#f00">
+  <widgets xsi:type="model:Arrow" id="799" x="917" y="1212" width="8" height="65" measuredWidth="8" measuredHeight="65" foreground="#f00" lineStyle="dashed" left="false"/>
+  <widgets xsi:type="model:Arrow" id="800" x="889" y="1276" width="29" height="8" measuredWidth="29" measuredHeight="8" foreground="#f00" lineStyle="dashed" direction="bottom"/>
+  <widgets xsi:type="model:Label" id="801" x="753" y="1265" text="需要登记信息的审核权限" measuredWidth="138" measuredHeight="25" textAlignment="Right" foreground="#f00">
     <font/>
   </widgets>
   <widgets xsi:type="model:Arrow" id="802" x="924" y="48" width="34" height="22" measuredWidth="34" measuredHeight="22" foreground="#f00" lineStyle="dashed"/>
@@ -424,28 +418,32 @@
     <font/>
   </widgets>
   <widgets xsi:type="model:Arrow" id="813" x="256" y="354" width="33" height="22" measuredWidth="33" measuredHeight="22" foreground="#f00" lineStyle="dashed" left="false" right="true"/>
-  <widgets xsi:type="model:Arrow" id="814" x="864" y="731" width="40" height="8" measuredWidth="40" measuredHeight="8" foreground="#f00" lineStyle="dashed"/>
-  <widgets xsi:type="model:Label" id="815" x="692" y="719" text="上下移动、删除列表中的选中项" measuredWidth="174" measuredHeight="25" textAlignment="Right" foreground="#f00">
+  <widgets xsi:type="model:Arrow" id="814" x="863" y="846" width="40" height="8" measuredWidth="40" measuredHeight="8" foreground="#f00" lineStyle="dashed"/>
+  <widgets xsi:type="model:Label" id="815" x="691" y="834" text="上下移动、删除列表中的选中项" measuredWidth="174" measuredHeight="25" textAlignment="Right" foreground="#f00">
     <font/>
   </widgets>
-  <widgets xsi:type="model:Arrow" id="816" x="34" y="842" width="51" height="8" measuredWidth="51" measuredHeight="8" foreground="#f00" lineStyle="dashed" left="false" right="true"/>
-  <widgets xsi:type="model:Label" id="817" x="86" y="831" text="在列表底部添加一个新的空白项" measuredWidth="174" measuredHeight="25" foreground="#f00">
+  <widgets xsi:type="model:Arrow" id="816" x="34" y="817" width="51" height="8" measuredWidth="51" measuredHeight="8" foreground="#f00" lineStyle="dashed" left="false" right="true"/>
+  <widgets xsi:type="model:Label" id="817" x="88" y="806" text="在列表底部添加一个新的空白项" measuredWidth="174" measuredHeight="25" foreground="#f00">
     <font/>
   </widgets>
-  <widgets xsi:type="model:Label" id="825" x="687" y="692" text="财产1、2级时隐藏不需填写，其余等级则必须填写" measuredWidth="272" measuredHeight="25" textAlignment="Right" foreground="#f00">
+  <widgets xsi:type="model:Label" id="825" x="692" y="600" text="财产1、2级时隐藏不需填写，其余等级则必须填写" measuredWidth="272" measuredHeight="25" textAlignment="Right" foreground="#f00">
     <font/>
   </widgets>
-  <widgets xsi:type="model:Shape" id="826" x="594" y="624" width="310" height="69" measuredWidth="310" measuredHeight="69" alpha="0" foreground="#f00" lineStyle="dashed" shapeType="rectangle-rounded">
+  <widgets xsi:type="model:Shape" id="826" x="594" y="624" width="310" height="73" measuredWidth="310" measuredHeight="73" alpha="0" foreground="#f00" lineStyle="dashed" shapeType="rectangle-rounded">
     <font/>
   </widgets>
-  <widgets xsi:type="model:Arrow" id="827" x="648" y="692" width="36" height="13" measuredWidth="36" measuredHeight="13" foreground="#f00" lineStyle="dashed" left="false" right="true"/>
-  <widgets xsi:type="model:Note" id="829" x="8" y="1253" text="前面带 * 号的项目为必填项。" measuredWidth="174" measuredHeight="31">
+  <widgets xsi:type="model:Arrow" id="827" x="640" y="610" width="48" height="15" measuredWidth="48" measuredHeight="15" foreground="#f00" lineStyle="dashed" left="false" right="true" direction="bottom"/>
+  <widgets xsi:type="model:Note" id="829" x="8" y="1221" text="前面带 * 号的项目为必填项。" measuredWidth="174" measuredHeight="31">
     <font/>
   </widgets>
   <widgets xsi:type="model:Label" id="830" x="227" y="600" text="未设定时自动根据下述情况的填写确定，但允许用户自行修改" measuredWidth="330" measuredHeight="25" textAlignment="Right" foreground="#f00">
     <font/>
   </widgets>
   <widgets xsi:type="model:Arrow" id="831" x="136" y="609" width="89" height="37" measuredWidth="89" measuredHeight="37" foreground="#f00" lineStyle="dashed" left="false" right="true" direction="bottom"/>
+  <widgets xsi:type="model:Arrow" id="832" x="76" y="1102" width="51" height="8" measuredWidth="51" measuredHeight="8" foreground="#f00" lineStyle="dashed" left="false" right="true"/>
+  <widgets xsi:type="model:Label" id="833" x="130" y="1091" text="审核时方显示" measuredWidth="78" measuredHeight="25" foreground="#f00">
+    <font/>
+  </widgets>
   <hRuler/>
   <vRuler/>
   <font size="12px"/>
