@@ -140,3 +140,56 @@ insert into st_category (pid, status, name, sn)
 insert into st_category (pid, status, name, sn)
   select (select id from st_category where pid = 2 and name = '当事人分类'), 2, name, (row_number() over())::text as sn
   from (select unnest(array['自车', '三者']) as name) t;
+
+-- 额外补充的交通事故分类标准
+insert into st_category (pid, status, name, sn)
+  select 2, 2, name, cn_first_char(name) as sn
+  from (select unnest(array['载重情况', '事故处理部门', '事故处理方式', '保险公司',
+    '车型分类', '伤亡分类', '维修分类', '受损情况', '跟进形式']) as name
+  ) t;
+
+-- 交通事故分类标准/载重情况/*
+insert into st_category (pid, status, name, sn)
+  select (select id from st_category where pid = 2 and name = '载重情况'), 2, name, (row_number() over())::text as sn
+  from (select unnest(array['载客', '空车']) as name) t;
+
+-- 交通事故分类标准/事故处理部门/*
+insert into st_category (pid, status, name, sn)
+  select (select id from st_category where pid = 2 and name = '事故处理部门'), 2, name, (row_number() over())::text as sn
+  from (select unnest(array['快赔中心', '保险公司', '公司内部', '交警大队/白云一', '交警大队/白云二',
+    '交警大队/天河', '交警大队/荔湾', '交警大队/越秀', '交警大队/海珠', '交警大队/其他', '无']) as name) t;
+
+-- 交通事故分类标准/事故处理方式/*
+insert into st_category (pid, status, name, sn)
+  select (select id from st_category where pid = 2 and name = '事故处理方式'), 2, name, (row_number() over())::text as sn
+  from (select unnest(array['快处快赔', '保险查勘', '公司查勘', '协商私了']) as name) t;
+
+-- 交通事故分类标准/保险公司/*
+insert into st_category (pid, status, name, sn)
+  select (select id from st_category where pid = 2 and name = '保险公司'), 2, name, (row_number() over())::text as sn
+  from (select unnest(array['芳村人保', '天河人保']) as name) t;
+
+-- 交通事故分类标准/车型分类/*
+insert into st_category (pid, status, name, sn)
+  select (select id from st_category where pid = 2 and name = '车型分类'), 2, name, (row_number() over())::text as sn
+  from (select unnest(array['出租车', '小轿车', '客车', '货车', '摩托车', '电动踏板车', '挂车', '作业车', '残疾车', '其他']) as name) t;
+
+-- 交通事故分类标准/伤亡分类/*
+insert into st_category (pid, status, name, sn)
+  select (select id from st_category where pid = 2 and name = '伤亡分类'), 2, name, (row_number() over())::text as sn
+  from (select unnest(array['无', '伤', '亡']) as name) t;
+
+-- 交通事故分类标准/维修分类/*
+insert into st_category (pid, status, name, sn)
+  select (select id from st_category where pid = 2 and name = '维修分类'), 2, name, (row_number() over())::text as sn
+  from (select unnest(array['自厂修复', '外厂修复']) as name) t;
+
+-- 交通事故分类标准/受损情况/*
+insert into st_category (pid, status, name, sn)
+  select (select id from st_category where pid = 2 and name = '受损情况'), 2, name, (row_number() over())::text as sn
+  from (select unnest(array['前部', '后部', '左侧', '右侧', '全车多处']) as name) t;
+
+-- 交通事故分类标准/跟进形式/*
+insert into st_category (pid, status, name, sn)
+  select (select id from st_category where pid = 2 and name = '跟进形式'), 2, name, (row_number() over())::text as sn
+  from (select unnest(array['系统', '电话', '其他']) as name) t;
