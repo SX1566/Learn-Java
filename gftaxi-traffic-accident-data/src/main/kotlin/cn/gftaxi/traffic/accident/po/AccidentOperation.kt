@@ -24,7 +24,7 @@ import javax.persistence.*
 data class AccidentOperation(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  val id: Int?,
+  val id: Int? = null,
   /** 操作人ID */
   val operatorId: Int,
   /** 操作人姓名 */

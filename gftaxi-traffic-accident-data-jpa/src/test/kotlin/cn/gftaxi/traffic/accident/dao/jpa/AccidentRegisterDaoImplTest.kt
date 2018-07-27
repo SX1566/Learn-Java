@@ -3,17 +3,25 @@ package cn.gftaxi.traffic.accident.dao.jpa
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
 import cn.gftaxi.traffic.accident.po.AccidentDraft
+import cn.gftaxi.traffic.accident.po.AccidentOperation
 import cn.gftaxi.traffic.accident.po.AccidentRegister
+import cn.gftaxi.traffic.accident.po.view.CarMan
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import reactor.test.StepVerifier
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 /**
  * 测试事故登记 Dao 实现。
@@ -107,5 +115,144 @@ class AccidentRegisterDaoImplTest @Autowired constructor(
       return accidentRegister
     }
     return null
+  }
+
+
+  @Test
+  fun findTodoWithDraftStatus() {
+    // mock
+    val driver = CarMan(
+      id = 1, uid = "uid", status = CarMan.Status.Enabled, type = CarMan.Type.Driver, name = "Name",
+      sex = CarMan.Sex.Male, origin = "", idCardNo = "", initialLicenseDate = LocalDate.now(), model = "",
+      workDate = LocalDate.now(), serviceCertNo = "", phone = ""
+    )
+    val now = OffsetDateTime.now()
+    // 构建事故报案，司机：非编，报案状态：未登记
+    createData("01", "car1", "driver1", now, AccidentDraft.Status.Todo, false)
+    // 构建事故报案，司机：在编，报案状态：未登记
+    createData("02", "car2", driver.name, now, AccidentDraft.Status.Todo, false)
+    // 构建事故报案，司机：非编，报案状态：已登记，登记状态：审核通过
+    createData("03", "car3", "driver3", now, AccidentDraft.Status.Done, false, AccidentRegister.Status.Approved, false, true)
+    em.persist(driver); em.flush(); em.clear()
+
+    // invoke
+    val actual = dao.findTodo(AccidentRegister.Status.Draft)
+
+    // verify
+    StepVerifier.create(actual)
+      .consumeNextWith {
+        assertEquals("01", it.code)
+        assertEquals("driver1", it.driverName)
+        assertEquals(now, it.happenTime)
+        assertTrue(it.outsideDriver)
+        assertNull(it.registerTime)
+        assertNull(it.overdueRegister)
+        assertNull(it.submitTime)
+      }
+      .consumeNextWith {
+        assertEquals("02", it.code)
+        assertEquals(driver.name, it.driverName)
+        assertEquals(now, it.happenTime)
+        assertFalse(it.outsideDriver)
+        assertNull(it.registerTime)
+        assertNull(it.overdueRegister)
+        assertNull(it.submitTime)
+      }
+      .verifyComplete()
+  }
+
+  @Test
+  fun findTodoWithToCheckStatus() {
+    // mock
+    val now = OffsetDateTime.now()
+    // 构建事故报案，司机：非编，报案状态：已登记，登记状态：待审核，登记时间：事发时间两小时后，登记逾期：false
+    createData("01", "car1", "driver1", now, AccidentDraft.Status.Done, false, AccidentRegister.Status.ToCheck, false, true)
+    // 构建事故报案，司机：非编，报案状态：已登记，登记状态：待审核，登记时间：事发时间两小时后，登记逾期：false
+    val accidentRegister =
+      createData("02", "car2", "driver2", now, AccidentDraft.Status.Done, false, AccidentRegister.Status.ToCheck, false, true)
+    // 构建事故报案，司机：非编，报案状态：已登记，登记状态：审核通过，登记时间：事发时间两小时后，登记逾期：false
+    createData("03", "car3", "driver3", now, AccidentDraft.Status.Done, false, AccidentRegister.Status.Approved, false, true)
+    // 构建事务操作记录，操作类型：提交审核，事务类型：事故登记，事故登记 ID：2，操作时间：事发时间一天后
+    em.persist(
+      AccidentOperation(
+        operatorId = 1, operatorName = "name", operateTime = now.plusDays(1),
+        operationType = AccidentOperation.OperationType.Confirmation, targetType = AccidentOperation.TargetType.Register,
+        targetId = accidentRegister?.id!!, comment = null, attachmentId = null, attachmentName = null
+      )
+    )
+    // 构建事务操作记录，操作类型：提交审核，事务类型：事故登记，事故登记 ID：2，操作时间：事发时间两天后
+    em.persist(
+      AccidentOperation(
+        operatorId = 1, operatorName = "name", operateTime = now.plusDays(2),
+        operationType = AccidentOperation.OperationType.Confirmation, targetType = AccidentOperation.TargetType.Register,
+        targetId = accidentRegister.id!!, comment = null, attachmentId = null, attachmentName = null
+      )
+    )
+    em.flush(); em.clear()
+
+    // invoke
+    val actual = dao.findTodo(AccidentRegister.Status.ToCheck)
+
+    // verify
+    StepVerifier.create(actual)
+      .consumeNextWith {
+        assertEquals("01", it.code)
+        assertEquals("driver1", it.driverName)
+        assertEquals(now, it.happenTime)
+        assertEquals(now.plusHours(2), it.registerTime)
+        assertTrue(it.outsideDriver)
+        assertFalse(it.overdueRegister!!)
+        assertNull(it.submitTime)
+      }
+      .consumeNextWith {
+        assertEquals("02", it.code)
+        assertEquals("driver2", it.driverName)
+        assertEquals(now, it.happenTime)
+        assertEquals(now.plusHours(2), it.registerTime)
+        assertEquals(now.plusDays(2), it.submitTime)
+        assertTrue(it.outsideDriver)
+        assertFalse(it.overdueRegister!!)
+      }
+      .verifyComplete()
+  }
+
+  @Test
+  fun findTodoWithNullStatus() {
+    // mock
+    val now = OffsetDateTime.now()
+    // 构建事故报案，司机：非编，报案状态：未登记
+    createData("01", "car1", "driver1", now, AccidentDraft.Status.Todo, false)
+    // 构建事故报案，司机：非编，报案状态：已登记，登记状态：待审核，登记时间：事发时间两小时后，登记逾期：false
+    createData("02", "car2", "driver2", now, AccidentDraft.Status.Done, false, AccidentRegister.Status.ToCheck, false, true)
+    // 构建事故报案，司机：非编，报案状态：已登记，登记状态：审核通过
+    createData("03", "car3", "driver3", now, AccidentDraft.Status.Done, false, AccidentRegister.Status.Approved, false, true)
+    em.flush(); em.clear()
+
+    // invoke
+    val actual = dao.findTodo(null)
+
+    // verify
+    StepVerifier.create(actual)
+      .consumeNextWith {
+        assertEquals("01", it.code)
+        assertEquals("driver1", it.driverName)
+        assertEquals(now, it.happenTime)
+        assertTrue(it.outsideDriver)
+        assertNull(it.registerTime)
+        assertNull(it.overdueRegister)
+        assertNull(it.submitTime)
+      }
+      .consumeNextWith {
+        assertEquals("02", it.code)
+        assertEquals("driver2", it.driverName)
+        assertEquals(now, it.happenTime)
+        assertEquals(now.plusHours(2), it.registerTime)
+        assertTrue(it.outsideDriver)
+        assertFalse(it.overdueRegister!!)
+        assertNull(it.submitTime)
+      }
+      .verifyComplete()
+
+    assertThrows(IllegalArgumentException::class.java, { dao.findTodo(AccidentRegister.Status.Approved).subscribe() })
   }
 }

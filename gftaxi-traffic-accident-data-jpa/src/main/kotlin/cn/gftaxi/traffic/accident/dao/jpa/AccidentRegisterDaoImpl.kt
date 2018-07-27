@@ -4,6 +4,8 @@ import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Checked
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
+import cn.gftaxi.traffic.accident.po.AccidentDraft
+import cn.gftaxi.traffic.accident.po.AccidentOperation
 import cn.gftaxi.traffic.accident.po.AccidentRegister
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -78,8 +80,51 @@ class AccidentRegisterDaoImpl @Autowired constructor(
     )
   }
 
+  @Suppress("UNCHECKED_CAST")
   override fun findTodo(status: AccidentRegister.Status?): Flux<AccidentRegisterDto4Todo> {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    val where = when (status) {
+      AccidentRegister.Status.Draft -> "where d.status = :accidentDraftTodo"
+      AccidentRegister.Status.ToCheck -> "where d.status = :accidentDraftDone and r.status = :accidentRegisterToCheck"
+      null -> "where d.status = :accidentDraftTodo or (d.status = :accidentDraftDone and r.status = :accidentRegisterToCheck)"
+      else -> throw IllegalArgumentException("指定的状态条件 $status 不在允许的范围内！")
+    }
+    val sql = """
+      select d.code, d.car_plate, d.driver_name,
+      not exists(select 0 from bs_carman c where c.name = d.driver_name) outside_driver, d.happen_time, d.hit_form,
+      d.hit_type, d.location, d.author_name, d.author_id, d.report_time, d.overdue overdue_report, r.register_time,
+      r.overdue_register,
+      (
+        select operate_time
+        from gf_accident_operation o
+        where o.target_type = :accidentRegister
+          and o.target_id = r.id
+          and o.operation_type = :confirmation
+        order by operate_time desc
+        limit 1
+      ) submit_time
+      from gf_accident_draft d
+        left join gf_accident_register r on r.code = d.code
+      $where
+      order by d.code
+      """.trimIndent()
+
+    val query = em.createNativeQuery(sql, AccidentRegisterDto4Todo::class.java)
+      .setParameter("accidentRegister", AccidentOperation.TargetType.Register.value())
+      .setParameter("confirmation", AccidentOperation.OperationType.Confirmation.value())
+    when (status) {
+      AccidentRegister.Status.Draft -> query.setParameter("accidentDraftTodo", AccidentDraft.Status.Todo.value())
+      AccidentRegister.Status.ToCheck -> {
+        query.setParameter("accidentDraftDone", AccidentDraft.Status.Done.value())
+          .setParameter("accidentRegisterToCheck", AccidentRegister.Status.ToCheck.value())
+      }
+      null -> {
+        query.setParameter("accidentDraftTodo", AccidentDraft.Status.Todo.value())
+          .setParameter("accidentDraftDone", AccidentDraft.Status.Done.value())
+          .setParameter("accidentRegisterToCheck", AccidentRegister.Status.ToCheck.value())
+      }
+      else -> throw IllegalArgumentException("指定的状态条件 $status 不在允许的范围内！")
+    }
+    return Flux.fromIterable(query.resultList as List<AccidentRegisterDto4Todo>)
   }
 
   override fun findChecked(pageNo: Int, pageSize: Int, status: AccidentRegister.Status?, search: String?)
