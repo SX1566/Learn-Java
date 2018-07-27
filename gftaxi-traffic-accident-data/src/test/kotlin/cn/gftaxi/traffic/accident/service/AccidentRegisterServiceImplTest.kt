@@ -5,6 +5,7 @@ import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Checked
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
+import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType.Official
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.*
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -80,7 +81,7 @@ class AccidentRegisterServiceImplTest @Autowired constructor(
     return AccidentRegisterDto4Todo(code = code,
       carPlate = "粤A.00001",
       driverName = "driver1",
-      outsideDriver = false,
+      driverType = Official,
       happenTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset),
       hitForm = "车辆间事故",
       hitType = "追尾碰撞",
@@ -180,18 +181,17 @@ class AccidentRegisterServiceImplTest @Autowired constructor(
   }
 
   private fun randomCheckedDto(code: String): AccidentRegisterDto4Checked {
+    val now = OffsetDateTime.now()
     return AccidentRegisterDto4Checked(
       code = code,
       carPlate = "粤A.00001",
       driverName = "driver1",
-      outsideDriver = false,
+      driverType = Official,
+      happenTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset),
       checkedResult = Status.Approved,
-      checkedComment = null,
       checkerName = "gftaxi",
       checkedCount = 1,
-      checkedTime = OffsetDateTime.now(),
-      attachmentName = null,
-      attachmentId = null
+      checkedTime = OffsetDateTime.now()
     )
   }
 }

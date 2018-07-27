@@ -1,9 +1,13 @@
 package cn.gftaxi.traffic.accident.dto
 
+import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Approved
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Rejected
+import cn.gftaxi.traffic.accident.po.converter.AccidentRegisterStatusConverter
+import cn.gftaxi.traffic.accident.po.converter.DriverTypeConverter
 import java.time.OffsetDateTime
+import javax.persistence.Convert
 import javax.persistence.Entity
 import javax.persistence.Id
 
@@ -14,15 +18,18 @@ import javax.persistence.Id
  */
 @Entity
 data class AccidentRegisterDto4Checked constructor(
-  @Id val code: String,
+  @Id val id: Int? = null,
+  val code: String,
   val carPlate: String,
   val driverName: String,
-  /** 是否非编司机 */
-  val outsideDriver: Boolean,
+  @Convert(converter = DriverTypeConverter::class)
+  val driverType: DriverType,
+  val happenTime: OffsetDateTime,
   /** 审核结果：[Approved] 或 [Rejected] */
+  @Convert(converter = AccidentRegisterStatusConverter::class)
   val checkedResult: Status,
   /** 审核意见 */
-  val checkedComment: String?,
+  val checkedComment: String? = null,
   /** 审核人姓名 */
   val checkerName: String,
   /** 审核次数 */
@@ -30,7 +37,7 @@ data class AccidentRegisterDto4Checked constructor(
   /** 审核时间 */
   val checkedTime: OffsetDateTime,
   /** 附件名称 */
-  val attachmentName: String?,
+  val attachmentName: String? = null,
   /** 附件 ID */
-  val attachmentId: String?
+  val attachmentId: String? = null
 )

@@ -47,11 +47,11 @@ data class AccidentOperation(
    */
   val tag: Int = 0,
   /** 操作结果描述，如可以作为审核意见、审计日志描述等 */
-  val comment: String?,
+  val comment: String? = null,
   /** 附件ID */
-  val attachmentId: String?,
+  val attachmentId: String? = null,
   /** 附件名称 */
-  val attachmentName: String?
+  val attachmentName: String? = null
 ) {
   /**
    * 操作类型。

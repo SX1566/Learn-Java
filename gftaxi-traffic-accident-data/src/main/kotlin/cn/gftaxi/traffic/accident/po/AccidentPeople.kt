@@ -8,9 +8,13 @@ import javax.persistence.*
  * 事故当事人 PO。
  *
  * @author JF
+ * @author RJ
  */
 @Entity
-@Table(name = "gf_accident_people")
+@Table(
+  name = "gf_accident_people",
+  uniqueConstraints = [UniqueConstraint(columnNames = ["pid", "name"])]
+)
 data class AccidentPeople constructor(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,41 +25,38 @@ data class AccidentPeople constructor(
   val parent: AccidentRegister,
   /** 同一事故内的序号 */
   val sn: Short,
-  /** 车辆分类：自车、三者 */
-  @Column(length = 50)
-  val type: String,
   /** 姓名 */
   @Column(length = 50)
   val name: String,
+  /** 分类 */
+  @Column(length = 50)
+  val type: String? = null,
   /** 性别 */
-  val sex: Sex,
+  val sex: Sex = Sex.NotSet,
   /** 联系电话 */
   @Column(length = 50)
-  val phone: String?,
+  val phone: String? = null,
   /** 交通方式 */
   @Column(length = 50)
-  val transportType: String?,
+  val transportType: String? = null,
   /** 事故责任 */
   @Column(length = 50)
-  val duty: String?,
-  /** 人员情况 */
-  @Column(length = 50)
-  val personState: String?,
+  val duty: String? = null,
   /** 伤亡情况 */
   @Column(length = 50)
-  val damageState: String?,
+  val damageState: String? = null,
   /** 损失预估（元） */
   @Column(precision = 10, scale = 2)
-  val damageMoney: BigDecimal?,
+  val damageMoney: BigDecimal? = null,
   /** 医疗费用（元） */
   @Column(precision = 10, scale = 2)
-  val treatmentMoney: BigDecimal?,
+  val treatmentMoney: BigDecimal? = null,
   /** 赔偿损失（元） */
   @Column(precision = 10, scale = 2)
-  val compensateMoney: BigDecimal?,
+  val compensateMoney: BigDecimal? = null,
   /** 跟进形式 */
   @Column(length = 50)
-  val followType: String?,
+  val followType: String? = null,
   /** 更新时间 */
   val updatedTime: OffsetDateTime
 ) {

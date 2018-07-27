@@ -8,9 +8,13 @@ import javax.persistence.*
  * 事故其他物体 PO。
  *
  * @author JF
+ * @author RJ
  */
 @Entity
-@Table(name = "gf_accident_other")
+@Table(
+  name = "gf_accident_other",
+  uniqueConstraints = [UniqueConstraint(columnNames = ["pid", "name"])]
+)
 data class AccidentOther constructor(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,12 +25,12 @@ data class AccidentOther constructor(
   val parent: AccidentRegister,
   /** 同一事故内的序号 */
   val sn: Short,
-  /** 物品分类 */
-  @Column(length = 50)
-  val type: String,
-  /** 物品名称 */
+  /** 名称 */
   @Column(length = 50)
   val name: String,
+  /** 分类 */
+  @Column(length = 50)
+  val type: String,
   /** 归属 */
   @Column(length = 50)
   val belong: String?,
