@@ -33,10 +33,12 @@ class FindCheckedHandler @Autowired constructor(
           "pageSize" to it.pageable.pageSize,
           "rows" to it.content.map {
             mapOf(
+              "id" to it.id,
               "code" to it.code,
               "carPlate" to it.carPlate,
               "driverName" to it.driverName,
-              "outsideDriver" to it.outsideDriver,
+              "driverType" to it.driverType.name,
+              "happenTime" to it.happenTime.format(formatter),
               "checkedResult" to it.checkedResult.name,
               "checkedComment" to it.checkedComment,
               "checkerName" to it.checkerName,

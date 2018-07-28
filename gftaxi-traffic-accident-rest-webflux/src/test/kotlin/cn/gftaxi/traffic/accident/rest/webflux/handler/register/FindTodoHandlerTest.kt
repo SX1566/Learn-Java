@@ -1,6 +1,7 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.register
 
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
+import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType.Official
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Draft
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.ToCheck
@@ -15,7 +16,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import org.springframework.test.web.reactive.server.WebTestClient.bindToRouterFunction
 import org.springframework.web.reactive.config.EnableWebFlux
-import org.springframework.web.reactive.function.server.RouterFunctions
+import org.springframework.web.reactive.function.server.RouterFunctions.route
 import reactor.core.publisher.Flux
 import java.time.OffsetDateTime
 
@@ -31,13 +32,13 @@ class FindTodoHandlerTest @Autowired constructor(
   handler: FindTodoHandler,
   private val accidentRegisterService: AccidentRegisterService
 ) {
-  private val client = bindToRouterFunction(RouterFunctions.route(REQUEST_PREDICATE, handler)).build()
+  private val client = bindToRouterFunction(route(REQUEST_PREDICATE, handler)).build()
   private fun randomDto(code: String): AccidentRegisterDto4Todo {
     val now = OffsetDateTime.now()
     return AccidentRegisterDto4Todo(code = code,
       carPlate = "粤A.00001",
       driverName = "driver1",
-      outsideDriver = false,
+      driverType = Official,
       happenTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset),
       hitForm = "车辆间事故",
       hitType = "追尾碰撞",

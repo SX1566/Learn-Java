@@ -1,6 +1,7 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.register
 
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Checked
+import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType.Official
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Approved
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Rejected
@@ -17,7 +18,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import org.springframework.test.web.reactive.server.WebTestClient.bindToRouterFunction
 import org.springframework.web.reactive.config.EnableWebFlux
-import org.springframework.web.reactive.function.server.RouterFunctions
+import org.springframework.web.reactive.function.server.RouterFunctions.route
 import reactor.core.publisher.Mono
 import java.time.OffsetDateTime
 
@@ -33,21 +34,21 @@ class FindCheckedHandlerTest @Autowired constructor(
   handler: FindCheckedHandler,
   private val accidentRegisterService: AccidentRegisterService
 ) {
-  private val client = bindToRouterFunction(RouterFunctions.route(REQUEST_PREDICATE, handler)).build()
+  private val client = bindToRouterFunction(route(REQUEST_PREDICATE, handler)).build()
 
   private fun randomDto(code: String): AccidentRegisterDto4Checked {
+    val now = OffsetDateTime.now()
     return AccidentRegisterDto4Checked(
       code = code,
       carPlate = "粤A.00001",
       driverName = "driver1",
-      outsideDriver = false,
+      driverType = Official,
+      happenTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset),
       checkedResult = Approved,
       checkedComment = null,
       checkerName = "gftaxi",
       checkedCount = 1,
-      checkedTime = OffsetDateTime.now(),
-      attachmentName = null,
-      attachmentId = null
+      checkedTime = OffsetDateTime.now()
     )
   }
 
