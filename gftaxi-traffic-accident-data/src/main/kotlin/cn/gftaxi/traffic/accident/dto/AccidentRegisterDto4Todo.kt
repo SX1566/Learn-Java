@@ -19,7 +19,7 @@ data class AccidentRegisterDto4Todo constructor(
   val carPlate: String,
   val driverName: String,
   @Convert(converter = DriverTypeConverter::class)
-  val driverType: DriverType,
+  val driverType: DriverType? = null, // 未登记的案件该值未知
   val happenTime: OffsetDateTime,
   val hitForm: String,
   val hitType: String,

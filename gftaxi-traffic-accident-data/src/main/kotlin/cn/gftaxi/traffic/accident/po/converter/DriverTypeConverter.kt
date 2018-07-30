@@ -12,16 +12,17 @@ import javax.persistence.Converter
  * @author RJ
  */
 @Converter(autoApply = true)
-class DriverTypeConverter : AttributeConverter<DriverType, Short> {
-  override fun convertToDatabaseColumn(attribute: DriverType): Short {
-    return attribute.value()
+class DriverTypeConverter : AttributeConverter<DriverType?, Short?> {
+  override fun convertToDatabaseColumn(attribute: DriverType?): Short? {
+    return attribute?.value()
   }
 
-  override fun convertToEntityAttribute(dbData: Short): DriverType {
+  override fun convertToEntityAttribute(dbData: Short?): DriverType? {
     return when (dbData) {
       Official.value() -> Official
       Shift.value() -> Shift
       Outside.value() -> Outside
+      null -> null
       else -> throw IllegalArgumentException("无法转换值 '$dbData' 为 AccidentRegister.DriverType。")
     }
   }
