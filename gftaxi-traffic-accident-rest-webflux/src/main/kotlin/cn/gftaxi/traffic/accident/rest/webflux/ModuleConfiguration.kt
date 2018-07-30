@@ -1,6 +1,7 @@
 package cn.gftaxi.traffic.accident.rest.webflux
 
 import cn.gftaxi.traffic.accident.rest.webflux.handler.AccidentDraftHandler
+import cn.gftaxi.traffic.accident.rest.webflux.handler.FindAllSecondaryCategoriesHandler
 import cn.gftaxi.traffic.accident.rest.webflux.handler.FindSecondaryCategoriesHandler
 import cn.gftaxi.traffic.accident.rest.webflux.handler.register.StatSummaryHandler
 import org.slf4j.LoggerFactory
@@ -33,7 +34,8 @@ class ModuleConfiguration @Autowired constructor(
   private val findSecondaryCategoriesHandler: FindSecondaryCategoriesHandler,
   @Value("\${app.version.traffic-accident:NOT_SET}") private val version: String,
   private val accidentDraftHandler: AccidentDraftHandler,
-  private val accidentRegisterStatSummaryHandler: StatSummaryHandler
+  private val accidentRegisterStatSummaryHandler: StatSummaryHandler,
+  private val findAllSecondaryCategoriesHandler: FindAllSecondaryCategoriesHandler
 ) {
   private val logger = LoggerFactory.getLogger(ModuleConfiguration::class.java)
 
@@ -48,6 +50,8 @@ class ModuleConfiguration @Autowired constructor(
     contextPath.nest {
       // GET /category/{sn}/children 获取指定一级分类下的二级分类列表（按一级分类的编码）
       FindSecondaryCategoriesHandler.REQUEST_PREDICATE.invoke(findSecondaryCategoriesHandler::handle)
+      // GET /category/group 获取按一级分类编码分组的所有二级分类列表
+      FindAllSecondaryCategoriesHandler.REQUEST_PREDICATE.invoke(findAllSecondaryCategoriesHandler::handle)
 
       //==== 事故报案相关 ====
       // GET /accident-draft 获取事故报案独立视图的分页数据
