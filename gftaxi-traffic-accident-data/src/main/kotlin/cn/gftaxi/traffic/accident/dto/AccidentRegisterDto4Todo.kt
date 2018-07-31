@@ -1,6 +1,9 @@
 package cn.gftaxi.traffic.accident.dto
 
+import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType
+import cn.gftaxi.traffic.accident.po.converter.DriverTypeConverter
 import java.time.OffsetDateTime
+import javax.persistence.Convert
 import javax.persistence.Entity
 import javax.persistence.Id
 
@@ -11,10 +14,12 @@ import javax.persistence.Id
  */
 @Entity
 data class AccidentRegisterDto4Todo constructor(
-  @Id val code: String,
+  @Id val id: Int? = null,
+  val code: String,
   val carPlate: String,
   val driverName: String,
-  val outsideDriver: Boolean,
+  @Convert(converter = DriverTypeConverter::class)
+  val driverType: DriverType? = null, // 未登记的案件该值未知
   val happenTime: OffsetDateTime,
   val hitForm: String,
   val hitType: String,
@@ -23,8 +28,8 @@ data class AccidentRegisterDto4Todo constructor(
   val authorId: String,
   val reportTime: OffsetDateTime,
   val overdueReport: Boolean,
-  val registerTime: OffsetDateTime?,
-  val overdueRegister: Boolean?,
-  /** 提交审核时间 */
-  val submitTime: OffsetDateTime?
+  val registerTime: OffsetDateTime? = null,
+  val overdueRegister: Boolean? = null,
+  /** 最后提交审核时间 */
+  val submitTime: OffsetDateTime? = null
 )

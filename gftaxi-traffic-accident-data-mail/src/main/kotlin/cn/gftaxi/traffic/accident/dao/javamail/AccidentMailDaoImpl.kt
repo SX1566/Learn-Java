@@ -1,5 +1,6 @@
 package cn.gftaxi.traffic.accident.dao.javamail
 
+import cn.gftaxi.traffic.accident.Utils.FORMAT_DATE_TIME_TO_MINUTE
 import cn.gftaxi.traffic.accident.dao.AccidentMailDao
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
 import com.sun.mail.imap.IMAPFolder
@@ -15,7 +16,6 @@ import java.io.File
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.mail.*
 import javax.mail.internet.InternetAddress
@@ -124,7 +124,6 @@ class AccidentMailDaoImpl @Autowired constructor(
     return result
   }
 
-  private val happenTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
   private fun message2Dto(message: Message): AccidentDraftDto4Submit {
     val sender = message.from[0] as InternetAddress
 
@@ -157,7 +156,7 @@ class AccidentMailDaoImpl @Autowired constructor(
       carPlate = map["carPlate"] as String,
       driverName = map["driverName"] as String,
       happenTime = OffsetDateTime.of(
-        LocalDateTime.parse(map["happenTime"] as String, happenTimeFormatter),
+        LocalDateTime.parse(map["happenTime"] as String, FORMAT_DATE_TIME_TO_MINUTE),
         OffsetDateTime.now().offset
       ),
       location = map["location"] as String,

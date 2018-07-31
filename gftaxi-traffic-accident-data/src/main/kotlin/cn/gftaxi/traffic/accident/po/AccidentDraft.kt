@@ -22,20 +22,17 @@ data class AccidentDraft(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Int? = null,
-  /**
-   * 事故编号
-   * 格式为 yyyyMMdd_nn'
-   * */
+  /** 事故编号，格式为 yyyyMMdd_nn */
   @Column(unique = true, length = 11)
   val code: String,
   /** 状态 */
   @Convert(converter = AccidentDraftStatusConverter::class)
   val status: Status,
-  /** 事故车号，如 "粤A123456" */
-  @Column(length = 8)
+  /** 事故车号，如 "粤A.12345" */
+  @Column(length = 10)
   val carPlate: String,
   /** 当事司机 */
-  @Column(length = 8)
+  @Column(length = 10)
   val driverName: String,
   /** 事发时间 */
   val happenTime: OffsetDateTime,
@@ -46,10 +43,10 @@ data class AccidentDraft(
   val location: String,
   /** 事故形态 */
   @Column(length = 50)
-  val hitForm: String,
+  val hitForm: String? = null,
   /** 碰撞类型 */
   @Column(length = 50)
-  val hitType: String,
+  val hitType: String? = null,
   /** 是否逾期报案 */
   val overdue: Boolean,
   /** 报案来源：BC-BC系统Web端、MAIL-邮件、WEIXIN-微信、SMS-短信、{appId}-应用ID */
@@ -62,7 +59,7 @@ data class AccidentDraft(
   @Column(length = 50)
   val authorId: String,
   /** 简要描述 */
-  val describe: String?
+  val describe: String? = null
 ) : Serializable {
   companion object {
     /** 查询报案信息角色 */

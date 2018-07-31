@@ -8,9 +8,13 @@ import javax.persistence.*
  * 事故当事车辆 PO。
  *
  * @author JF
+ * @author RJ
  */
 @Entity
-@Table(name = "gf_accident_car")
+@Table(
+  name = "gf_accident_car",
+  uniqueConstraints = [UniqueConstraint(columnNames = ["pid", "plate"])]
+)
 data class AccidentCar constructor(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,15 +25,15 @@ data class AccidentCar constructor(
   val parent: AccidentRegister,
   /** 同一事故内的序号 */
   val sn: Short,
-  /** 车辆分类：自车、三者 */
+  /** 车号，如 粤A.123456 */
+  @Column(length = 10)
+  val plate: String,
+  /** 分类 */
   @Column(length = 50)
   val type: String,
-  /** 车号，如 粤A123456 */
-  @Column(length = 8)
-  val carPlate: String,
   /** 车型：出租车、小轿车、... */
   @Column(length = 50)
-  val carType: String,
+  val model: String,
   /** 拖车次数 */
   val towCount: Short?,
   /** 拖车费（元） */
