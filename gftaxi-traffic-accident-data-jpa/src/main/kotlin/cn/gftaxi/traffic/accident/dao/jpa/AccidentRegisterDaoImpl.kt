@@ -17,8 +17,8 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit.DAYS
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
@@ -49,12 +49,12 @@ class AccidentRegisterDaoImpl @Autowired constructor(
 
   @Suppress("UNCHECKED_CAST")
   override fun statSummary(): Flux<AccidentRegisterDto4StatSummary> {
-    val now = LocalDate.now()
-    val lastMonth = now.minusMonths(1).format(DateTimeFormatter.ofPattern("yyyy-MM-01 00:00:00"))
-    val currentMonth = now.format(DateTimeFormatter.ofPattern("yyyy-MM-01 00:00:00"))
-    val nextMonth = now.plusMonths(1).format(DateTimeFormatter.ofPattern("yyyy-MM-01 00:00:00"))
-    val currentYear = now.format(DateTimeFormatter.ofPattern("yyyy-01-01 00:00:00"))
-    val nextYear = now.plusYears(1).format(DateTimeFormatter.ofPattern("yyyy-01-01 00:00:00"))
+    val now = OffsetDateTime.now().truncatedTo(DAYS)     // zero times
+    val currentMonth = now.withDayOfMonth(1)             // yyyy-MM-01 00:00:00
+    val lastMonth = currentMonth.minusMonths(1)          // yyyy-MM-01 00:00:00
+    val nextMonth = currentMonth.plusMonths(1)           // yyyy-MM-01 00:00:00
+    val currentYear = currentMonth.withMonth(1)          // yyyy-01-01 00:00:00
+    val nextYear = currentYear.plusYears(1)              // yyyy-01-01 00:00:00
     val sql = buildStatSummaryRowSqlByHappenTimeRange("本月", "currentMonth", "nextMonth") +
       "\nunion all\n" +
       buildStatSummaryRowSqlByHappenTimeRange("上月", "lastMonth", "currentMonth") +
