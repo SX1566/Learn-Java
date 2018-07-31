@@ -29,7 +29,7 @@ class FindTodoHandler @Autowired constructor(
           "code" to it.code,
           "carPlate" to it.carPlate,
           "driverName" to it.driverName,
-          "driverType" to it.driverType.name,
+          "driverType" to it.driverType?.name,
           "happenTime" to it.happenTime.format(formatter),
           "authorName" to it.authorName,
           "authorId" to it.authorId,
