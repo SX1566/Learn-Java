@@ -87,6 +87,7 @@ insert into bc_identity_role_resource (rid, sid)
 
 -- 用户与角色的关联
 with captain_motorcade(cap_array) as (
+  -- 一分、二分两个分公司各个车队的车队长
   select regexp_split_to_array(string_agg(a.code,','),',') from bc_identity_actor a
   inner join bs_motorcade m on m.principal_id = a.id and (m.name like '一分%' or m.name like '二分%')
     and m.status_ = 0
