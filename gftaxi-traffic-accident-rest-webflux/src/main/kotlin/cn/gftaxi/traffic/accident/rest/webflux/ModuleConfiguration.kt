@@ -3,6 +3,8 @@ package cn.gftaxi.traffic.accident.rest.webflux
 import cn.gftaxi.traffic.accident.rest.webflux.handler.AccidentDraftHandler
 import cn.gftaxi.traffic.accident.rest.webflux.handler.FindAllSecondaryCategoriesHandler
 import cn.gftaxi.traffic.accident.rest.webflux.handler.FindSecondaryCategoriesHandler
+import cn.gftaxi.traffic.accident.rest.webflux.handler.register.FindTodoHandler
+import cn.gftaxi.traffic.accident.rest.webflux.handler.register.FindCheckedHandler
 import cn.gftaxi.traffic.accident.rest.webflux.handler.register.StatSummaryHandler
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -35,6 +37,8 @@ class ModuleConfiguration @Autowired constructor(
   @Value("\${app.version.traffic-accident:NOT_SET}") private val version: String,
   private val accidentDraftHandler: AccidentDraftHandler,
   private val accidentRegisterStatSummaryHandler: StatSummaryHandler,
+  private val accidentRegisterFindTodoHandler: FindTodoHandler,
+  private val accidentRegisterFindCheckedHandler: FindCheckedHandler,
   private val findAllSecondaryCategoriesHandler: FindAllSecondaryCategoriesHandler
 ) {
   private val logger = LoggerFactory.getLogger(ModuleConfiguration::class.java)
@@ -66,12 +70,16 @@ class ModuleConfiguration @Autowired constructor(
       //==== 事故登记相关 ====
       // GET /accident-register/stat/summary 获取汇总统计信息
       StatSummaryHandler.REQUEST_PREDICATE.invoke(accidentRegisterStatSummaryHandler::handle)
+      // GET /accident-register/todo         获取待登记、待审核案件信息
+      FindTodoHandler.REQUEST_PREDICATE.invoke(accidentRegisterFindTodoHandler::handle)
+      // GET /accident-register/checked      获取已审核案件信息
+      FindCheckedHandler.REQUEST_PREDICATE.invoke(accidentRegisterFindCheckedHandler::handle)
 
       //==== 全局 ====
       // GET
       GET("/", { ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).syncBody("gftaxi-traffic-accident module v$version") })
       // OPTIONS /*
-      OPTIONS("/**", { ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).syncBody("options") })
+      OPTIONS("/**", { ServerResponse.noContent().build() })
     }
   }
 }
