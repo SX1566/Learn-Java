@@ -1,5 +1,6 @@
 package cn.gftaxi.traffic.accident.dao.jpa
 
+import cn.gftaxi.traffic.accident.Utils.FORMAT_TO_YYYYMMDD
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentOperation
 import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType
@@ -9,7 +10,6 @@ import cn.gftaxi.traffic.accident.po.AccidentRegister
 import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType
 import org.slf4j.LoggerFactory
 import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 import javax.persistence.EntityManager
 
 /**
@@ -19,7 +19,6 @@ import javax.persistence.EntityManager
  */
 object POUtils {
   private val logger = LoggerFactory.getLogger(POUtils::class.java)
-  val ymdFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")!!
   private var currentCode: Int = 0
 
   /** 获取下一个事故编号 */
@@ -222,7 +221,7 @@ object POUtils {
     var happenTime = baseTime.plusHours((++minus) * dir)
     accidentRegisters[AccidentRegister.Status.Draft] = randomAccidentRegisterRecord(
       em = em,
-      code = nextCode(happenTime.format(ymdFormatter)),
+      code = nextCode(happenTime.format(FORMAT_TO_YYYYMMDD)),
       status = AccidentRegister.Status.Draft,
       happenTime = happenTime,
       driverType = DriverType.Official
@@ -232,7 +231,7 @@ object POUtils {
     happenTime = baseTime.plusHours((++minus) * dir)
     accidentRegisters[AccidentRegister.Status.ToCheck] = randomAccidentRegisterRecord(
       em = em,
-      code = nextCode(happenTime.format(ymdFormatter)),
+      code = nextCode(happenTime.format(FORMAT_TO_YYYYMMDD)),
       status = AccidentRegister.Status.ToCheck,
       happenTime = happenTime,
       driverType = DriverType.Shift,
@@ -243,7 +242,7 @@ object POUtils {
     happenTime = baseTime.plusHours((++minus) * dir)
     accidentRegisters[AccidentRegister.Status.Rejected] = randomAccidentRegisterRecord(
       em = em,
-      code = nextCode(happenTime.format(ymdFormatter)),
+      code = nextCode(happenTime.format(FORMAT_TO_YYYYMMDD)),
       status = AccidentRegister.Status.Rejected,
       happenTime = happenTime,
       driverType = DriverType.Outside,
@@ -254,7 +253,7 @@ object POUtils {
     happenTime = baseTime.plusHours((++minus) * dir)
     accidentRegisters[AccidentRegister.Status.Approved] = randomAccidentRegisterRecord(
       em = em,
-      code = nextCode(happenTime.format(ymdFormatter)),
+      code = nextCode(happenTime.format(FORMAT_TO_YYYYMMDD)),
       status = AccidentRegister.Status.Approved,
       happenTime = happenTime,
       driverType = DriverType.Official,

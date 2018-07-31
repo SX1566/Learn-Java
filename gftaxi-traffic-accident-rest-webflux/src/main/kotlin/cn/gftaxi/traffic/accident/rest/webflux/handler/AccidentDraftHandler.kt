@@ -1,5 +1,6 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler
 
+import cn.gftaxi.traffic.accident.Utils.FORMAT_DATE_TIME_TO_MINUTE
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Modify
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
 import cn.gftaxi.traffic.accident.po.AccidentDraft
@@ -24,8 +25,6 @@ import javax.json.Json
 class AccidentDraftHandler @Autowired constructor(
   private val accidentDraftService: AccidentDraftService
 ) {
-  private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-
   fun find(request: ServerRequest): Mono<ServerResponse> {
     val pageNo = request.queryParam("pageNo").orElse("1").toInt()
     val pageSize = request.queryParam("pageSize").orElse("25").toInt()
@@ -43,8 +42,8 @@ class AccidentDraftHandler @Autowired constructor(
               "status" to it.status.name,
               "carPlate" to it.carPlate,
               "driverName" to it.driverName,
-              "happenTime" to it.happenTime.format(DATE_TIME_FORMATTER),
-              "reportTime" to it.reportTime.format(DATE_TIME_FORMATTER),
+              "happenTime" to it.happenTime.format(FORMAT_DATE_TIME_TO_MINUTE),
+              "reportTime" to it.reportTime.format(FORMAT_DATE_TIME_TO_MINUTE),
               "location" to it.location,
               "hitForm" to it.hitForm,
               "hitType" to it.hitType,
@@ -68,8 +67,8 @@ class AccidentDraftHandler @Autowired constructor(
           "status" to it.status.name,
           "carPlate" to it.carPlate,
           "driverName" to it.driverName,
-          "happenTime" to it.happenTime.format(DATE_TIME_FORMATTER),
-          "reportTime" to it.reportTime.format(DATE_TIME_FORMATTER),
+          "happenTime" to it.happenTime.format(FORMAT_DATE_TIME_TO_MINUTE),
+          "reportTime" to it.reportTime.format(FORMAT_DATE_TIME_TO_MINUTE),
           "location" to it.location,
           "hitForm" to it.hitForm,
           "hitType" to it.hitType,
@@ -86,7 +85,7 @@ class AccidentDraftHandler @Autowired constructor(
   fun submit(request: ServerRequest): Mono<ServerResponse> {
     return request.bodyToMono<Map<String, String>>()
       .flatMap {
-        val dto =  AccidentDraftDto4Submit(
+        val dto = AccidentDraftDto4Submit(
           it["carPlate"]!!, it["driverName"]!!, toOffsetDateTime(it["happenTime"]!!), it["location"]!!,
           it["hitForm"]!!, it["hitType"]!!, if (it.size == 10) it["describe"]!! else "", it["source"]!!,
           it["authorName"]!!, it["authorId"]!!, OffsetDateTime.now()
@@ -96,7 +95,7 @@ class AccidentDraftHandler @Autowired constructor(
             accidentDraftService.submit(dto).map {
               val body = Json.createObjectBuilder()
               body.add("code", it)
-              body.add("reportTime", dto.reportTime.format(DATE_TIME_FORMATTER))
+              body.add("reportTime", dto.reportTime.format(FORMAT_DATE_TIME_TO_MINUTE))
               body.build().toString()
             })
       }

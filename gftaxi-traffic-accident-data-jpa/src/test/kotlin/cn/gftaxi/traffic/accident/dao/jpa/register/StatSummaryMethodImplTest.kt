@@ -1,5 +1,6 @@
 package cn.gftaxi.traffic.accident.dao.jpa.register
 
+import cn.gftaxi.traffic.accident.Utils.FORMAT_TO_YYYYMMDD
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.dao.jpa.ModuleConfiguration
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.nextCode
@@ -17,7 +18,6 @@ import reactor.test.StepVerifier
 import java.time.Month
 import java.time.OffsetDateTime
 import java.time.Year
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
@@ -72,7 +72,7 @@ class StatSummaryMethodImplTest @Autowired constructor(
     logger.debug("==============year=${year.value}, month=${month.value}")
     val now = OffsetDateTime.now()
     val ymTime = OffsetDateTime.of(year.value, month.value, 1, now.hour, now.minute, 0, 0, now.offset)
-    val ymd = ymTime.format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+    val ymd = ymTime.format(FORMAT_TO_YYYYMMDD)
     var total = 0
     var checked = 0
     var checking = 0

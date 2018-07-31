@@ -1,11 +1,11 @@
 package cn.gftaxi.traffic.accident.dao.jpa.register
 
+import cn.gftaxi.traffic.accident.Utils.FORMAT_TO_YYYYMMDD
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.dao.jpa.ModuleConfiguration
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.nextCode
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentDraft
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentRegisterRecord4EachStatus
-import cn.gftaxi.traffic.accident.dao.jpa.POUtils.ymdFormatter
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentOperation
@@ -46,7 +46,7 @@ class FindTodoMethodImplTest @Autowired constructor(
 
     // 仅报案案件(未有登记信息) 1 宗
     onlyReportRecord = randomAccidentDraft(
-      code = nextCode(baseTime.format(ymdFormatter)),
+      code = nextCode(baseTime.format(FORMAT_TO_YYYYMMDD)),
       status = AccidentDraft.Status.Todo,
       happenTime = baseTime,
       overdue = false

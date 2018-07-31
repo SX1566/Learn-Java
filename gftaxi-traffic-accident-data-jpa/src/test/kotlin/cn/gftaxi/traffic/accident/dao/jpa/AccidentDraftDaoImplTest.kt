@@ -1,5 +1,6 @@
 package cn.gftaxi.traffic.accident.dao.jpa
 
+import cn.gftaxi.traffic.accident.Utils.FORMAT_TO_YYYYMMDD
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentDraft.Status
@@ -10,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import reactor.test.StepVerifier
 import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
@@ -159,7 +159,7 @@ class AccidentDraftDaoImplTest @Autowired constructor(
   fun nextCode() {
     // mock
     val now = OffsetDateTime.now()
-    val ymd = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+    val ymd = now.format(FORMAT_TO_YYYYMMDD)
 
     // invoke and verify
     StepVerifier.create(dao.nextCode(now)).expectNext("${ymd}_01").verifyComplete()

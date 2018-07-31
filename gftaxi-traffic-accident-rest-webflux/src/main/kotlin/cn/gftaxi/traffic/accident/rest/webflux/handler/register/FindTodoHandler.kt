@@ -1,5 +1,6 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.register
 
+import cn.gftaxi.traffic.accident.Utils.FORMAT_DATE_TIME_TO_MINUTE
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import org.springframework.beans.factory.annotation.Autowired
@@ -7,7 +8,6 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.*
 import reactor.core.publisher.Mono
-import java.time.format.DateTimeFormatter
 
 /**
  * 获取待登记、待审核案件信息的 [HandlerFunction]。
@@ -18,7 +18,6 @@ import java.time.format.DateTimeFormatter
 class FindTodoHandler @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService
 ) : HandlerFunction<ServerResponse> {
-  private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
     val statusStr = request.queryParam("status")
     val status = if (statusStr.isPresent) Status.valueOf(statusStr.get()) else null
@@ -30,17 +29,17 @@ class FindTodoHandler @Autowired constructor(
           "carPlate" to it.carPlate,
           "driverName" to it.driverName,
           "driverType" to it.driverType?.name,
-          "happenTime" to it.happenTime.format(formatter),
+          "happenTime" to it.happenTime.format(FORMAT_DATE_TIME_TO_MINUTE),
           "authorName" to it.authorName,
           "authorId" to it.authorId,
           "hitForm" to it.hitForm,
           "hitType" to it.hitType,
           "location" to it.location,
-          "reportTime" to it.reportTime.format(formatter),
+          "reportTime" to it.reportTime.format(FORMAT_DATE_TIME_TO_MINUTE),
           "overdueReport" to it.overdueReport,
-          "registerTime" to it.registerTime?.format(formatter),
+          "registerTime" to it.registerTime?.format(FORMAT_DATE_TIME_TO_MINUTE),
           "overdueRegister" to it.overdueRegister,
-          "submitTime" to it.submitTime?.format(formatter)
+          "submitTime" to it.submitTime?.format(FORMAT_DATE_TIME_TO_MINUTE)
         )
       }
     return ServerResponse.ok()

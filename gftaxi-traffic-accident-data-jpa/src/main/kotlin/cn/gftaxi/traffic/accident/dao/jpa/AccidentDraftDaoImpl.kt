@@ -1,5 +1,6 @@
 package cn.gftaxi.traffic.accident.dao.jpa
 
+import cn.gftaxi.traffic.accident.Utils.FORMAT_TO_YYYYMMDD
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
@@ -106,8 +106,7 @@ class AccidentDraftDaoImpl @Autowired constructor(
   }
 
   override fun nextCode(happenTime: OffsetDateTime): Mono<String> {
-    val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
-    val ymd = happenTime.format(formatter)
+    val ymd = happenTime.format(FORMAT_TO_YYYYMMDD)
     val code = "${ymd}_%"
     val hql = "select code from AccidentDraft where code like :code order by code desc"
     val preCodes = em.createQuery(hql, String::class.java).setParameter("code", code).setMaxResults(1).resultList
