@@ -15,7 +15,7 @@
   <packaging>pom</packaging>
   <description>Builder</description>
   <properties>
-    <revision>0.1.0-SNAPSHOT</revision>
+    <revision>0.2-SNAPSHOT</revision>
     <traffic-accident.version>${revision}</traffic-accident.version>
     <simter.version>0.5.0</simter.version>
     <simter-kv.version>0.1.0</simter-kv.version>
