@@ -82,7 +82,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
     val sql = """
       select d.id, d.code, d.car_plate, d.driver_name, d.happen_time, d.hit_form, d.hit_type,
       (case when r.id is null then null else r.driver_type end) driver_type,
-      (case when r.id is null then d.location else r.location_other end) location,
+      (case when r.id is null then d.location else r.location_other end) as location,
       d.author_name, d.author_id, d.report_time, d.overdue overdue_report,
       r.register_time, r.overdue overdue_register,
       (case when d.status = ${Todo.value()} then null else (
