@@ -1,5 +1,7 @@
 package cn.gftaxi.traffic.accident.starter.webflux
 
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
@@ -19,7 +21,10 @@ import java.time.OffsetDateTime
  */
 @Configuration
 @EnableWebFlux
-class WebFluxConfiguration : WebFluxConfigurer {
+class WebFluxConfiguration @Autowired constructor(
+  @Value("\${app.version.traffic-accident: UNKNOWN}")
+  private val version: String
+) : WebFluxConfigurer {
   /**
    * CORS config.
    *
@@ -44,7 +49,10 @@ class WebFluxConfiguration : WebFluxConfigurer {
   fun rootRoutes() = router {
     val now = OffsetDateTime.now()
     "/".nest {
-      GET("/", { ok().contentType(MediaType.TEXT_PLAIN).syncBody("GFTaxi traffic-accident Server. Start at $now") })
+      GET("/", {
+        ok().contentType(MediaType.TEXT_HTML)
+          .syncBody("<h2>GFTaxi traffic-accident Server</h2><div>Version : $version</div><div>Start at : $now</div>")
+      })
     }
   }
 }
