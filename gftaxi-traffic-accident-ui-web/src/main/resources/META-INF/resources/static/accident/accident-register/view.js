@@ -165,7 +165,11 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
             name: `${data.code} ${resourceName}`,
             data: data.code,
             afterClose: (status) => {
-              if (status) this.reload();
+              if (status) {
+                this.reloadStatSum();
+                this.reloadTodo();
+                this.reloadChecked();
+              }
             }
           });
         },

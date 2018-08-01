@@ -1,0 +1,280 @@
+define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], function (bc, bs, carMan, Vue, context, accident) {
+  "use strict";
+  let resourceKey = "accident-register";
+  let isRecorder = context.is("ACCIDENT_REGISTER_SUBMIT");
+  let isEditor = context.is("ACCIDENT_REGISTER_MODIFY");
+  let isChecker = context.is("ACCIDENT_REGISTER_CHECK");
+  let isManager = isRecorder || isEditor || isChecker;
+
+  function Page($page) {
+    this["vm"] = new Vue({
+      el: $page[0],
+      data: {
+        ui: {
+          isChecker: isChecker,
+          happenTime: "",
+          sexList: [{id: "Male", label: "男"}, {id: "Female", label: "女"}],
+          driverStates: [{id: "Official", label: "正班"}, {id: "Shift", label: "替班"}, {id: "Outside", label: "非编"}]
+        },
+        categories: {},
+        e: {status: "Draft"}
+      },
+      ready: function () {
+        let code = $page.data("data");
+        Vue.set(this.e, "code", code);
+        accident.getByModule(resourceKey, code).then(json => {
+          Vue.set(this, "e", json);
+          this.showHideButtons();
+          // 初始化"简要描述"栏自动行高
+          $page.parent().find(".autoHeight").keyup();
+        });
+        accident.categories.then(r => Vue.set(this, "categories", r));
+      },
+      watch: {
+        'ui.happenTime': function (value) {
+          Vue.set(this.e, "happenTime", value.replace("T", " "));
+        },
+        'e.happenTime': function (value) {
+          Vue.set(this.ui, "happenTime", value.replace(" ", "T"));
+        }
+      },
+      computed: {
+        isReadOnly: function () {
+          if (!isRecorder && !isEditor) return true; // 无登记和修改权限
+          else if (this.e.status === "Draft" && !isRecorder) return true; // 待登记状态但不是登记角色
+          // 已登记但不是修改角色
+          else if (["ToCheck", "Rejected", "Approved"].includes(this.e.status) && !isEditor) return true;
+          else return false;
+        },
+        driverTypeLabel: function () {
+          return this.ui.driverStates.find(d => d.id === this.e.driverType).label;
+        },
+        isShowRoadCategories: function () {
+          return !["财产1级", "财产2级"].includes(this.e.level)
+        }
+      },
+      components: {
+        "accident-cars-column-definitions": {template: $page.find("script[name=accident-cars-column-definitions]").html()},
+        "accident-people-column-definitions": {template: $page.find("script[name=accident-people-column-definitions]").html()},
+        "accident-other-column-definitions": {template: $page.find("script[name=accident-other-column-definitions]").html()}
+      },
+      methods: {
+        /**
+         * 保存表单
+         * @param option 回调函数
+         */
+        save: function (option) {
+          if (!bc.validator.validate($page)) return;
+          let isNew = !this.e.id;
+          let data = {};
+          let ignoreKeys = ["status", "historyAccidentCount", "historyTrafficOffenceCount",
+            "historyServiceOffenceCount", "historyComplainCount"];
+          // todo ignoreKeys 补上审核信息
+          Object.keys(this.e).forEach(key => {
+            if (ignoreKeys.includes(key)) return;
+            data[key] = this.e[key];
+          });
+
+          accident.save(resourceKey, this.e.id || null, data).then(result => {
+            if (isNew) Vue.set(this.e, "id", result.id);
+            if (typeof(option.afterSuccess) == "function") option.afterSuccess();
+            else {
+              bc.msg.slide("保存成功！");
+              $page.data("status", "saved");
+            }
+          });
+        },
+        /** 提交 */
+        submit: function () {
+          let url = `${resourceKey}/to-check/${this.e.id}`;
+          // 保存表单数据
+          this.save({
+            afterSuccess: function () {
+              accident.save(url).then(() => {
+                bc.msg.slide("提交成功！");
+                $page.data("status", "saved");
+                $page.dialog("close");  // 提交完成后关闭表单
+              })
+            }
+          })
+        },
+        /** 审核 */
+        check: function () {
+          let url = `${resourceKey}/check/${this.e.id}`;
+          let data = {
+            checkedResult: this.e.checkedResult,
+            checkedComment: this.e.checkedComment,
+            checkedAttachments: this.e.checkedAttachments
+          };
+          let check = function (data) {
+            accident.save(url, null, data).then(() => {
+              bc.msg.slide("审核完成！");
+              $page.data("status", "saved");
+              $page.dialog("close");  // 审核完成后关闭表单
+            });
+          };
+          if (isEditor) this.save({afterSuccess: check(data)});
+          else {
+            if (!bc.validator.validate($page)) return;
+            check(data);
+          }
+        },
+        /** 上传当事司机照片 */
+        uploadDriverPic: function () {
+          bc.msg.alert("功能开发中！");
+          // todo
+        },
+        /** 上传事故现场图 */
+        uploadAccidentPic: function () {
+          bc.msg.alert("功能开发中！");
+          //todo
+        },
+        /** 编辑事故现场图 */
+        editAccidentPic: function () {
+          bc.msg.alert("功能开发中！");
+          //todo
+        },
+        /** 上传事故附件 */
+        uploadAccidentAttachment: function () {
+          bc.msg.alert("功能开发中！");
+          //todo
+        },
+        /** 上传审核附件 */
+        uploadCheckedAttachment: function () {
+          bc.msg.alert("功能开发中！");
+          //todo
+        },
+        /** 选择车辆 */
+        selectCar: function () {
+          bs.selectCar({
+            vm: this,
+            multiple: false,
+            onOk: function (car) {
+              this.vm.clearCarInfo();
+              // 设置车辆和车队
+              Vue.set(this.vm.e, "carId", car.id);
+              Vue.set(this.vm.e, "carPlate", car.plate);
+              Vue.set(this.vm.e, "carModel", car.factoryModel);
+              Vue.set(this.vm.e, "carOperateDate", new Date(car.operateDate).format("yyyy-MM-dd"));
+              // todo：合同性质，承包司机
+            }
+          })
+        },
+        /** 选择司机 */
+        selectDriver: function () {
+          bs.selectDriver({
+            vm: this,
+            onOk: function (driver) {
+              this.vm.clearDriverInfo();
+              Vue.set(this.vm.e, "driverId", driver.id);
+              Vue.set(this.vm.e, "driverPicId", `s:${driver.uid}`);
+              Vue.set(this.vm.e, "driverName", driver.name);
+              Vue.set(this.vm.e, "driverServiceCode", driver.cert4FWZG);
+              Vue.set(this.vm.e, "driverIdentityCode", driver.certIndentity);
+              Vue.set(this.vm.e, "driverHiredDate", driver.workDate);
+              Vue.set(this.vm.e, "driverOrigin", driver.origin);
+              Vue.set(this.vm.e, "driverLicenseDate", driver.certDriverFirstDate);
+              Vue.set(this.vm.e, "driverPhone", !driver.phone ? driver.phone1 : driver.phone);
+              Vue.set(this.vm.e, "driverAge",
+                accident.calcInervalYear(new Date(driver.birthdate), new Date(this.vm.e.happenTime)));
+              Vue.set(this.vm.e, "driverDriveYears",
+                accident.calcInervalYear(new Date(driver.certDriverFirstDate), new Date(this.vm.e.happenTime)));
+              // todo 紧急联系人姓名，紧急俩人电话、驾驶类型
+            }
+          });
+        },
+        /** 清空车辆信息 */
+        clearCarInfo: function () {
+          let keys = ["carPlate", "carId", "motorcadeName", "carModel", "carOperateDate",
+            "carContractType", "carContractDrivers"];
+          keys.forEach(k => {
+            Vue.set(this.e, k, '');
+          });
+        },
+        /** 清空司机信息 */
+        clearDriverInfo: function () {
+          let keys = ["driverName", "driverId", "driverType", "driverLinkmanName", "driverLinkmanPhone",
+            "driverHiredDate", "driverPhone", "driverIdentityCode", "driverServiceCode", "driverOrigin",
+            "driverAge", "driverLicenseDate", "driverDriveYears", "driverPicId"];
+          keys.forEach(k => {
+            Vue.set(this.e, k, '');
+          });
+        },
+        /** 点击选择行 */
+        selectItem: function (item) {
+          // 只能选择可编辑的行
+          Vue.set(item, "selected", !item.selected);
+        },
+        /**
+         *  添加当事车辆、人和其他物行
+         *  @param module 需要添加行的模块，cars（当事车辆）、peoples（当事人）、others（其他物品）
+         */
+        addItem: function (module) {
+          this.e[module].push({updateTime: new Date().format("yyyy-MM-dd hh:mm")});
+        },
+        /**
+         * 移除应付项目
+         * @param module 需要添加行的模块，cars（当事车辆）、peoples（当事人）、others（其他物品）
+         */
+        removeItem: function (module) {
+          let selectedIndexes = [];
+          this.e[module].forEach((item, index) => item.selected && selectedIndexes.push(index));
+          if (selectedIndexes.length === 0) return;
+          bc.msg.confirm(`确定要删除选中的 <b>${selectedIndexes.length}</b> 项吗？`, () => {
+            // 按索引号倒序删除（因 splice 会修改原始数组的值）
+            selectedIndexes.reverse().forEach(index => this.e[module].splice(index, 1));
+          });
+        },
+        /**
+         * 上移应付项目
+         * @param module 需要添加行的模块，cars（当事车辆）、peoples（当事人）、others（其他物品）
+         */
+        moveUpItem: function (module) {
+          let selectedIndexes = [];
+          this.e[module].forEach((item, index) => item.selected && selectedIndexes.push(index));
+          if (selectedIndexes.length === 0) return;
+          if (selectedIndexes.length > 1) {
+            bc.msg.info('每次只可移动一项！');
+            return;
+          }
+          let index = selectedIndexes[0];
+          if (index === 0) return; // 第一条无法上移
+          this.e[module].splice(index - 1, 0, this.e[module].splice(index, 1)[0]); // 上移
+        },
+        /**
+         * 下移应付项目
+         * @param module 需要添加行的模块，cars（当事车辆）、peoples（当事人）、others（其他物品）
+         */
+        moveDownItem: function (module) {
+          let selectedIndexes = [];
+          this.e[module].forEach((item, index) => item.selected && selectedIndexes.push(index));
+          if (selectedIndexes.length === 0) return;
+          if (selectedIndexes.length > 1) {
+            bc.msg.info('每次只可移动一项！');
+            return;
+          }
+          let index = selectedIndexes[0];
+          if (index === this.e[module].length - 1) return; // 最后一条无法下移
+          this.e[module].splice(index + 1, 0, this.e[module].splice(index, 1)[0]); // 下移
+        },
+        // 初始化表单按钮
+        showHideButtons: function () {
+          if (!isManager) return;
+          if ((this.e.status === "Draft" && isRecorder) || (this.e.status !== "Draft" && isEditor))
+            $page.parent().find("button#save").show();
+          if (["Draft", "Rejected"].includes(this.e.status) && isRecorder) $page.parent().find("button#submit").show();
+          if (this.e.status === "ToCheck" && isChecker) $page.parent().find("button#check").show();
+        }
+      }
+    })
+  }
+
+  // 自定义窗口的 data-option 配置
+  Page.option = {width: 1100, minWidth: 1100, height: 830, minHeight: 830};
+  Page.option.buttons = [
+    {id: "save", text: "保存", click: "save", style: "display:none"},
+    {id: "submit", text: "确认提交", click: "submit", style: "display:none"},
+    {id: "check", text: "审核确认", click: "check", style: "display:none"}
+  ];
+  return Page;
+});
