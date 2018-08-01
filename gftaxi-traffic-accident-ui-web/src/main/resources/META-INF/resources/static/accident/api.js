@@ -9,7 +9,7 @@ define(["bc", "context"], function (bc, context) {
   let accidentStaticServer = `${bc.root}/static/accident`;  // 静态文件服务地址
   let fileDataServer = `${context.services.file.address}`;  // 文件服务器数据服务地址
 
-  /**
+    /**
    * 定义超时用的 Promise。
    * 使用方式：Promise.race([yourPromise, timeout(30000)])
    */
@@ -67,12 +67,18 @@ define(["bc", "context"], function (bc, context) {
     return url;
   }
 
+  let categories = cors(`${accidentDataServer}/category/group/`, "GET").then(r => {
+    return r
+  });
+
   //==== 一些常数定义 ====
   const api = {
     /** 数据服务地址 */
     dataServer: accidentDataServer,
     /** 前端静态文件服务地址 */
     staticServer: accidentStaticServer,
+    categories: categories,
+
 
     /**
      * 打开模块的表单窗口。
@@ -94,7 +100,7 @@ define(["bc", "context"], function (bc, context) {
     },
     /** 获取指定路径资源 */
     get: function (url, method, data) {
-      return cors(url,method,data);
+      return cors(url, method, data);
     },
     /**
      * 获取模块列表信息。
@@ -172,7 +178,7 @@ define(["bc", "context"], function (bc, context) {
      * @return {Promise}
      */
     findCategory: function (sn, includeDisabled) {
-      return  cors(`${accidentDataServer}/category/${sn}/children`, "GET", {"include-disabled": includeDisabled});
+      return cors(`${accidentDataServer}/category/${sn}/children`, "GET", {"include-disabled": includeDisabled});
     },
     /**
      * 在线查看附件
@@ -202,6 +208,15 @@ define(["bc", "context"], function (bc, context) {
       if (hours > 24) return `${Math.floor(hours / 24)}d${hours % 24}h`;
       else if (hours < 24) return `${hours % 24}h`;
       else return "1d";
+    },
+    /**
+     * 计算两个时间之间相差的年份
+     * @param startDate 开始时间
+     * @param endDate 结束事件
+     * @return string 相差的年份,精确到小数点后一位
+     */
+    calcInervalYear: function (startDate, endDate) {
+      return (this.calcInervalHour(startDate, endDate) / 24 / 365).toFixed(1);
     }
   };
   return api;
