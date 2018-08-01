@@ -131,7 +131,9 @@ define(["bc", "context"], function (bc, context) {
      * @return {Promise}
      */
     findCategory: function (sn, includeDisabled) {
-      return  cors(`${accidentDataServer}/category/${sn}/children`, "GET", {"include-disabled": includeDisabled});
+      let url = `${accidentDataServer}/category/${sn}/children`;
+      if (includeDisabled !== null) url = `${url}?include-disabled=${includeDisabled}`;
+      return cors(url, "GET");
     }
   };
   return api;
