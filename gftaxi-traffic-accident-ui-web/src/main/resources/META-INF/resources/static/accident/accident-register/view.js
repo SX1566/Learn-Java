@@ -3,7 +3,7 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
   let resourceKey = "accident-register";
   let resourceName = "事故登记";
 
-  let isRecorder = context.is("ACCIDENT_REGISTER_RECORD");
+  let isRecorder = context.is("ACCIDENT_REGISTER_SUBMIT");
   let isChecker = context.is("ACCIDENT_REGISTER_CHECK");
   let isAllRoles = isRecorder && isChecker;
 
@@ -172,7 +172,7 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
         /** 根据用户角色初始化待审核视图标题和状态 */
         initTodoView: function () {
           if (isAllRoles) {
-            this.todoView.title = "待登记/待审核：";
+            this.todoView.title = "待登记/待审核案件：";
             this.todoView.status = "";
           } else if (isRecorder) {
             this.todoView.title = "待登记/已登待审的案件：";
