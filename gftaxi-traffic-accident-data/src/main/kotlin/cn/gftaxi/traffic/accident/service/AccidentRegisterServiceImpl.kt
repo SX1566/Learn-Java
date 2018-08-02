@@ -2,6 +2,7 @@ package cn.gftaxi.traffic.accident.service
 
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Checked
+import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
@@ -39,5 +40,9 @@ class AccidentRegisterServiceImpl @Autowired constructor(
     : Mono<Page<AccidentRegisterDto4Checked>> {
     securityService.verifyHasAnyRole(*READ_ROLES)
     return accidentRegisterDao.findChecked(pageNo, pageSize, status, search)
+  }
+
+  override fun getByCode(code: String): Mono<AccidentRegisterDto4Form> {
+    TODO("not implemented")
   }
 }
