@@ -22,6 +22,7 @@ import javax.persistence.Transient
  * @author RJ
  */
 @Entity
+//@JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class AccidentRegisterDto4Form constructor(
   /** 事故 ID */
   @Id val id: Int? = null,

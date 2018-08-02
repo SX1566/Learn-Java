@@ -42,3 +42,5 @@ spring:
     continue-on-error: false
     sql-script-encoding: UTF-8
     initialization-mode: ${db.init-mode} # embedded|always|never
+  jackson:
+    default-property-inclusion: NON_EMPTY # see enum of com.fasterxml.jackson.annotation.JsonInclude.Include
