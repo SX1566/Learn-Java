@@ -35,10 +35,10 @@ data class AccidentRegister(
   @Column(length = 10)
   val carPlate: String,
   /** 事故车辆ID，对应BC系统车辆ID */
-  val carId: Int,
+  val carId: Int? = null,
   /** 事发车队名称 */
   @Column(length = 10)
-  val motorcadeName: String,
+  val motorcadeName: String? = null,
 
   //== 车辆冗余信息开始 ==
   /** 车辆车型，如"现代 BH7183MY" */
@@ -59,7 +59,7 @@ data class AccidentRegister(
   val driverName: String,
   /** 当事司机驾驶状态 */
   @Convert(converter = DriverTypeConverter::class)
-  val driverType: DriverType,
+  val driverType: DriverType? = null,
   /** 当事司机ID，对应BC系统司机ID，非编司机则为 null */
   val driverId: Int? = null,
   /** 紧急联系人姓名 */

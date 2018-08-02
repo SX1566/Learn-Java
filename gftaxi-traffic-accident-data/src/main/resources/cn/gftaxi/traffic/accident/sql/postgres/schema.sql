@@ -76,9 +76,9 @@ create table gf_accident_register (
   id                            integer primary key references gf_accident_draft on delete no action,
   status                        smallint     not null,
   -- 车辆信息
-  car_id                        int          not null,
+  car_id                        int,
   car_plate                     varchar(10)  not null,
-  motorcade_name                varchar(10)  not null,
+  motorcade_name                varchar(10),
   -- 车辆冗余字段信息
   car_model                     varchar(50),
   car_operate_date              date,
@@ -87,7 +87,7 @@ create table gf_accident_register (
   -- 司机信息
   driver_id                     int,
   driver_name                   varchar(8)   not null,
-  driver_type                   varchar(50)  not null,
+  driver_type                   varchar(50),
   driver_linkman_name           varchar(50),
   driver_linkman_phone          varchar(50),
   -- 司机冗余字段信息
