@@ -122,9 +122,10 @@ class AccidentRegisterDaoImpl @Autowired constructor(
         where target_type = ${TargetType.Register.value()} and operation_type in (:operationType)
         group by target_type, target_id
       )
-      select distinct r.id, d.code, r.car_plate, r.driver_name, r.driver_type, r.happen_time,
-        r.status checked_result, o.comment checked_comment, o.operator_name checker_name, l.checked_count,
-        l.checked_time, o.attachment_name, o.attachment_id
+      select distinct r.id, d.code, r.car_plate, r.driver_name, r.driver_type,
+        (case when r.id is null then d.location else r.location_other end) as location,
+        r.happen_time, o.comment checked_comment, o.operator_name checker_name,
+        l.checked_count, l.checked_time, o.attachment_id
       from gf_accident_register r
       inner join gf_accident_draft d on d.id = r.id
       inner join last_operation l on l.target_id = r.id

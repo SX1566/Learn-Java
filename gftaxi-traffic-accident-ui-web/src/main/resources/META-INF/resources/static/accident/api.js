@@ -172,6 +172,30 @@ define(["bc", "context"], function (bc, context) {
       return p;
     },
     /**
+     * 对指定资源的信息执行部分信息更新（如更新某个属性）或执行特定的操作（如审核、作废）
+     * @param module 模块标识，如事故登记为 'accident-register'
+     * @param id 主键，如果没有提供 data 则必须提供 id
+     * @param bodyData [可选] 要提交的请求体数据，json 格式
+     * @param urlParams [可选] 附加的查询参数，json 格式，如 {status: 'Enabled'}，注意参数值不需要 uri 编码
+     * @param throwError [可选] 是否冒泡异常，默认 false：true-异常由使用者通过 catch 自行处理，false-直接弹出框显示异常信息
+     * @return {Promise}
+     */
+    patch: function (module, id, bodyData, throwError, urlParams) {
+      let url = `${accidentDataServer}/${module}`;
+      if (id) url += `/${id}`;
+
+      // 附加 URL 参数
+      url = appendUrlParams(url, urlParams);
+
+      // 暂时使用 PUT，等 java 后端支持 PATCH 方法时可以改为使用 PATCH
+      let p = cors(url, 'PATCH', bodyData ? JSON.stringify(bodyData) : null, "application/json");
+
+      // 冒泡异常
+      if (!throwError) p.catch(error => bc.msg.info(error.message));
+
+      return p;
+    },
+    /**
      * 获取分类列表。
      * @param sn 分类编码，如 "SGXZ"（事故性质）
      * @param includeDisabled 是否包含 Disabled 状态的二级分类，不指定默认仅返回 Enabled 状态

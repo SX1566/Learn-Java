@@ -37,13 +37,12 @@ class FindCheckedHandler @Autowired constructor(
               "carPlate" to it.carPlate,
               "driverName" to it.driverName,
               "driverType" to it.driverType.name,
+              "location" to it.location,
               "happenTime" to it.happenTime.format(FORMAT_DATE_TIME_TO_MINUTE),
-              "checkedResult" to it.checkedResult.name,
               "checkedComment" to it.checkedComment,
               "checkerName" to it.checkerName,
               "checkedCount" to it.checkedCount,
               "checkedTime" to it.checkedTime.format(FORMAT_DATE_TIME_TO_MINUTE),
-              "attachmentName" to it.attachmentName,
               "attachmentId" to it.attachmentId
             )
           }.toList()

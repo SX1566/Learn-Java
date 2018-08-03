@@ -187,8 +187,8 @@ class AccidentRegisterServiceImplTest @Autowired constructor(
       carPlate = "粤A.00001",
       driverName = "driver1",
       driverType = Official,
+      location = "虚拟地址",
       happenTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset),
-      checkedResult = Status.Approved,
       checkerName = "gftaxi",
       checkedCount = 1,
       checkedTime = OffsetDateTime.now()
