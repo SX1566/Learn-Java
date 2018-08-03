@@ -217,7 +217,7 @@
       </activation>
       <properties>
         <kotlin.compiler.incremental>false</kotlin.compiler.incremental>
-        <spring-active-profiles>dev,db-postgres,scheduler</spring-active-profiles>
+        <spring-active-profiles>dev,db-postgres</spring-active-profiles>
         <!-- traffic-accident database -->
         <db.platform>postgres</db.platform>
         <db.init-mode>never</db.init-mode>
