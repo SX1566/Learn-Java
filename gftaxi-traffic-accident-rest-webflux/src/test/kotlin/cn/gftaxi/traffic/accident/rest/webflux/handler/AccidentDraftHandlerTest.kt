@@ -156,7 +156,7 @@ class AccidentDraftHandlerTest @Autowired constructor(
     `when`(accidentDraftService.modify(any(), any())).thenReturn(Mono.empty())
 
     // invoke
-    client.put().uri("/accident-draft/$id")
+    client.patch().uri("/accident-draft/$id")
       .contentType(MediaType.APPLICATION_JSON_UTF8)
       .syncBody(data.build().toString())
       .exchange()

@@ -135,7 +135,7 @@ class AccidentDraftHandler @Autowired constructor(
     val GET_REQUEST_PREDICATE: RequestPredicate = RequestPredicates.GET("/accident-draft/{id}")
     val SUBMIT_REQUEST_PREDICATE: RequestPredicate = RequestPredicates.POST("/accident-draft")
       .and(RequestPredicates.contentType(MediaType.APPLICATION_JSON_UTF8))
-    val UPDATE_REQUEST_PREDICATE: RequestPredicate = RequestPredicates.PUT("/accident-draft/{id}")
+    val UPDATE_REQUEST_PREDICATE: RequestPredicate = RequestPredicates.PATCH("/accident-draft/{id}")
       .and(RequestPredicates.contentType(MediaType.APPLICATION_JSON_UTF8))
   }
 }
