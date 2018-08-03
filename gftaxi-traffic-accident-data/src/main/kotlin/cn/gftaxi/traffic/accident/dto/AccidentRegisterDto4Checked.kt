@@ -24,10 +24,9 @@ data class AccidentRegisterDto4Checked constructor(
   val driverName: String,
   @Convert(converter = DriverTypeConverter::class)
   val driverType: DriverType,
+  /** 事发地点 */
+  val location: String,
   val happenTime: OffsetDateTime,
-  /** 审核结果：[Approved] 或 [Rejected] */
-  @Convert(converter = AccidentRegisterStatusConverter::class)
-  val checkedResult: Status,
   /** 审核意见 */
   val checkedComment: String? = null,
   /** 审核人姓名 */
@@ -36,8 +35,6 @@ data class AccidentRegisterDto4Checked constructor(
   val checkedCount: Int,
   /** 审核时间 */
   val checkedTime: OffsetDateTime,
-  /** 附件名称 */
-  val attachmentName: String? = null,
   /** 附件 ID */
   val attachmentId: String? = null
 )

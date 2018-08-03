@@ -152,7 +152,6 @@ class FindCheckedMethodImplTest @Autowired constructor(
 
     // 验证审核信息
     assertEquals(expectedLastCheckedOperation.operateTime, actualDto.checkedTime)
-    assertEquals(expectedRegister.status, actualDto.checkedResult)
     assertEquals(expectedLastCheckedOperation.operatorName, actualDto.checkerName)
     assertEquals(1, actualDto.checkedCount)
   }
