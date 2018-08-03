@@ -115,7 +115,8 @@ class AccidentDraftDaoImpl @Autowired constructor(
 
     return if (preCodes.isEmpty()) Mono.just("${ymd}_01")
     else {
-      val sn = preCodes[0].takeLast(2).toInt() + 1
+      val takeLastWhile = preCodes[0].takeLastWhile { it != '_' }
+      val sn = takeLastWhile.toInt() + 1
       Mono.just("${ymd}_${if (sn < 10) "0$sn" else "$sn"}")
     }
   }
