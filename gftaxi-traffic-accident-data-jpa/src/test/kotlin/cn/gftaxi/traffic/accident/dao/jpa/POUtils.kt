@@ -106,7 +106,7 @@ object POUtils {
   }
 
   /** 构建新的事故操作记录 */
-  private fun randomAccidentOperation(
+  fun randomAccidentOperation(
     operateTime: OffsetDateTime? = null,
     operationType: OperationType,
     targetId: Int,
@@ -118,7 +118,10 @@ object POUtils {
       operateTime = operateTime ?: OffsetDateTime.now(),
       operationType = operationType,
       targetId = targetId,
-      targetType = targetType
+      targetType = targetType,
+      comment = random("comment"),
+      attachmentId = random("attach"),
+      attachmentName = random("attachN")
     )
   }
 
