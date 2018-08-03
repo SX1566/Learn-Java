@@ -7,6 +7,8 @@ import cn.gftaxi.traffic.accident.po.AccidentDraft.Status
 import org.springframework.data.domain.Page
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import tech.simter.exception.NonUniqueException
+import tech.simter.exception.NotFoundException
 
 /**
  * 事故报案 Service。
@@ -33,27 +35,28 @@ interface AccidentDraftService {
   fun findTodo(): Flux<AccidentDraft>
 
   /**
-   * 获取指定编号的报案。
+   * 获取指定主键的报案。
    *
    * @throws [SecurityException] 无 [AccidentDraft.ROLE_READ] 查询报案信息权限
+   * @return 如果案件不存在则返回 [Mono.empty]
    */
-  fun get(code: String): Mono<AccidentDraft>
+  fun get(id: Int): Mono<AccidentDraft>
 
   /**
    * 上报新的报案。
    *
-   * @return 自动生成的事故编号
+   * @return 自动生成的事故 ID、编号
    * @throws [SecurityException] 无 [AccidentDraft.ROLE_SUBMIT] 上报案件信息权限
-   * @throws [IllegalArgumentException] 指定车号和事发时间的案件已经存在
+   * @throws [NonUniqueException] 指定车号和事发时间的案件已经存在
    */
-  fun submit(dto: AccidentDraftDto4Submit): Mono<String>
+  fun submit(dto: AccidentDraftDto4Submit): Mono<Pair<Int, String>>
 
   /**
    * 修改报案信息。
    *
-   * @param[code] 要修改案件的编号
+   * @param[id] 要修改案件的 ID
    * @throws [SecurityException] 无 [AccidentDraft.ROLE_MODIFY] 修改报案信息权限
-   * @throws [IllegalArgumentException] 指定的案件编号不存在
+   * @throws [NotFoundException] 指定的案件编号不存在
    */
-  fun modify(code: String, dto: AccidentDraftDto4Modify): Mono<Void>
+  fun modify(id: Int, dto: AccidentDraftDto4Modify): Mono<Void>
 }

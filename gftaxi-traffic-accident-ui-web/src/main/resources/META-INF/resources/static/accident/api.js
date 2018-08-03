@@ -161,7 +161,7 @@ define(["bc", "context"], function (bc, context) {
       let method;
       if (id) {
         url += `/${id}`;
-        method = 'PUT';
+        method = 'PATCH';
       } else method = 'POST';
 
       let p = cors(url, method, data ? JSON.stringify(data) : null, "application/json;charset=UTF-8");

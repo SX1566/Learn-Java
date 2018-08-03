@@ -5,6 +5,7 @@ import cn.gftaxi.traffic.accident.po.AccidentDraft.Status
 import org.springframework.data.domain.Page
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import tech.simter.exception.NonUniqueException
 import java.time.OffsetDateTime
 
 /**
@@ -29,27 +30,29 @@ interface AccidentDraftDao {
   fun findTodo(): Flux<AccidentDraft>
 
   /**
-   * 获取指定编号的报案。
+   * 获取指定主键的报案。
+   *
+   * @return 如果案件不存在则返回 [Mono.empty]
    */
-  fun get(code: String): Mono<AccidentDraft>
+  fun get(id: Int): Mono<AccidentDraft>
 
   /**
    * 创建新的报案。
    *
-   * @throws [IllegalArgumentException] 指定车号和事发时间的案件已经存在
+   * @throws [NonUniqueException] 指定车号和事发时间的案件已经存在
    */
-  fun create(po: AccidentDraft): Mono<Void>
+  fun create(po: AccidentDraft): Mono<AccidentDraft>
 
   /**
    * 更新报案信息。
    *
    * 用于修改车号、司机、事发地点、简要描述、事发时间等。
    *
-   * @param[code] 要修改案件的编号
+   * @param[id] 要修改案件的 ID
    * @param[data] 要更新的信息，key 为 PO 的属性名，value 为相应的 PO 属性值
    * @return 更新成功返回 true，否则返回 false
    */
-  fun update(code: String, data: Map<String, Any?>): Mono<Boolean>
+  fun update(id: Int, data: Map<String, Any?>): Mono<Boolean>
 
   /**
    * 根据事发时间生成未使用的事故编号。

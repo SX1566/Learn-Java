@@ -143,17 +143,6 @@
           <artifactId>reactor-test</artifactId>
           <scope>test</scope>
         </dependency>
-        <!-- json jsr353 by jackson-->
-        <dependency>
-          <groupId>org.glassfish</groupId>
-          <artifactId>javax.json</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>com.fasterxml.jackson.datatype</groupId>
-          <artifactId>jackson-datatype-jsr353</artifactId>
-          <scope>test</scope>
-        </dependency>
       </dependencies>
     </profile>
     <profile>
@@ -217,7 +206,7 @@
       </activation>
       <properties>
         <kotlin.compiler.incremental>false</kotlin.compiler.incremental>
-        <spring-active-profiles>dev,db-postgres,scheduler</spring-active-profiles>
+        <spring-active-profiles>dev,db-postgres</spring-active-profiles>
         <!-- traffic-accident database -->
         <db.platform>postgres</db.platform>
         <db.init-mode>never</db.init-mode>

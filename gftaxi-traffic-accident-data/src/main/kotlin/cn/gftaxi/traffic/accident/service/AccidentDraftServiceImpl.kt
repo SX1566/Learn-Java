@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import tech.simter.exception.NotFoundException
 import tech.simter.security.SecurityService
 import java.util.concurrent.TimeUnit
 
@@ -35,37 +36,33 @@ class AccidentDraftServiceImpl @Autowired constructor(
     return accidentDraftDao.findTodo()
   }
 
-  override fun get(code: String): Mono<AccidentDraft> {
+  override fun get(id: Int): Mono<AccidentDraft> {
     securityService.verifyHasRole(AccidentDraft.ROLE_READ)
-    return accidentDraftDao.get(code)
+    return accidentDraftDao.get(id)
   }
 
-  override fun submit(dto: AccidentDraftDto4Submit): Mono<String> {
+  override fun submit(dto: AccidentDraftDto4Submit): Mono<Pair<Int, String>> {
     securityService.verifyHasRole(AccidentDraft.ROLE_SUBMIT)
     return accidentDraftDao
       .nextCode(dto.happenTime)
       .flatMap {
-        accidentDraftDao
-          .create(
-            AccidentDraft(null,
-              it, Status.Todo, dto.carPlate, dto.driverName, dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
-              dto.hitType, AccidentDraft.isOverdue(dto.happenTime, dto.reportTime, TimeUnit.HOURS.toSeconds(12)),
-              dto.source, dto.authorName, dto.authorId, dto.describe
-            )
-          )
-          .thenReturn(it)
+        accidentDraftDao.create(AccidentDraft(null,
+          it, Status.Todo, dto.carPlate, dto.driverName, dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
+          dto.hitType, AccidentDraft.isOverdue(dto.happenTime, dto.reportTime, TimeUnit.HOURS.toSeconds(12)),
+          dto.source, dto.authorName, dto.authorId, dto.describe
+        )).map { Pair(it.id!!, it.code) }
       }
   }
 
-  override fun modify(code: String, dto: AccidentDraftDto4Modify): Mono<Void> {
+  override fun modify(id: Int, dto: AccidentDraftDto4Modify): Mono<Void> {
     securityService.verifyHasRole(AccidentDraft.ROLE_MODIFY)
     val data = mapOf("carPlate" to dto.carPlate, "driverName" to dto.driverName, "happenTime" to dto.happenTime
       , "location" to dto.location, "hitForm" to dto.hitForm, "hitType" to dto.hitType, "describe" to dto.describe)
     return accidentDraftDao
-      .update(code, data)
+      .update(id, data)
       .flatMap {
         if (it) Mono.empty<Void>()
-        else Mono.error(IllegalArgumentException("指定的案件编号不存在"))
+        else Mono.error(NotFoundException("指定的案件不存在"))
       }
   }
 }

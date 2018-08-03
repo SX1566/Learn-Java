@@ -70,9 +70,9 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
           let sel = this.$refs.grid.selection;
           if (sel.length === 1) {
             accident.open(resourceKey, {
-              mid: `${resourceKey}-${sel[0].code}`,
-              name: `${sel[0].code} ${resourceName}`,
-              data: sel[0].code,
+              mid: `${resourceKey}-${sel[0].id}`,
+              name: `${resourceName} ${sel[0].code}`,
+              data: sel[0].id,
               afterClose: (status) => {
                 if (status) this.reload();
               }
@@ -82,9 +82,9 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
         },
         dblclickRow: function (row) {
           accident.open(resourceKey, {
-            mid: `${resourceKey}-${row.code}`,
-            name: `${row.code} ${resourceName}`,
-            data: row.code,
+            mid: `${resourceKey}-${row.id}`,
+            name: `${resourceName} ${row.code}`,
+            data: row.id,
             afterClose: (status) => {
               if (status) this.reload();
             }
