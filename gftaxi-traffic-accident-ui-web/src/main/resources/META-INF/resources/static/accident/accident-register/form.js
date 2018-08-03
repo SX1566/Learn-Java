@@ -20,9 +20,9 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
         e: {status: "Draft"}
       },
       ready: function () {
-        let code = $page.data("data");
-        Vue.set(this.e, "code", code);
-        accident.getByModule(resourceKey, code).then(json => {
+        let id = $page.data("data");
+        Vue.set(this.e, "id", id);
+        accident.getByModule(resourceKey, id).then(json => {
           Vue.set(this, "e", json);
           this.showHideButtons();
           // 初始化"简要描述"栏自动行高
@@ -78,7 +78,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
 
           accident.save(resourceKey, this.e.id || null, data).then(result => {
             if (isNew) Vue.set(this.e, "id", result.id);
-            if (typeof(option.afterSuccess) == "function") option.afterSuccess();
+            if (typeof(option.afterSuccess) === "function") option.afterSuccess();
             else {
               bc.msg.slide("保存成功！");
               $page.data("status", "saved");

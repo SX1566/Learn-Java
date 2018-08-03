@@ -26,9 +26,9 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
       rowCellStyle: "cursor: pointer; text-decoration: underline",
       rowCellClick: function (value, row) {
         accident.open(resourceKey, {
-          mid: `${resourceKey}-${row.code}`,
-          name: `${row.code} 事故登记`,
-          data: row.code,
+          mid: `${resourceKey}-${row.id}`,
+          name: `${resourceName} ${row.code}`,
+          data: row.id,
           afterClose: (status) => {
             if (status) this.reload();
           }
@@ -61,9 +61,9 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
       rowCellStyle: "cursor: pointer; text-decoration: underline",
       rowCellClick: function (value, row) {
         accident.open(resourceKey, {
-          mid: `${resourceKey}-${row.code}`,
-          name: `${row.code} 事故登记`,
-          data: row.code,
+          mid: `${resourceKey}-${row.id}`,
+          name: `${resourceName} ${row.code}`,
+          data: row.id,
           afterClose: (status) => {
             if (status) this.reload();
           }
@@ -181,9 +181,9 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
         /** 视图行双击事件 */
         dblclickRow: function (data) {
           accident.open(resourceKey, {
-            mid: `${resourceKey}-${data.code}`,
-            name: `${data.code} ${resourceName}`,
-            data: data.code,
+            mid: `${resourceKey}-${data.id}`,
+            name: `${resourceName} ${data.code}`,
+            data: data.id,
             afterClose: (status) => {
               if (status) {
                 this.reloadStatSum();

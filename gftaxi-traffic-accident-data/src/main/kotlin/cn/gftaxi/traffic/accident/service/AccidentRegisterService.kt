@@ -56,7 +56,7 @@ interface AccidentRegisterService {
     : Mono<Page<AccidentRegisterDto4Checked>>
 
   /**
-   * 获取指定编号的事故登记信息。
+   * 获取指定 ID 的事故登记信息。
    *
    * 如果事故报案信息还没有登记过，则自动根据事故报案信息生成一条草稿状态的事故登记信息返回，
    * 否则直接返回已有的事故登记信息。通过事故报案生成生成事故登记信息的规则：
@@ -65,9 +65,9 @@ interface AccidentRegisterService {
    * 2. 根据 [AccidentDraft.driverName] 自动识别 [AccidentRegister] 的司机相关信息，
    *    并自动生成一条自车类型的 [AccidentPeople] 当事人信息。
    *
-   * @param[code] 事故编号，格式为 yyyyMMdd_nn
+   * @param[id] 事故 ID
    * @throws [SecurityException] 不是 [READ_ROLES] 中的任一角色之一
    * @throws [NotFoundException] 指定编号的报案信息不存在
    */
-  fun getByCode(code: String): Mono<AccidentRegisterDto4Form>
+  fun get(id: Int): Mono<AccidentRegisterDto4Form>
 }

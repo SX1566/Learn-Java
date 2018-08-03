@@ -42,7 +42,7 @@ class AccidentRegisterServiceImpl @Autowired constructor(
     return accidentRegisterDao.findChecked(pageNo, pageSize, status, search)
   }
 
-  override fun getByCode(code: String): Mono<AccidentRegisterDto4Form> {
+  override fun get(id: Int): Mono<AccidentRegisterDto4Form> {
     TODO("not implemented")
   }
 }

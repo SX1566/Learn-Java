@@ -4,7 +4,7 @@ import cn.gftaxi.traffic.accident.Utils
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
 import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType.Official
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Draft
-import cn.gftaxi.traffic.accident.rest.webflux.handler.register.GetByCodeHandler.Companion.REQUEST_PREDICATE
+import cn.gftaxi.traffic.accident.rest.webflux.handler.register.GetHandler.Companion.REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -21,22 +21,23 @@ import tech.simter.exception.NotFoundException
 import java.time.OffsetDateTime
 
 /**
- * Test [GetByCodeHandler]。
+ * Test [GetHandler]。
  *
  * @author RJ
  */
-@SpringJUnitConfig(GetByCodeHandler::class)
+@SpringJUnitConfig(GetHandler::class)
 @EnableWebFlux
 @MockBean(AccidentRegisterService::class)
-class GetByCodeHandlerTest @Autowired constructor(
-  handler: GetByCodeHandler,
+class GetHandlerTest @Autowired constructor(
+  handler: GetHandler,
   private val accidentRegisterService: AccidentRegisterService
 ) {
   private val client = bindToRouterFunction(route(REQUEST_PREDICATE, handler)).build()
-  private fun randomDto(code: String): AccidentRegisterDto4Form {
+  private fun randomDto(id: Int): AccidentRegisterDto4Form {
     val now = OffsetDateTime.now()
     return AccidentRegisterDto4Form(
-      code = code,
+      id = id,
+      code = "20180101_01",
       status = Draft,
       carPlate = "粤A.00001",
       driverName = "driver1",
@@ -48,21 +49,22 @@ class GetByCodeHandlerTest @Autowired constructor(
   }
 
   @Test
-  fun codeExists() {
-    val code = "20180101_01"
+  fun exists() {
+    val id = 1
     // mock
-    val dto = randomDto(code = code)
-    `when`(accidentRegisterService.getByCode(code)).thenReturn(Mono.just(dto))
+    val dto = randomDto(id = id)
+    `when`(accidentRegisterService.get(id)).thenReturn(Mono.just(dto))
 
     // invoke
-    val response = client.get().uri("/accident-register/code/$code").exchange()
+    val response = client.get().uri("/accident-register/$id").exchange()
 
     // verify
     response
       .expectStatus().isOk
       .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
       .expectBody()
-      .jsonPath("$.code").isEqualTo(code)
+      .jsonPath("$.id").isEqualTo(id)
+      .jsonPath("$.code").isEqualTo(dto.code)
       .jsonPath("$.status").isEqualTo(dto.status.name)
       .jsonPath("$.carPlate").isEqualTo(dto.carPlate)
       .jsonPath("$.driverName").isEqualTo(dto.driverName)
@@ -70,20 +72,20 @@ class GetByCodeHandlerTest @Autowired constructor(
       .jsonPath("$.draftTime").isEqualTo(dto.draftTime.format(Utils.FORMAT_DATE_TIME_TO_MINUTE))
       .jsonPath("$.happenTime").isEqualTo(dto.happenTime.format(Utils.FORMAT_DATE_TIME_TO_MINUTE))
       .jsonPath("$.locationOther").isEqualTo(dto.locationOther)
-    verify(accidentRegisterService).getByCode(code)
+    verify(accidentRegisterService).get(id)
   }
 
   @Test
-  fun codeNotExists() {
+  fun notExists() {
     // mock
-    val code = "20180101_01"
-    `when`(accidentRegisterService.getByCode(code)).thenReturn(Mono.error(NotFoundException()))
+    val id = 1
+    `when`(accidentRegisterService.get(id)).thenReturn(Mono.error(NotFoundException()))
 
     // invoke
-    val response = client.get().uri("/accident-register/code/$code").exchange()
+    val response = client.get().uri("/accident-register/$id").exchange()
 
     // verify
-    response.expectStatus().isNotFound.expectBody().isEmpty
-    verify(accidentRegisterService).getByCode(code)
+    response.expectStatus().isNotFound
+    verify(accidentRegisterService).get(id)
   }
 }
