@@ -68,11 +68,12 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           let isNew = !this.e.id;
           let data = {};
           let ignoreKeys = ["status", "historyAccidentCount", "historyTrafficOffenceCount",
-            "historyServiceOffenceCount", "historyComplainCount"];
-          // todo ignoreKeys 补上审核信息
+            "historyServiceOffenceCount", "historyComplainCount", "result", "comment", "attachmentId", "attachmentName"];
           Object.keys(this.e).forEach(key => {
             if (ignoreKeys.includes(key)) return;
-            data[key] = this.e[key];
+            let value = this.e[key];
+            if (!value || (Array.isArray(value) && value.length <= 0)) return;
+            data[key] = value;
           });
 
           accident.save(resourceKey, this.e.id || null, data).then(result => {
