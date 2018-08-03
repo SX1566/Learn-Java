@@ -7,6 +7,8 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
   let isChecker = context.is("ACCIDENT_REGISTER_CHECK");
   let isAllRoles = isRecorder && isChecker;
 
+  let driverTypeMap = {Official: "正班", Shift: "替班", Outside: "非编"};
+
   // 汇总统计视图列
   let statSumColumns = [
     {id: "scope", label: "范围", width: "3em"},
@@ -20,26 +22,31 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
   // 待登记视图列
   let todoColumns = [
     {
-      id: "code", label: "事故编号", width: "7.5em", rowCellStyle: "cursor: pointer; text-decoration: underline",
-      rowCellClick: function (value) {
-        accident.open("accident-draft", {
-          mid: `accident-draft-${value}`,
-          name: `${value} 事故报案`,
-          data: value,
+      id: "happenTime", label: "事发时间", width: "10em",
+      rowCellStyle: "cursor: pointer; text-decoration: underline",
+      rowCellClick: function (value, row) {
+        accident.open(resourceKey, {
+          mid: `${resourceKey}-${row.code}`,
+          name: `${row.code} 事故登记`,
+          data: row.code,
           afterClose: (status) => {
             if (status) this.reload();
           }
         });
       }
     },
-    {id: "carPlate", label: "事故车号", width: "5.5em", rowCellClass: "monospace"},
-    {id: "driverName", label: "当事司机", width: "5em"},
-    {id: "happenTime", label: "事发时间", width: "9.5em"},
+    {id: "carPlate", label: "事故车号", width: "6em", rowCellClass: "monospace"},
+    {
+      id: "driverName", label: "当事司机", width: "8em",
+      filter: function (value, row) {
+        return `[${driverTypeMap[row.driverType] || row.driverType}] ${value}`
+      }
+    },
     {id: "location", label: "事发地点", width: "13em"},
     {id: "hitForm", label: "事故形态", width: "7em"},
     {id: "hitType", label: "碰撞类型", width: "5em"},
     {id: "authorName", label: "接案人", width: "5em"},
-    {id: "reportTime", label: "报案时间", width: "9.5em"},
+    {id: "reportTime", label: "报案时间", width: "10em"},
     {
       id: "overdueReport", label: "逾期报案", width: "5em",
       filter: function (value, row) {
@@ -50,52 +57,65 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
   // 已审核视图列
   let checkedColumns = [
     {
-      id: "code", label: "事故编号", width: "7.5em", rowCellStyle: "cursor: pointer; text-decoration: underline",
-      rowCellClick: function (value) {
-        accident.open("accident-draft", {
-          mid: `accident-draft-${value}`,
-          name: `${value} 事故报案`,
-          data: value,
+      id: "happenTime", label: "事发时间", width: "10em",
+      rowCellStyle: "cursor: pointer; text-decoration: underline",
+      rowCellClick: function (value, row) {
+        accident.open(resourceKey, {
+          mid: `${resourceKey}-${row.code}`,
+          name: `${row.code} 事故登记`,
+          data: row.code,
           afterClose: (status) => {
             if (status) this.reload();
           }
         });
       }
     },
-    {id: "carPlate", label: "事故车号", width: "5.5em", rowCellClass: "monospace"},
-    {id: "driverName", label: "当事司机", width: "5em"},
-    {id: "checkedComment", label: "审核意见", width: "20em"},
+    {id: "carPlate", label: "事故车号", width: "6em", rowCellClass: "monospace"},
     {
-      id: "attachmentName", label: "附件", width: "14em", rowCellStyle: "cursor: pointer; text-decoration: underline",
-      rowCellClick: function (value, row) {
-        accident.inline(row.attachmentId);
+      id: "driverName", label: "当事司机", width: "8em",
+      filter: function (value, row) {
+        return `[${driverTypeMap[row.driverType] || row.driverType}] ${value}`
       }
     },
+    {id: "location", label: "事发地点", width: "13em"},
     {
-      id: "checkedResult", label: "审核标记", width: "5em",
-      filter: function (value) {
-        if (value === "Approved") return "通过";
-        else if (value === "Rejected") return "不通过";
+      id: "checkedComment", label: "审核意见", width: "20em", escape: false,
+      title: function (value, row) {
+        if (row.attachmentId) return "点击在线查看附件"
+      },
+      filter: function (value, row) {
+        if (row.attachmentId)
+          return `<span class="ui-icon ui-icon-document" style="display: inline-block;vertical-align: middle"></span>${value}`;
         else return value;
+      },
+      rowCellStyle: function (value, row) {
+        if (row.attachmentId)
+          return "cursor: pointer; text-decoration: underline"
+      },
+      rowCellClick: function (value, row) {
+        if (row.attachmentId)
+          accident.inline(row.attachmentId);
       }
     },
     {id: "checkerName", label: "审核人", width: "5em"},
-    {id: "checkedCount", label: "审核次数", width: "5em"},
-    {id: "checkedTime", label: "审核时间", width: "9.5em"},
+    {id: "checkedTime", label: "审核时间", width: "10em"},
+    {id: "checkedCount", label: "审核次数", width: "5em"}
   ];
 
   return function Page($page) {
     // 用户为审核员则待登记视图添加"提交时间"和"逾期登记"字段
-    if (isChecker) todoColumns = todoColumns.concat([
-      {id: "submitTime", label: "提交时间", width: "9.5em"},
-      {
-        id: "overdueRegister", label: "逾期登记", width: "5em",
-        filter: function (value, row) {
-          return !value ? "否" : accident.calcInervalDayAndHour(new Date(row.happenTime), new Date(row.registerTime));
+    if (isChecker) {
+      todoColumns = todoColumns.concat([
+        {id: "submitTime", label: "提交时间", width: "10em"},
+        {
+          id: "overdueRegister", label: "逾期登记", width: "5em",
+          filter: function (value, row) {
+            return !value ? "否" : accident.calcInervalDayAndHour(new Date(row.happenTime), new Date(row.registerTime));
+          }
         }
-      }
-    ]);
-    else todoColumns.find(c => c.id === "location").width = "27.45em"; // 否则加宽视图事故地点列
+      ]);
+      $page.parent().width(1166);
+    }
 
     new Vue({
       el: $page[0],
