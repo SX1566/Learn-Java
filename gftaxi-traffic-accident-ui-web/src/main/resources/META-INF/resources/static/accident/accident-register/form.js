@@ -86,11 +86,11 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
         },
         /** 提交 */
         submit: function () {
-          let url = `${resourceKey}/to-check/${this.e.id}`;
+          let id = this.e.id;
           // 保存表单数据
           this.save({
             afterSuccess: function () {
-              accident.save(url).then(() => {
+              accident.patch(`${resourceKey}/to-check`, id).then(() => {
                 bc.msg.slide("提交成功！");
                 $page.data("status", "saved");
                 $page.dialog("close");  // 提交完成后关闭表单
@@ -100,23 +100,20 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
         },
         /** 审核 */
         check: function () {
-          let url = `${resourceKey}/check/${this.e.id}`;
-          let data = {
-            checkedResult: this.e.checkedResult,
-            checkedComment: this.e.checkedComment,
-            checkedAttachments: this.e.checkedAttachments
-          };
-          let check = function (data) {
-            accident.save(url, null, data).then(() => {
+          let id = this.e.id;
+          let data = {result: this.e.result, comment: this.e.comment};
+          if (this.e.attachmentId) data.attachmentId = this.e.attachmentId;
+          let check = function (id, data) {
+            accident.patch(`${resourceKey}/checked`, id, data).then(() => {
               bc.msg.slide("审核完成！");
               $page.data("status", "saved");
               $page.dialog("close");  // 审核完成后关闭表单
             });
           };
-          if (isEditor) this.save({afterSuccess: check(data)});
+          if (isEditor) this.save({afterSuccess: check(id, data)});
           else {
             if (!bc.validator.validate($page)) return;
-            check(data);
+            check(id, data);
           }
         },
         /** 上传当事司机照片 */
