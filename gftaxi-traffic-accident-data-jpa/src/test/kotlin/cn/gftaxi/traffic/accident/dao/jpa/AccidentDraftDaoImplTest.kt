@@ -10,11 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import reactor.test.StepVerifier
+import tech.simter.exception.NonUniqueException
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 /**
  * 测试事故报案 Dao 实现。
@@ -106,7 +108,7 @@ class AccidentDraftDaoImplTest @Autowired constructor(
     em.persist(po1); em.flush(); em.clear()
 
     // invoke
-    val actual = dao.get(po1.code)
+    val actual = dao.get(po1.id!!)
 
     // verify
     StepVerifier.create(actual).expectNext(po1).verifyComplete()
@@ -116,15 +118,17 @@ class AccidentDraftDaoImplTest @Autowired constructor(
   fun create() {
     // mock
     val now = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES)
-    val po = AccidentDraft(null, "20180713_01", Status.Done, "search", "driver", now, now, "", "", "", true, "", "", "", "")
-    val expected = po.copy(happenTime = po.happenTime.truncatedTo(ChronoUnit.MINUTES))
+    val origin = AccidentDraft(null, "20180713_01", Status.Done, "search", "driver", now, now, "", "", "", true, "", "", "", "")
+    val expected = origin.copy(happenTime = origin.happenTime.truncatedTo(ChronoUnit.MINUTES))
 
     // invoke
-    StepVerifier.create(dao.create(expected)).expectNext().verifyComplete()
+    StepVerifier.create(dao.create(expected))
+      .consumeNextWith { assertNotNull(it.id) }
+      .verifyComplete()
 
     // verify
     assertEquals(expected, em.createQuery("select a from AccidentDraft a", AccidentDraft::class.java).singleResult)
-    assertThrows(IllegalArgumentException::class.java, { dao.create(po).block() })
+    assertThrows(NonUniqueException::class.java, { dao.create(origin).block() })
   }
 
   @Test
@@ -138,9 +142,10 @@ class AccidentDraftDaoImplTest @Autowired constructor(
       "carPlate" to "nPlate", "driverName" to "nDriver", "happenTime" to now.plusHours(1), "describe" to "nDescribe",
       "reportTime" to now.plusHours(1), "location" to "nLocation", "authorId" to "nAuthor"
     )
+    val id = po.id!!
 
     // invoke
-    StepVerifier.create(dao.update(code, data)).expectNext(true).verifyComplete()
+    StepVerifier.create(dao.update(id, data)).expectNext(true).verifyComplete()
 
     // verify
     val actual = em.createQuery("select a from AccidentDraft a", AccidentDraft::class.java).singleResult
@@ -152,7 +157,7 @@ class AccidentDraftDaoImplTest @Autowired constructor(
     assertEquals(data["location"], actual.location)
     assertEquals(data["authorId"], actual.authorId)
 
-    StepVerifier.create(dao.update(code, mapOf())).expectNext(true).verifyComplete()
+    StepVerifier.create(dao.update(id, mapOf())).expectNext(true).verifyComplete()
   }
 
   @Test

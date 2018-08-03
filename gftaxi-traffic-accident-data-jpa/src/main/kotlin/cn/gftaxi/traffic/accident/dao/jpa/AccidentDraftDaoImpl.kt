@@ -10,9 +10,11 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import tech.simter.exception.NonUniqueException
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 import javax.persistence.EntityManager
+import javax.persistence.EntityNotFoundException
 import javax.persistence.PersistenceContext
 
 /**
@@ -66,25 +68,25 @@ class AccidentDraftDaoImpl @Autowired constructor(
     )
   }
 
-  override fun get(code: String): Mono<AccidentDraft> {
-    return Mono.just(
-      em.createQuery("select a from AccidentDraft a where code = :code", AccidentDraft::class.java)
-        .setParameter("code", code)
-        .singleResult
-    )
+  override fun get(id: Int): Mono<AccidentDraft> {
+    return try {
+      Mono.just(repository.getOne(id))
+    } catch (e: EntityNotFoundException) {
+      Mono.empty()
+    }
   }
 
-  override fun create(po: AccidentDraft): Mono<Void> {
+  override fun create(po: AccidentDraft): Mono<AccidentDraft> {
     val isNotExists =
       em.createQuery("select 0 from AccidentDraft where carPlate = :carPlate and happenTime = :happenTime")
         .setParameter("carPlate", po.carPlate)
         .setParameter("happenTime", po.happenTime)
         .resultList.isEmpty()
-    if (isNotExists) repository.save(po) else throw IllegalArgumentException("指定车号和事发时间的案件已经存在！")
-    return Mono.empty()
+    return if (isNotExists) Mono.just(repository.save(po))
+    else throw NonUniqueException("指定车号和事发时间的案件已经存在！")
   }
 
-  override fun update(code: String, data: Map<String, Any?>): Mono<Boolean> {
+  override fun update(id: Int, data: Map<String, Any?>): Mono<Boolean> {
     val filteredData = data.filterKeys { it.isNotEmpty() }.toMutableMap()
     if (filteredData.isEmpty()) return Mono.just(true)
 
@@ -95,11 +97,11 @@ class AccidentDraftDaoImpl @Autowired constructor(
     var setQl = "\n  set "
     val filteredDataKeys = filteredData.keys.toList()
     filteredDataKeys.forEach { setQl += "$it = :$it, " }
-    val updateQl = "update AccidentDraft" + setQl.dropLast(2) + "\nwhere code = :code"
+    val updateQl = "update AccidentDraft" + setQl.dropLast(2) + "\nwhere id = :id"
 
     val updateQuery = em.createQuery(updateQl)
     filteredDataKeys.forEach { updateQuery.setParameter(it, filteredData[it]) }
-    updateQuery.setParameter("code", code)
+    updateQuery.setParameter("id", id)
 
     val count = updateQuery.executeUpdate()
     return if (count == 1) Mono.just(true) else Mono.just(false)

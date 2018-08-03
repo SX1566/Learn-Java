@@ -17,6 +17,8 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 import reactor.test.verifyError
+import tech.simter.exception.NonUniqueException
+import tech.simter.exception.NotFoundException
 import tech.simter.security.SecurityService
 import java.time.OffsetDateTime
 
@@ -81,33 +83,33 @@ class AccidentDraftServiceImplTest @Autowired constructor(
   @Test
   fun get() {
     // mock
-    val code = "code"
+    val id = 1
     val now = OffsetDateTime.now()
-    val expected = AccidentDraft(null, code, Status.Done, "plate", "driver", now, now, "", "", "", true, "", "", "", "")
+    val expected = AccidentDraft(id, "code", Status.Done, "plate", "driver", now, now, "", "", "", true, "", "", "", "")
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_READ)
-    `when`(accidentDraftDao.get(code)).thenReturn(Mono.just(expected))
+    `when`(accidentDraftDao.get(id)).thenReturn(Mono.just(expected))
 
     // invoke
-    val actual = accidentDraftService.get(code)
+    val actual = accidentDraftService.get(id)
 
     // verify
     StepVerifier.create(actual).expectNext(expected).verifyComplete()
     verify(securityService).verifyHasRole(AccidentDraft.ROLE_READ)
-    verify(accidentDraftDao).get(code)
+    verify(accidentDraftDao).get(id)
   }
 
   @Test
   fun submitWithRole() {
     // mock
-    val expected = "code"
+    val expected = Pair(1, "code")
     val dto = AccidentDraftDto4Submit("plate", "driver", OffsetDateTime.now(), "location", "", "", "", "", "", "")
-    val po = AccidentDraft(null,
-      expected, Status.Todo, dto.carPlate, dto.driverName, dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
+    val po = AccidentDraft(expected.first, expected.second, Status.Todo, dto.carPlate, dto.driverName,
+      dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
       dto.hitType, false, dto.source, dto.authorName, dto.authorId, dto.describe
     )
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
-    `when`(accidentDraftDao.nextCode(dto.happenTime)).thenReturn(Mono.just(expected))
-    `when`(accidentDraftDao.create(po)).thenReturn(Mono.empty())
+    `when`(accidentDraftDao.nextCode(dto.happenTime)).thenReturn(Mono.just(expected.second))
+    `when`(accidentDraftDao.create(com.nhaarman.mockito_kotlin.any())).thenReturn(Mono.just(po))
 
     // invoke
     val actual = accidentDraftService.submit(dto)
@@ -116,7 +118,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     StepVerifier.create(actual).expectNext(expected).verifyComplete()
     verify(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
     verify(accidentDraftDao).nextCode(dto.happenTime)
-    verify(accidentDraftDao).create(po)
+    verify(accidentDraftDao).create(com.nhaarman.mockito_kotlin.any())
   }
 
   @Test
@@ -130,68 +132,68 @@ class AccidentDraftServiceImplTest @Autowired constructor(
   }
 
   @Test
-  fun submitWithException() {
+  fun submitButNonUnique() {
     // mock
-    val expected = "code"
+    val code = "code"
     val dto = AccidentDraftDto4Submit("plate", "driver", OffsetDateTime.now(), "location", "", "", "", "", "", "")
     val po = AccidentDraft(null,
-      expected, Status.Todo, dto.carPlate, dto.driverName, dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
+      code, Status.Todo, dto.carPlate, dto.driverName, dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
       dto.hitType, false, dto.source, dto.authorName, dto.authorId, dto.describe
     )
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
-    `when`(accidentDraftDao.nextCode(dto.happenTime)).thenReturn(Mono.just(expected))
-    doThrow(IllegalArgumentException()).`when`(accidentDraftDao).create(po)
+    `when`(accidentDraftDao.nextCode(dto.happenTime)).thenReturn(Mono.just(code))
+    doThrow(NonUniqueException()).`when`(accidentDraftDao).create(po)
 
     // invoke and verify
-    StepVerifier.create(accidentDraftService.submit(dto)).verifyError(IllegalArgumentException::class)
+    StepVerifier.create(accidentDraftService.submit(dto)).verifyError(NonUniqueException::class)
   }
 
   @Test
   fun modifyWithRole() {
     // mock
-    val code = "code"
+    val id = 1
     val dto = AccidentDraftDto4Modify("plate", "driver", OffsetDateTime.now(), "location", "hitForm", "hitType", "desc")
     val data = mapOf("carPlate" to dto.carPlate, "driverName" to dto.driverName, "happenTime" to dto.happenTime
       , "location" to dto.location, "hitForm" to dto.hitForm, "hitType" to dto.hitType, "describe" to dto.describe)
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
-    `when`(accidentDraftDao.update(code, data)).thenReturn(Mono.just(true))
+    `when`(accidentDraftDao.update(id, data)).thenReturn(Mono.just(true))
 
     // invoke
-    val actual = accidentDraftService.modify(code, dto)
+    val actual = accidentDraftService.modify(id, dto)
 
     // verify
     StepVerifier.create(actual).expectNext().verifyComplete()
     verify(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
-    verify(accidentDraftDao).update(code, data)
+    verify(accidentDraftDao).update(id, data)
   }
 
   @Test
   fun modifyWithoutRole() {
     // mock
-    val code = "code"
+    val id = 1
     val dto = AccidentDraftDto4Modify("plate", "driver", OffsetDateTime.now(), "location", "hitForm", "hitType", "desc")
     doThrow(SecurityException()).`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
 
     // invoke and verify
-    assertThrows(SecurityException::class.java, { accidentDraftService.modify(code, dto).subscribe() })
+    assertThrows(SecurityException::class.java, { accidentDraftService.modify(id, dto).subscribe() })
   }
 
   @Test
   fun modifyWithException() {
     // mock
-    val code = "code"
+    val id = 1
     val dto = AccidentDraftDto4Modify("plate", "driver", OffsetDateTime.now(), "location", "hitForm", "hitType", "desc")
     val data = mapOf("carPlate" to dto.carPlate, "driverName" to dto.driverName, "happenTime" to dto.happenTime
       , "location" to dto.location, "hitForm" to dto.hitForm, "hitType" to dto.hitType, "describe" to dto.describe)
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
-    `when`(accidentDraftDao.update(code, data)).thenReturn(Mono.just(false))
+    `when`(accidentDraftDao.update(id, data)).thenReturn(Mono.just(false))
 
     // invoke
-    val actual = accidentDraftService.modify(code, dto)
+    val actual = accidentDraftService.modify(id, dto)
 
     // verify
-    StepVerifier.create(actual).verifyError(IllegalArgumentException::class)
+    StepVerifier.create(actual).verifyError(NotFoundException::class)
     verify(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
-    verify(accidentDraftDao).update(code, data)
+    verify(accidentDraftDao).update(id, data)
   }
 }

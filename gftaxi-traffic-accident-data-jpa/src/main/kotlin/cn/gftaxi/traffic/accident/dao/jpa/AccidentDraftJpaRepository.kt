@@ -8,4 +8,4 @@ import org.springframework.data.jpa.repository.JpaRepository
  *
  * @author JF
  */
-interface AccidentDraftJpaRepository : JpaRepository<AccidentDraft, String>
+interface AccidentDraftJpaRepository : JpaRepository<AccidentDraft, Int>

@@ -11,7 +11,8 @@ import cn.gftaxi.traffic.accident.rest.webflux.handler.AccidentDraftHandler.Comp
 import cn.gftaxi.traffic.accident.service.AccidentDraftService
 import com.nhaarman.mockito_kotlin.any
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.PageImpl
@@ -75,30 +76,31 @@ class AccidentDraftHandlerTest @Autowired constructor(
   fun get() {
     val client = bindToRouterFunction(RouterFunctions.route(GET_REQUEST_PREDICATE, HandlerFunction(handler::get))).build()
     // mock
+    val id = 1
     val code = "20180709_01"
-    `when`(accidentDraftService.get(code))
-      .thenReturn(Mono.just(AccidentDraft(null,
+    `when`(accidentDraftService.get(id))
+      .thenReturn(Mono.just(AccidentDraft(id,
         code, AccidentDraft.Status.Todo, "car", "driver", OffsetDateTime.now(),
         OffsetDateTime.now(), "location", "hitForm", "hitType", false,
         "source", "authorName", "authorId", "")))
 
     // invoke
-    client.get().uri("/accident-draft/$code")
+    client.get().uri("/accident-draft/$id")
       .exchange()
       .expectStatus().isOk
       .expectHeader().contentType(APPLICATION_JSON_UTF8)
       .expectBody()
-      .jsonPath("$.code").isEqualTo(code) // verify code
+      .jsonPath("$.id").isEqualTo(id)
+      .jsonPath("$.code").isEqualTo(code)
 
     // verify
-    verify(accidentDraftService).get(code)
+    verify(accidentDraftService).get(id)
   }
 
   @Test
   fun submit() {
     val client = bindToRouterFunction(RouterFunctions.route(SUBMIT_REQUEST_PREDICATE, HandlerFunction(handler::submit))).build()
     // mock
-    val code = "20180909_01"
     val now = OffsetDateTime.now()
     val dto = AccidentDraftDto4Submit("粤A.23J5", "林河", now, "荔湾区福利路",
       "车辆间事故", "追尾碰撞", "撞车", "BC", "韩智勇",
@@ -116,7 +118,9 @@ class AccidentDraftHandlerTest @Autowired constructor(
     `data`.add("authorId", dto.authorId)
     `data`.add("reportTime", dto.reportTime.format(FORMAT_DATE_TIME_TO_MINUTE))
 
-    `when`(accidentDraftService.submit(any())).thenReturn(Mono.just(code))
+    val id = 1
+    val code = "20180909_01"
+    `when`(accidentDraftService.submit(any())).thenReturn(Mono.just(Pair(id, code)))
 
     // invoke
     client.post().uri("/accident-draft")
@@ -126,7 +130,8 @@ class AccidentDraftHandlerTest @Autowired constructor(
       .expectStatus().isCreated
       .expectHeader().contentType(APPLICATION_JSON_UTF8)
       .expectBody()
-      .jsonPath("$.code").isEqualTo(code) // verify code
+      .jsonPath("$.id").isEqualTo(id)
+      .jsonPath("$.code").isEqualTo(code)
 
     // verify
     verify(accidentDraftService).submit(any())
@@ -136,7 +141,7 @@ class AccidentDraftHandlerTest @Autowired constructor(
   fun update() {
     val client = bindToRouterFunction(RouterFunctions.route(UPDATE_REQUEST_PREDICATE, HandlerFunction(handler::update))).build()
     // mock
-    val code = "code"
+    val id = 1
     val happenTimeOfString = LocalDateTime.now().format(FORMAT_DATE_TIME_TO_MINUTE)
     val happenTime = OffsetDateTime.of(LocalDateTime.parse(happenTimeOfString, FORMAT_DATE_TIME_TO_MINUTE), OffsetDateTime.now().offset)
     val dto = AccidentDraftDto4Modify("carPlate", "driver", happenTime, "location", "hitForm", "hitType", "describe")
@@ -148,16 +153,16 @@ class AccidentDraftHandlerTest @Autowired constructor(
     data.add("hitForm", dto.hitForm)
     data.add("hitType", dto.hitType)
     data.add("describe", dto.describe)
-    `when`(accidentDraftService.modify(anyString(), any())).thenReturn(Mono.empty())
+    `when`(accidentDraftService.modify(any(), any())).thenReturn(Mono.empty())
 
     // invoke
-    client.put().uri("/accident-draft/$code")
+    client.put().uri("/accident-draft/$id")
       .contentType(MediaType.APPLICATION_JSON_UTF8)
       .syncBody(data.build().toString())
       .exchange()
       .expectStatus().isNoContent
 
     // verify
-    verify(accidentDraftService).modify(anyString(), any())
+    verify(accidentDraftService).modify(any(), any())
   }
 }

@@ -19,10 +19,10 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
         e: {status: "Todo", source: "BC"}
       },
       ready: function () {
-        let code = $page.data("data");
-        if (code) {
-          Vue.set(this.e, "code", code);
-          accident.getByModule(resourceKey, code).then(json => {
+        let id = $page.data("data");
+        if (id) {
+          Vue.set(this.e, "code", id);
+          accident.getByModule(resourceKey, id).then(json => {
             Object.keys(json).forEach(key => Vue.set(this.e, key, json[key]));
             this.ui.hitForms.push(this.e.hitForm);
             this.ui.hitTypes.push(this.e.hitType);
@@ -107,7 +107,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
         /** 保存 */
         save: function () {
           if (!bc.validator.validate($page)) return;
-          let isNew = !this.e.code;
+          let isNew = !this.e.id;
           let saveKeys = ["carPlate", "driverName", "happenTime", "location", "hitForm", "hitType", "describe"];
           if (isNew) saveKeys = saveKeys.concat(["source", "authorName", "authorId"]);
           let data = {};
@@ -118,8 +118,9 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           });
           // 上报操作
           if (isNew) {
-            bc.msg.confirm("确定上报案件信息吗？", () =>
-              accident.save(resourceKey, this.e.code, data).then(result => {
+            bc.msg.confirm("确定上报案件吗？", () =>
+              accident.save(resourceKey, this.e.id, data).then(result => {
+                Vue.set(this.e, "id", result.id);
                 Vue.set(this.e, "code", result.code);
                 Vue.set(this.e, "reportTime", result.reportTime);
                 bc.msg.slide("上报成功！");
@@ -127,7 +128,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
                 $page.dialog("close");      // 上报案件后关闭表单
               }));
           } else {// 保存操作
-            accident.save(resourceKey, this.e.code, data).then(() => {
+            accident.save(resourceKey, this.e.id, data).then(() => {
               $page.data("status", "saved");
               bc.msg.slide("保存成功！");
             });

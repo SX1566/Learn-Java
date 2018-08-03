@@ -11,9 +11,9 @@ import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.*
 import reactor.core.publisher.Mono
+import tech.simter.exception.NonUniqueException
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 import javax.json.Json
 
 /**
@@ -38,6 +38,7 @@ class AccidentDraftHandler @Autowired constructor(
           "pageSize" to it.pageable.pageSize,
           "rows" to it.content.map {
             mapOf(
+              "id" to it.id,
               "code" to it.code,
               "status" to it.status.name,
               "carPlate" to it.carPlate,
@@ -60,9 +61,10 @@ class AccidentDraftHandler @Autowired constructor(
   }
 
   fun get(request: ServerRequest): Mono<ServerResponse> {
-    return accidentDraftService.get(request.pathVariable("code")).flatMap {
+    return accidentDraftService.get(request.pathVariable("id").toInt()).flatMap {
       ServerResponse.ok().contentType(APPLICATION_JSON_UTF8).syncBody(
         mapOf(
+          "id" to it.id,
           "code" to it.code,
           "status" to it.status.name,
           "carPlate" to it.carPlate,
@@ -84,21 +86,25 @@ class AccidentDraftHandler @Autowired constructor(
 
   fun submit(request: ServerRequest): Mono<ServerResponse> {
     return request.bodyToMono<Map<String, String>>()
-      .flatMap {
-        val dto = AccidentDraftDto4Submit(
+      .map {
+        AccidentDraftDto4Submit(
           it["carPlate"]!!, it["driverName"]!!, toOffsetDateTime(it["happenTime"]!!), it["location"]!!,
           it["hitForm"]!!, it["hitType"]!!, if (it.size == 10) it["describe"]!! else "", it["source"]!!,
           it["authorName"]!!, it["authorId"]!!, OffsetDateTime.now()
         )
-        ServerResponse.created(request.uri()).contentType(MediaType.APPLICATION_JSON_UTF8)
-          .body(
-            accidentDraftService.submit(dto).map {
-              val body = Json.createObjectBuilder()
-              body.add("code", it)
-              body.add("reportTime", dto.reportTime.format(FORMAT_DATE_TIME_TO_MINUTE))
-              body.build().toString()
-            })
       }
+      .flatMap { dto ->
+        accidentDraftService.submit(dto).map {
+          Json.createObjectBuilder()
+            .add("id", it.first)
+            .add("code", it.second)
+            .add("reportTime", dto.reportTime.format(FORMAT_DATE_TIME_TO_MINUTE))
+            .build().toString()
+        }
+      }
+      .flatMap { ServerResponse.created(request.uri()).contentType(MediaType.APPLICATION_JSON_UTF8).syncBody(it) }
+      // 车号+事发时间重复时
+      .onErrorResume(NonUniqueException::class.java, { ServerResponse.badRequest().syncBody(it.message ?: "") })
   }
 
   fun update(request: ServerRequest): Mono<ServerResponse> {
@@ -106,7 +112,7 @@ class AccidentDraftHandler @Autowired constructor(
       .flatMap {
         accidentDraftService
           .modify(
-            request.pathVariable("code"),
+            request.pathVariable("id").toInt(),
             AccidentDraftDto4Modify(
               it["carPlate"]!!, it["driverName"]!!, toOffsetDateTime(it["happenTime"]!!), it["location"]!!,
               it["hitForm"]!!, it["hitType"]!!, if (it.size == 7) it["describe"]!! else ""
@@ -119,17 +125,17 @@ class AccidentDraftHandler @Autowired constructor(
   /** 时间字符串转 OffsetDateTime 类型 */
   private fun toOffsetDateTime(dateTime: String): OffsetDateTime {
     return OffsetDateTime.of(
-      LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+      LocalDateTime.parse(dateTime, FORMAT_DATE_TIME_TO_MINUTE),
       OffsetDateTime.now().offset
     )
   }
 
   companion object {
     val FIND_REQUEST_PREDICATE: RequestPredicate = RequestPredicates.GET("/accident-draft")
-    val GET_REQUEST_PREDICATE: RequestPredicate = RequestPredicates.GET("/accident-draft/{code}")
+    val GET_REQUEST_PREDICATE: RequestPredicate = RequestPredicates.GET("/accident-draft/{id}")
     val SUBMIT_REQUEST_PREDICATE: RequestPredicate = RequestPredicates.POST("/accident-draft")
       .and(RequestPredicates.contentType(MediaType.APPLICATION_JSON_UTF8))
-    val UPDATE_REQUEST_PREDICATE: RequestPredicate = RequestPredicates.PUT("/accident-draft/{code}")
+    val UPDATE_REQUEST_PREDICATE: RequestPredicate = RequestPredicates.PUT("/accident-draft/{id}")
       .and(RequestPredicates.contentType(MediaType.APPLICATION_JSON_UTF8))
   }
 }
