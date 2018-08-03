@@ -2,18 +2,6 @@
      data-js='["static/accident/accident-register/view.js"]'
      data-option='{"width":1074, "height":526, "minHeight":526, "minWidth":1074, "maxWidth":1300, "minimizable":true, "maximizable":true}'>
   <div class="ui-widget-content vlayout" style="border:none;height: 100%">
-    <!-- 汇总统计 -->
-    <div class="ui-widget-header title" style="position: relative;border:none" class="unflex">
-      <span class="text">汇总统计：（单位宗）</span>
-      <span class="ui-icon ui-icon-refresh verticalMiddle" style="margin-right: 1.5em" title="刷新"
-            @click="reloadStatSum"/>
-      <span
-        :class="{'verticalMiddle' : true,'ui-icon':true, 'ui-icon-carat-1-n':statSumView.ui.isOpen, 'ui-icon-carat-1-s':!statSumView.ui.isOpen}"
-        :title="statSumView.ui.isOpen ? '点击隐藏内容' : '点击展示内容'" @click="showHideView('statSumView')"/>
-    </div>
-    <bc-grid v-if="statSumView.ui.isOpen" v-ref:stat :columns="statSumView.columns" :url="statSumView.url"
-             :refreshable="false" class="unflex" style="border-bottom: none" :single-choice="true"></bc-grid>
-
     <!-- 待登记 -->
     <div class="ui-widget-header title" style="position: relative;border:none" class="unflex">
       <span class="text">{{todoView.title}}</span>
