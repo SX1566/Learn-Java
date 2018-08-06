@@ -2,12 +2,20 @@ package cn.gftaxi.traffic.accident.rest.webflux.handler.register
 
 import cn.gftaxi.traffic.accident.Utils.FORMAT_DATE_TIME_TO_MINUTE
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
+import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.MediaType
+import org.springframework.http.HttpStatus.FORBIDDEN
+import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.server.*
+import org.springframework.web.reactive.function.server.HandlerFunction
+import org.springframework.web.reactive.function.server.RequestPredicate
+import org.springframework.web.reactive.function.server.RequestPredicates.GET
+import org.springframework.web.reactive.function.server.ServerRequest
+import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
+import tech.simter.exception.ForbiddenException
+import tech.simter.exception.PermissionDeniedException
 
 /**
  * 获取已审核案件信息的 [HandlerFunction]。
@@ -24,7 +32,8 @@ class FindCheckedHandler @Autowired constructor(
     val statusStr = request.queryParam("status")
     val status = if (statusStr.isPresent) Status.valueOf(statusStr.get()) else null
     val search = request.queryParam("search").orElse(null)
-    val page = accidentRegisterService.findChecked(pageNo, pageSize, status, search)
+
+    return accidentRegisterService.findChecked(pageNo, pageSize, status, search)
       .map {
         mapOf(
           "count" to it.count(),
@@ -48,14 +57,19 @@ class FindCheckedHandler @Autowired constructor(
           }.toList()
         )
       }
-
-    return ServerResponse.ok()
-      .contentType(MediaType.APPLICATION_JSON_UTF8)
-      .body(page)
+      // response
+      .flatMap { ServerResponse.ok().contentType(APPLICATION_JSON_UTF8).syncBody(it) }
+      // error mapping
+      .onErrorResume(ForbiddenException::class.java, {
+        ServerResponse.status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
+      })
+      .onErrorResume(PermissionDeniedException::class.java, {
+        ServerResponse.status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
+      })
   }
 
   companion object {
     /** The default [RequestPredicate] */
-    val REQUEST_PREDICATE: RequestPredicate = RequestPredicates.GET("/accident-register/checked")
+    val REQUEST_PREDICATE: RequestPredicate = GET("/accident-register/checked")
   }
 }

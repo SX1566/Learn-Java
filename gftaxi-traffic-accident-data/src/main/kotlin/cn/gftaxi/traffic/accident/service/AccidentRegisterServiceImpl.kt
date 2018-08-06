@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import tech.simter.exception.PermissionDeniedException
 import tech.simter.security.SecurityService
 
 /**
@@ -38,8 +39,12 @@ class AccidentRegisterServiceImpl @Autowired constructor(
 
   override fun findChecked(pageNo: Int, pageSize: Int, status: Status?, search: String?)
     : Mono<Page<AccidentRegisterDto4Checked>> {
-    securityService.verifyHasAnyRole(*READ_ROLES)
-    return accidentRegisterDao.findChecked(pageNo, pageSize, status, search)
+    return try {
+      securityService.verifyHasAnyRole(*READ_ROLES)
+      accidentRegisterDao.findChecked(pageNo, pageSize, status, search)
+    } catch (e: SecurityException) {
+      Mono.error(PermissionDeniedException(e.message ?: ""))
+    }
   }
 
   override fun get(id: Int): Mono<AccidentRegisterDto4Form> {

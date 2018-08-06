@@ -3,8 +3,8 @@ package cn.gftaxi.traffic.accident.rest.webflux.handler.register
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Checked
 import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType.Official
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Approved
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Rejected
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.*
+import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
 import cn.gftaxi.traffic.accident.rest.webflux.handler.register.FindCheckedHandler.Companion.REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import org.junit.jupiter.api.Test
@@ -14,12 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
-import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import org.springframework.test.web.reactive.server.WebTestClient.bindToRouterFunction
 import org.springframework.web.reactive.config.EnableWebFlux
 import org.springframework.web.reactive.function.server.RouterFunctions.route
 import reactor.core.publisher.Mono
+import tech.simter.exception.ForbiddenException
 import java.time.OffsetDateTime
 
 /**
@@ -54,7 +55,7 @@ class FindCheckedHandlerTest @Autowired constructor(
 
   @Test
   fun findBoth() {
-    findByStatus(null)
+    findByStatus()
   }
 
   @Test
@@ -67,7 +68,7 @@ class FindCheckedHandlerTest @Autowired constructor(
     findByStatus(Rejected)
   }
 
-  private fun findByStatus(status: Status?) {
+  private fun findByStatus(status: Status? = null) {
     // mock
     val pageNo = 1
     val pageSize = 25
@@ -81,7 +82,7 @@ class FindCheckedHandlerTest @Autowired constructor(
     client.get().uri("/accident-register/checked" + (if (status != null) "?status=${status.name}" else ""))
       .exchange()
       .expectStatus().isOk
-      .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+      .expectHeader().contentType(APPLICATION_JSON_UTF8)
       .expectBody()
       .jsonPath("$.count").isEqualTo(list.size)
       .jsonPath("$.pageNo").isEqualTo(pageNo)
@@ -90,6 +91,31 @@ class FindCheckedHandlerTest @Autowired constructor(
       .jsonPath("$.rows[1].code").isEqualTo("20180101_01")
 
     // verify
+    verify(accidentRegisterService).findChecked(pageNo, pageSize, status, null)
+  }
+
+  @Test
+  fun failedByDraftStatus() {
+    failedByForbiddenStatus(Draft)
+  }
+
+  @Test
+  fun failedByToCheckStatus() {
+    failedByForbiddenStatus(ToCheck)
+  }
+
+  private fun failedByForbiddenStatus(status: Status) {
+    // mock
+    val pageNo = 1
+    val pageSize = 25
+    `when`(accidentRegisterService.findChecked(pageNo, pageSize, status, null))
+      .thenReturn(Mono.error(ForbiddenException()))
+
+    // invoke
+    val response = client.get().uri("/accident-register/checked?status=${status.name}").exchange()
+
+    // verify
+    response.expectStatus().isForbidden.expectHeader().contentType(TEXT_PLAIN_UTF8)
     verify(accidentRegisterService).findChecked(pageNo, pageSize, status, null)
   }
 }
