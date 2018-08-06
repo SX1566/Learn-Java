@@ -3,9 +3,7 @@ package cn.gftaxi.traffic.accident.rest.webflux
 import cn.gftaxi.traffic.accident.rest.webflux.handler.AccidentDraftHandler
 import cn.gftaxi.traffic.accident.rest.webflux.handler.FindAllSecondaryCategoriesHandler
 import cn.gftaxi.traffic.accident.rest.webflux.handler.FindSecondaryCategoriesHandler
-import cn.gftaxi.traffic.accident.rest.webflux.handler.register.FindTodoHandler
-import cn.gftaxi.traffic.accident.rest.webflux.handler.register.FindCheckedHandler
-import cn.gftaxi.traffic.accident.rest.webflux.handler.register.StatSummaryHandler
+import cn.gftaxi.traffic.accident.rest.webflux.handler.register.*
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -39,6 +37,7 @@ class ModuleConfiguration @Autowired constructor(
   private val accidentRegisterStatSummaryHandler: StatSummaryHandler,
   private val accidentRegisterFindTodoHandler: FindTodoHandler,
   private val accidentRegisterFindCheckedHandler: FindCheckedHandler,
+  private val accidentRegisterToCheckHandler: ToCheckHandler,
   private val findAllSecondaryCategoriesHandler: FindAllSecondaryCategoriesHandler
 ) {
   private val logger = LoggerFactory.getLogger(ModuleConfiguration::class.java)
@@ -74,6 +73,8 @@ class ModuleConfiguration @Autowired constructor(
       FindTodoHandler.REQUEST_PREDICATE.invoke(accidentRegisterFindTodoHandler::handle)
       // GET /accident-register/checked      获取已审核案件信息
       FindCheckedHandler.REQUEST_PREDICATE.invoke(accidentRegisterFindCheckedHandler::handle)
+      // POST /accident-register/to-check/{id} 提交案件信息
+      ToCheckHandler.REQUEST_PREDICATE.invoke(accidentRegisterToCheckHandler::handle)
 
       //==== 全局 ====
       // GET
