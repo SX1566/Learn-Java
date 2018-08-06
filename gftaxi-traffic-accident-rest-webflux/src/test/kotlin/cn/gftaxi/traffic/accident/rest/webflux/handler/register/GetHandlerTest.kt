@@ -4,6 +4,7 @@ import cn.gftaxi.traffic.accident.Utils
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
 import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType.Official
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Draft
+import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
 import cn.gftaxi.traffic.accident.rest.webflux.handler.register.GetHandler.Companion.REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import org.junit.jupiter.api.Test
@@ -18,6 +19,7 @@ import org.springframework.web.reactive.config.EnableWebFlux
 import org.springframework.web.reactive.function.server.RouterFunctions.route
 import reactor.core.publisher.Mono
 import tech.simter.exception.NotFoundException
+import tech.simter.exception.PermissionDeniedException
 import java.time.OffsetDateTime
 
 /**
@@ -49,7 +51,7 @@ class GetHandlerTest @Autowired constructor(
   }
 
   @Test
-  fun exists() {
+  fun success() {
     val id = 1
     // mock
     val dto = randomDto(id = id)
@@ -76,7 +78,7 @@ class GetHandlerTest @Autowired constructor(
   }
 
   @Test
-  fun notExists() {
+  fun failedByNotFound() {
     // mock
     val id = 1
     `when`(accidentRegisterService.get(id)).thenReturn(Mono.error(NotFoundException()))
@@ -85,7 +87,21 @@ class GetHandlerTest @Autowired constructor(
     val response = client.get().uri("/accident-register/$id").exchange()
 
     // verify
-    response.expectStatus().isNotFound
+    response.expectStatus().isNotFound.expectHeader().contentType(TEXT_PLAIN_UTF8)
+    verify(accidentRegisterService).get(id)
+  }
+
+  @Test
+  fun failedByPermissionDenied() {
+    // mock
+    val id = 1
+    `when`(accidentRegisterService.get(id)).thenReturn(Mono.error(PermissionDeniedException()))
+
+    // invoke
+    val response = client.get().uri("/accident-register/$id").exchange()
+
+    // verify
+    response.expectStatus().isForbidden.expectHeader().contentType(TEXT_PLAIN_UTF8)
     verify(accidentRegisterService).get(id)
   }
 }

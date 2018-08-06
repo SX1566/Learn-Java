@@ -69,8 +69,8 @@ interface AccidentRegisterService {
    *    并自动生成一条自车类型的 [AccidentPeople] 当事人信息。
    *
    * @param[id] 事故 ID
-   * @throws [SecurityException] 不是 [READ_ROLES] 中的任一角色之一
-   * @throws [NotFoundException] 指定编号的报案信息不存在
+   * @throws [NotFoundException] 案件不存在
+   * @throws [PermissionDeniedException] 不是 [READ_ROLES] 中的任一角色之一
    */
   fun get(id: Int): Mono<AccidentRegisterDto4Form>
 
@@ -82,8 +82,8 @@ interface AccidentRegisterService {
    *
    * @param[id] 要修改案件的 ID
    * @param[data] 要更新的信息，key 为 [AccidentRegister] 的属性名，value 为相应的属性值
-   * @throws [PermissionDeniedException] 无 [AccidentDraft.ROLE_MODIFY] 修改事故登记信息权限
    * @throws [NotFoundException] 案件不存在
+   * @throws [PermissionDeniedException] 无 [AccidentDraft.ROLE_MODIFY] 修改事故登记信息权限
    * @return 更新完毕的 [Mono] 信号
    */
   fun update(id: Int, data: Map<String, Any?>): Mono<Void>
