@@ -3,8 +3,8 @@ package cn.gftaxi.traffic.accident.rest.webflux.handler.register
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
 import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType.Official
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Draft
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.ToCheck
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.*
+import cn.gftaxi.traffic.accident.rest.webflux.Utils
 import cn.gftaxi.traffic.accident.rest.webflux.handler.register.FindTodoHandler.Companion.REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import org.junit.jupiter.api.Test
@@ -18,6 +18,7 @@ import org.springframework.test.web.reactive.server.WebTestClient.bindToRouterFu
 import org.springframework.web.reactive.config.EnableWebFlux
 import org.springframework.web.reactive.function.server.RouterFunctions.route
 import reactor.core.publisher.Flux
+import tech.simter.exception.ForbiddenException
 import java.time.OffsetDateTime
 
 /**
@@ -55,7 +56,7 @@ class FindTodoHandlerTest @Autowired constructor(
 
   @Test
   fun findBoth() {
-    findByStatus(null)
+    findByStatus()
   }
 
   @Test
@@ -68,7 +69,7 @@ class FindTodoHandlerTest @Autowired constructor(
     findByStatus(ToCheck)
   }
 
-  private fun findByStatus(status: Status?) {
+  private fun findByStatus(status: Status? = null) {
     var code = 1
     // mock
     val dto = randomDto(code = "20180101_0$code")
@@ -85,6 +86,28 @@ class FindTodoHandlerTest @Autowired constructor(
       .jsonPath("$.[1].code").isEqualTo("20180101_01")
 
     // verify
+    verify(accidentRegisterService).findTodo(status)
+  }
+
+  @Test
+  fun failedByApprovedStatus() {
+    failedByForbiddenStatus(Approved)
+  }
+
+  @Test
+  fun failedByRejectedStatus() {
+    failedByForbiddenStatus(Rejected)
+  }
+
+  private fun failedByForbiddenStatus(status: Status) {
+    // mock
+    `when`(accidentRegisterService.findTodo(status)).thenReturn(Flux.error(ForbiddenException()))
+
+    // invoke
+    val response = client.get().uri("/accident-register/todo?status=${status.name}").exchange()
+
+    // verify
+    response.expectStatus().isForbidden.expectHeader().contentType(Utils.TEXT_PLAIN_UTF8)
     verify(accidentRegisterService).findTodo(status)
   }
 }

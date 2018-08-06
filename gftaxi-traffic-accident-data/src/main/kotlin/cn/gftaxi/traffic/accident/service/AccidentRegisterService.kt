@@ -38,8 +38,8 @@ interface AccidentRegisterService {
    * 2. 当 [status] = [ToCheck] 时，返回处于待审核状态（即 [AccidentRegister.status] = [AccidentRegister.Status.ToCheck]）案件的相关信息。
    *
    * @param[status] 案件状态，只支持 [Draft] 和 [ToCheck] 两种状态，为 null 则返回这两种状态的案件
-   * @throws [SecurityException] 不是 [READ_ROLES] 中的任一角色之一
-   * @throws [IllegalArgumentException] 如果指定的状态条件 [status] 不在允许的范围内
+   * @throws [ForbiddenException] 如果指定的状态条件 [status] 不在允许的范围内
+   * @throws [PermissionDeniedException] 不是 [READ_ROLES] 中的任一角色之一
    */
   fun findTodo(status: Status? = null): Flux<AccidentRegisterDto4Todo>
 
