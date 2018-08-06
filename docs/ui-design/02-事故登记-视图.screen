@@ -1,8 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
-  <widgets xsi:type="model:WidgetGroup" id="246" x="6" y="8" measuredWidth="1260" measuredHeight="421">
-    <widgets xsi:type="model:Window" id="2" y="34" width="986" height="387" text="事故登记" measuredWidth="986" measuredHeight="387" minimizeButton="true" maximizeButton="true"/>
-    <widgets xsi:type="model:WidgetGroup" id="7" x="8" y="396" measuredWidth="122" measuredHeight="25">
+  <widgets xsi:type="model:WidgetGroup" id="246" x="6" y="8" measuredWidth="1038" measuredHeight="398">
+    <widgets xsi:type="model:Window" id="2" y="34" width="1038" height="363" text="事故登记" measuredWidth="1038" measuredHeight="363" minimizeButton="true" maximizeButton="true"/>
+    <widgets xsi:type="model:Table" id="84" y="87" width="1038" height="139" text="=(w:20). 序号, =(w:20). 事发时间, (w:20). 事故车号, (w:20). 当事司机, =(w:143). 事发地点, =(w:20). 事发车队, =(w:20). 事故形态, =(w:20). 碰撞类型, =(w:20). 接案人, =(w:20). 报案时间, =(w:20). 逾期报案,&#xD;&#xA;1,[2018-05-24 10:48],粤A.1JJ43,\[正班\] 郑秋明,&lt;.海珠区三窖路22号,一分三队,&lt;.车辆间事故,&lt;.追尾碰撞,韩智勇,2018-05-25 11:25,2h&#xD;&#xA;2,[2018-05-26 09:48],粤A.1G523,\[替班\] 何维,&lt;.越秀区犀牛路32号,一分一队,&lt;.车辆间事故,&lt;.正面碰撞,韩智勇,2018-05-26 11:25,否&#xD;&#xA;3,[2018-06-02 17:48],粤A.1T8I0,\[非编\] 陈晓秋,&lt;.荔湾区,一分二队,&lt;.车辆与人,&lt;.其他,韩智勇,2018-06-03 03:25,1d8h&#xD;&#xA;3,[2018-06-01 07:30],粤A.1T000,黄晓明,&lt;.上市路,,&lt;.单车事故,&lt;.其他,小张,2018-06-01 08:25,否&#xD;&#xA;..." measuredWidth="1038" measuredHeight="139" alternative="#eee" header="false">
+      <font bold="false"/>
+      <items x="40" y="26" width="101" height="17" text="2018-05-24 10:48"/>
+      <items x="40" y="49" width="101" height="17" text="2018-05-26 09:48"/>
+      <items x="40" y="72" width="101" height="17" text="2018-06-02 17:48"/>
+      <items x="40" y="95" width="101" height="17" text="2018-06-01 07:30"/>
+    </widgets>
+    <widgets xsi:type="model:Shape" id="193" y="53" width="1038" height="36" text="待登记/已登待审案件：" measuredWidth="1038" measuredHeight="36" background="#ccc" textAlignment="Left" shapeType="rectangle">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Table" id="197" y="258" width="1038" height="116" text="=(w:20). 序号, =(w:20). 事发时间, (w:20). 事故车号, (w:20). 当事司机, =(w:143). 事发地点, =(w:20). 事发车队, =(w:302). 审核意见, (w:20). 审核人, =(w:20). 审核时间, =(w:20). 审核次数,&#xD;&#xA;1,[2018-05-24 11:25],粤A.1JJ43,\[正班\] 郑秋明,&lt;.海珠区三窖路22号,一分三队,&lt;.{image} [有部分错误],陈纪铭,2018-05-25 11:25,1&#xD;&#xA;2,[2018-05-23 11:25],粤A.1G523,\[替班\] 何维,&lt;.越秀区犀牛路32号,一分一队,&lt;.登记信息与事实不符,陈纪铭,2018-05-25 11:25,1&#xD;&#xA;3,[2018-05-22 11:25],粤A.1T8I0,\[正班\] 陈晓秋,&lt;.荔湾区,一分二队,&lt;.{image} [信息不完整],陈纪铭,2018-05-25 11:25,3&#xD;&#xA;..." measuredWidth="1038" measuredHeight="116" alternative="#eee" header="false">
+      <font bold="false"/>
+      <items x="40" y="26" width="101" height="17" text="2018-05-24 11:25"/>
+      <items x="528" y="26" width="60" height="17" text="有部分错误"/>
+      <items x="40" y="49" width="101" height="17" text="2018-05-23 11:25"/>
+      <items x="40" y="72" width="101" height="17" text="2018-05-22 11:25"/>
+      <items x="528" y="72" width="60" height="17" text="信息不完整"/>
+    </widgets>
+    <widgets xsi:type="model:Shape" id="198" y="224" width="1038" height="36" text="已审核案件：" measuredWidth="1038" measuredHeight="36" background="#ccc" textAlignment="Left" shapeType="rectangle">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="200" x="138" y="59" text="{selected} 待登记 {unselected} 已登待审" measuredWidth="134" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="201" x="138" y="230" text="{selected} 审核不通过 {unselected} 审核通过" measuredWidth="158" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:VScrollbar" id="108" x="1021" y="258" height="116" measuredWidth="17" measuredHeight="116"/>
+    <widgets xsi:type="model:Label" id="240" x="992" y="58" text="{refresh}  {line-arrow-up}" measuredWidth="46" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="242" x="992" y="230" text="{refresh}  {line-arrow-up}" measuredWidth="46" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:VScrollbar" id="244" x="1021" y="87" height="139" measuredWidth="17" measuredHeight="139"/>
+    <widgets xsi:type="model:Label" id="245" x="2" text="事故登记视图 - 登记员角色：" measuredWidth="267" measuredHeight="35">
+      <font size="20px" bold="true"/>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="270" x="270" y="70" width="53" height="8" measuredWidth="53" measuredHeight="8" foreground="#f00" lineStyle="dashed" left="false" right="true"/>
+    <widgets xsi:type="model:Label" id="271" x="324" y="59" text="当选择&quot;已登待审时&quot;，增加显示 &quot;提交时间&quot;、&quot;逾期登记&quot; 列" measuredWidth="320" measuredHeight="25" foreground="#f00">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="272" x="832" y="74" width="75" height="45" measuredWidth="75" measuredHeight="45" foreground="#f00" lineStyle="dashed" left="false" right="true" direction="bottom"/>
+    <widgets xsi:type="model:WidgetGroup" id="359" x="732" y="12" measuredWidth="234" measuredHeight="63">
+      <widgets xsi:type="model:Panel" id="360" width="234" height="63" measuredWidth="234" measuredHeight="63" alpha="128" border="dashed-rounded"/>
+      <widgets xsi:type="model:Text" id="358" x="9" y="7" text="如果是逾期报案，则显示逾期时间，如：&#xD;&#xA;- 2h - 表示逾期 2 小时后报案&#xD;&#xA;- 1d8h - 表示逾期1天加8小时后报案" measuredWidth="217" measuredHeight="51" foreground="#f00">
+        <font/>
+      </widgets>
+    </widgets>
+    <widgets xsi:type="model:Label" id="349" x="547" y="372" text="有此图标代表有审核附件，点击直接在线查看" measuredWidth="246" measuredHeight="25" foreground="#f00">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="350" x="513" y="345" width="33" height="37" measuredWidth="33" measuredHeight="37" foreground="#f00" lineStyle="dashed" left="false" right="true"/>
+    <widgets xsi:type="model:Label" id="351" x="122" y="205" text="点击超链接或双击行即可打开事故登记表单界面执行查阅、登记、审核等操作" measuredWidth="414" measuredHeight="25" foreground="#f00">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="352" x="76" y="197" width="45" height="17" measuredWidth="45" measuredHeight="17" foreground="#f00" lineStyle="dashed" left="false" right="true"/>
+    <widgets xsi:type="model:WidgetGroup" id="7" x="8" y="373" measuredWidth="122" measuredHeight="25">
       <widgets xsi:type="model:WidgetGroup" id="9" measuredWidth="122" measuredHeight="25">
         <widgets xsi:type="model:Icon" id="10" y="4" measuredWidth="16" measuredHeight="16" icon="previous (small)"/>
         <widgets xsi:type="model:Icon" id="11" x="18" y="4" width="16" height="16" measuredWidth="16" measuredHeight="16" icon="rewind (small)"/>
@@ -13,68 +70,10 @@
         <widgets xsi:type="model:Icon" id="14" x="106" y="4" measuredWidth="16" measuredHeight="16" icon="skip (small)"/>
       </widgets>
     </widgets>
-    <widgets xsi:type="model:Table" id="84" y="87" width="986" height="139" text="=(w:20). 序号, =(w:20). 事发时间, (w:20). 事故车号, (w:20). 当事司机, =(w:143). 事发地点, =(w:20). 事故形态, =(w:20). 碰撞类型, =(w:20). 接案人, =(w:20). 报案时间, =(w:20). 逾期报案,&#xD;&#xA;1,[2018-05-24 10:48],粤A.1JJ43,\[正班\] 郑秋明,&lt;.海珠区三窖路22号,&lt;.车辆间事故,&lt;.追尾碰撞,韩智勇,2018-05-25 11:25,2h&#xD;&#xA;2,[2018-05-26 09:48],粤A.1G523,\[替班\] 何维,&lt;.越秀区犀牛路32号,&lt;.车辆间事故,&lt;.正面碰撞,韩智勇,2018-05-26 11:25,否&#xD;&#xA;3,[2018-06-02 17:48],粤A.1T8I0,\[正班\] 陈晓秋,&lt;.荔湾区,&lt;.车辆与人事故,&lt;.其他,韩智勇,2018-06-03 03:25,1d8h&#xD;&#xA;..." measuredWidth="986" measuredHeight="139" alternative="#eeeeee" header="false">
-      <font bold="false"/>
-      <items x="40" y="26" width="101" height="17" text="2018-05-24 10:48"/>
-      <items x="40" y="49" width="101" height="17" text="2018-05-26 09:48"/>
-      <items x="40" y="72" width="101" height="17" text="2018-06-02 17:48"/>
-    </widgets>
-    <widgets xsi:type="model:Shape" id="193" y="53" width="986" height="36" text="待登记/已登待审案件：" measuredWidth="986" measuredHeight="36" background="#cccccc" textAlignment="Left" shapeType="rectangle">
-      <font/>
-    </widgets>
-    <widgets xsi:type="model:Table" id="197" y="258" width="971" height="139" text="=(w:20). 序号, =(w:20). 事发时间, (w:20). 事故车号, (w:20). 当事司机, =(w:140). 事发地点, =(w:289). 审核意见, (w:20). 审核人, =(w:20). 审核时间, =(w:20). 审核次数&#xD;&#xA;1,[2018-05-24 11:25],粤A.1JJ43,\[正班\] 郑秋明,&lt;.海珠区三窖路22号,&lt;.{image} [有部分错误],陈纪铭,2018-05-25 11:25,1&#xD;&#xA;2,[2018-05-23 11:25],粤A.1G523,\[替班\] 何维,&lt;.越秀区犀牛路32号,&lt;.登记信息与事实不符,陈纪铭,2018-05-25 11:25,1&#xD;&#xA;3,[2018-05-22 11:25],粤A.1T8I0,\[正班\] 陈晓秋,&lt;.荔湾区,&lt;.{image} [信息不完整],陈纪铭,2018-05-25 11:25,3&#xD;&#xA;..." measuredWidth="971" measuredHeight="139" alternative="#eeeeee" header="false">
-      <font bold="false"/>
-      <items x="40" y="26" width="101" height="17" text="2018-05-24 11:25"/>
-      <items x="442" y="26" width="60" height="17" text="有部分错误"/>
-      <items x="40" y="49" width="101" height="17" text="2018-05-23 11:25"/>
-      <items x="40" y="72" width="101" height="17" text="2018-05-22 11:25"/>
-      <items x="442" y="72" width="60" height="17" text="信息不完整"/>
-    </widgets>
-    <widgets xsi:type="model:Shape" id="198" y="224" width="986" height="36" text="已审核案件：" measuredWidth="986" measuredHeight="36" background="#cccccc" textAlignment="Left" shapeType="rectangle">
-      <font/>
-    </widgets>
-    <widgets xsi:type="model:Label" id="200" x="138" y="58" text="{selected} 待登记 {unselected} 已登待审" measuredWidth="134" measuredHeight="25">
-      <font/>
-    </widgets>
-    <widgets xsi:type="model:Label" id="201" x="138" y="233" text="{selected} 审核不通过 {unselected} 审核通过" measuredWidth="158" measuredHeight="25">
-      <font/>
-    </widgets>
-    <widgets xsi:type="model:VScrollbar" id="108" x="969" y="258" height="139" measuredWidth="17" measuredHeight="139"/>
-    <widgets xsi:type="model:Label" id="240" x="938" y="58" text="{refresh}  {line-arrow-up}" measuredWidth="46" measuredHeight="25">
-      <font/>
-    </widgets>
-    <widgets xsi:type="model:Label" id="242" x="938" y="230" text="{refresh}  {line-arrow-up}" measuredWidth="46" measuredHeight="25">
-      <font/>
-    </widgets>
-    <widgets xsi:type="model:VScrollbar" id="244" x="969" y="87" height="139" measuredWidth="17" measuredHeight="139"/>
-    <widgets xsi:type="model:Label" id="245" x="2" text="事故登记视图 - 登记员角色：" measuredWidth="267" measuredHeight="35">
-      <font size="20px" bold="true"/>
-    </widgets>
-    <widgets xsi:type="model:Arrow" id="270" x="270" y="70" width="53" height="8" measuredWidth="53" measuredHeight="8" foreground="#ff0000" lineStyle="dashed" left="false" right="true"/>
-    <widgets xsi:type="model:Label" id="271" x="324" y="59" text="当选择&quot;已登待审时&quot;，增加显示 &quot;提交时间&quot;、&quot;逾期登记&quot; 列" measuredWidth="320" measuredHeight="25" foreground="#ff0000">
-      <font/>
-    </widgets>
-    <widgets xsi:type="model:Arrow" id="272" x="786" y="144" width="241" height="8" measuredWidth="241" measuredHeight="8" foreground="#ff0000" lineStyle="dashed" left="false" right="true" direction="bottom"/>
-    <widgets xsi:type="model:WidgetGroup" id="359" x="1026" y="104" measuredWidth="234" measuredHeight="63">
-      <widgets xsi:type="model:Shape" id="348" width="234" height="63" measuredWidth="234" measuredHeight="63" alpha="0" foreground="#ff0000" lineStyle="dashed" shapeType="rectangle-rounded">
-        <font/>
-      </widgets>
-      <widgets xsi:type="model:Text" id="358" x="9" y="6" text="如果是逾期报案，则显示逾期时间，如：&#xD;&#xA;- 2h - 表示逾期 2 小时后报案&#xD;&#xA;- 1d8h - 表示逾期1天加8小时后报案" measuredWidth="217" measuredHeight="51" foreground="#ff0000">
-        <font/>
-      </widgets>
-    </widgets>
-    <widgets xsi:type="model:Label" id="349" x="488" y="364" text="有此图标代表有审核附件，点击直接在线查看" measuredWidth="246" measuredHeight="25" foreground="#ff0000">
-      <font/>
-    </widgets>
-    <widgets xsi:type="model:Arrow" id="350" x="454" y="346" width="30" height="27" measuredWidth="30" measuredHeight="27" foreground="#ff0000" lineStyle="dashed" left="false" right="true"/>
-    <widgets xsi:type="model:Label" id="351" x="122" y="192" text="点击超链接或双击行即可打开事故登记表单界面执行查阅、登记、审核等操作" measuredWidth="414" measuredHeight="25" foreground="#ff0000">
-      <font/>
-    </widgets>
-    <widgets xsi:type="model:Arrow" id="352" x="88" y="175" width="33" height="26" measuredWidth="33" measuredHeight="26" foreground="#ff0000" lineStyle="dashed" left="false" right="true"/>
   </widgets>
-  <widgets xsi:type="model:WidgetGroup" id="247" x="6" y="440" measuredWidth="986" measuredHeight="421">
-    <widgets xsi:type="model:Window" id="248" y="34" width="986" height="387" text="事故登记" measuredWidth="986" measuredHeight="387" minimizeButton="true" maximizeButton="true"/>
-    <widgets xsi:type="model:WidgetGroup" id="249" x="8" y="396" measuredWidth="122" measuredHeight="25">
+  <widgets xsi:type="model:WidgetGroup" id="247" x="6" y="416" measuredWidth="1038" measuredHeight="376">
+    <widgets xsi:type="model:Window" id="248" y="34" width="1038" height="342" text="事故登记" measuredWidth="1038" measuredHeight="342" minimizeButton="true" maximizeButton="true"/>
+    <widgets xsi:type="model:WidgetGroup" id="249" x="8" y="351" measuredWidth="122" measuredHeight="25">
       <widgets xsi:type="model:WidgetGroup" id="250" measuredWidth="122" measuredHeight="25">
         <widgets xsi:type="model:Icon" id="251" y="4" measuredWidth="16" measuredHeight="16" icon="previous (small)"/>
         <widgets xsi:type="model:Icon" id="252" x="18" y="4" width="16" height="16" measuredWidth="16" measuredHeight="16" icon="rewind (small)"/>
@@ -85,44 +84,44 @@
         <widgets xsi:type="model:Icon" id="255" x="106" y="4" measuredWidth="16" measuredHeight="16" icon="skip (small)"/>
       </widgets>
     </widgets>
-    <widgets xsi:type="model:Table" id="257" y="87" width="971" height="139" text="=(w:20). 序号, =(w:20). 事发时间, (w:20). 事故车号, (w:20). 当事司机, =(w:140). 事发地点, =(w:20). 事故形态, =(w:20). 碰撞类型, =(w:20). 接案人, =(w:20). 报案时间, =(w:20). 逾期报案, =(w:20). 提交时间, =(w:20). 逾期登记,&#xD;&#xA;1,[2018-05-24 10:48],粤A.1JJ43,\[正班\] 郑秋明,&lt;.海珠区三窖路22号,&lt;.车辆间事故,&lt;.追尾碰撞,韩智勇,2018-05-25 11:25,2h,2018-05-25 11:25,3h&#xD;&#xA;2,[2018-05-26 09:48],粤A.1G523,\[替班\] 何维,&lt;.越秀区犀牛路32号,&lt;.车辆间事故,&lt;.正面碰撞,韩智勇,2018-05-26 11:25,否,2018-05-26 11:25,否&#xD;&#xA;3,[2018-06-02 17:48],粤A.1T8I0,\[正班\] 陈晓秋,&lt;.荔湾区,&lt;.车辆与人事故,&lt;.其他,韩智勇,2018-06-03 03:25,1d8h,2018-06-03 03:25,2d8h&#xD;&#xA;..." measuredWidth="971" measuredHeight="139" alternative="#eeeeee" header="false">
+    <widgets xsi:type="model:Table" id="257" y="87" width="1038" height="116" text="=(w:20). 序号, =(w:20). 事发时间, (w:20). 事故车号, (w:20). 当事司机, =(w:143). 事发地点, =(w:20). 事发车队, =(w:20). 事故形态, =(w:20). 碰撞类型, =(w:20). 接案人, =(w:20). 报案时间, =(w:20). 逾期报案, =(w:20). 提交时间, =(w:20). 逾期登记,&#xD;&#xA;1,[2018-05-24 10:48],粤A.1JJ43,\[正班\] 郑秋明,&lt;.海珠区三窖路22号,一分三队,&lt;.车辆间事故,&lt;.追尾碰撞,韩智勇,2018-05-25 11:25,2h,2018-05-25 11:25,3h&#xD;&#xA;2,[2018-05-26 09:48],粤A.1G523,\[替班\] 何维,&lt;.越秀区犀牛路32号,一分一队,&lt;.车辆间事故,&lt;.正面碰撞,韩智勇,2018-05-26 11:25,否,2018-05-26 11:25,否&#xD;&#xA;3,[2018-06-02 17:48],粤A.1T8I0,\[非编\] 陈晓秋,&lt;.荔湾区,一分二队,&lt;.车辆与人,&lt;.其他,韩智勇,2018-06-03 03:25,1d8h,2018-06-03 03:25,2d8h&#xD;&#xA;..." measuredWidth="1038" measuredHeight="116" alternative="#eee" header="false">
       <font bold="false"/>
       <items x="40" y="26" width="101" height="17" text="2018-05-24 10:48"/>
       <items x="40" y="49" width="101" height="17" text="2018-05-26 09:48"/>
       <items x="40" y="72" width="101" height="17" text="2018-06-02 17:48"/>
     </widgets>
-    <widgets xsi:type="model:Shape" id="258" y="53" width="986" height="36" text="待审核案件：" measuredWidth="986" measuredHeight="36" background="#cccccc" textAlignment="Left" shapeType="rectangle">
+    <widgets xsi:type="model:Shape" id="258" y="53" width="1038" height="36" text="待审核案件：" measuredWidth="1038" measuredHeight="36" background="#ccc" textAlignment="Left" shapeType="rectangle">
       <font/>
     </widgets>
-    <widgets xsi:type="model:Table" id="259" y="258" width="971" height="139" text="=(w:20). 序号, =(w:20). 事发时间, (w:20). 事故车号, (w:20). 当事司机, =(w:140). 事发地点, =(w:314). 审核意见, (w:20). 审核人, =(w:20). 审核时间, =(w:20). 审核次数&#xD;&#xA;1,[2018-05-24 11:25],粤A.1JJ43,\[替班\] 郑秋明,&lt;.海珠区三窖路22号,&lt;.{image} [有部分错误],陈纪铭,2018-05-25 11:25,1&#xD;&#xA;2,[2018-05-23 11:25],粤A.1G523,\[替班\] 何维,&lt;.越秀区犀牛路32号,&lt;.登记信息与事实不符,陈纪铭,2018-05-25 11:25,1&#xD;&#xA;3,[2018-05-22 11:25],粤A.1T8I0,\[替班\] 陈晓秋,&lt;.荔湾区,&lt;.{image} [信息不完整],陈纪铭,2018-05-25 11:25,3&#xD;&#xA;..." measuredWidth="971" measuredHeight="139" alternative="#eeeeee" header="false">
+    <widgets xsi:type="model:Table" id="259" y="235" width="1038" height="116" text="=(w:20). 序号, =(w:20). 事发时间, (w:20). 事故车号, (w:20). 当事司机, =(w:143). 事发地点, =(w:20). 事发车队, =(w:302). 审核意见, (w:20). 审核人, =(w:20). 审核时间, =(w:20). 审核次数,&#xD;&#xA;1,[2018-05-24 11:25],粤A.1JJ43,\[正班\] 郑秋明,&lt;.海珠区三窖路22号,一分三队,&lt;.{image} [有部分错误],陈纪铭,2018-05-25 11:25,1&#xD;&#xA;2,[2018-05-23 11:25],粤A.1G523,\[替班\] 何维,&lt;.越秀区犀牛路32号,一分一队,&lt;.登记信息与事实不符,陈纪铭,2018-05-25 11:25,1&#xD;&#xA;3,[2018-05-22 11:25],粤A.1T8I0,\[正班\] 陈晓秋,&lt;.荔湾区,一分二队,&lt;.{image} [信息不完整],陈纪铭,2018-05-25 11:25,3&#xD;&#xA;..." measuredWidth="1038" measuredHeight="116" alternative="#eee" header="false">
       <font bold="false"/>
       <items x="40" y="26" width="101" height="17" text="2018-05-24 11:25"/>
-      <items x="442" y="26" width="60" height="17" text="有部分错误"/>
+      <items x="528" y="26" width="60" height="17" text="有部分错误"/>
       <items x="40" y="49" width="101" height="17" text="2018-05-23 11:25"/>
       <items x="40" y="72" width="101" height="17" text="2018-05-22 11:25"/>
-      <items x="442" y="72" width="60" height="17" text="信息不完整"/>
+      <items x="528" y="72" width="60" height="17" text="信息不完整"/>
     </widgets>
-    <widgets xsi:type="model:Shape" id="260" y="224" width="986" height="36" text="已审核案件：" measuredWidth="986" measuredHeight="36" background="#cccccc" textAlignment="Left" shapeType="rectangle">
+    <widgets xsi:type="model:Shape" id="260" y="201" width="1038" height="36" text="已审核案件：" measuredWidth="1038" measuredHeight="36" background="#ccc" textAlignment="Left" shapeType="rectangle">
       <font/>
     </widgets>
-    <widgets xsi:type="model:Label" id="262" x="129" y="230" text="{selected} 审核不通过 {unselected} 审核通过" measuredWidth="158" measuredHeight="25">
+    <widgets xsi:type="model:Label" id="262" x="129" y="207" text="{selected} 审核不通过 {unselected} 审核通过" measuredWidth="158" measuredHeight="25">
       <font/>
     </widgets>
-    <widgets xsi:type="model:VScrollbar" id="263" x="969" y="258" height="139" measuredWidth="17" measuredHeight="139"/>
-    <widgets xsi:type="model:Label" id="265" x="940" y="58" text="{refresh}  {line-arrow-up}" measuredWidth="46" measuredHeight="25">
+    <widgets xsi:type="model:VScrollbar" id="263" x="1021" y="235" height="116" measuredWidth="17" measuredHeight="116"/>
+    <widgets xsi:type="model:Label" id="265" x="992" y="58" text="{refresh}  {line-arrow-up}" measuredWidth="46" measuredHeight="25">
       <font/>
     </widgets>
-    <widgets xsi:type="model:Label" id="267" x="940" y="229" text="{refresh}  {line-arrow-up}" measuredWidth="46" measuredHeight="25">
+    <widgets xsi:type="model:Label" id="267" x="992" y="206" text="{refresh}  {line-arrow-up}" measuredWidth="46" measuredHeight="25">
       <font/>
     </widgets>
-    <widgets xsi:type="model:VScrollbar" id="268" x="969" y="87" height="139" measuredWidth="17" measuredHeight="139"/>
     <widgets xsi:type="model:Label" id="269" x="2" text="事故登记视图 - 审核员角色：" measuredWidth="267" measuredHeight="35">
       <font size="20px" bold="true"/>
     </widgets>
+    <widgets xsi:type="model:VScrollbar" id="268" x="1021" y="87" height="116" measuredWidth="17" measuredHeight="116"/>
   </widgets>
-  <widgets xsi:type="model:WidgetGroup" id="324" x="6" y="872" measuredWidth="986" measuredHeight="421">
-    <widgets xsi:type="model:Window" id="325" y="34" width="986" height="387" text="事故登记" measuredWidth="986" measuredHeight="387" minimizeButton="true" maximizeButton="true"/>
-    <widgets xsi:type="model:WidgetGroup" id="326" x="8" y="396" measuredWidth="122" measuredHeight="25">
+  <widgets xsi:type="model:WidgetGroup" id="324" x="6" y="800" measuredWidth="1038" measuredHeight="376">
+    <widgets xsi:type="model:Window" id="325" y="34" width="1038" height="342" text="事故登记" measuredWidth="1038" measuredHeight="342" minimizeButton="true" maximizeButton="true"/>
+    <widgets xsi:type="model:WidgetGroup" id="326" x="8" y="351" measuredWidth="122" measuredHeight="25">
       <widgets xsi:type="model:WidgetGroup" id="327" measuredWidth="122" measuredHeight="25">
         <widgets xsi:type="model:Icon" id="328" y="4" measuredWidth="16" measuredHeight="16" icon="previous (small)"/>
         <widgets xsi:type="model:Icon" id="329" x="18" y="4" width="16" height="16" measuredWidth="16" measuredHeight="16" icon="rewind (small)"/>
@@ -133,42 +132,42 @@
         <widgets xsi:type="model:Icon" id="332" x="106" y="4" measuredWidth="16" measuredHeight="16" icon="skip (small)"/>
       </widgets>
     </widgets>
-    <widgets xsi:type="model:Table" id="334" y="87" width="971" height="139" text="=(w:20). 序号, =(w:20). 事发时间, (w:20). 事故车号, (w:20). 当事司机, =(w:140). 事发地点, =(w:20). 事故形态, =(w:20). 碰撞类型, =(w:20). 接案人, =(w:20). 报案时间, =(w:20). 逾期报案, =(w:20). 提交时间, =(w:20). 逾期登记&#xD;&#xA;1,[2018-05-24 10:48],粤A.1JJ43,\[正班\] 郑秋明,&lt;.海珠区三窖路22号,&lt;.车辆间事故,&lt;.追尾碰撞,韩智勇,2018-05-25 11:25,2h,,&#xD;&#xA;2,[2018-05-26 09:48],粤A.1G523,\[替班\] 何维,&lt;.越秀区犀牛路32号,&lt;.车辆间事故,&lt;.正面碰撞,韩智勇,2018-05-26 11:25,否,2018-05-26 11:25,否&#xD;&#xA;3,[2018-06-02 17:48],粤A.1T8I0,\[正班\] 陈晓秋,&lt;.荔湾区,&lt;.车辆与人事故,&lt;.其他,韩智勇,2018-06-03 03:25,,,&#xD;&#xA;..." measuredWidth="971" measuredHeight="139" alternative="#eeeeee" header="false">
+    <widgets xsi:type="model:Table" id="334" y="87" width="1038" height="116" text="=(w:20). 序号, =(w:20). 事发时间, (w:20). 事故车号, (w:20). 当事司机, =(w:143). 事发地点, =(w:20). 事发车队, =(w:20). 事故形态, =(w:20). 碰撞类型, =(w:20). 接案人, =(w:20). 报案时间, =(w:20). 逾期报案, =(w:20). 提交时间, =(w:20). 逾期登记,&#xD;&#xA;1,[2018-05-24 10:48],粤A.1JJ43,\[正班\] 郑秋明,&lt;.海珠区三窖路22号,一分三队,&lt;.车辆间事故,&lt;.追尾碰撞,韩智勇,2018-05-25 11:25,2h&#xD;&#xA;2,[2018-05-26 09:48],粤A.1G523,\[替班\] 何维,&lt;.越秀区犀牛路32号,一分一队,&lt;.车辆间事故,&lt;.正面碰撞,韩智勇,2018-05-26 11:25,否,2018-05-26 11:25,否&#xD;&#xA;3,[2018-06-02 17:48],粤A.1T8I0,\[非编\] 陈晓秋,&lt;.荔湾区,一分二队,&lt;.车辆与人,&lt;.其他,韩智勇,2018-06-03 03:25,1d8h&#xD;&#xA;..." measuredWidth="1038" measuredHeight="116" alternative="#eee" header="false">
       <font bold="false"/>
       <items x="40" y="26" width="101" height="17" text="2018-05-24 10:48"/>
       <items x="40" y="49" width="101" height="17" text="2018-05-26 09:48"/>
       <items x="40" y="72" width="101" height="17" text="2018-06-02 17:48"/>
     </widgets>
-    <widgets xsi:type="model:Shape" id="335" y="53" width="986" height="36" text="待登记/待审核案件：" measuredWidth="986" measuredHeight="36" background="#cccccc" textAlignment="Left" shapeType="rectangle">
+    <widgets xsi:type="model:Shape" id="335" y="53" width="1038" height="36" text="待登记/待审核案件：" measuredWidth="1038" measuredHeight="36" background="#ccc" textAlignment="Left" shapeType="rectangle">
       <font/>
     </widgets>
-    <widgets xsi:type="model:Table" id="336" y="258" width="971" height="139" text="=(w:20). 序号, =(w:20). 事发时间, (w:20). 事故车号, (w:20). 当事司机, =(w:140). 事发地点, =(w:314). 审核意见, (w:20). 审核人, =(w:20). 审核时间, =(w:20). 审核次数&#xD;&#xA;1,[2018-05-24 11:25],粤A.1JJ43,\[正班\] 郑秋明,&lt;.海珠区三窖路22号,&lt;.{image} [有部分错误],陈纪铭,2018-05-25 11:25,1&#xD;&#xA;2,[2018-05-23 11:25],粤A.1G523,\[替班\] 何维,&lt;.越秀区犀牛路32号,&lt;.登记信息与事实不符,陈纪铭,2018-05-25 11:25,1&#xD;&#xA;3,[2018-05-22 11:25],粤A.1T8I0,\[正班\] 陈晓秋,&lt;.荔湾区,&lt;.{image} [信息不完整],陈纪铭,2018-05-25 11:25,3&#xD;&#xA;..." measuredWidth="971" measuredHeight="139" alternative="#eeeeee" header="false">
+    <widgets xsi:type="model:Table" id="336" y="235" width="1038" height="116" text="=(w:20). 序号, =(w:20). 事发时间, (w:20). 事故车号, (w:20). 当事司机, =(w:143). 事发地点, =(w:20). 事发车队, =(w:302). 审核意见, (w:20). 审核人, =(w:20). 审核时间, =(w:20). 审核次数,&#xD;&#xA;1,[2018-05-24 11:25],粤A.1JJ43,\[正班\] 郑秋明,&lt;.海珠区三窖路22号,一分三队,&lt;.{image} [有部分错误],陈纪铭,2018-05-25 11:25,1&#xD;&#xA;2,[2018-05-23 11:25],粤A.1G523,\[替班\] 何维,&lt;.越秀区犀牛路32号,一分一队,&lt;.登记信息与事实不符,陈纪铭,2018-05-25 11:25,1&#xD;&#xA;3,[2018-05-22 11:25],粤A.1T8I0,\[正班\] 陈晓秋,&lt;.荔湾区,一分二队,&lt;.{image} [信息不完整],陈纪铭,2018-05-25 11:25,3&#xD;&#xA;..." measuredWidth="1038" measuredHeight="116" alternative="#eee" header="false">
       <font bold="false"/>
       <items x="40" y="26" width="101" height="17" text="2018-05-24 11:25"/>
-      <items x="442" y="26" width="60" height="17" text="有部分错误"/>
+      <items x="528" y="26" width="60" height="17" text="有部分错误"/>
       <items x="40" y="49" width="101" height="17" text="2018-05-23 11:25"/>
       <items x="40" y="72" width="101" height="17" text="2018-05-22 11:25"/>
-      <items x="442" y="72" width="60" height="17" text="信息不完整"/>
+      <items x="528" y="72" width="60" height="17" text="信息不完整"/>
     </widgets>
-    <widgets xsi:type="model:Shape" id="337" y="224" width="986" height="36" text="已审核案件：" measuredWidth="986" measuredHeight="36" background="#cccccc" textAlignment="Left" shapeType="rectangle">
+    <widgets xsi:type="model:Shape" id="337" y="201" width="1038" height="36" text="已审核案件：" measuredWidth="1038" measuredHeight="36" background="#ccc" textAlignment="Left" shapeType="rectangle">
       <font/>
     </widgets>
-    <widgets xsi:type="model:Label" id="338" x="129" y="230" text="{selected} 审核不通过 {unselected} 审核通过" measuredWidth="158" measuredHeight="25">
+    <widgets xsi:type="model:Label" id="338" x="129" y="207" text="{selected} 审核不通过 {unselected} 审核通过" measuredWidth="158" measuredHeight="25">
       <font/>
     </widgets>
-    <widgets xsi:type="model:VScrollbar" id="339" x="969" y="258" height="139" measuredWidth="17" measuredHeight="139"/>
-    <widgets xsi:type="model:Label" id="341" x="938" y="59" text="{refresh}  {line-arrow-up}" measuredWidth="46" measuredHeight="25">
+    <widgets xsi:type="model:VScrollbar" id="339" x="1021" y="235" height="116" measuredWidth="17" measuredHeight="116"/>
+    <widgets xsi:type="model:Label" id="341" x="992" y="59" text="{refresh}  {line-arrow-up}" measuredWidth="46" measuredHeight="25">
       <font/>
     </widgets>
-    <widgets xsi:type="model:Label" id="343" x="938" y="230" text="{refresh}  {line-arrow-up}" measuredWidth="46" measuredHeight="25">
+    <widgets xsi:type="model:Label" id="343" x="992" y="207" text="{refresh}  {line-arrow-up}" measuredWidth="46" measuredHeight="25">
       <font/>
     </widgets>
-    <widgets xsi:type="model:VScrollbar" id="344" x="969" y="87" height="139" measuredWidth="17" measuredHeight="139"/>
+    <widgets xsi:type="model:VScrollbar" id="344" x="1021" y="87" height="116" measuredWidth="17" measuredHeight="116"/>
     <widgets xsi:type="model:Label" id="345" x="2" text="事故登记视图 - 登记员+审核员双角色：" measuredWidth="362" measuredHeight="35">
       <font size="20px" bold="true"/>
     </widgets>
-    <widgets xsi:type="model:Arrow" id="346" x="770" y="74" width="49" height="39" measuredWidth="49" measuredHeight="39" foreground="#ff0000" lineStyle="dashed"/>
-    <widgets xsi:type="model:Label" id="347" x="409" y="58" text="还没有 &quot;提交时间&quot; 代表 &quot;待登记&quot; 案件，否则为 &quot;已登记待审核案件&quot;" measuredWidth="368" measuredHeight="25" foreground="#ff0000">
+    <widgets xsi:type="model:Arrow" id="346" x="843" y="75" width="49" height="39" measuredWidth="49" measuredHeight="39" foreground="#f00" lineStyle="dashed"/>
+    <widgets xsi:type="model:Label" id="347" x="482" y="59" text="还没有 &quot;提交时间&quot; 代表 &quot;待登记&quot; 案件，否则为 &quot;已登记待审核案件&quot;" measuredWidth="368" measuredHeight="25" foreground="#f00">
       <font/>
     </widgets>
   </widgets>
