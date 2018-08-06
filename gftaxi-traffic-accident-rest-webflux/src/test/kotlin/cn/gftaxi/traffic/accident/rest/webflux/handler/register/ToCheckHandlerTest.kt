@@ -1,6 +1,6 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.register
 
-import cn.gftaxi.traffic.accident.rest.webflux.Utils
+import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
 import cn.gftaxi.traffic.accident.rest.webflux.handler.register.ToCheckHandler.Companion.REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import org.junit.jupiter.api.Test
@@ -55,7 +55,7 @@ class ToCheckHandlerTest @Autowired constructor(
     val response = client.post().uri("/accident-register/to-check/$id").exchange()
 
     // verify
-    response.expectStatus().isNotFound.expectHeader().contentType(Utils.TEXT_PLAIN_UTF8)
+    response.expectStatus().isNotFound.expectHeader().contentType(TEXT_PLAIN_UTF8)
     verify(accidentRegisterService).toCheck(id)
   }
 
@@ -69,7 +69,7 @@ class ToCheckHandlerTest @Autowired constructor(
     val response = client.post().uri("/accident-register/to-check/$id").exchange()
 
     // verify
-    response.expectStatus().isForbidden.expectHeader().contentType(Utils.TEXT_PLAIN_UTF8)
+    response.expectStatus().isForbidden.expectHeader().contentType(TEXT_PLAIN_UTF8)
     verify(accidentRegisterService).toCheck(id)
   }
 
@@ -83,7 +83,7 @@ class ToCheckHandlerTest @Autowired constructor(
     val response = client.post().uri("/accident-register/to-check/$id").exchange()
 
     // verify
-    response.expectStatus().isForbidden.expectHeader().contentType(Utils.TEXT_PLAIN_UTF8)
+    response.expectStatus().isForbidden.expectHeader().contentType(TEXT_PLAIN_UTF8)
     verify(accidentRegisterService).toCheck(id)
   }
 }
