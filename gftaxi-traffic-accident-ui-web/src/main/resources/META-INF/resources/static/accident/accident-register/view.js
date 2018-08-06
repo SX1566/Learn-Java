@@ -9,16 +9,6 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
 
   let driverTypeMap = {Official: "正班", Shift: "替班", Outside: "非编"};
 
-  // 汇总统计视图列
-  let statSumColumns = [
-    {id: "scope", label: "范围", width: "3em"},
-    {id: "total", label: "事故总数", width: "6em", rowCellStyle: "text-align: center"},
-    {id: "checked", label: "已登已审", width: "6em", rowCellStyle: "text-align: center"},
-    {id: "checking", label: "已登在审", width: "6em", rowCellStyle: "text-align: center"},
-    {id: "drafting", label: "尚未登记", width: "6em", rowCellStyle: "text-align: center"},
-    {id: "overdueDraft", label: "逾期报案", width: "6em", rowCellStyle: "text-align: center"},
-    {id: "overdueRegister", label: "逾期登记", width: "6em", rowCellStyle: "text-align: center"}
-  ];
   // 待登记视图列
   let todoColumns = [
     {
@@ -121,11 +111,6 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
       el: $page[0],
       data: {
         isRecorder: isRecorder,
-        statSumView: {
-          url: `${accident.dataServer}/${resourceKey}/stat/summary`,
-          columns: statSumColumns,
-          ui: {isOpen: true}
-        },
         todoView: {
           url: `${accident.dataServer}/${resourceKey}/todo`,
           columns: todoColumns,
@@ -166,10 +151,6 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
         }
       },
       methods: {
-        /** 刷新汇总统计视图数据 */
-        reloadStatSum: function () {
-          this.$refs.stat.reload();
-        },
         /** 刷新待审核视图数据 */
         reloadTodo: function () {
           this.$refs.todo.reload();

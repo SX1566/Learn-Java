@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:WidgetGroup" id="473" x="6" y="8" measuredWidth="523" measuredHeight="388">
+    <widgets xsi:type="model:Label" id="245" x="2" text="事故登记-汇总统计-按月" measuredWidth="224" measuredHeight="35">
+      <font size="20px" bold="true"/>
+    </widgets>
+    <widgets xsi:type="model:Window" id="2" y="34" width="523" height="354" text="事故登记-汇总统计" measuredWidth="523" measuredHeight="354" minimizeButton="true" maximizeButton="true"/>
+    <widgets xsi:type="model:Table" id="18" y="86" width="523" height="302" text="=(w:20). 序号, &lt;(w:20). 统计范围, =(w:20). 事故总数, =(w:20). 已登已审, =(w:20). 已登在审, =(w:20). 尚待登记, =(w:20). 逾期报案, =(w:20). 逾期登记, &#xD;&#xA;1 , 2018年12月&#xD;&#xA;2 , 2018年11月&#xD;&#xA;3 , 2018年10月&#xD;&#xA;4 , 2018年9月 &#xD;&#xA;5 , 2018年8月 , 3, 1, 1, 1, 1&#xD;&#xA;6 , 2018年7月 , 6, 5, 1, , , 1&#xD;&#xA;7 , 2018年6月 , 5, 5&#xD;&#xA;8 , 2018年5月 , 7, 7,,, 1&#xD;&#xA;9 , 2018年4月 , 4, 4&#xD;&#xA;10, 2018年3月 , 6, 5, 1,, 1&#xD;&#xA;11, 2018年2月 , 3, 3&#xD;&#xA;12, 2018年1月 , 8, 8,,,, 1" measuredWidth="523" measuredHeight="302" alternative="#eee" header="false">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="381" x="262" y="149" text="宗数为 0 时统一不显示" measuredWidth="129" measuredHeight="25" foreground="#f00">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="382" x="369" y="168" width="32" height="29" measuredWidth="32" measuredHeight="29" foreground="#f00" lineStyle="dashed"/>
+    <widgets xsi:type="model:Panel" id="383" x="400" y="196" width="73" height="34" measuredWidth="73" measuredHeight="34" alpha="0" foreground="#f00" border="dashed-rounded"/>
+    <widgets xsi:type="model:Shape" id="205" y="53" width="523" height="35" measuredWidth="523" measuredHeight="35" background="#ccc" textAlignment="Left" shapeType="rectangle">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:ButtonBar" id="359" x="62" y="58" height="25" text="按月, 按季度, 按年" measuredWidth="149" measuredHeight="25" selection="0">
+      <font/>
+      <items x="0" y="0" width="46" height="25" text="按月"/>
+      <items x="46" y="0" width="57" height="25" text="按季度"/>
+      <items x="103" y="0" width="46" height="25" text="按年"/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="362" x="284" y="58" width="92" text="2018年1月" measuredWidth="92" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Icon" id="363" x="356" y="63" width="15" height="15" measuredWidth="15" measuredHeight="15" icon="calendar (custom)"/>
+    <widgets xsi:type="model:TextField" id="366" x="390" y="58" width="92" text="2018年12月" measuredWidth="92" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Icon" id="367" x="462" y="63" width="15" height="15" measuredWidth="15" measuredHeight="15" icon="calendar (custom)"/>
+    <widgets xsi:type="model:Label" id="364" x="222" y="58" text=" 统计范围：" measuredWidth="70" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="368" x="376" y="60" text="~" measuredWidth="15" measuredHeight="25" textAlignment="Center">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="386" x="6" y="58" width="57" text="统计方式：" measuredWidth="57" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="451" x="501" y="59" text="{refresh}" measuredWidth="22" measuredHeight="24">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="423" x="256" y="25" width="27" height="38" measuredWidth="27" measuredHeight="38" foreground="#f00" lineStyle="dashed" left="false" right="true" direction="bottom"/>
+    <widgets xsi:type="model:Label" id="424" x="286" y="14" text="默认为当年的 1 月到 12 月" measuredWidth="151" measuredHeight="25" foreground="#f00">
+      <font/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="458" x="6" y="408" measuredWidth="523" measuredHeight="203">
+    <widgets xsi:type="model:Window" id="427" y="34" width="523" height="169" text="事故登记-汇总统计" measuredWidth="523" measuredHeight="169" minimizeButton="true" maximizeButton="true"/>
+    <widgets xsi:type="model:Table" id="428" y="86" width="523" height="117" text="=(w:20). 序号, =(w:20). 统计范围, =(w:20). 事故总数, =(w:20). 已登已审, =(w:20). 已登在审, =(w:20). 尚待登记, =(w:20). 逾期报案, =(w:20). 逾期登记, &#xD;&#xA;1, 2018 年第 4 季度&#xD;&#xA;2, 2018 年第 3 季度, 9, 4, 3, 2, 1&#xD;&#xA;3, 2018 年第 2 季度, 8, 6, 2,,, 1&#xD;&#xA;4, 2018 年第 1 季度, 10, 10,,, 2, 1" measuredWidth="523" measuredHeight="117" alternative="#eee" header="false">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="429" x="2" text="事故登记-汇总统计-按季度" measuredWidth="244" measuredHeight="35">
+      <font size="20px" bold="true"/>
+    </widgets>
+    <widgets xsi:type="model:Shape" id="437" y="53" width="523" height="35" measuredWidth="523" measuredHeight="35" background="#ccc" textAlignment="Left" shapeType="rectangle">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:ButtonBar" id="438" x="63" y="58" width="151" height="25" text="按月, 按季度, 按年" measuredWidth="151" measuredHeight="25" selection="1">
+      <font/>
+      <items x="0" y="0" width="46" height="25" text="按月"/>
+      <items x="46" y="0" width="57" height="25" text="按季度"/>
+      <items x="103" y="0" width="48" height="25" text="按年"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="443" x="225" y="58" width="71" text=" 统计范围：" measuredWidth="71" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="444" x="355" y="58" text="~" measuredWidth="15" measuredHeight="25" textAlignment="Center">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="445" x="6" y="58" width="57" text="统计方式：" measuredWidth="57" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Combo" id="448" x="286" y="58" width="68" text="2018年" measuredWidth="68" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Combo" id="449" x="368" y="58" width="68" text="2018年" measuredWidth="68" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="450" x="501" y="59" text="{refresh}" measuredWidth="22" measuredHeight="24">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="455" x="256" y="24" width="27" height="38" measuredWidth="27" measuredHeight="38" foreground="#f00" lineStyle="dashed" left="false" right="true" direction="bottom"/>
+    <widgets xsi:type="model:Label" id="456" x="286" y="13" text="默认为当年" measuredWidth="66" measuredHeight="25" foreground="#f00">
+      <font/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="459" x="6" y="624" measuredWidth="523" measuredHeight="157">
+    <widgets xsi:type="model:Window" id="460" y="34" width="523" height="123" text="事故登记-汇总统计" measuredWidth="523" measuredHeight="123" minimizeButton="true" maximizeButton="true"/>
+    <widgets xsi:type="model:Table" id="461" y="86" width="523" height="71" text="=(w:20). 序号, =(w:20). 统计范围, =(w:20). 事故总数, =(w:20). 已登已审, =(w:20). 已登在审, =(w:20). 尚待登记, =(w:20). 逾期报案, =(w:20). 逾期登记, &#xD;&#xA;1, 2018 年, 20, 15, 4, 1, 3, 2&#xD;&#xA;2, 2017 年, 23, 23,,, 5, 1" measuredWidth="523" measuredHeight="71" alternative="#eee" header="false">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="462" x="2" text="事故登记-汇总统计-按年" measuredWidth="224" measuredHeight="35">
+      <font size="20px" bold="true"/>
+    </widgets>
+    <widgets xsi:type="model:Shape" id="463" y="53" width="523" height="35" measuredWidth="523" measuredHeight="35" background="#ccc" textAlignment="Left" shapeType="rectangle">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:ButtonBar" id="464" x="63" y="58" width="151" height="25" text="按月, 按季度, 按年" measuredWidth="151" measuredHeight="25" selection="2">
+      <font/>
+      <items x="0" y="0" width="46" height="25" text="按月"/>
+      <items x="46" y="0" width="57" height="25" text="按季度"/>
+      <items x="103" y="0" width="48" height="25" text="按年"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="465" x="225" y="58" width="71" text=" 统计范围：" measuredWidth="71" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="466" x="355" y="58" text="~" measuredWidth="15" measuredHeight="25" textAlignment="Center">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="467" x="6" y="58" width="57" text="统计方式：" measuredWidth="57" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Combo" id="468" x="286" y="58" width="68" text="2017年" measuredWidth="68" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Combo" id="469" x="368" y="58" width="68" text="2018年" measuredWidth="68" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="470" x="501" y="59" text="{refresh}" measuredWidth="22" measuredHeight="24">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="471" x="256" y="24" width="27" height="38" measuredWidth="27" measuredHeight="38" foreground="#f00" lineStyle="dashed" left="false" right="true" direction="bottom"/>
+    <widgets xsi:type="model:Label" id="472" x="286" y="13" text="默认为当年+上年" measuredWidth="99" measuredHeight="25" foreground="#f00">
+      <font/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:Note" id="474" x="6" y="792" text="1. 事故总数 = 已登已审 + 已登在审 + 尚待登记&#xD;&#xA;2. 已登已审：指已经审核通过的事故登记案件宗数&#xD;&#xA;3. 已登在审：指已登待审核和审核不通过的事故登记案件宗数&#xD;&#xA;4. 尚待登记：指已报案但还没有登记的案件宗数&#xD;&#xA;5. 逾期报案：指报案时间与事发时间之间超过 12 小时的案件宗数&#xD;&#xA;6. 逾期登记：指报案时间与首次登记案件时间之间超过 24 小时的案件宗数" measuredWidth="413" measuredHeight="116" textAlignment="Left">
+    <font/>
+  </widgets>
+  <hRuler>
+    <guides position="991"/>
+  </hRuler>
+  <vRuler/>
+  <font size="12px"/>
+</model:Screen>
