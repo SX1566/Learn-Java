@@ -75,6 +75,20 @@ interface AccidentRegisterService {
   fun get(id: Int): Mono<AccidentRegisterDto4Form>
 
   /**
+   * 更新事故登记信息。
+   *
+   * 更新时要注意只更新那些与当前值不相同的数据，与当前值相同的数据忽略不处理。
+   * 对于被更新了的数据，需要生成相应的 [AccidentOperation] 操作记录，记录详细的更新日志。
+   *
+   * @param[id] 要修改案件的 ID
+   * @param[data] 要更新的信息，key 为 [AccidentRegister] 的属性名，value 为相应的属性值
+   * @throws [PermissionDeniedException] 无 [AccidentDraft.ROLE_MODIFY] 修改事故登记信息权限
+   * @throws [NotFoundException] 案件不存在
+   * @return 更新完毕的 [Mono] 信号
+   */
+  fun update(id: Int, data: Map<String, Any?>): Mono<Void>
+
+  /**
    * 将待登记或审核不通过的事故登记信息提交审核。
    *
    * 需要生成相应的 [AccidentOperation] 操作记录。

@@ -37,6 +37,7 @@ class ModuleConfiguration @Autowired constructor(
   private val accidentRegisterStatSummaryHandler: StatSummaryHandler,
   private val accidentRegisterFindTodoHandler: FindTodoHandler,
   private val accidentRegisterFindCheckedHandler: FindCheckedHandler,
+  private val accidentRegisterUpdateHandler: UpdateHandler,
   private val accidentRegisterToCheckHandler: ToCheckHandler,
   private val accidentRegisterCheckedHandler: CheckedHandler,
   private val findAllSecondaryCategoriesHandler: FindAllSecondaryCategoriesHandler
@@ -74,6 +75,8 @@ class ModuleConfiguration @Autowired constructor(
       FindTodoHandler.REQUEST_PREDICATE.invoke(accidentRegisterFindTodoHandler::handle)
       // GET /accident-register/checked      获取已审核案件信息
       FindCheckedHandler.REQUEST_PREDICATE.invoke(accidentRegisterFindCheckedHandler::handle)
+      // PATCH /accident-register/{id}       更新案件信息
+      UpdateHandler.REQUEST_PREDICATE.invoke(accidentRegisterUpdateHandler::handle)
       // POST /accident-register/to-check/{id} 提交案件信息
       ToCheckHandler.REQUEST_PREDICATE.invoke(accidentRegisterToCheckHandler::handle)
       // POST /accident-register/checked/{id} 审核案件信息
