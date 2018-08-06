@@ -5,6 +5,7 @@ import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
 import cn.gftaxi.traffic.accident.po.AccidentDraft
+import cn.gftaxi.traffic.accident.po.AccidentOperation
 import cn.gftaxi.traffic.accident.po.AccidentRegister
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
@@ -12,7 +13,9 @@ import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.*
 import org.springframework.data.domain.Page
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import tech.simter.exception.ForbiddenException
 import tech.simter.exception.NotFoundException
+import tech.simter.exception.PermissionDeniedException
 
 /**
  * 事故登记 Service。
@@ -70,4 +73,44 @@ interface AccidentRegisterService {
    * @throws [NotFoundException] 指定编号的报案信息不存在
    */
   fun get(id: Int): Mono<AccidentRegisterDto4Form>
+
+  /**
+   * 更新事故登记信息。
+   *
+   * 更新时要注意只更新那些与当前值不相同的数据，与当前值相同的数据忽略不处理。
+   * 对于被更新了的数据，需要生成相应的 [AccidentOperation] 操作记录，记录详细的更新日志。
+   *
+   * @param[id] 要修改案件的 ID
+   * @param[data] 要更新的信息，key 为 [AccidentRegister] 的属性名，value 为相应的属性值
+   * @throws [PermissionDeniedException] 无 [AccidentDraft.ROLE_MODIFY] 修改事故登记信息权限
+   * @throws [NotFoundException] 案件不存在
+   * @return 更新完毕的 [Mono] 信号
+   */
+  fun update(id: Int, data: Map<String, Any?>): Mono<Void>
+
+  /**
+   * 将待登记或审核不通过的事故登记信息提交审核。
+   *
+   * 需要生成相应的 [AccidentOperation] 操作记录。
+   *
+   * @param[id] 案件 ID
+   * @throws [NotFoundException] 案件不存在
+   * @throws [ForbiddenException] 案件不是待登记 [Draft] 或审核不通过 [Rejected] 状态
+   * @throws [PermissionDeniedException] 无 [AccidentRegister.ROLE_SUBMIT] 提交权限
+   * @return 提交完毕的 [Mono] 信号
+   */
+  fun toCheck(id: Int): Mono<Void>
+
+  /**
+   * 审核待审核状态的事故登记信息。
+   *
+   * 需要生成相应的 [AccidentOperation] 操作记录。
+   *
+   * @param[id] 案件 ID
+   * @throws [NotFoundException] 案件不存在
+   * @throws [ForbiddenException] 案件不是待审核 [ToCheck] 状态
+   * @throws [PermissionDeniedException] 无 [AccidentRegister.ROLE_CHECK] 审核权限
+   * @return 审核完毕的 [Mono] 信号
+   */
+  fun checked(id: Int): Mono<Void>
 }
