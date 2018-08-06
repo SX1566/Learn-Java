@@ -38,6 +38,7 @@ class ModuleConfiguration @Autowired constructor(
   private val accidentRegisterFindTodoHandler: FindTodoHandler,
   private val accidentRegisterFindCheckedHandler: FindCheckedHandler,
   private val accidentRegisterToCheckHandler: ToCheckHandler,
+  private val accidentRegisterCheckedHandler: CheckedHandler,
   private val findAllSecondaryCategoriesHandler: FindAllSecondaryCategoriesHandler
 ) {
   private val logger = LoggerFactory.getLogger(ModuleConfiguration::class.java)
@@ -75,6 +76,8 @@ class ModuleConfiguration @Autowired constructor(
       FindCheckedHandler.REQUEST_PREDICATE.invoke(accidentRegisterFindCheckedHandler::handle)
       // POST /accident-register/to-check/{id} 提交案件信息
       ToCheckHandler.REQUEST_PREDICATE.invoke(accidentRegisterToCheckHandler::handle)
+      // POST /accident-register/checked/{id} 审核案件信息
+      CheckedHandler.REQUEST_PREDICATE.invoke(accidentRegisterCheckedHandler::handle)
 
       //==== 全局 ====
       // GET

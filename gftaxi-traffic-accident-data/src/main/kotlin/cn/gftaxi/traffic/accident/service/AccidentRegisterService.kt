@@ -86,4 +86,17 @@ interface AccidentRegisterService {
    * @return 提交完毕的 [Mono] 信号
    */
   fun toCheck(id: Int): Mono<Void>
+
+  /**
+   * 审核待审核状态的事故登记信息。
+   *
+   * 需要生成相应的 [AccidentOperation] 操作记录。
+   *
+   * @param[id] 案件 ID
+   * @throws [NotFoundException] 案件不存在
+   * @throws [ForbiddenException] 案件不是待审核 [ToCheck] 状态
+   * @throws [PermissionDeniedException] 无 [AccidentRegister.ROLE_CHECK] 审核权限
+   * @return 审核完毕的 [Mono] 信号
+   */
+  fun checked(id: Int): Mono<Void>
 }

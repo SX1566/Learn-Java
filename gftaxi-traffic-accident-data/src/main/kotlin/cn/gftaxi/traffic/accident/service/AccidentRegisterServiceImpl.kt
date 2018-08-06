@@ -49,4 +49,8 @@ class AccidentRegisterServiceImpl @Autowired constructor(
   override fun toCheck(id: Int): Mono<Void> {
     TODO("not implemented")
   }
+
+  override fun checked(id: Int): Mono<Void> {
+    TODO("not implemented")
+  }
 }
