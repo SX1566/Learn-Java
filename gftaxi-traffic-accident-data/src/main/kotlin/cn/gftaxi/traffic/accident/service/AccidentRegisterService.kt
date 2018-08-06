@@ -26,7 +26,7 @@ interface AccidentRegisterService {
   /**
    * 按本月、上月、本年的顺序获取事故登记汇总统计信息。
    *
-   * @throws [SecurityException] 不是 [READ_ROLES] 中的任一角色之一
+   * @throws [PermissionDeniedException] 不是 [READ_ROLES] 中的任一角色之一
    */
   fun statSummary(): Flux<AccidentRegisterDto4StatSummary>
 

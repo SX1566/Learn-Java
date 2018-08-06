@@ -28,8 +28,12 @@ class AccidentRegisterServiceImpl @Autowired constructor(
   private val accidentRegisterDao: AccidentRegisterDao
 ) : AccidentRegisterService {
   override fun statSummary(): Flux<AccidentRegisterDto4StatSummary> {
-    securityService.verifyHasAnyRole(*READ_ROLES)
-    return accidentRegisterDao.statSummary()
+    return try {
+      securityService.verifyHasAnyRole(*READ_ROLES)
+      accidentRegisterDao.statSummary()
+    } catch (e: SecurityException) {
+      Flux.error(PermissionDeniedException(e.message ?: ""))
+    }
   }
 
   override fun findTodo(status: Status?): Flux<AccidentRegisterDto4Todo> {

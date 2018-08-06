@@ -1,6 +1,7 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.register
 
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
+import cn.gftaxi.traffic.accident.rest.webflux.Utils
 import cn.gftaxi.traffic.accident.rest.webflux.handler.register.StatSummaryHandler.Companion.REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import org.junit.jupiter.api.Test
@@ -14,6 +15,7 @@ import org.springframework.test.web.reactive.server.WebTestClient.bindToRouterFu
 import org.springframework.web.reactive.config.EnableWebFlux
 import org.springframework.web.reactive.function.server.RouterFunctions
 import reactor.core.publisher.Flux
+import tech.simter.exception.PermissionDeniedException
 import java.util.*
 
 fun random(start: Int, end: Int) = Random().nextInt(end + 1 - start) + start
@@ -33,7 +35,7 @@ class StatSummaryHandlerTest @Autowired constructor(
   private val client = bindToRouterFunction(RouterFunctions.route(REQUEST_PREDICATE, handler)).build()
 
   @Test
-  fun test() {
+  fun success() {
     // mock
     val dto = AccidentRegisterDto4StatSummary(
       scope = "本月",
@@ -64,6 +66,19 @@ class StatSummaryHandlerTest @Autowired constructor(
       .jsonPath("$.[2].scope").isEqualTo("本年")
 
     // verify
+    verify(accidentRegisterService).statSummary()
+  }
+
+  @Test
+  fun failedByPermissionDenied() {
+    // mock
+    `when`(accidentRegisterService.statSummary()).thenReturn(Flux.error(PermissionDeniedException()))
+
+    // invoke
+    val response = client.get().uri("/accident-register/stat/summary").exchange()
+
+    // verify
+    response.expectStatus().isForbidden.expectHeader().contentType(Utils.TEXT_PLAIN_UTF8)
     verify(accidentRegisterService).statSummary()
   }
 }
