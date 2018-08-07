@@ -33,6 +33,7 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
       }
     },
     {id: "location", label: "事发地点", width: "13em"},
+    {id: "motorcadeName", label: "事发车队", width: "5em"},
     {id: "hitForm", label: "事故形态", width: "7em"},
     {id: "hitType", label: "碰撞类型", width: "5em"},
     {id: "authorName", label: "接案人", width: "5em"},
@@ -68,6 +69,7 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
       }
     },
     {id: "location", label: "事发地点", width: "13em"},
+    {id: "motorcadeName", label: "事发车队", width: "5em"},
     {
       id: "checkedComment", label: "审核意见", width: "20em", escape: false,
       title: function (value, row) {
@@ -104,7 +106,7 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
           }
         }
       ]);
-      $page.parent().width(1166);
+      $page.parent().width(1214);
     }
 
     new Vue({

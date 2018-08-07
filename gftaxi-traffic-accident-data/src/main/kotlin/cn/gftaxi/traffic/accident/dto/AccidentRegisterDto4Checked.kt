@@ -26,6 +26,8 @@ data class AccidentRegisterDto4Checked constructor(
   val driverType: DriverType,
   /** 事发地点 */
   val location: String,
+  /** 事发车队 */
+  val motorcadeName: String,
   val happenTime: OffsetDateTime,
   /** 审核意见 */
   val checkedComment: String? = null,
