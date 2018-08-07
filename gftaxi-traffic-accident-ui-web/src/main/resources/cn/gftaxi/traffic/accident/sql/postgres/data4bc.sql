@@ -4,7 +4,9 @@ with p(id) as ( -- 交通事故父目录
 )
 ,resource(id) as (
   select id from p
-  union select id from bc_identity_resource where name in ('事故报案', '事故登记') and belong in (select id from p)
+  union select id from bc_identity_resource where name in ('事故报案', '事故登记', '统计报表') and belong in (select id from p)
+  union select id from bc_identity_resource where name in ('事故登记汇总统计')
+    and belong in (select id from bc_identity_resource where name = '统计报表' and belong in (select id from p))
 ) -- select * from resource
 , delete_role_resource(id) as ( -- 删除资源与角色的关联
   delete from bc_identity_role_resource where sid in (select id from resource)
@@ -46,6 +48,20 @@ with p(id) as (select id from bc_identity_resource where name = '事故(新版)'
 , cfg(type, sn, name, url, iconclass) as (
   select 2, '072001', '事故报案'::text, '/static/accident/accident-draft/view.html', 'i0707'
   union select 2, '072002', '事故登记'::text, '/static/accident/accident-register/view.html', 'i0001'
+  -- 新版交通事故子目录
+  union select 1, '073001', '统计报表', null, 'i0100'
+)
+insert into bc_identity_resource (status_, inner_, type_, order_, name, url, iconclass, belong, id)
+  select 0, false, c.type, c.sn, c.name, c.url, c.iconclass, (select id from p), nextval('core_sequence')
+  from cfg c
+  where not exists (select 0 from bc_identity_resource s where s.name = c.name and s.belong = (select id from p));
+
+-- 资源：营运系统/交通事故/统计报表/*
+with p(id) as (
+  select id from bc_identity_resource
+  where name = '统计报表' and belong = (select id from bc_identity_resource where name = '事故(新版)')
+), cfg(type, sn, name, url, iconclass) as (
+  select 2, '073101', '事故登记汇总统计'::text, 'static/accident/report/register-stat-summary/view.html', 'i0002'
 )
 insert into bc_identity_resource (status_, inner_, type_, order_, name, url, iconclass, belong, id)
   select 0, false, c.type, c.sn, c.name, c.url, c.iconclass, (select id from p), nextval('core_sequence')
@@ -72,11 +88,14 @@ insert into bc_identity_role (status_, inner_, type_, order_, code, name, id)
 
 -- 资源与角色的关联
 with p(id) as (
-  select id from bc_identity_resource
-  where name = '事故(新版)'
+  select id from bc_identity_resource where name = '事故(新版)'
+  union select id from bc_identity_resource
+    where name = '统计报表' and belong = (select id from bc_identity_resource where name = '事故(新版)')
 ), cfg(resource_name, role_codes) as (
   select '事故报案'::text, array['ACCIDENT_DRAFT_READ', 'ACCIDENT_DRAFT_SUBMIT', 'ACCIDENT_DRAFT_MODIFY']
   union select '事故登记'::text,
+    array['ACCIDENT_REGISTER_READ', 'ACCIDENT_REGISTER_SUBMIT', 'ACCIDENT_REGISTER_MODIFY', 'ACCIDENT_REGISTER_CHECK']
+  union select '事故登记汇总统计'::text,
     array['ACCIDENT_REGISTER_READ', 'ACCIDENT_REGISTER_SUBMIT', 'ACCIDENT_REGISTER_MODIFY', 'ACCIDENT_REGISTER_CHECK']
 )
 insert into bc_identity_role_resource (rid, sid)
