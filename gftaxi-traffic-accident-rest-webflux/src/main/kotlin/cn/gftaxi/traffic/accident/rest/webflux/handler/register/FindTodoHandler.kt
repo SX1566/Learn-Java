@@ -43,6 +43,7 @@ class FindTodoHandler @Autowired constructor(
           "hitForm" to it.hitForm,
           "hitType" to it.hitType,
           "location" to it.location,
+          "motorcadeName" to it.motorcadeName,
           "reportTime" to it.reportTime.format(FORMAT_DATE_TIME_TO_MINUTE),
           "overdueReport" to it.overdueReport,
           "registerTime" to it.registerTime?.format(FORMAT_DATE_TIME_TO_MINUTE),

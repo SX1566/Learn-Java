@@ -43,6 +43,7 @@ class AccidentRegisterServiceImplTest @Autowired constructor(
       driverName = "driver1",
       driverType = Official,
       location = "虚拟地址",
+      motorcadeName = "一分一队",
       happenTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset),
       checkerName = "gftaxi",
       checkedCount = 1,

@@ -24,6 +24,7 @@ data class AccidentRegisterDto4Todo constructor(
   val hitForm: String,
   val hitType: String,
   val location: String,
+  val motorcadeName: String,
   val authorName: String,
   val authorId: String,
   val reportTime: OffsetDateTime,

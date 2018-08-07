@@ -47,6 +47,7 @@ class FindCheckedHandler @Autowired constructor(
               "driverName" to it.driverName,
               "driverType" to it.driverType.name,
               "location" to it.location,
+              "motorcadeName" to it.motorcadeName,
               "happenTime" to it.happenTime.format(FORMAT_DATE_TIME_TO_MINUTE),
               "checkedComment" to it.checkedComment,
               "checkerName" to it.checkerName,
