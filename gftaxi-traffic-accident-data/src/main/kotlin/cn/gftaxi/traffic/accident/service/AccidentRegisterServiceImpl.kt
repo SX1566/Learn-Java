@@ -1,10 +1,7 @@
 package cn.gftaxi.traffic.accident.service
 
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Checked
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
+import cn.gftaxi.traffic.accident.dto.*
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import org.springframework.beans.factory.annotation.Autowired
@@ -59,7 +56,7 @@ class AccidentRegisterServiceImpl @Autowired constructor(
     TODO("not implemented")
   }
 
-  override fun update(id: Int, data: Map<String, Any?>): Mono<Void> {
+  override fun update(id: Int, data: AccidentRegisterDto4Update): Mono<Void> {
     TODO("not implemented")
   }
 
