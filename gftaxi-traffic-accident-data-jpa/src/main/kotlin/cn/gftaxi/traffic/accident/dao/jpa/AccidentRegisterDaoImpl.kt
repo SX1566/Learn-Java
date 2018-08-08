@@ -4,6 +4,7 @@ import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Checked
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
+import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentDraft.Status.Todo
 import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType
 import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType
@@ -159,5 +160,13 @@ class AccidentRegisterDaoImpl @Autowired constructor(
         (countQuery.singleResult as Number).toLong()
       )
     )
+  }
+
+  override fun get(id: Int): Mono<AccidentRegister> {
+    TODO("not implemented")
+  }
+
+  override fun createBy(accidentDraft: AccidentDraft): Mono<AccidentRegister> {
+    TODO("not implemented")
   }
 }
