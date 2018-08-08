@@ -1,8 +1,5 @@
 package cn.gftaxi.traffic.accident.dto
 
-import cn.gftaxi.traffic.accident.po.AccidentCar
-import cn.gftaxi.traffic.accident.po.AccidentOther
-import cn.gftaxi.traffic.accident.po.AccidentPeople
 import cn.gftaxi.traffic.accident.po.AccidentRegister
 import cn.gftaxi.traffic.accident.po.converter.AccidentRegisterStatusConverter
 import cn.gftaxi.traffic.accident.po.converter.DriverTypeConverter
@@ -28,7 +25,7 @@ data class AccidentRegisterDto4Form constructor(
   @Id val id: Int? = null,
 
   // 车辆信息
-  val carPlate: String,
+  val carPlate: String? = null,
   val carId: Int? = null,
   val motorcadeName: String? = null,
 
@@ -39,7 +36,7 @@ data class AccidentRegisterDto4Form constructor(
   val carContractDrivers: String? = null,
 
   // 司机信息
-  val driverName: String,
+  val driverName: String? = null,
   val driverId: Int? = null,
   @Convert(converter = DriverTypeConverter::class)
   val driverType: AccidentRegister.DriverType? = null,
@@ -58,19 +55,19 @@ data class AccidentRegisterDto4Form constructor(
   val driverPicId: String? = null,
 
   // 事故信息
-  val code: String,
+  val code: String? = null,
   @Convert(converter = AccidentRegisterStatusConverter::class)
-  val status: AccidentRegister.Status,
+  val status: AccidentRegister.Status? = null,
   /** 报案时间 */
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-  val draftTime: OffsetDateTime,
+  val draftTime: OffsetDateTime? = null,
   /** 事发时间 */
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-  val happenTime: OffsetDateTime,
+  val happenTime: OffsetDateTime? = null,
   val locationLevel1: String? = null,
   val locationLevel2: String? = null,
   val locationLevel3: String? = null,
-  val locationOther: String,
+  val locationOther: String? = null,
   val gpsSpeed: Short? = null,
   val describe: String? = null,
   val dealDepartment: String? = null,
@@ -86,7 +83,7 @@ data class AccidentRegisterDto4Form constructor(
   val weather: String? = null,
   val drivingDirection: String? = null,
   val light: String? = null,
-  val loadType: String? = null,
+  val roadType: String? = null,
   val roadStructure: String? = null,
   val roadState: String? = null,
 
@@ -98,13 +95,13 @@ data class AccidentRegisterDto4Form constructor(
 
   // 当事车辆列表
   @Transient
-  val cars: List<AccidentCar>? = null,
+  val cars: List<AccidentCarDto4Update>? = null,
 
   // 当事人列表
   @Transient
-  val peoples: List<AccidentPeople>? = null,
+  val peoples: List<AccidentPeopleDto4Update>? = null,
 
   // 其他物体列表
   @Transient
-  val others: List<AccidentOther>? = null
+  val others: List<AccidentOtherDto4Update>? = null
 )
