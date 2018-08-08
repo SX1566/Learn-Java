@@ -45,4 +45,22 @@ interface AccidentRegisterDao {
    */
   fun findChecked(pageNo: Int = 1, pageSize: Int = 25, status: Status? = null, search: String? = null)
     : Mono<Page<AccidentRegisterDto4Checked>>
+
+  /**
+   * 获取指定主键的事故登记信息。
+   *
+   * @return 如果案件不存在则返回 [Mono.empty]
+   */
+  fun get(id: Int): Mono<AccidentRegister>
+
+  /**
+   * 根据事故报案信息生成一条草稿状态的事故登记信息。
+   *
+   * 生成规则：
+   * 1. 根据 [AccidentDraft.carPlate] 自动识别 [AccidentRegister] 的车辆相关信息，
+   *    并自动生成一条自车类型的 [AccidentCar] 当事车辆信息。
+   * 2. 根据 [AccidentDraft.driverName] 自动识别 [AccidentRegister] 的司机相关信息，
+   *    并自动生成一条自车类型的 [AccidentPeople] 当事人信息。
+   */
+  fun createBy(accidentDraft: AccidentDraft): Mono<AccidentRegister>
 }

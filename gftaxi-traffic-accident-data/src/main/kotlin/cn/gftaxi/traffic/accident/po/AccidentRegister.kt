@@ -2,12 +2,17 @@ package cn.gftaxi.traffic.accident.po
 
 import cn.gftaxi.traffic.accident.po.converter.AccidentRegisterStatusConverter
 import cn.gftaxi.traffic.accident.po.converter.DriverTypeConverter
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction.CASCADE
 import java.math.BigDecimal
 import java.time.Duration
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 import javax.persistence.*
+import javax.persistence.CascadeType.ALL
+import javax.persistence.FetchType.EAGER
+import javax.persistence.FetchType.LAZY
 
 /**
  * 事故登记 PO。
@@ -25,7 +30,7 @@ data class AccidentRegister(
   val id: Int? = null,
   /** 事故报告，@MapsId 保证事故报告与事故登记直接使用主键作为外键关联，即他们有相同的 ID */
   @MapsId
-  @OneToOne(optional = false, fetch = FetchType.LAZY)
+  @OneToOne(optional = false, fetch = LAZY)
   @JoinColumn(name = "id")
   val draft: AccidentDraft,
   /** 状态 */
@@ -179,8 +184,26 @@ data class AccidentRegister(
   /** 历史营运违章次数 */
   val historyServiceOffenceCount: Short? = null,
   /** 历史服务投诉次数 */
-  val historyComplainCount: Short? = null
+  val historyComplainCount: Short? = null,
   //== 历史统计结束 ==
+
+  // 当事车辆列表
+  @OnDelete(action = CASCADE) // 加上这个自动建表语句才会有 ON DELETE CASCADE
+  @OneToMany(fetch = EAGER, cascade = [ALL], orphanRemoval = true, mappedBy = "parent")
+  @OrderBy("sn asc")
+  val cars: Set<AccidentCar>? = null,
+
+  // 当事人列表
+  @OnDelete(action = CASCADE)
+  @OneToMany(fetch = EAGER, cascade = [ALL], orphanRemoval = true, mappedBy = "parent")
+  @OrderBy("sn asc")
+  val peoples: Set<AccidentPeople>? = null,
+
+  // 其他物体列表
+  @OnDelete(action = CASCADE)
+  @OneToMany(fetch = EAGER, cascade = [ALL], orphanRemoval = true, mappedBy = "parent")
+  @OrderBy("sn asc")
+  val others: Set<AccidentOther>? = null
 ) {
   companion object {
     /** 查询角色 */

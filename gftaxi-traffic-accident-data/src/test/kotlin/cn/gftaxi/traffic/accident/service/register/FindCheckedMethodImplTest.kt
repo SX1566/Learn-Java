@@ -1,5 +1,6 @@
 package cn.gftaxi.traffic.accident.service.register
 
+import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Checked
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
@@ -29,7 +30,7 @@ import java.time.OffsetDateTime
  * @author RJ
  */
 @SpringJUnitConfig(AccidentRegisterServiceImpl::class)
-@MockBean(AccidentRegisterDao::class, SecurityService::class)
+@MockBean(AccidentRegisterDao::class, AccidentDraftDao::class, SecurityService::class)
 class AccidentRegisterServiceImplTest @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService,
   private val accidentRegisterDao: AccidentRegisterDao,

@@ -1,5 +1,6 @@
 package cn.gftaxi.traffic.accident.service.register
 
+import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
@@ -24,7 +25,7 @@ fun random(start: Int, end: Int) = Random().nextInt(end + 1 - start) + start
  * @author RJ
  */
 @SpringJUnitConfig(AccidentRegisterServiceImpl::class)
-@MockBean(AccidentRegisterDao::class, SecurityService::class)
+@MockBean(AccidentRegisterDao::class, AccidentDraftDao::class, SecurityService::class)
 class StatSummaryMethodImplTest @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService,
   private val accidentRegisterDao: AccidentRegisterDao,

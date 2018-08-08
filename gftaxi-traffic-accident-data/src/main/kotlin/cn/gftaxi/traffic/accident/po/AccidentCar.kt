@@ -19,9 +19,9 @@ data class AccidentCar constructor(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Int?,
-  /** 所属事故ID */
-  @ManyToOne(cascade = [CascadeType.REMOVE])
-  @JoinColumn(name = "pid")
+  /** 所属事故 */
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "pid", nullable = false)
   val parent: AccidentRegister,
   /** 同一事故内的序号 */
   val sn: Short,

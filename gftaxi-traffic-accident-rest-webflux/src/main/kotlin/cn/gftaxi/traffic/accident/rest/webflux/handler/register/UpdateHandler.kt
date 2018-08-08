@@ -1,5 +1,6 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.register
 
+import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Update
 import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,9 +25,9 @@ class UpdateHandler @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService
 ) : HandlerFunction<ServerResponse> {
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
-    return request.bodyToMono<Map<String, Any?>>()
-      // TODO 将请求体的属性值转换为 PO 的属性值
-      .map { it }
+    return request
+      // 将请求体的 json 转换为 DTO
+      .bodyToMono<AccidentRegisterDto4Update>()
       // 执行信息更新
       .flatMap { accidentRegisterService.update(request.pathVariable("id").toInt(), it) }
       // response
