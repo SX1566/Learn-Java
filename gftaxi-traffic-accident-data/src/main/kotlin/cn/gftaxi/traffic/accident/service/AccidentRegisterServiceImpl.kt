@@ -20,7 +20,6 @@ import reactor.core.publisher.Mono
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
 import tech.simter.security.SecurityService
-import java.time.OffsetDateTime
 
 /**
  * 事故登记 Service 实现。
@@ -69,18 +68,16 @@ class AccidentRegisterServiceImpl @Autowired constructor(
         // 1. 获取事故登记信息
         .get(id)
         // 2. 如果事故报案信息还没有登记过，则自动根据未曾登记过的事故报案信息生成一条草稿状态的事故登记信息
-        .defaultIfEmpty(EMPTY_REGISTER)
-        .flatMap {
-          if (it == EMPTY_REGISTER) { // 自动生成草稿的事故登记信息
+        .transform {
+          if (it == Mono.empty<AccidentRegister>()) {
             accidentDraftDao.get(id)
-              .defaultIfEmpty(EMPTY_DRAFT)
-              .flatMap {
-                // convert empty to error (RJ:找不到其它方法)
-                if (it == EMPTY_DRAFT) Mono.error(NotFoundException("案件不存在：id=$id"))
-                else Mono.just(it)
+              .transform {
+                // convert empty to error
+                if (it == Mono.empty<AccidentDraft>()) Mono.error(NotFoundException("案件不存在：id=$id"))
+                else it
               }
               .flatMap { accidentRegisterDao.createBy(it) }
-          } else Mono.just(it)
+          } else it
         }
         // 3. po 转 dto
         .map { convert(it) }
@@ -99,29 +96,5 @@ class AccidentRegisterServiceImpl @Autowired constructor(
 
   override fun checked(id: Int): Mono<Void> {
     TODO("not implemented")
-  }
-
-  companion object {
-    private val EMPTY_DRAFT = AccidentDraft(
-      status = AccidentDraft.Status.Todo,
-      carPlate = "",
-      driverName = "",
-      happenTime = OffsetDateTime.now(),
-      code = "",
-      authorId = "",
-      authorName = "",
-      source = "",
-      overdue = false,
-      location = "",
-      reportTime = OffsetDateTime.now()
-    )
-    private val EMPTY_REGISTER = AccidentRegister(
-      status = Status.Draft,
-      draft = EMPTY_DRAFT,
-      carPlate = "",
-      driverName = "",
-      happenTime = OffsetDateTime.now(),
-      locationOther = ""
-    )
   }
 }
