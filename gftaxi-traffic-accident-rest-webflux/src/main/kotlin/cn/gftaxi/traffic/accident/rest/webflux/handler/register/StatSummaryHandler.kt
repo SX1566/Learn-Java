@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus.FORBIDDEN
 import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.*
+import org.springframework.web.reactive.function.server.ServerResponse.ok
+import org.springframework.web.reactive.function.server.ServerResponse.status
 import reactor.core.publisher.Mono
 import tech.simter.exception.PermissionDeniedException
 
@@ -22,10 +24,10 @@ class StatSummaryHandler @Autowired constructor(
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
     return accidentRegisterService.statSummary().collectList()
       // response
-      .flatMap { ServerResponse.ok().contentType(APPLICATION_JSON_UTF8).syncBody(it) }
+      .flatMap { ok().contentType(APPLICATION_JSON_UTF8).syncBody(it) }
       // error mapping
       .onErrorResume(PermissionDeniedException::class.java, {
-        ServerResponse.status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
+        status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
       })
   }
 

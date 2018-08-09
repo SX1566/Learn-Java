@@ -11,6 +11,8 @@ import org.springframework.web.reactive.function.server.RequestPredicate
 import org.springframework.web.reactive.function.server.RequestPredicates.POST
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
+import org.springframework.web.reactive.function.server.ServerResponse.noContent
+import org.springframework.web.reactive.function.server.ServerResponse.status
 import reactor.core.publisher.Mono
 import tech.simter.exception.ForbiddenException
 import tech.simter.exception.NotFoundException
@@ -28,16 +30,16 @@ class ToCheckHandler @Autowired constructor(
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
     return accidentRegisterService.toCheck(request.pathVariable("id").toInt())
       // response
-      .then(ServerResponse.noContent().build())
+      .then(noContent().build())
       // error mapping
       .onErrorResume(NotFoundException::class.java, {
-        ServerResponse.status(NOT_FOUND).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
+        status(NOT_FOUND).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
       })
       .onErrorResume(ForbiddenException::class.java, {
-        ServerResponse.status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
+        status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
       })
       .onErrorResume(PermissionDeniedException::class.java, {
-        ServerResponse.status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
+        status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
       })
   }
 

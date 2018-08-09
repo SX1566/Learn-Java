@@ -6,11 +6,13 @@ import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus.FORBIDDEN
 import org.springframework.http.HttpStatus.NOT_FOUND
-import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.*
 import org.springframework.web.reactive.function.server.RequestPredicates.PATCH
 import org.springframework.web.reactive.function.server.RequestPredicates.contentType
+import org.springframework.web.reactive.function.server.ServerResponse.noContent
+import org.springframework.web.reactive.function.server.ServerResponse.status
 import reactor.core.publisher.Mono
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
@@ -31,19 +33,19 @@ class UpdateHandler @Autowired constructor(
       // 执行信息更新
       .flatMap { accidentRegisterService.update(request.pathVariable("id").toInt(), it.changedProperties) }
       // response
-      .then(ServerResponse.noContent().build())
+      .then(noContent().build())
       // error mapping
       .onErrorResume(NotFoundException::class.java, {
-        ServerResponse.status(NOT_FOUND).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
+        status(NOT_FOUND).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
       })
       .onErrorResume(PermissionDeniedException::class.java, {
-        ServerResponse.status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
+        status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
       })
   }
 
   companion object {
     /** The default [RequestPredicate] */
     val REQUEST_PREDICATE: RequestPredicate = PATCH("/accident-register/{id}")
-      .and(contentType(MediaType.APPLICATION_JSON_UTF8))
+      .and(contentType(APPLICATION_JSON_UTF8))
   }
 }

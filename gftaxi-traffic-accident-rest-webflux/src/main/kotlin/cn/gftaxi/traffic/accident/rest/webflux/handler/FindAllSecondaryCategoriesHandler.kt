@@ -1,9 +1,11 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.*
+import org.springframework.web.reactive.function.server.RequestPredicates.GET
+import org.springframework.web.reactive.function.server.ServerResponse.ok
 import reactor.core.publisher.Mono
 import tech.simter.category.po.Category
 import tech.simter.category.service.CategoryService
@@ -25,8 +27,8 @@ class FindAllSecondaryCategoriesHandler @Autowired constructor(
         arrayOf(Category.Status.Enabled, Category.Status.Disabled)
       } else arrayOf(Category.Status.Enabled)
 
-    return ServerResponse.ok()
-      .contentType(MediaType.APPLICATION_JSON_UTF8)
+    return ok()
+      .contentType(APPLICATION_JSON_UTF8)
       .body(
         categoryService.findChild(1, arrayOf("JTSG_CATEGORY"), arrayOf(Category.Status.Enabled))
           .map { it.sn }
@@ -47,6 +49,6 @@ class FindAllSecondaryCategoriesHandler @Autowired constructor(
 
   companion object {
     /** The default [RequestPredicate] */
-    val REQUEST_PREDICATE: RequestPredicate = RequestPredicates.GET("/category/group")
+    val REQUEST_PREDICATE: RequestPredicate = GET("/category/group")
   }
 }

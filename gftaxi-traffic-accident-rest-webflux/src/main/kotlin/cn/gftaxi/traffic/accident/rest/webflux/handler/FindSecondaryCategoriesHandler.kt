@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.*
+import org.springframework.web.reactive.function.server.RequestPredicates.GET
+import org.springframework.web.reactive.function.server.ServerResponse.ok
 import reactor.core.publisher.Mono
 
 /**
@@ -21,7 +23,7 @@ class FindSecondaryCategoriesHandler @Autowired constructor(
     val includeDisabled = request.queryParam("include-disabled")
     val includeDisabledStatus = includeDisabled.isPresent && "true" == includeDisabled.get().toLowerCase()
 
-    return ServerResponse.ok()
+    return ok()
       .contentType(MediaType.APPLICATION_JSON_UTF8)
       .body(
         accidentCategoryService
@@ -39,6 +41,6 @@ class FindSecondaryCategoriesHandler @Autowired constructor(
 
   companion object {
     /** The default [RequestPredicate] */
-    val REQUEST_PREDICATE: RequestPredicate = RequestPredicates.GET("/category/{sn}/children")
+    val REQUEST_PREDICATE: RequestPredicate = GET("/category/{sn}/children")
   }
 }

@@ -12,6 +12,8 @@ import org.springframework.web.reactive.function.server.RequestPredicate
 import org.springframework.web.reactive.function.server.RequestPredicates.GET
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
+import org.springframework.web.reactive.function.server.ServerResponse.ok
+import org.springframework.web.reactive.function.server.ServerResponse.status
 import reactor.core.publisher.Mono
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
@@ -29,15 +31,13 @@ class GetHandler @Autowired constructor(
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
     return accidentRegisterService.get(request.pathVariable("id").toInt())
       // response
-      .flatMap {
-        ServerResponse.ok().contentType(MediaType.APPLICATION_JSON_UTF8).syncBody(it)
-      }
+      .flatMap { ok().contentType(MediaType.APPLICATION_JSON_UTF8).syncBody(it) }
       // error mapping
       .onErrorResume(NotFoundException::class.java, {
-        ServerResponse.status(NOT_FOUND).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
+        status(NOT_FOUND).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
       })
       .onErrorResume(PermissionDeniedException::class.java, {
-        ServerResponse.status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
+        status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
       })
   }
 
