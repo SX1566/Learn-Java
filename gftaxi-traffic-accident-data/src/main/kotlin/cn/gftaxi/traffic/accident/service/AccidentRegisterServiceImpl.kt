@@ -3,7 +3,10 @@ package cn.gftaxi.traffic.accident.service
 import cn.gftaxi.traffic.accident.Utils.convert
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
-import cn.gftaxi.traffic.accident.dto.*
+import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Checked
+import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
+import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
+import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentRegister
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
@@ -86,7 +89,7 @@ class AccidentRegisterServiceImpl @Autowired constructor(
     }
   }
 
-  override fun update(id: Int, data: AccidentRegisterDto4Update): Mono<Void> {
+  override fun update(id: Int, data: Map<String, Any?>): Mono<Void> {
     TODO("not implemented")
   }
 

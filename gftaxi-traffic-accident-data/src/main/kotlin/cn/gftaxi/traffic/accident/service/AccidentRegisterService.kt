@@ -78,13 +78,14 @@ interface AccidentRegisterService {
    * 对于被更新了的数据，需要生成相应的 [AccidentOperation] 操作记录，记录详细的更新日志。
    *
    * @param[id] 要修改案件的 ID
-   * @param[data] 要更新的信息，被更新的信息保存在 [AccidentRegisterDto4Update.changedProperties] 中，
-   *               key 为属性名，value 为相应的属性值
+   * @param[data] 要更新的信息，key 为 [AccidentRegisterDto4Update] 属性名，value 为该 DTO 相应的属性值，
+   *               使用者只传入已改动的属性键值对，没有改动的属性不要传入来。
+   *
    * @throws [NotFoundException] 案件不存在
    * @throws [PermissionDeniedException] 无 [AccidentDraft.ROLE_MODIFY] 修改事故登记信息权限
    * @return 更新完毕的 [Mono] 信号
    */
-  fun update(id: Int, data: AccidentRegisterDto4Update): Mono<Void>
+  fun update(id: Int, data: Map<String, Any?>): Mono<Void>
 
   /**
    * 将待登记或审核不通过的事故登记信息提交审核。
