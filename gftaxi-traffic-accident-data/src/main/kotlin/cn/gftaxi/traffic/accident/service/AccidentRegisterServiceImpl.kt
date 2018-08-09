@@ -4,10 +4,7 @@ import cn.gftaxi.traffic.accident.Utils.convert
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.dao.AccidentOperationDao
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4LastChecked
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
+import cn.gftaxi.traffic.accident.dto.*
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentOperation
 import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType
@@ -136,7 +133,7 @@ class AccidentRegisterServiceImpl @Autowired constructor(
     }
   }
 
-  override fun checked(id: Int): Mono<Void> {
+  override fun checked(id: Int, checkedInfo: CheckedInfo): Mono<Void> {
     TODO("not implemented")
   }
 }
