@@ -73,6 +73,6 @@ class FindLastCheckedHandler @Autowired constructor(
 
   companion object {
     /** The default [RequestPredicate] */
-    val REQUEST_PREDICATE: RequestPredicate = GET("/accident-register/checked")
+    val REQUEST_PREDICATE: RequestPredicate = GET("/accident-register/last-checked")
   }
 }

@@ -122,7 +122,7 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
           ui: {isOpen: true}
         },
         checkedView: {
-          url: `${accident.dataServer}/${resourceKey}/checked`,
+          url: `${accident.dataServer}/${resourceKey}/last-checked`,
           columns: checkedColumns,
           status: "Rejected",
           statuses: [{id: "Rejected", label: "审核不通过"}, {id: "Approved", label: "审核通过"}],

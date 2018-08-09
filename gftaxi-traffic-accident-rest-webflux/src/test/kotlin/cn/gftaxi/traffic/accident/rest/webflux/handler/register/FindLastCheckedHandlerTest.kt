@@ -80,7 +80,7 @@ class FindLastCheckedHandlerTest @Autowired constructor(
       .thenReturn(Mono.just(PageImpl(list, PageRequest.of(pageNo, pageSize), list.size.toLong())))
 
     // invoke
-    client.get().uri("/accident-register/checked" + (if (status != null) "?status=${status.name}" else ""))
+    client.get().uri("/accident-register/last-checked" + (if (status != null) "?status=${status.name}" else ""))
       .exchange()
       .expectStatus().isOk
       .expectHeader().contentType(APPLICATION_JSON_UTF8)
@@ -113,7 +113,7 @@ class FindLastCheckedHandlerTest @Autowired constructor(
       .thenReturn(Mono.error(ForbiddenException()))
 
     // invoke
-    val response = client.get().uri("/accident-register/checked?status=${status.name}").exchange()
+    val response = client.get().uri("/accident-register/last-checked?status=${status.name}").exchange()
 
     // verify
     response.expectStatus().isForbidden.expectHeader().contentType(TEXT_PLAIN_UTF8)
