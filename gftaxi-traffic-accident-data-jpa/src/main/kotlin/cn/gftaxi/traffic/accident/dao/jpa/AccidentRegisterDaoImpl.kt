@@ -9,6 +9,7 @@ import cn.gftaxi.traffic.accident.po.AccidentDraft.Status.Todo
 import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType
 import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType
 import cn.gftaxi.traffic.accident.po.AccidentRegister
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.*
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -73,7 +74,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
   }
 
   @Suppress("UNCHECKED_CAST")
-  override fun findTodo(status: AccidentRegister.Status?): Flux<AccidentRegisterDto4Todo> {
+  override fun findTodo(status: Status?): Flux<AccidentRegisterDto4Todo> {
     val where = when (status) {
       Draft -> "where d.status = ${Todo.value()}"
       ToCheck -> "where r.status = ${ToCheck.value()}"
@@ -108,9 +109,9 @@ class AccidentRegisterDaoImpl @Autowired constructor(
   }
 
   @Suppress("UNCHECKED_CAST")
-  override fun findChecked(pageNo: Int, pageSize: Int, status: AccidentRegister.Status?, search: String?)
+  override fun findChecked(pageNo: Int, pageSize: Int, status: Status?, search: String?)
     : Mono<Page<AccidentRegisterDto4Checked>> {
-    if (null != status && status != AccidentRegister.Status.Rejected && status != AccidentRegister.Status.Approved) {
+    if (null != status && status != Status.Rejected && status != Status.Approved) {
       throw IllegalArgumentException("指定的状态条件 $status 不在允许的范围内！")
     }
     val hasSearch = null != search
@@ -139,7 +140,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
     val countSql = "select count(r.id) from gf_accident_register r $where"
 
     val statusValue = status?.value()
-      ?: listOf(AccidentRegister.Status.Approved.value(), AccidentRegister.Status.Rejected.value())
+      ?: listOf(Status.Approved.value(), Status.Rejected.value())
     val rowsQuery = em.createNativeQuery(rowsSql, AccidentRegisterDto4Checked::class.java)
       .setParameter("operationType", listOf(OperationType.Approval.value(), OperationType.Rejection.value()))
       .setParameter("status", statusValue)
@@ -167,6 +168,10 @@ class AccidentRegisterDaoImpl @Autowired constructor(
   }
 
   override fun createBy(accidentDraft: AccidentDraft): Mono<AccidentRegister> {
+    TODO("not implemented")
+  }
+
+  override fun getStatus(id: Int): Mono<Status> {
     TODO("not implemented")
   }
 }

@@ -2,14 +2,19 @@ package cn.gftaxi.traffic.accident.service
 
 import cn.gftaxi.traffic.accident.Utils.convert
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
+import cn.gftaxi.traffic.accident.dao.AccidentOperationDao
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Checked
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
 import cn.gftaxi.traffic.accident.po.AccidentDraft
+import cn.gftaxi.traffic.accident.po.AccidentOperation
+import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType
+import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType
 import cn.gftaxi.traffic.accident.po.AccidentRegister
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.ROLE_SUBMIT
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -17,9 +22,11 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import tech.simter.exception.ForbiddenException
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
 import tech.simter.security.SecurityService
+import java.time.OffsetDateTime
 
 /**
  * 事故登记 Service 实现。
@@ -31,7 +38,8 @@ import tech.simter.security.SecurityService
 class AccidentRegisterServiceImpl @Autowired constructor(
   private val securityService: SecurityService,
   private val accidentRegisterDao: AccidentRegisterDao,
-  private val accidentDraftDao: AccidentDraftDao
+  private val accidentDraftDao: AccidentDraftDao,
+  private val accidentOperationDao: AccidentOperationDao
 ) : AccidentRegisterService {
   override fun statSummary(): Flux<AccidentRegisterDto4StatSummary> {
     return try {
@@ -91,7 +99,41 @@ class AccidentRegisterServiceImpl @Autowired constructor(
   }
 
   override fun toCheck(id: Int): Mono<Void> {
-    TODO("not implemented")
+    return try {
+      securityService.verifyHasAnyRole(ROLE_SUBMIT)
+      accidentRegisterDao
+        // 1. 获取事故登记信息的状态
+        .getStatus(id)
+        // 2. 如果案件不存在返回 NotFound 错误
+        .transform {
+          when (it) {
+            Mono.empty<Status>() -> Mono.error(NotFoundException("案件不存在：id=$id"))
+            else -> it
+          }
+        }
+        // 3. 如果案件状态不对，返回 Forbidden 错误
+        .map<Status> {
+          if (it != Status.Draft && it != Status.Rejected)
+            throw ForbiddenException("案件不是待登记或审核不通过状态：id=$id")
+          else it
+        }
+        // 4. 提交案件
+        .flatMap { accidentRegisterDao.toCheck(id) }
+        // 5. 如果提交成功则创建一条操作日志
+        .map {
+          if (it) accidentOperationDao.create(AccidentOperation(
+            operatorId = 0,        // TODO from context
+            operatorName = "TODO", // TODO from context
+            operateTime = OffsetDateTime.now(),
+            operationType = OperationType.Confirmation,
+            targetType = TargetType.Register,
+            targetId = id
+          )) else Mono.empty()
+        }
+        .then()
+    } catch (e: SecurityException) {
+      Mono.error(PermissionDeniedException(e.message ?: ""))
+    }
   }
 
   override fun checked(id: Int): Mono<Void> {
