@@ -3,7 +3,7 @@ package cn.gftaxi.traffic.accident.service.register
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.dao.AccidentOperationDao
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Checked
+import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4LastChecked
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
 import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType.Official
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
@@ -37,9 +37,9 @@ class AccidentRegisterServiceImplTest @Autowired constructor(
   private val accidentRegisterDao: AccidentRegisterDao,
   private val securityService: SecurityService
 ) {
-  private fun randomCheckedDto(code: String): AccidentRegisterDto4Checked {
+  private fun randomCheckedDto(code: String): AccidentRegisterDto4LastChecked {
     val now = OffsetDateTime.now()
-    return AccidentRegisterDto4Checked(
+    return AccidentRegisterDto4LastChecked(
       code = code,
       carPlate = "粤A.00001",
       driverName = "driver1",

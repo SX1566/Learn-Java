@@ -4,7 +4,7 @@ import cn.gftaxi.traffic.accident.Utils.convert
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.dao.AccidentOperationDao
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Checked
+import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4LastChecked
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
@@ -60,7 +60,7 @@ class AccidentRegisterServiceImpl @Autowired constructor(
   }
 
   override fun findChecked(pageNo: Int, pageSize: Int, status: Status?, search: String?)
-    : Mono<Page<AccidentRegisterDto4Checked>> {
+    : Mono<Page<AccidentRegisterDto4LastChecked>> {
     return try {
       securityService.verifyHasAnyRole(*READ_ROLES)
       accidentRegisterDao.findChecked(pageNo, pageSize, status, search)

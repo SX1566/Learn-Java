@@ -1,6 +1,6 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.register
 
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Checked
+import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4LastChecked
 import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType.Official
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.*
@@ -37,9 +37,9 @@ class FindCheckedHandlerTest @Autowired constructor(
 ) {
   private val client = bindToRouterFunction(route(REQUEST_PREDICATE, handler)).build()
 
-  private fun randomDto(code: String): AccidentRegisterDto4Checked {
+  private fun randomDto(code: String): AccidentRegisterDto4LastChecked {
     val now = OffsetDateTime.now()
-    return AccidentRegisterDto4Checked(
+    return AccidentRegisterDto4LastChecked(
       code = code,
       carPlate = "粤A.00001",
       driverName = "driver1",

@@ -1,7 +1,7 @@
 package cn.gftaxi.traffic.accident.dao.jpa
 
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Checked
+import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4LastChecked
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
 import cn.gftaxi.traffic.accident.po.AccidentDraft
@@ -110,7 +110,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
 
   @Suppress("UNCHECKED_CAST")
   override fun findChecked(pageNo: Int, pageSize: Int, status: Status?, search: String?)
-    : Mono<Page<AccidentRegisterDto4Checked>> {
+    : Mono<Page<AccidentRegisterDto4LastChecked>> {
     if (null != status && status != Status.Rejected && status != Status.Approved) {
       throw IllegalArgumentException("指定的状态条件 $status 不在允许的范围内！")
     }
@@ -141,7 +141,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
 
     val statusValue = status?.value()
       ?: listOf(Status.Approved.value(), Status.Rejected.value())
-    val rowsQuery = em.createNativeQuery(rowsSql, AccidentRegisterDto4Checked::class.java)
+    val rowsQuery = em.createNativeQuery(rowsSql, AccidentRegisterDto4LastChecked::class.java)
       .setParameter("operationType", listOf(OperationType.Approval.value(), OperationType.Rejection.value()))
       .setParameter("status", statusValue)
       .setFirstResult(tech.simter.data.Page.calculateOffset(pageNo, pageSize))
@@ -156,7 +156,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
 
     return Mono.just(
       PageImpl(
-        rowsQuery.resultList as List<AccidentRegisterDto4Checked>,
+        rowsQuery.resultList as List<AccidentRegisterDto4LastChecked>,
         PageRequest.of(pageNo - 1, pageSize),
         (countQuery.singleResult as Number).toLong()
       )

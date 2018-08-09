@@ -53,7 +53,7 @@ interface AccidentRegisterService {
    * @throws [PermissionDeniedException] 不是 [READ_ROLES] 中的任一角色之一
    */
   fun findChecked(pageNo: Int = 1, pageSize: Int = 25, status: Status? = null, search: String? = null)
-    : Mono<Page<AccidentRegisterDto4Checked>>
+    : Mono<Page<AccidentRegisterDto4LastChecked>>
 
   /**
    * 获取指定 ID 的事故登记信息。

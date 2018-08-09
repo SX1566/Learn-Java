@@ -1,6 +1,6 @@
 package cn.gftaxi.traffic.accident.dao
 
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Checked
+import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4LastChecked
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
 import cn.gftaxi.traffic.accident.po.AccidentDraft
@@ -44,7 +44,7 @@ interface AccidentRegisterDao {
    * @throws [IllegalArgumentException] 如果指定的状态条件 [status] 不在允许的范围内
    */
   fun findChecked(pageNo: Int = 1, pageSize: Int = 25, status: Status? = null, search: String? = null)
-    : Mono<Page<AccidentRegisterDto4Checked>>
+    : Mono<Page<AccidentRegisterDto4LastChecked>>
 
   /**
    * 获取指定主键的事故登记信息。
