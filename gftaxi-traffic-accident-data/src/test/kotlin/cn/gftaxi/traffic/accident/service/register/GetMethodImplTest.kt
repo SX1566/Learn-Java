@@ -3,6 +3,7 @@ package cn.gftaxi.traffic.accident.service.register
 import cn.gftaxi.traffic.accident.POUtils
 import cn.gftaxi.traffic.accident.Utils.convert
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
+import cn.gftaxi.traffic.accident.dao.AccidentOperationDao
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
@@ -25,7 +26,7 @@ import tech.simter.security.SecurityService
  * @author RJ
  */
 @SpringJUnitConfig(AccidentRegisterServiceImpl::class)
-@MockBean(AccidentRegisterDao::class, AccidentDraftDao::class, SecurityService::class)
+@MockBean(AccidentRegisterDao::class, AccidentDraftDao::class, AccidentOperationDao::class, SecurityService::class)
 class GetMethodImplTest @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService,
   private val accidentRegisterDao: AccidentRegisterDao,

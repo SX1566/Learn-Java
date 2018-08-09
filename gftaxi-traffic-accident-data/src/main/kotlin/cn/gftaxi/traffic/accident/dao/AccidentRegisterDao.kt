@@ -63,4 +63,25 @@ interface AccidentRegisterDao {
    *    并自动生成一条自车类型的 [AccidentPeople] 当事人信息。
    */
   fun createBy(accidentDraft: AccidentDraft): Mono<AccidentRegister>
+
+  /**
+   * 获取事故登记信息的当前状态。
+   *
+   * 如果指定的事故登记信息不存在，则返回 [Mono.empty]。
+   */
+  fun getStatus(id: Int): Mono<Status>
+
+  /**
+   * 提交事故登记信息。
+   *
+   * 将案件的状态更新为待审核状态，如果是首次提交（[AccidentRegister.registerTime] 为 null 时）：
+   * 1. 更新 [AccidentRegister.registerTime] 为当前时间。
+   * 2. 更新 [AccidentRegister.overdue] 的值，确定是否逾期登记，
+   *    逾期登记的阈值通过系统属性 `app.register-overdue-hours` 设置(默认为 24 小时)。
+   *
+   * 更新成功返回 Mono.just(true)，否则返回 Mono.just(false)
+   */
+  fun toCheck(id: Int): Mono<Boolean> {
+    TODO("not implemented")
+  }
 }
