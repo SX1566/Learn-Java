@@ -52,8 +52,8 @@ interface AccidentRegisterService {
    * @throws [ForbiddenException] 如果指定的状态条件 [status] 不在允许的范围内
    * @throws [PermissionDeniedException] 不是 [READ_ROLES] 中的任一角色之一
    */
-  fun findChecked(pageNo: Int = 1, pageSize: Int = 25, status: Status? = null, search: String? = null)
-    : Mono<Page<AccidentRegisterDto4Checked>>
+  fun findLastChecked(pageNo: Int = 1, pageSize: Int = 25, status: Status? = null, search: String? = null)
+    : Mono<Page<AccidentRegisterDto4LastChecked>>
 
   /**
    * 获取指定 ID 的事故登记信息。
@@ -106,10 +106,11 @@ interface AccidentRegisterService {
    * 需要生成相应的 [AccidentOperation] 操作记录。
    *
    * @param[id] 案件 ID
+   * @param[checkedInfo] 审核信息
    * @throws [NotFoundException] 案件不存在
    * @throws [ForbiddenException] 案件不是待审核 [ToCheck] 状态
    * @throws [PermissionDeniedException] 无 [AccidentRegister.ROLE_CHECK] 审核权限
    * @return 审核完毕的 [Mono] 信号
    */
-  fun checked(id: Int): Mono<Void>
+  fun checked(id: Int, checkedInfo: CheckedInfo): Mono<Void>
 }

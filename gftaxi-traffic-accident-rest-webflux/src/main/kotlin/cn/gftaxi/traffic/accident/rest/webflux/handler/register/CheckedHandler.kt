@@ -1,16 +1,15 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.register
 
+import cn.gftaxi.traffic.accident.dto.CheckedInfo
 import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus.FORBIDDEN
 import org.springframework.http.HttpStatus.NOT_FOUND
+import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.server.HandlerFunction
-import org.springframework.web.reactive.function.server.RequestPredicate
+import org.springframework.web.reactive.function.server.*
 import org.springframework.web.reactive.function.server.RequestPredicates.POST
-import org.springframework.web.reactive.function.server.ServerRequest
-import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.ServerResponse.noContent
 import org.springframework.web.reactive.function.server.ServerResponse.status
 import reactor.core.publisher.Mono
@@ -28,7 +27,11 @@ class CheckedHandler @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService
 ) : HandlerFunction<ServerResponse> {
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
-    return accidentRegisterService.checked(request.pathVariable("id").toInt())
+    return request
+      // 将请求体的 json 转换为 DTO
+      .bodyToMono<CheckedInfo>()
+      // 执行审核处理
+      .flatMap { accidentRegisterService.checked(request.pathVariable("id").toInt(), it) }
       // response
       .then(noContent().build())
       // error mapping
@@ -46,5 +49,6 @@ class CheckedHandler @Autowired constructor(
   companion object {
     /** The default [RequestPredicate] */
     val REQUEST_PREDICATE: RequestPredicate = POST("/accident-register/checked/{id}")
+      .and(RequestPredicates.contentType(APPLICATION_JSON_UTF8))
   }
 }

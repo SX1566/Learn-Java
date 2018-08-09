@@ -17,7 +17,7 @@ import javax.persistence.Id
  * @author RJ
  */
 @Entity
-data class AccidentRegisterDto4Checked constructor(
+data class AccidentRegisterDto4LastChecked constructor(
   @Id val id: Int? = null,
   val code: String,
   val carPlate: String,
