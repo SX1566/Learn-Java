@@ -5,7 +5,7 @@ import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType.Official
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.*
 import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
-import cn.gftaxi.traffic.accident.rest.webflux.handler.register.FindCheckedHandler.Companion.REQUEST_PREDICATE
+import cn.gftaxi.traffic.accident.rest.webflux.handler.register.FindLastCheckedHandler.Companion.REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -24,15 +24,15 @@ import tech.simter.exception.ForbiddenException
 import java.time.OffsetDateTime
 
 /**
- * Test [FindCheckedHandler]。
+ * Test [FindLastCheckedHandler]。
  *
  * @author RJ
  */
-@SpringJUnitConfig(FindCheckedHandler::class)
+@SpringJUnitConfig(FindLastCheckedHandler::class)
 @EnableWebFlux
 @MockBean(AccidentRegisterService::class)
-class FindCheckedHandlerTest @Autowired constructor(
-  handler: FindCheckedHandler,
+class FindLastCheckedHandlerTest @Autowired constructor(
+  handler: FindLastCheckedHandler,
   private val accidentRegisterService: AccidentRegisterService
 ) {
   private val client = bindToRouterFunction(route(REQUEST_PREDICATE, handler)).build()
@@ -76,7 +76,7 @@ class FindCheckedHandlerTest @Autowired constructor(
     var code = 1
     val dto = randomDto(code = "20180101_0$code")
     val list = listOf(dto.copy(code = "20180101_0${++code}"), dto)
-    `when`(accidentRegisterService.findChecked(pageNo, pageSize, status, null))
+    `when`(accidentRegisterService.findLastChecked(pageNo, pageSize, status, null))
       .thenReturn(Mono.just(PageImpl(list, PageRequest.of(pageNo, pageSize), list.size.toLong())))
 
     // invoke
@@ -92,7 +92,7 @@ class FindCheckedHandlerTest @Autowired constructor(
       .jsonPath("$.rows[1].code").isEqualTo("20180101_01")
 
     // verify
-    verify(accidentRegisterService).findChecked(pageNo, pageSize, status, null)
+    verify(accidentRegisterService).findLastChecked(pageNo, pageSize, status, null)
   }
 
   @Test
@@ -109,7 +109,7 @@ class FindCheckedHandlerTest @Autowired constructor(
     // mock
     val pageNo = 1
     val pageSize = 25
-    `when`(accidentRegisterService.findChecked(pageNo, pageSize, status, null))
+    `when`(accidentRegisterService.findLastChecked(pageNo, pageSize, status, null))
       .thenReturn(Mono.error(ForbiddenException()))
 
     // invoke
@@ -117,6 +117,6 @@ class FindCheckedHandlerTest @Autowired constructor(
 
     // verify
     response.expectStatus().isForbidden.expectHeader().contentType(TEXT_PLAIN_UTF8)
-    verify(accidentRegisterService).findChecked(pageNo, pageSize, status, null)
+    verify(accidentRegisterService).findLastChecked(pageNo, pageSize, status, null)
   }
 }

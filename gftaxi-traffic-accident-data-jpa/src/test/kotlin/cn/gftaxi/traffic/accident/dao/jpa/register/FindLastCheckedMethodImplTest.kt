@@ -29,13 +29,13 @@ import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
 /**
- * Test [AccidentRegisterDao.findChecked].
+ * Test [AccidentRegisterDao.findLastChecked].
  *
  * @author RJ
  */
 @SpringJUnitConfig(ModuleConfiguration::class)
 @DataJpaTest
-class FindCheckedMethodImplTest @Autowired constructor(
+class FindLastCheckedMethodImplTest @Autowired constructor(
   @PersistenceContext private val em: EntityManager,
   private val dao: AccidentRegisterDao
 ) {
@@ -72,7 +72,7 @@ class FindCheckedMethodImplTest @Autowired constructor(
     initData()
 
     // 1. 仅查审核通过
-    StepVerifier.create(dao.findChecked(status = Approved))
+    StepVerifier.create(dao.findLastChecked(status = Approved))
       .consumeNextWith { page ->
         assertEquals(0, page.number)
         assertEquals(25, page.size)
@@ -90,7 +90,7 @@ class FindCheckedMethodImplTest @Autowired constructor(
       .verifyComplete()
 
     // 2. 仅查审核不通过
-    StepVerifier.create(dao.findChecked(status = Rejected))
+    StepVerifier.create(dao.findLastChecked(status = Rejected))
       .consumeNextWith { page ->
         assertEquals(0, page.number)
         assertEquals(25, page.size)
@@ -108,7 +108,7 @@ class FindCheckedMethodImplTest @Autowired constructor(
       .verifyComplete()
 
     // 3. 两者都查
-    StepVerifier.create(dao.findChecked())
+    StepVerifier.create(dao.findLastChecked())
       .consumeNextWith { page ->
         assertEquals(0, page.number)
         assertEquals(25, page.size)
@@ -159,10 +159,10 @@ class FindCheckedMethodImplTest @Autowired constructor(
   @Test
   fun findWithInValidStatus() {
     assertThrows(IllegalArgumentException::class.java, {
-      dao.findChecked(status = Status.Draft).subscribe()
+      dao.findLastChecked(status = Status.Draft).subscribe()
     })
     assertThrows(IllegalArgumentException::class.java, {
-      dao.findChecked(status = Status.ToCheck).subscribe()
+      dao.findLastChecked(status = Status.ToCheck).subscribe()
     })
   }
 }

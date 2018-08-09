@@ -109,7 +109,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
   }
 
   @Suppress("UNCHECKED_CAST")
-  override fun findChecked(pageNo: Int, pageSize: Int, status: Status?, search: String?)
+  override fun findLastChecked(pageNo: Int, pageSize: Int, status: Status?, search: String?)
     : Mono<Page<AccidentRegisterDto4LastChecked>> {
     if (null != status && status != Status.Rejected && status != Status.Approved) {
       throw IllegalArgumentException("指定的状态条件 $status 不在允许的范围内！")

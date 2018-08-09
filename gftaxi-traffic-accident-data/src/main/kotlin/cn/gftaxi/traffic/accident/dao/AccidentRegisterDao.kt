@@ -43,7 +43,7 @@ interface AccidentRegisterDao {
    * @param[search] 模糊搜索的条件值，为空则忽略
    * @throws [IllegalArgumentException] 如果指定的状态条件 [status] 不在允许的范围内
    */
-  fun findChecked(pageNo: Int = 1, pageSize: Int = 25, status: Status? = null, search: String? = null)
+  fun findLastChecked(pageNo: Int = 1, pageSize: Int = 25, status: Status? = null, search: String? = null)
     : Mono<Page<AccidentRegisterDto4LastChecked>>
 
   /**

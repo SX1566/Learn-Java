@@ -26,7 +26,7 @@ import tech.simter.security.SecurityService
 import java.time.OffsetDateTime
 
 /**
- * Test [AccidentRegisterServiceImpl.findChecked].
+ * Test [AccidentRegisterServiceImpl.findLastChecked].
  *
  * @author RJ
  */
@@ -66,12 +66,12 @@ class AccidentRegisterServiceImplTest @Autowired constructor(
     doThrow(SecurityException()).`when`(securityService).verifyHasAnyRole(*READ_ROLES)
 
     // invoke and verify
-    StepVerifier.create(accidentRegisterService.findChecked(1, 25, null, null))
+    StepVerifier.create(accidentRegisterService.findLastChecked(1, 25, null, null))
       .expectError(PermissionDeniedException::class.java)
       .verify()
     //assertThrows(SecurityException::class.java, { .subscribe() })
     verify(securityService).verifyHasAnyRole(*READ_ROLES)
-    verify(accidentRegisterDao, times(0)).findChecked(1, 25, null, null)
+    verify(accidentRegisterDao, times(0)).findLastChecked(1, 25, null, null)
   }
 
   private fun findCheckedByStatus(status: Status?) {
@@ -85,18 +85,18 @@ class AccidentRegisterServiceImplTest @Autowired constructor(
 
     val expectedRows = listOf(dto.copy(code = "20180101_0${++code}"), dto)
     val expected = PageImpl(expectedRows, PageRequest.of(pageNo, pageSize), expectedRows.size.toLong())
-    `when`(accidentRegisterDao.findChecked(pageNo, pageSize, status, null))
+    `when`(accidentRegisterDao.findLastChecked(pageNo, pageSize, status, null))
       .thenReturn(Mono.just(expected))
     doNothing().`when`(securityService).verifyHasAnyRole(*READ_ROLES)
 
     // invoke
-    val actual = accidentRegisterService.findChecked(pageNo, pageSize, status, null)
+    val actual = accidentRegisterService.findLastChecked(pageNo, pageSize, status, null)
 
     // verify
     StepVerifier.create(actual)
       .expectNext(expected)
       .verifyComplete()
     verify(securityService).verifyHasAnyRole(*READ_ROLES)
-    verify(accidentRegisterDao).findChecked(pageNo, pageSize, status, null)
+    verify(accidentRegisterDao).findLastChecked(pageNo, pageSize, status, null)
   }
 }

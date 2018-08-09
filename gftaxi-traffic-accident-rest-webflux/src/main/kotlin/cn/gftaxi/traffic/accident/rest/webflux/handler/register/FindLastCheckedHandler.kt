@@ -25,7 +25,7 @@ import tech.simter.exception.PermissionDeniedException
  * @author RJ
  */
 @Component
-class FindCheckedHandler @Autowired constructor(
+class FindLastCheckedHandler @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService
 ) : HandlerFunction<ServerResponse> {
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
@@ -35,7 +35,7 @@ class FindCheckedHandler @Autowired constructor(
     val status = if (statusStr.isPresent) Status.valueOf(statusStr.get()) else null
     val search = request.queryParam("search").orElse(null)
 
-    return accidentRegisterService.findChecked(pageNo, pageSize, status, search)
+    return accidentRegisterService.findLastChecked(pageNo, pageSize, status, search)
       .map {
         mapOf(
           "count" to it.count(),

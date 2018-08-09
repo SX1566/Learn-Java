@@ -52,7 +52,7 @@ interface AccidentRegisterService {
    * @throws [ForbiddenException] 如果指定的状态条件 [status] 不在允许的范围内
    * @throws [PermissionDeniedException] 不是 [READ_ROLES] 中的任一角色之一
    */
-  fun findChecked(pageNo: Int = 1, pageSize: Int = 25, status: Status? = null, search: String? = null)
+  fun findLastChecked(pageNo: Int = 1, pageSize: Int = 25, status: Status? = null, search: String? = null)
     : Mono<Page<AccidentRegisterDto4LastChecked>>
 
   /**

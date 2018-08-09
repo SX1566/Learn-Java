@@ -59,11 +59,11 @@ class AccidentRegisterServiceImpl @Autowired constructor(
     }
   }
 
-  override fun findChecked(pageNo: Int, pageSize: Int, status: Status?, search: String?)
+  override fun findLastChecked(pageNo: Int, pageSize: Int, status: Status?, search: String?)
     : Mono<Page<AccidentRegisterDto4LastChecked>> {
     return try {
       securityService.verifyHasAnyRole(*READ_ROLES)
-      accidentRegisterDao.findChecked(pageNo, pageSize, status, search)
+      accidentRegisterDao.findLastChecked(pageNo, pageSize, status, search)
     } catch (e: SecurityException) {
       Mono.error(PermissionDeniedException(e.message ?: ""))
     }
