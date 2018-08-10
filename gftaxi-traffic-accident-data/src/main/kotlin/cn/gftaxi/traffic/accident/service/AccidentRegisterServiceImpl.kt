@@ -8,6 +8,7 @@ import cn.gftaxi.traffic.accident.dto.*
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentOperation
 import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType
+import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType.*
 import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType
 import cn.gftaxi.traffic.accident.po.AccidentRegister
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
@@ -118,14 +119,11 @@ class AccidentRegisterServiceImpl @Autowired constructor(
         .flatMap { accidentRegisterDao.toCheck(id) }
         // 5. 如果提交成功则创建一条操作日志
         .map {
-          if (it) accidentOperationDao.create(AccidentOperation(
-            operatorId = 0,        // TODO from context
-            operatorName = "TODO", // TODO from context
-            operateTime = OffsetDateTime.now(),
-            operationType = OperationType.Confirmation,
+          if (it) accidentOperationDao.create(
+            operationType = Confirmation,
             targetType = TargetType.Register,
-            targetId = id
-          )) else Mono.empty()
+            targetId = id)
+          else Mono.empty()
         }
         .then()
     } catch (e: SecurityException) {

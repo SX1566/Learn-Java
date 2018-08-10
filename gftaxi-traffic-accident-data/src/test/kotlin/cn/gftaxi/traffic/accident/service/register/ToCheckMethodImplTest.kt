@@ -3,9 +3,12 @@ package cn.gftaxi.traffic.accident.service.register
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.dao.AccidentOperationDao
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
+import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType.Confirmation
+import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType.Register
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.ROLE_SUBMIT
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.*
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Draft
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Rejected
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import cn.gftaxi.traffic.accident.service.AccidentRegisterServiceImpl
 import com.nhaarman.mockito_kotlin.any
@@ -52,7 +55,8 @@ class ToCheckMethodImplTest @Autowired constructor(
     doNothing().`when`(securityService).verifyHasAnyRole(ROLE_SUBMIT)
     `when`(accidentRegisterDao.getStatus(id)).thenReturn(Mono.just(status))
     `when`(accidentRegisterDao.toCheck(id)).thenReturn(Mono.just(true))
-    `when`(accidentOperationDao.create(any())).thenReturn(Mono.empty())
+    `when`(accidentOperationDao.create(operationType = Confirmation, targetType = Register, targetId = id))
+      .thenReturn(Mono.empty())
 
     // invoke
     val actual = accidentRegisterService.toCheck(id)
@@ -62,12 +66,12 @@ class ToCheckMethodImplTest @Autowired constructor(
     verify(securityService).verifyHasAnyRole(ROLE_SUBMIT)
     verify(accidentRegisterDao).getStatus(id)
     verify(accidentRegisterDao).toCheck(id)
-    verify(accidentOperationDao).create(any())
+    verify(accidentOperationDao).create(operationType = Confirmation, targetType = Register, targetId = id)
   }
 
   @Test
   fun failedByIllegalStatus() {
-    values()
+    Status.values()
       .filter { it != Draft && it != Rejected }
       .forEach { failedByIllegalStatus(it) }
   }
@@ -93,7 +97,7 @@ class ToCheckMethodImplTest @Autowired constructor(
     verify(securityService).verifyHasAnyRole(ROLE_SUBMIT)
     verify(accidentRegisterDao).getStatus(id)
     verify(accidentRegisterDao, times(0)).toCheck(id)
-    verify(accidentOperationDao, times(0)).create(any())
+    verify(accidentOperationDao, times(0)).create(any(), any(), any(), any(), any(), any(), any())
   }
 
   @Test
@@ -113,7 +117,7 @@ class ToCheckMethodImplTest @Autowired constructor(
     verify(securityService).verifyHasAnyRole(ROLE_SUBMIT)
     verify(accidentRegisterDao).getStatus(id)
     verify(accidentRegisterDao, times(0)).toCheck(id)
-    verify(accidentOperationDao, times(0)).create(any())
+    verify(accidentOperationDao, times(0)).create(any(), any(), any(), any(), any(), any(), any())
   }
 
   @Test
@@ -132,6 +136,6 @@ class ToCheckMethodImplTest @Autowired constructor(
     verify(securityService).verifyHasAnyRole(ROLE_SUBMIT)
     verify(accidentRegisterDao, times(0)).getStatus(id)
     verify(accidentRegisterDao, times(0)).toCheck(id)
-    verify(accidentOperationDao, times(0)).create(any())
+    verify(accidentOperationDao, times(0)).create(any(), any(), any(), any(), any(), any(), any())
   }
 }
