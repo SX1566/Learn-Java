@@ -3,12 +3,13 @@ package cn.gftaxi.traffic.accident.service.register
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.dao.AccidentOperationDao
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
-import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType.Confirmation
+import cn.gftaxi.traffic.accident.dto.CheckedInfo
+import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType.Approval
+import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType.Rejection
 import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType.Register
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.ROLE_SUBMIT
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.ROLE_CHECK
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Draft
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Rejected
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.ToCheck
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import cn.gftaxi.traffic.accident.service.AccidentRegisterServiceImpl
 import com.nhaarman.mockito_kotlin.any
@@ -26,25 +27,25 @@ import tech.simter.exception.PermissionDeniedException
 import tech.simter.security.SecurityService
 
 /**
- * Test [AccidentRegisterServiceImpl.toCheck].
+ * Test [AccidentRegisterServiceImpl.checked].
  *
  * @author RJ
  */
 @SpringJUnitConfig(AccidentRegisterServiceImpl::class)
 @MockBean(AccidentRegisterDao::class, AccidentDraftDao::class, AccidentOperationDao::class, SecurityService::class)
-class ToCheckMethodImplTest @Autowired constructor(
+class CheckedMethodImplTest @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService,
   private val accidentRegisterDao: AccidentRegisterDao,
   private val accidentOperationDao: AccidentOperationDao,
   private val securityService: SecurityService
 ) {
   @Test
-  fun successByAllowStatus() {
-    successByAllowStatus(Draft)
-    successByAllowStatus(Rejected)
+  fun success() {
+    success(true)  // 审核通过
+    success(false) // 审核不通过
   }
 
-  private fun successByAllowStatus(status: Status) {
+  private fun success(passed: Boolean) {
     // reset
     Mockito.reset(securityService)
     Mockito.reset(accidentOperationDao)
@@ -52,27 +53,29 @@ class ToCheckMethodImplTest @Autowired constructor(
 
     // mock
     val id = 1
-    doNothing().`when`(securityService).verifyHasAnyRole(ROLE_SUBMIT)
-    `when`(accidentRegisterDao.getStatus(id)).thenReturn(Mono.just(status))
-    `when`(accidentRegisterDao.toCheck(id)).thenReturn(Mono.just(true))
-    `when`(accidentOperationDao.create(operationType = Confirmation, targetType = Register, targetId = id))
+    val dto = CheckedInfo(passed = passed)
+    doNothing().`when`(securityService).verifyHasAnyRole(ROLE_CHECK)
+    `when`(accidentRegisterDao.getStatus(id)).thenReturn(Mono.just(ToCheck))
+    `when`(accidentRegisterDao.checked(id, dto.passed)).thenReturn(Mono.just(true))
+    val operationType = if (passed) Approval else Rejection
+    `when`(accidentOperationDao.create(operationType = operationType, targetType = Register, targetId = id))
       .thenReturn(Mono.empty())
 
     // invoke
-    val actual = accidentRegisterService.toCheck(id)
+    val actual = accidentRegisterService.checked(id, dto)
 
     // verify
     StepVerifier.create(actual).verifyComplete()
-    verify(securityService).verifyHasAnyRole(ROLE_SUBMIT)
+    verify(securityService).verifyHasAnyRole(ROLE_CHECK)
     verify(accidentRegisterDao).getStatus(id)
-    verify(accidentRegisterDao).toCheck(id)
-    verify(accidentOperationDao).create(operationType = Confirmation, targetType = Register, targetId = id)
+    verify(accidentRegisterDao).checked(id, dto.passed)
+    verify(accidentOperationDao).create(operationType = operationType, targetType = Register, targetId = id)
   }
 
   @Test
   fun failedByIllegalStatus() {
     Status.values()
-      .filter { it != Draft && it != Rejected }
+      .filter { it != ToCheck }
       .forEach { failedByIllegalStatus(it) }
   }
 
@@ -84,19 +87,20 @@ class ToCheckMethodImplTest @Autowired constructor(
 
     // mock
     val id = 1
-    doNothing().`when`(securityService).verifyHasAnyRole(ROLE_SUBMIT)
+    val dto = CheckedInfo(passed = true)
+    doNothing().`when`(securityService).verifyHasAnyRole(ROLE_CHECK)
     `when`(accidentRegisterDao.getStatus(id)).thenReturn(Mono.just(status))
 
     // invoke
-    val actual = accidentRegisterService.toCheck(id)
+    val actual = accidentRegisterService.checked(id, dto)
 
     // verify
     StepVerifier.create(actual)
       .expectError(ForbiddenException::class.java)
       .verify()
-    verify(securityService).verifyHasAnyRole(ROLE_SUBMIT)
+    verify(securityService).verifyHasAnyRole(ROLE_CHECK)
     verify(accidentRegisterDao).getStatus(id)
-    verify(accidentRegisterDao, times(0)).toCheck(id)
+    verify(accidentRegisterDao, times(0)).checked(id, dto.passed)
     verify(accidentOperationDao, times(0)).create(any(), any(), any(), any(), any(), any(), any())
   }
 
@@ -104,19 +108,20 @@ class ToCheckMethodImplTest @Autowired constructor(
   fun failedByNotFound() {
     // mock
     val id = 1
-    doNothing().`when`(securityService).verifyHasAnyRole(ROLE_SUBMIT)
+    val dto = CheckedInfo(passed = true)
+    doNothing().`when`(securityService).verifyHasAnyRole(ROLE_CHECK)
     `when`(accidentRegisterDao.getStatus(id)).thenReturn(Mono.empty())
 
     // invoke
-    val actual = accidentRegisterService.toCheck(id)
+    val actual = accidentRegisterService.checked(id, dto)
 
     // verify
     StepVerifier.create(actual)
       .expectError(NotFoundException::class.java)
       .verify()
-    verify(securityService).verifyHasAnyRole(ROLE_SUBMIT)
+    verify(securityService).verifyHasAnyRole(ROLE_CHECK)
     verify(accidentRegisterDao).getStatus(id)
-    verify(accidentRegisterDao, times(0)).toCheck(id)
+    verify(accidentRegisterDao, times(0)).checked(id, dto.passed)
     verify(accidentOperationDao, times(0)).create(any(), any(), any(), any(), any(), any(), any())
   }
 
@@ -124,18 +129,19 @@ class ToCheckMethodImplTest @Autowired constructor(
   fun failedByPermissionDenied() {
     // mock
     val id = 1
-    doThrow(SecurityException()).`when`(securityService).verifyHasAnyRole(ROLE_SUBMIT)
+    val dto = CheckedInfo(passed = true)
+    doThrow(SecurityException()).`when`(securityService).verifyHasAnyRole(ROLE_CHECK)
 
     // invoke
-    val actual = accidentRegisterService.toCheck(id)
+    val actual = accidentRegisterService.checked(id, dto)
 
     // verify
     StepVerifier.create(actual)
       .expectError(PermissionDeniedException::class.java)
       .verify()
-    verify(securityService).verifyHasAnyRole(ROLE_SUBMIT)
+    verify(securityService).verifyHasAnyRole(ROLE_CHECK)
     verify(accidentRegisterDao, times(0)).getStatus(id)
-    verify(accidentRegisterDao, times(0)).toCheck(id)
+    verify(accidentRegisterDao, times(0)).checked(id, dto.passed)
     verify(accidentOperationDao, times(0)).create(any(), any(), any(), any(), any(), any(), any())
   }
 }
