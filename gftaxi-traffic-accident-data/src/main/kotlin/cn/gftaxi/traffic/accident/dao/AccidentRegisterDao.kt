@@ -84,4 +84,18 @@ interface AccidentRegisterDao {
   fun toCheck(id: Int): Mono<Boolean> {
     TODO("not implemented")
   }
+
+  /**
+   * 更新案件为指定的审核结果。
+   *
+   * 为安全起见，更新时要二次判断案件是否处于待审核 [ToCheck] 状态，不是则忽略不更新并返回 Mono.just(false)。
+   *
+   * 1. [passed] 为 true 时更新案件状态为审核通过 [Approved]。
+   * 2. [passed] 为 false 时更新案件状态为审核不通过 [Rejected]。
+   *
+   * 更新成功返回 Mono.just(true)，否则返回 Mono.just(false)。
+   */
+  fun checked(id: Int, passed: Boolean): Mono<Boolean> {
+    TODO("not implemented")
+  }
 }

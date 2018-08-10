@@ -6,12 +6,11 @@ import cn.gftaxi.traffic.accident.dao.AccidentOperationDao
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.dto.*
 import cn.gftaxi.traffic.accident.po.AccidentDraft
-import cn.gftaxi.traffic.accident.po.AccidentOperation
-import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType
 import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType.*
 import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType
 import cn.gftaxi.traffic.accident.po.AccidentRegister
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.ROLE_CHECK
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.ROLE_SUBMIT
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,7 +23,6 @@ import tech.simter.exception.ForbiddenException
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
 import tech.simter.security.SecurityService
-import java.time.OffsetDateTime
 
 /**
  * 事故登记 Service 实现。
@@ -132,6 +130,40 @@ class AccidentRegisterServiceImpl @Autowired constructor(
   }
 
   override fun checked(id: Int, checkedInfo: CheckedInfo): Mono<Void> {
-    TODO("not implemented")
+    return try {
+      securityService.verifyHasAnyRole(ROLE_CHECK)
+      accidentRegisterDao
+        // 1. 获取事故登记信息的状态
+        .getStatus(id)
+        // 2. 如果案件不存在返回 NotFound 错误
+        .transform {
+          when (it) {
+            Mono.empty<Status>() -> Mono.error(NotFoundException("案件不存在：id=$id"))
+            else -> it
+          }
+        }
+        // 3. 如果案件状态不对，返回 Forbidden 错误
+        .map<Status> {
+          if (it != Status.ToCheck)
+            throw ForbiddenException("案件不是待审核状态：id=$id")
+          else it
+        }
+        // 4. 设置案件的审核状态
+        .flatMap { accidentRegisterDao.checked(id, checkedInfo.passed) }
+        // 5. 如果审核成功则创建一条审核日志
+        .map {
+          if (it) accidentOperationDao.create(
+            operationType = if (checkedInfo.passed) Approval else Rejection,
+            targetType = TargetType.Register,
+            targetId = id,
+            comment = checkedInfo.comment,
+            attachmentId = checkedInfo.attachmentId,
+            attachmentName = checkedInfo.attachmentName
+          ) else Mono.empty()
+        }
+        .then()
+    } catch (e: SecurityException) {
+      Mono.error(PermissionDeniedException(e.message ?: ""))
+    }
   }
 }
