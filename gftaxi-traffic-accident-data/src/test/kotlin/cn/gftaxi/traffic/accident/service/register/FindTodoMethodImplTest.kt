@@ -18,9 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 import tech.simter.exception.PermissionDeniedException
-import tech.simter.security.SecurityService
+import tech.simter.reactive.security.ReactiveSecurityService
 import java.time.OffsetDateTime
 
 /**
@@ -29,11 +30,14 @@ import java.time.OffsetDateTime
  * @author RJ
  */
 @SpringJUnitConfig(AccidentRegisterServiceImpl::class)
-@MockBean(AccidentRegisterDao::class, AccidentDraftDao::class, AccidentOperationDao::class, SecurityService::class)
+@MockBean(
+  AccidentRegisterDao::class, AccidentDraftDao::class, AccidentOperationDao::class,
+  ReactiveSecurityService::class
+)
 class FindTodoMethodImplTest @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService,
   private val accidentRegisterDao: AccidentRegisterDao,
-  private val securityService: SecurityService
+  private val securityService: ReactiveSecurityService
 ) {
   private fun randomTodoDto(code: String): AccidentRegisterDto4Todo {
     val now = OffsetDateTime.now()
@@ -66,7 +70,7 @@ class FindTodoMethodImplTest @Autowired constructor(
   @Test
   fun failedByPermissionDenied() {
     // mock
-    doThrow(SecurityException()).`when`(securityService).verifyHasAnyRole(*READ_ROLES)
+    `when`(securityService.verifyHasAnyRole(*READ_ROLES)).thenReturn(Mono.error(PermissionDeniedException()))
 
     // invoke and verify
     StepVerifier.create(accidentRegisterService.findTodo(null))
@@ -85,7 +89,7 @@ class FindTodoMethodImplTest @Autowired constructor(
 
     val expected = listOf(dto.copy(code = "20180101_0${++code}"), dto)
     `when`(accidentRegisterDao.findTodo(status)).thenReturn(Flux.fromIterable(expected))
-    doNothing().`when`(securityService).verifyHasAnyRole(*READ_ROLES)
+    `when`(securityService.verifyHasAnyRole(*READ_ROLES)).thenReturn(Mono.empty())
 
     // invoke
     val actual = accidentRegisterService.findTodo(status)

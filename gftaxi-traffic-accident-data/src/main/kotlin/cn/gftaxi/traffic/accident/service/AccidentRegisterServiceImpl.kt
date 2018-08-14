@@ -47,12 +47,10 @@ class AccidentRegisterServiceImpl @Autowired constructor(
   }
 
   override fun findTodo(status: Status?): Flux<AccidentRegisterDto4Todo> {
-    return try {
-      securityService.verifyHasAnyRole(*READ_ROLES)
-      accidentRegisterDao.findTodo(status)
-    } catch (e: SecurityException) {
-      Flux.error(PermissionDeniedException(e.message ?: ""))
-    }
+    return securityService.verifyHasAnyRole(*READ_ROLES)
+      .then(Mono.just(0).flatMap {
+        accidentRegisterDao.findTodo(status).collectList()
+      }).flatMapIterable { it.asIterable() }
   }
 
   override fun findLastChecked(pageNo: Int, pageSize: Int, status: Status?, search: String?)
