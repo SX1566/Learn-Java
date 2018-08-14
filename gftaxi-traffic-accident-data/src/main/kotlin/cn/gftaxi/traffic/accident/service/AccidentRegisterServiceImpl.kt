@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono
 import tech.simter.exception.ForbiddenException
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
-import tech.simter.security.SecurityService
+import tech.simter.reactive.security.ReactiveSecurityService
 
 /**
  * 事故登记 Service 实现。
@@ -32,7 +32,7 @@ import tech.simter.security.SecurityService
 @Service
 @Transactional
 class AccidentRegisterServiceImpl @Autowired constructor(
-  private val securityService: SecurityService,
+  private val securityService: ReactiveSecurityService,
   private val accidentRegisterDao: AccidentRegisterDao,
   private val accidentDraftDao: AccidentDraftDao,
   private val accidentOperationDao: AccidentOperationDao
@@ -66,28 +66,26 @@ class AccidentRegisterServiceImpl @Autowired constructor(
   }
 
   override fun get(id: Int): Mono<AccidentRegisterDto4Form> {
-    return try {
-      securityService.verifyHasAnyRole(*READ_ROLES)
-      accidentRegisterDao
-        // 1. 获取事故登记信息
-        .get(id)
-        // 2. 如果事故报案信息还没有登记过，则自动根据未曾登记过的事故报案信息生成一条草稿状态的事故登记信息
-        .transform {
-          if (it == Mono.empty<AccidentRegister>()) {
-            accidentDraftDao.get(id)
-              .transform {
-                // convert empty to error
-                if (it == Mono.empty<AccidentDraft>()) Mono.error(NotFoundException("案件不存在：id=$id"))
-                else it
-              }
-              .flatMap { accidentRegisterDao.createBy(it) }
-          } else it
-        }
-        // 3. po 转 dto
-        .map { convert(it) }
-    } catch (e: SecurityException) {
-      Mono.error(PermissionDeniedException(e.message ?: ""))
-    }
+    return securityService.verifyHasAnyRole(*READ_ROLES)
+      .then(Mono.just(0).flatMap {
+        accidentRegisterDao
+          // 1. 获取事故登记信息
+          .get(id)
+          // 2. 如果事故报案信息还没有登记过，则自动根据未曾登记过的事故报案信息生成一条草稿状态的事故登记信息
+          .transform {
+            if (it == Mono.empty<AccidentRegister>()) {
+              accidentDraftDao.get(id)
+                .transform {
+                  // convert empty to error
+                  if (it == Mono.empty<AccidentDraft>()) Mono.error(NotFoundException("案件不存在：id=$id"))
+                  else it
+                }
+                .flatMap { accidentRegisterDao.createBy(it) }
+            } else it
+          }
+          // 3. po 转 dto
+          .map { convert(it) }
+      })
   }
 
   override fun update(id: Int, data: Map<String, Any?>): Mono<Void> {

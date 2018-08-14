@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
-import tech.simter.security.SecurityService
+import tech.simter.reactive.security.ReactiveSecurityService
 
 /**
  * Test [AccidentRegisterServiceImpl.get].
@@ -26,18 +26,21 @@ import tech.simter.security.SecurityService
  * @author RJ
  */
 @SpringJUnitConfig(AccidentRegisterServiceImpl::class)
-@MockBean(AccidentRegisterDao::class, AccidentDraftDao::class, AccidentOperationDao::class, SecurityService::class)
+@MockBean(
+  AccidentRegisterDao::class, AccidentDraftDao::class, AccidentOperationDao::class,
+  ReactiveSecurityService::class
+)
 class GetMethodImplTest @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService,
   private val accidentRegisterDao: AccidentRegisterDao,
   private val accidentDraftDao: AccidentDraftDao,
-  private val securityService: SecurityService
+  private val securityService: ReactiveSecurityService
 ) {
   @Test
   fun draftNotExists() {
     // mock
     val id = 1
-    doNothing().`when`(securityService).verifyHasAnyRole(*READ_ROLES)
+    `when`(securityService.verifyHasAnyRole(*READ_ROLES)).thenReturn(Mono.empty())
     `when`(accidentRegisterDao.get(id)).thenReturn(Mono.empty())
     `when`(accidentDraftDao.get(id)).thenReturn(Mono.empty())
 
@@ -58,7 +61,7 @@ class GetMethodImplTest @Autowired constructor(
   fun draftExistsButNoRegister() {
     // mock
     val id = 1
-    doNothing().`when`(securityService).verifyHasAnyRole(*READ_ROLES)
+    `when`(securityService.verifyHasAnyRole(*READ_ROLES)).thenReturn(Mono.empty())
     val registerPo = POUtils.randomAccidentRegister()
     `when`(accidentRegisterDao.get(id)).thenReturn(Mono.empty())
     `when`(accidentDraftDao.get(id)).thenReturn(Mono.just(registerPo.draft))
@@ -81,7 +84,7 @@ class GetMethodImplTest @Autowired constructor(
   fun registerExists() {
     // mock
     val id = 1
-    doNothing().`when`(securityService).verifyHasAnyRole(*READ_ROLES)
+    `when`(securityService.verifyHasAnyRole(*READ_ROLES)).thenReturn(Mono.empty())
     val registerPo = POUtils.randomAccidentRegister()
     `when`(accidentRegisterDao.get(id)).thenReturn(Mono.just(registerPo))
 
@@ -102,8 +105,9 @@ class GetMethodImplTest @Autowired constructor(
   fun failedByPermissionDenied() {
     // mock
     val id = 1
-    doThrow(SecurityException()).`when`(securityService).verifyHasAnyRole(*READ_ROLES)
+    `when`(securityService.verifyHasAnyRole(*READ_ROLES)).thenReturn(Mono.error(PermissionDeniedException()))
     `when`(accidentRegisterDao.get(id)).thenReturn(Mono.empty())
+    `when`(accidentDraftDao.get(id)).thenReturn(Mono.empty())
 
     // invoke
     val actual = accidentRegisterService.get(id)
