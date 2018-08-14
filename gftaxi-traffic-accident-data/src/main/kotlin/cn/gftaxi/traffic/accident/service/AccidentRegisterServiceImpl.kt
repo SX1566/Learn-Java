@@ -93,38 +93,36 @@ class AccidentRegisterServiceImpl @Autowired constructor(
   }
 
   override fun toCheck(id: Int): Mono<Void> {
-    return try {
-      securityService.verifyHasAnyRole(ROLE_SUBMIT)
-      accidentRegisterDao
-        // 1. 获取事故登记信息的状态
-        .getStatus(id)
-        // 2. 如果案件不存在返回 NotFound 错误
-        .transform {
-          when (it) {
-            Mono.empty<Status>() -> Mono.error(NotFoundException("案件不存在：id=$id"))
-            else -> it
+    return securityService.verifyHasAnyRole(ROLE_SUBMIT)
+      .then(Mono.just(0).flatMap {
+        accidentRegisterDao
+          // 1. 获取事故登记信息的状态
+          .getStatus(id)
+          // 2. 如果案件不存在返回 NotFound 错误
+          .transform {
+            when (it) {
+              Mono.empty<Status>() -> Mono.error(NotFoundException("案件不存在：id=$id"))
+              else -> it
+            }
           }
-        }
-        // 3. 如果案件状态不对，返回 Forbidden 错误
-        .map<Status> {
-          if (it != Status.Draft && it != Status.Rejected)
-            throw ForbiddenException("案件不是待登记或审核不通过状态：id=$id")
-          else it
-        }
-        // 4. 提交案件
-        .flatMap { accidentRegisterDao.toCheck(id) }
-        // 5. 如果提交成功则创建一条操作日志
-        .map {
-          if (it) accidentOperationDao.create(
-            operationType = Confirmation,
-            targetType = TargetType.Register,
-            targetId = id)
-          else Mono.empty()
-        }
-        .then()
-    } catch (e: SecurityException) {
-      Mono.error(PermissionDeniedException(e.message ?: ""))
-    }
+          // 3. 如果案件状态不对，返回 Forbidden 错误
+          .map<Status> {
+            if (it != Status.Draft && it != Status.Rejected)
+              throw ForbiddenException("案件不是待登记或审核不通过状态：id=$id")
+            else it
+          }
+          // 4. 提交案件
+          .flatMap { accidentRegisterDao.toCheck(id) }
+          // 5. 如果提交成功则创建一条操作日志
+          .map {
+            if (it) accidentOperationDao.create(
+              operationType = Confirmation,
+              targetType = TargetType.Register,
+              targetId = id)
+            else Mono.empty()
+          }
+          .then()
+      })
   }
 
   override fun checked(id: Int, checkedInfo: CheckedInfo): Mono<Void> {
