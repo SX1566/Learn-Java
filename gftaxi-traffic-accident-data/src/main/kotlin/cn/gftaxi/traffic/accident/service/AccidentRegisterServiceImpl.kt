@@ -126,40 +126,38 @@ class AccidentRegisterServiceImpl @Autowired constructor(
   }
 
   override fun checked(id: Int, checkedInfo: CheckedInfo): Mono<Void> {
-    return try {
-      securityService.verifyHasAnyRole(ROLE_CHECK)
-      accidentRegisterDao
-        // 1. 获取事故登记信息的状态
-        .getStatus(id)
-        // 2. 如果案件不存在返回 NotFound 错误
-        .transform {
-          when (it) {
-            Mono.empty<Status>() -> Mono.error(NotFoundException("案件不存在：id=$id"))
-            else -> it
+    return securityService.verifyHasAnyRole(ROLE_CHECK)
+      .then(Mono.just(0).flatMap {
+        accidentRegisterDao
+          // 1. 获取事故登记信息的状态
+          .getStatus(id)
+          // 2. 如果案件不存在返回 NotFound 错误
+          .transform {
+            when (it) {
+              Mono.empty<Status>() -> Mono.error(NotFoundException("案件不存在：id=$id"))
+              else -> it
+            }
           }
-        }
-        // 3. 如果案件状态不对，返回 Forbidden 错误
-        .map<Status> {
-          if (it != Status.ToCheck)
-            throw ForbiddenException("案件不是待审核状态：id=$id")
-          else it
-        }
-        // 4. 设置案件的审核状态
-        .flatMap { accidentRegisterDao.checked(id, checkedInfo.passed) }
-        // 5. 如果审核成功则创建一条审核日志
-        .map {
-          if (it) accidentOperationDao.create(
-            operationType = if (checkedInfo.passed) Approval else Rejection,
-            targetType = TargetType.Register,
-            targetId = id,
-            comment = checkedInfo.comment,
-            attachmentId = checkedInfo.attachmentId,
-            attachmentName = checkedInfo.attachmentName
-          ) else Mono.empty()
-        }
-        .then()
-    } catch (e: SecurityException) {
-      Mono.error(PermissionDeniedException(e.message ?: ""))
-    }
+          // 3. 如果案件状态不对，返回 Forbidden 错误
+          .map<Status> {
+            if (it != Status.ToCheck)
+              throw ForbiddenException("案件不是待审核状态：id=$id")
+            else it
+          }
+          // 4. 设置案件的审核状态
+          .flatMap { accidentRegisterDao.checked(id, checkedInfo.passed) }
+          // 5. 如果审核成功则创建一条审核日志
+          .map {
+            if (it) accidentOperationDao.create(
+              operationType = if (checkedInfo.passed) Approval else Rejection,
+              targetType = TargetType.Register,
+              targetId = id,
+              comment = checkedInfo.comment,
+              attachmentId = checkedInfo.attachmentId,
+              attachmentName = checkedInfo.attachmentName
+            ) else Mono.empty()
+          }
+          .then()
+      })
   }
 }
