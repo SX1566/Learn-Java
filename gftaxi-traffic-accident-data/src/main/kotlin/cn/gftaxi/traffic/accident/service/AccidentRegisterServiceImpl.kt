@@ -21,7 +21,6 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import tech.simter.exception.ForbiddenException
 import tech.simter.exception.NotFoundException
-import tech.simter.exception.PermissionDeniedException
 import tech.simter.reactive.security.ReactiveSecurityService
 
 /**
@@ -38,12 +37,10 @@ class AccidentRegisterServiceImpl @Autowired constructor(
   private val accidentOperationDao: AccidentOperationDao
 ) : AccidentRegisterService {
   override fun statSummary(): Flux<AccidentRegisterDto4StatSummary> {
-    return try {
-      securityService.verifyHasAnyRole(*READ_ROLES)
-      accidentRegisterDao.statSummary()
-    } catch (e: SecurityException) {
-      Flux.error(PermissionDeniedException(e.message ?: ""))
-    }
+    return securityService.verifyHasAnyRole(*READ_ROLES)
+      .then(Mono.just(0).flatMap {
+        accidentRegisterDao.statSummary().collectList()
+      }).flatMapIterable { it.asIterable() }
   }
 
   override fun findTodo(status: Status?): Flux<AccidentRegisterDto4Todo> {
