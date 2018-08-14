@@ -18,8 +18,8 @@
     <revision>0.2-SNAPSHOT</revision>
     <traffic-accident.version>${revision}</traffic-accident.version>
     <simter.version>0.6-SNAPSHOT</simter.version>
-    <simter-category.version>0.1.0</simter-category.version>
     <simter-kv.version>0.3-SNAPSHOT</simter-kv.version>
+    <simter-category.version>0.2-SNAPSHOT</simter-category.version>
   </properties>
   <modules>
     <module>gftaxi-traffic-accident-dependencies</module>
