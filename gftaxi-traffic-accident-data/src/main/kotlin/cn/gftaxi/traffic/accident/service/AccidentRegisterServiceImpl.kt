@@ -57,12 +57,10 @@ class AccidentRegisterServiceImpl @Autowired constructor(
 
   override fun findLastChecked(pageNo: Int, pageSize: Int, status: Status?, search: String?)
     : Mono<Page<AccidentRegisterDto4LastChecked>> {
-    return try {
-      securityService.verifyHasAnyRole(*READ_ROLES)
-      accidentRegisterDao.findLastChecked(pageNo, pageSize, status, search)
-    } catch (e: SecurityException) {
-      Mono.error(PermissionDeniedException(e.message ?: ""))
-    }
+    return securityService.verifyHasAnyRole(*READ_ROLES)
+      .then(Mono.just(0).flatMap {
+        accidentRegisterDao.findLastChecked(pageNo, pageSize, status, search)
+      })
   }
 
   override fun get(id: Int): Mono<AccidentRegisterDto4Form> {
