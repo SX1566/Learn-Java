@@ -24,7 +24,7 @@ import reactor.test.StepVerifier
 import tech.simter.exception.ForbiddenException
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
-import tech.simter.security.SecurityService
+import tech.simter.reactive.security.ReactiveSecurityService
 
 /**
  * Test [AccidentRegisterServiceImpl.checked].
@@ -32,12 +32,15 @@ import tech.simter.security.SecurityService
  * @author RJ
  */
 @SpringJUnitConfig(AccidentRegisterServiceImpl::class)
-@MockBean(AccidentRegisterDao::class, AccidentDraftDao::class, AccidentOperationDao::class, SecurityService::class)
+@MockBean(
+  AccidentRegisterDao::class, AccidentDraftDao::class, AccidentOperationDao::class,
+  ReactiveSecurityService::class
+)
 class CheckedMethodImplTest @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService,
   private val accidentRegisterDao: AccidentRegisterDao,
   private val accidentOperationDao: AccidentOperationDao,
-  private val securityService: SecurityService
+  private val securityService: ReactiveSecurityService
 ) {
   @Test
   fun success() {
@@ -54,7 +57,7 @@ class CheckedMethodImplTest @Autowired constructor(
     // mock
     val id = 1
     val dto = CheckedInfo(passed = passed)
-    doNothing().`when`(securityService).verifyHasAnyRole(ROLE_CHECK)
+    `when`(securityService.verifyHasAnyRole(ROLE_CHECK)).thenReturn(Mono.empty())
     `when`(accidentRegisterDao.getStatus(id)).thenReturn(Mono.just(ToCheck))
     `when`(accidentRegisterDao.checked(id, dto.passed)).thenReturn(Mono.just(true))
     val operationType = if (passed) Approval else Rejection
@@ -88,7 +91,7 @@ class CheckedMethodImplTest @Autowired constructor(
     // mock
     val id = 1
     val dto = CheckedInfo(passed = true)
-    doNothing().`when`(securityService).verifyHasAnyRole(ROLE_CHECK)
+    `when`(securityService.verifyHasAnyRole(ROLE_CHECK)).thenReturn(Mono.empty())
     `when`(accidentRegisterDao.getStatus(id)).thenReturn(Mono.just(status))
 
     // invoke
@@ -109,7 +112,7 @@ class CheckedMethodImplTest @Autowired constructor(
     // mock
     val id = 1
     val dto = CheckedInfo(passed = true)
-    doNothing().`when`(securityService).verifyHasAnyRole(ROLE_CHECK)
+    `when`(securityService.verifyHasAnyRole(ROLE_CHECK)).thenReturn(Mono.empty())
     `when`(accidentRegisterDao.getStatus(id)).thenReturn(Mono.empty())
 
     // invoke
@@ -130,7 +133,7 @@ class CheckedMethodImplTest @Autowired constructor(
     // mock
     val id = 1
     val dto = CheckedInfo(passed = true)
-    doThrow(SecurityException()).`when`(securityService).verifyHasAnyRole(ROLE_CHECK)
+    `when`(securityService.verifyHasAnyRole(ROLE_CHECK)).thenReturn(Mono.error(PermissionDeniedException()))
 
     // invoke
     val actual = accidentRegisterService.checked(id, dto)

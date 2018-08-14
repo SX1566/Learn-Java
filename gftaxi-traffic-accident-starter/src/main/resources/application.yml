@@ -1,5 +1,10 @@
-simter.rest.context-path.kv: /kv
-gftaxi.rest.context-path.traffic-accident: /accident
+simter:
+  jwt:
+    secret-key: @simter.jwt.secret-key@
+    require-authorized: @simter.jwt.require-authorized@
+  rest.context-path.kv: /kv
+gftaxi:
+  rest.context-path.traffic-accident: /accident
 db:
   platform: @db.platform@
   init-mode: @db.init-mode@

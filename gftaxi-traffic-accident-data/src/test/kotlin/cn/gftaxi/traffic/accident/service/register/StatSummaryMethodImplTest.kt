@@ -13,9 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 import tech.simter.exception.PermissionDeniedException
-import tech.simter.security.SecurityService
+import tech.simter.reactive.security.ReactiveSecurityService
 import java.util.*
 
 fun random(start: Int, end: Int) = Random().nextInt(end + 1 - start) + start
@@ -26,11 +27,14 @@ fun random(start: Int, end: Int) = Random().nextInt(end + 1 - start) + start
  * @author RJ
  */
 @SpringJUnitConfig(AccidentRegisterServiceImpl::class)
-@MockBean(AccidentRegisterDao::class, AccidentDraftDao::class, AccidentOperationDao::class, SecurityService::class)
+@MockBean(
+  AccidentRegisterDao::class, AccidentDraftDao::class, AccidentOperationDao::class,
+  ReactiveSecurityService::class
+)
 class StatSummaryMethodImplTest @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService,
   private val accidentRegisterDao: AccidentRegisterDao,
-  private val securityService: SecurityService
+  private val securityService: ReactiveSecurityService
 ) {
   @Test
   fun success() {
@@ -46,7 +50,7 @@ class StatSummaryMethodImplTest @Autowired constructor(
     )
     val expected = listOf(dto, dto.copy(scope = "上月"), dto.copy(scope = "本年"))
     `when`(accidentRegisterDao.statSummary()).thenReturn(Flux.fromIterable(expected))
-    doNothing().`when`(securityService).verifyHasAnyRole(*READ_ROLES)
+    `when`(securityService.verifyHasAnyRole(*READ_ROLES)).thenReturn(Mono.empty())
 
     // invoke
     val actual = accidentRegisterService.statSummary()
@@ -62,7 +66,7 @@ class StatSummaryMethodImplTest @Autowired constructor(
   @Test
   fun failedByPermissionDenied() {
     // mock
-    doThrow(SecurityException()).`when`(securityService).verifyHasAnyRole(*READ_ROLES)
+    `when`(securityService.verifyHasAnyRole(*READ_ROLES)).thenReturn(Mono.error(PermissionDeniedException()))
 
     // invoke and verify
     StepVerifier.create(accidentRegisterService.statSummary())

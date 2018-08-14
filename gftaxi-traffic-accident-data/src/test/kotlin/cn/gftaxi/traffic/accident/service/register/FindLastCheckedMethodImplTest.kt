@@ -22,7 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 import tech.simter.exception.PermissionDeniedException
-import tech.simter.security.SecurityService
+import tech.simter.reactive.security.ReactiveSecurityService
 import java.time.OffsetDateTime
 
 /**
@@ -31,11 +31,14 @@ import java.time.OffsetDateTime
  * @author RJ
  */
 @SpringJUnitConfig(AccidentRegisterServiceImpl::class)
-@MockBean(AccidentRegisterDao::class, AccidentDraftDao::class, AccidentOperationDao::class, SecurityService::class)
+@MockBean(
+  AccidentRegisterDao::class, AccidentDraftDao::class, AccidentOperationDao::class,
+  ReactiveSecurityService::class
+)
 class AccidentRegisterServiceImplTest @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService,
   private val accidentRegisterDao: AccidentRegisterDao,
-  private val securityService: SecurityService
+  private val securityService: ReactiveSecurityService
 ) {
   private fun randomCheckedDto(code: String): AccidentRegisterDto4LastChecked {
     val now = OffsetDateTime.now()
@@ -63,7 +66,7 @@ class AccidentRegisterServiceImplTest @Autowired constructor(
   @Test
   fun failedByPermissionDenied() {
     // mock
-    doThrow(SecurityException()).`when`(securityService).verifyHasAnyRole(*READ_ROLES)
+    `when`(securityService.verifyHasAnyRole(*READ_ROLES)).thenReturn(Mono.error(PermissionDeniedException()))
 
     // invoke and verify
     StepVerifier.create(accidentRegisterService.findLastChecked(1, 25, null, null))
@@ -87,7 +90,7 @@ class AccidentRegisterServiceImplTest @Autowired constructor(
     val expected = PageImpl(expectedRows, PageRequest.of(pageNo, pageSize), expectedRows.size.toLong())
     `when`(accidentRegisterDao.findLastChecked(pageNo, pageSize, status, null))
       .thenReturn(Mono.just(expected))
-    doNothing().`when`(securityService).verifyHasAnyRole(*READ_ROLES)
+    `when`(securityService.verifyHasAnyRole(*READ_ROLES)).thenReturn(Mono.empty())
 
     // invoke
     val actual = accidentRegisterService.findLastChecked(pageNo, pageSize, status, null)

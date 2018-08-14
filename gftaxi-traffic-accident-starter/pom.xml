@@ -28,6 +28,9 @@
     <bc.db.name>test_bcsystem</bc.db.name>
     <bc.db.username>test</bc.db.username>
     <bc.db.password>password</bc.db.password>
+    <!-- jwt -->
+    <simter.jwt.secret-key>simter-demo</simter.jwt.secret-key>
+    <simter.jwt.require-authorized>true</simter.jwt.require-authorized>
   </properties>
   <dependencies>
     <dependency>
@@ -41,6 +44,10 @@
     <dependency>
       <groupId>tech.simter</groupId>
       <artifactId>simter-kv-rest-webflux</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>tech.simter.reactive</groupId>
+      <artifactId>simter-reactive-web</artifactId>
     </dependency>
     <dependency>
       <groupId>cn.gftaxi.traffic.accident</groupId>
