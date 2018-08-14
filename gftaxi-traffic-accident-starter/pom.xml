@@ -43,6 +43,10 @@
       <artifactId>simter-kv-rest-webflux</artifactId>
     </dependency>
     <dependency>
+      <groupId>tech.simter.reactive</groupId>
+      <artifactId>simter-reactive-web</artifactId>
+    </dependency>
+    <dependency>
       <groupId>cn.gftaxi.traffic.accident</groupId>
       <artifactId>gftaxi-traffic-accident-data</artifactId>
     </dependency>
