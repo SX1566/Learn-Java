@@ -142,8 +142,7 @@ class UpdateMethodImplTest @Autowired constructor(
     }
 
     // verify: po 的相关属性应该更新了
-    val ql = "select a from AccidentDraft a where id = :id"
-    val updatedPo = em.createQuery(ql, AccidentDraft::class.java).setParameter("id", po.id).singleResult
+    val updatedPo = em.find(AccidentDraft::class.java, po.id)
     assertNotNull(updatedPo)
     modifyDto.changedProperties.forEach { key, value ->
       assertEquals(value, AccidentDraft::class.memberProperties.first { it.name == key }.get(updatedPo))
