@@ -1,6 +1,7 @@
 package cn.gftaxi.traffic.accident.dao.jpa
 
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
+import cn.gftaxi.traffic.accident.dao.jpa.repository.AccidentRegisterJpaRepository
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4LastChecked
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
@@ -35,7 +36,8 @@ import javax.persistence.PersistenceContext
  */
 @Component
 class AccidentRegisterDaoImpl @Autowired constructor(
-  @PersistenceContext private val em: EntityManager
+  @PersistenceContext private val em: EntityManager,
+  private val repository: AccidentRegisterJpaRepository
 ) : AccidentRegisterDao {
   private val logger = LoggerFactory.getLogger(AccidentRegisterDaoImpl::class.java)
   fun buildStatSummaryRowSqlByHappenTimeRange(scope: String, from: Int, to: Int): String {
@@ -224,7 +226,8 @@ class AccidentRegisterDaoImpl @Autowired constructor(
   }
 
   override fun get(id: Int): Mono<AccidentRegister> {
-    TODO("not implemented")
+    val po = repository.findById(id)
+    return if (po.isPresent) Mono.just(po.get()) else Mono.empty()
   }
 
   override fun createBy(accidentDraft: AccidentDraft): Mono<AccidentRegister> {
