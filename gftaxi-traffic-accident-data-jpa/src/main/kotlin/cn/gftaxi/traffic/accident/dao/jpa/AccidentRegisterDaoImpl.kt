@@ -293,6 +293,11 @@ class AccidentRegisterDaoImpl @Autowired constructor(
   }
 
   override fun checked(id: Int, passed: Boolean): Mono<Boolean> {
-    TODO("not implemented")
+    val query = em.createQuery(
+      "update AccidentRegister set status = :toStatus where id = :id and status = :limitedStatus"
+    ).setParameter("id", id)
+      .setParameter("toStatus", if (passed) Approved else Rejected)
+      .setParameter("limitedStatus", ToCheck)
+    return if (query.executeUpdate() > 0) Mono.just(true) else Mono.just(false)
   }
 }
