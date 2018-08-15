@@ -26,6 +26,7 @@ import java.time.Period
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import javax.persistence.EntityManager
+import javax.persistence.NoResultException
 import javax.persistence.PersistenceContext
 
 /**
@@ -235,6 +236,13 @@ class AccidentRegisterDaoImpl @Autowired constructor(
   }
 
   override fun getStatus(id: Int): Mono<Status> {
-    TODO("not implemented")
+    return try {
+      Mono.just(em.createQuery("select status from AccidentRegister where id = :id", Status::class.java)
+        .setParameter("id", id)
+        .singleResult)
+    } catch (e: Exception) {
+      if (e is NoResultException || e.cause is NoResultException) Mono.empty()
+      else Mono.error(e)
+    }
   }
 }
