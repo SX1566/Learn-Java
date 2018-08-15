@@ -80,7 +80,8 @@ object POUtils {
     draft: AccidentDraft,
     status: AccidentRegister.Status,
     driverType: DriverType,
-    overdue: Boolean? = null
+    overdue: Boolean? = null,
+    registerTime: OffsetDateTime? = null
   ): AccidentRegister {
     return AccidentRegister(
       draft = draft,
@@ -99,11 +100,11 @@ object POUtils {
       gpsSpeed = 30,
       overdue = overdue,
       // 超过 24 小时为逾期登记
-      registerTime = when {
+      registerTime = (registerTime ?: when {
         overdue == null -> null
         overdue -> draft.happenTime.plusHours(24 + 2)
         else -> draft.happenTime.plusMinutes(2)
-      },
+      }),
 
       hitForm = draft.hitForm,
       hitType = draft.hitType

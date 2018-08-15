@@ -44,11 +44,7 @@ class CreateMethodImplTest @Autowired constructor(
 
     // verify
     StepVerifier.create(actual).expectNext(po).verifyComplete()
-    assertEquals(po,
-      em.createQuery("select a from AccidentDraft a where id = :id", AccidentDraft::class.java)
-        .setParameter("id", po.id)
-        .singleResult
-    )
+    assertEquals(po, em.find(AccidentDraft::class.java, po.id))
   }
 
   @Test
