@@ -40,10 +40,10 @@ class AccidentRegisterServiceImpl @Autowired constructor(
   private val accidentDraftDao: AccidentDraftDao,
   private val accidentOperationDao: AccidentOperationDao
 ) : AccidentRegisterService {
-  override fun statSummary(): Flux<AccidentRegisterDto4StatSummary> {
+  override fun statSummary(scopeType: ScopeType, from: Int?, to: Int?): Flux<AccidentRegisterDto4StatSummary> {
     return securityService.verifyHasAnyRole(*READ_ROLES)
       .then(Mono.just(0).flatMap {
-        accidentRegisterDao.statSummary().collectList()
+        accidentRegisterDao.statSummary(scopeType,from,to).collectList()
       }).flatMapIterable { it.asIterable() }
   }
 

@@ -13,6 +13,7 @@ import reactor.core.publisher.Mono
 import tech.simter.exception.ForbiddenException
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
+import java.time.LocalDate
 
 /**
  * 事故登记 Service。
@@ -21,11 +22,16 @@ import tech.simter.exception.PermissionDeniedException
  */
 interface AccidentRegisterService {
   /**
-   * 按本月、上月、本年的顺序获取事故登记汇总统计信息。
+   * 按制定统计范围、开始点和结束点获取事故登记汇总统计信息。
    *
+   * 返回结果按"范围"的逆序排序
+   *
+   * @param scopeType 统计范围
+   * @param from      统计范围开始点
+   * @param to        统计范围结束点
    * @throws [PermissionDeniedException] 不是 [READ_ROLES] 中的任一角色之一
    */
-  fun statSummary(): Flux<AccidentRegisterDto4StatSummary>
+  fun statSummary(scopeType: ScopeType, from: Int?, to: Int?): Flux<AccidentRegisterDto4StatSummary>
 
   /**
    * 获取待登记、待审核案件信息。
