@@ -4,9 +4,6 @@ import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.dao.AccidentOperationDao
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.dto.CheckedInfo
-import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType.Approval
-import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType.Rejection
-import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType.Register
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.ROLE_CHECK
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.ToCheck
@@ -24,7 +21,9 @@ import reactor.test.StepVerifier
 import tech.simter.exception.ForbiddenException
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
+import tech.simter.reactive.context.SystemContext.User
 import tech.simter.reactive.security.ReactiveSecurityService
+import java.util.*
 
 /**
  * Test [AccidentRegisterServiceImpl.checked].
@@ -57,12 +56,12 @@ class CheckedMethodImplTest @Autowired constructor(
     // mock
     val id = 1
     val dto = CheckedInfo(passed = passed)
+    val user = Optional.of(User(id = 0, account = "tester", name = "Tester"))
     `when`(securityService.verifyHasAnyRole(ROLE_CHECK)).thenReturn(Mono.empty())
+    `when`(securityService.getAuthenticatedUser()).thenReturn(Mono.just(user))
     `when`(accidentRegisterDao.getStatus(id)).thenReturn(Mono.just(ToCheck))
     `when`(accidentRegisterDao.checked(id, dto.passed)).thenReturn(Mono.just(true))
-    val operationType = if (passed) Approval else Rejection
-    `when`(accidentOperationDao.create(operationType = operationType, targetType = Register, targetId = id))
-      .thenReturn(Mono.empty())
+    `when`(accidentOperationDao.create(any())).thenReturn(Mono.empty())
 
     // invoke
     val actual = accidentRegisterService.checked(id, dto)
@@ -70,9 +69,10 @@ class CheckedMethodImplTest @Autowired constructor(
     // verify
     StepVerifier.create(actual).verifyComplete()
     verify(securityService).verifyHasAnyRole(ROLE_CHECK)
+    verify(securityService).getAuthenticatedUser()
     verify(accidentRegisterDao).getStatus(id)
     verify(accidentRegisterDao).checked(id, dto.passed)
-    verify(accidentOperationDao).create(operationType = operationType, targetType = Register, targetId = id)
+    verify(accidentOperationDao).create(any())
   }
 
   @Test
@@ -104,7 +104,7 @@ class CheckedMethodImplTest @Autowired constructor(
     verify(securityService).verifyHasAnyRole(ROLE_CHECK)
     verify(accidentRegisterDao).getStatus(id)
     verify(accidentRegisterDao, times(0)).checked(id, dto.passed)
-    verify(accidentOperationDao, times(0)).create(any(), any(), any(), any(), any(), any(), any())
+    verify(accidentOperationDao, times(0)).create(any())
   }
 
   @Test
@@ -125,7 +125,7 @@ class CheckedMethodImplTest @Autowired constructor(
     verify(securityService).verifyHasAnyRole(ROLE_CHECK)
     verify(accidentRegisterDao).getStatus(id)
     verify(accidentRegisterDao, times(0)).checked(id, dto.passed)
-    verify(accidentOperationDao, times(0)).create(any(), any(), any(), any(), any(), any(), any())
+    verify(accidentOperationDao, times(0)).create(any())
   }
 
   @Test
@@ -145,6 +145,6 @@ class CheckedMethodImplTest @Autowired constructor(
     verify(securityService).verifyHasAnyRole(ROLE_CHECK)
     verify(accidentRegisterDao, times(0)).getStatus(id)
     verify(accidentRegisterDao, times(0)).checked(id, dto.passed)
-    verify(accidentOperationDao, times(0)).create(any(), any(), any(), any(), any(), any(), any())
+    verify(accidentOperationDao, times(0)).create(any())
   }
 }

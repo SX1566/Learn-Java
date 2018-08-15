@@ -2,8 +2,6 @@ package cn.gftaxi.traffic.accident.dao.jpa
 
 import cn.gftaxi.traffic.accident.dao.AccidentOperationDao
 import cn.gftaxi.traffic.accident.po.AccidentOperation
-import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType
-import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
@@ -20,15 +18,7 @@ class AccidentOperationDaoImpl @Autowired constructor(
   @PersistenceContext private val em: EntityManager,
   private val repository: AccidentDraftJpaRepository
 ) : AccidentOperationDao {
-  override fun create(
-    operationType: OperationType,
-    targetType: TargetType,
-    targetId: Int,
-    tag: Int,
-    comment: String?,
-    attachmentId: String?,
-    attachmentName: String?
-  ): Mono<AccidentOperation> {
+  override fun create(po: AccidentOperation): Mono<AccidentOperation> {
     TODO("not implemented")
   }
 }

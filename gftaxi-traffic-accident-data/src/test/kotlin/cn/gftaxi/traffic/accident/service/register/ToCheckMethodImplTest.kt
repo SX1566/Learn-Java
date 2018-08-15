@@ -3,8 +3,6 @@ package cn.gftaxi.traffic.accident.service.register
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.dao.AccidentOperationDao
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
-import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType.Confirmation
-import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType.Register
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.ROLE_SUBMIT
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Draft
@@ -23,7 +21,9 @@ import reactor.test.StepVerifier
 import tech.simter.exception.ForbiddenException
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
+import tech.simter.reactive.context.SystemContext.User
 import tech.simter.reactive.security.ReactiveSecurityService
+import java.util.*
 
 /**
  * Test [AccidentRegisterServiceImpl.toCheck].
@@ -55,11 +55,12 @@ class ToCheckMethodImplTest @Autowired constructor(
 
     // mock
     val id = 1
+    val user = Optional.of(User(id = 0, account = "tester", name = "Tester"))
     `when`(securityService.verifyHasAnyRole(ROLE_SUBMIT)).thenReturn(Mono.empty())
+    `when`(securityService.getAuthenticatedUser()).thenReturn(Mono.just(user))
     `when`(accidentRegisterDao.getStatus(id)).thenReturn(Mono.just(status))
     `when`(accidentRegisterDao.toCheck(id)).thenReturn(Mono.just(true))
-    `when`(accidentOperationDao.create(operationType = Confirmation, targetType = Register, targetId = id))
-      .thenReturn(Mono.empty())
+    `when`(accidentOperationDao.create(any())).thenReturn(Mono.empty())
 
     // invoke
     val actual = accidentRegisterService.toCheck(id)
@@ -67,9 +68,10 @@ class ToCheckMethodImplTest @Autowired constructor(
     // verify
     StepVerifier.create(actual).verifyComplete()
     verify(securityService).verifyHasAnyRole(ROLE_SUBMIT)
+    verify(securityService).getAuthenticatedUser()
     verify(accidentRegisterDao).getStatus(id)
     verify(accidentRegisterDao).toCheck(id)
-    verify(accidentOperationDao).create(operationType = Confirmation, targetType = Register, targetId = id)
+    verify(accidentOperationDao).create(any())
   }
 
   @Test
@@ -100,7 +102,7 @@ class ToCheckMethodImplTest @Autowired constructor(
     verify(securityService).verifyHasAnyRole(ROLE_SUBMIT)
     verify(accidentRegisterDao).getStatus(id)
     verify(accidentRegisterDao, times(0)).toCheck(id)
-    verify(accidentOperationDao, times(0)).create(any(), any(), any(), any(), any(), any(), any())
+    verify(accidentOperationDao, times(0)).create(any())
   }
 
   @Test
@@ -120,7 +122,7 @@ class ToCheckMethodImplTest @Autowired constructor(
     verify(securityService).verifyHasAnyRole(ROLE_SUBMIT)
     verify(accidentRegisterDao).getStatus(id)
     verify(accidentRegisterDao, times(0)).toCheck(id)
-    verify(accidentOperationDao, times(0)).create(any(), any(), any(), any(), any(), any(), any())
+    verify(accidentOperationDao, times(0)).create(any())
   }
 
   @Test
@@ -139,6 +141,6 @@ class ToCheckMethodImplTest @Autowired constructor(
     verify(securityService).verifyHasAnyRole(ROLE_SUBMIT)
     verify(accidentRegisterDao, times(0)).getStatus(id)
     verify(accidentRegisterDao, times(0)).toCheck(id)
-    verify(accidentOperationDao, times(0)).create(any(), any(), any(), any(), any(), any(), any())
+    verify(accidentOperationDao, times(0)).create(any())
   }
 }

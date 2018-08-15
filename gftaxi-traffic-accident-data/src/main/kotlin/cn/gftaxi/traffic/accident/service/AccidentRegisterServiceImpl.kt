@@ -6,6 +6,7 @@ import cn.gftaxi.traffic.accident.dao.AccidentOperationDao
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.dto.*
 import cn.gftaxi.traffic.accident.po.AccidentDraft
+import cn.gftaxi.traffic.accident.po.AccidentOperation
 import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType.*
 import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType
 import cn.gftaxi.traffic.accident.po.AccidentRegister
@@ -21,7 +22,10 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import tech.simter.exception.ForbiddenException
 import tech.simter.exception.NotFoundException
+import tech.simter.reactive.context.SystemContext.User
 import tech.simter.reactive.security.ReactiveSecurityService
+import java.time.OffsetDateTime
+import java.util.*
 
 /**
  * 事故登记 Service 实现。
@@ -107,14 +111,22 @@ class AccidentRegisterServiceImpl @Autowired constructor(
           // 4. 提交案件
           .flatMap { accidentRegisterDao.toCheck(id) }
           // 5. 如果提交成功则创建一条操作日志
-          .map {
-            if (it) accidentOperationDao.create(
-              operationType = Confirmation,
-              targetType = TargetType.Register,
-              targetId = id)
-            else Mono.empty()
-          }
-          .then()
+          .flatMap {
+            if (it) {
+              securityService.getAuthenticatedUser()
+                .map(Optional<User>::get)
+                .flatMap {
+                  accidentOperationDao.create(AccidentOperation(
+                    operationType = Confirmation,
+                    targetType = TargetType.Register,
+                    targetId = id,
+                    operateTime = OffsetDateTime.now(),
+                    operatorId = it.id,
+                    operatorName = it.name
+                  ))
+                }
+            } else Mono.empty()
+          }.then()
       })
   }
 
@@ -140,17 +152,25 @@ class AccidentRegisterServiceImpl @Autowired constructor(
           // 4. 设置案件的审核状态
           .flatMap { accidentRegisterDao.checked(id, checkedInfo.passed) }
           // 5. 如果审核成功则创建一条审核日志
-          .map {
-            if (it) accidentOperationDao.create(
-              operationType = if (checkedInfo.passed) Approval else Rejection,
-              targetType = TargetType.Register,
-              targetId = id,
-              comment = checkedInfo.comment,
-              attachmentId = checkedInfo.attachmentId,
-              attachmentName = checkedInfo.attachmentName
-            ) else Mono.empty()
-          }
-          .then()
+          .flatMap {
+            if (it) {
+              securityService.getAuthenticatedUser()
+                .map(Optional<User>::get)
+                .flatMap {
+                  accidentOperationDao.create(AccidentOperation(
+                    operationType = if (checkedInfo.passed) Approval else Rejection,
+                    targetType = TargetType.Register,
+                    targetId = id,
+                    comment = checkedInfo.comment,
+                    attachmentId = checkedInfo.attachmentId,
+                    attachmentName = checkedInfo.attachmentName,
+                    operateTime = OffsetDateTime.now(),
+                    operatorId = it.id,
+                    operatorName = it.name
+                  ))
+                }
+            } else Mono.empty()
+          }.then()
       })
   }
 }
