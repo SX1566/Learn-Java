@@ -19,7 +19,7 @@ interface AccidentDraftService {
   /**
    * 获取指定条件的报案分页信息。
    *
-   * 返回的列表信息按报案时间逆序排序，模糊搜索事故编号、车号、司机。
+   * 返回的列表信息按按状态正序+事发时间逆序排序，模糊搜索事故编号、车号、司机。
    *
    * @param[status] 案件状态，为空代表不限定
    * @param[fuzzySearch] 模糊搜索的条件值，为空则忽略
@@ -28,7 +28,7 @@ interface AccidentDraftService {
   fun find(pageNo: Int, pageSize: Int, status: Status?, fuzzySearch: String?): Mono<Page<AccidentDraft>>
 
   /**
-   * 获取所有待登记的报案信息，按报案时间逆序排序。
+   * 获取所有待登记的报案信息，按事发时间逆序排序。
    *
    * @throws [SecurityException] 无查询报案信息权限
    */
