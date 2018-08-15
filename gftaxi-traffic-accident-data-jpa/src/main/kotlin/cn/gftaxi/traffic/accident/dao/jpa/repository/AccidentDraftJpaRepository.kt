@@ -1,4 +1,4 @@
-package cn.gftaxi.traffic.accident.dao.jpa
+package cn.gftaxi.traffic.accident.dao.jpa.repository
 
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import org.springframework.data.jpa.repository.JpaRepository
