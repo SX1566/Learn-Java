@@ -25,7 +25,7 @@ interface AccidentDraftDao {
   fun find(pageNo: Int, pageSize: Int, status: Status?, fuzzySearch: String?): Mono<Page<AccidentDraft>>
 
   /**
-   * 获取所有待登记的报案信息，按报案时间逆序排序。
+   * 获取所有待登记的报案信息，按事发时间逆序排序。
    */
   fun findTodo(): Flux<AccidentDraft>
 

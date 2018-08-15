@@ -74,24 +74,4 @@ class AccidentDraftDaoImplTest @Autowired constructor(
       }
       .verifyComplete()
   }
-
-  @Test
-  fun findTodo() {
-    // mock
-    val now = OffsetDateTime.now()
-    val po1 = AccidentDraft(null, "20180713_01", Status.Done, "car1", "a", now, now, "", "", "", true, "", "", "", "")
-    val po2 = AccidentDraft(null, "20180713_02", Status.Todo, "car2", "a", now, now.plusHours(1), "", "", "", true, "", "", "", "")
-    val po3 = AccidentDraft(null, "20180713_03", Status.Todo, "car3", "a", now, now.plusHours(2), "", "", "", true, "", "", "", "")
-    em.persist(po1); em.persist(po2); em.persist(po3)
-    em.flush(); em.clear()
-
-    // invoke
-    val actual = dao.findTodo()
-
-    // verify
-    StepVerifier.create(actual)
-      .expectNext(po3)
-      .expectNext(po2)
-      .verifyComplete()
-  }
 }

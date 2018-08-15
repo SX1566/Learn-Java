@@ -64,7 +64,7 @@ class AccidentDraftDaoImpl @Autowired constructor(
 
   override fun findTodo(): Flux<AccidentDraft> {
     return Flux.fromIterable(
-      em.createQuery("select a from AccidentDraft a where status = :todoStatus order by reportTime desc", AccidentDraft::class.java)
+      em.createQuery("select a from AccidentDraft a where status = :todoStatus order by happenTime desc", AccidentDraft::class.java)
         .setParameter("todoStatus", AccidentDraft.Status.Todo)
         .resultList
     )
