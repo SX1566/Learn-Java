@@ -4,6 +4,7 @@ import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4LastChecked
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
+import cn.gftaxi.traffic.accident.dto.ScopeType
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentDraft.Status.Todo
 import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType
@@ -19,8 +20,10 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.time.OffsetDateTime
-import java.time.temporal.ChronoUnit.DAYS
+import java.time.LocalDate
+import java.time.Period
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
@@ -35,7 +38,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
   @PersistenceContext private val em: EntityManager
 ) : AccidentRegisterDao {
   private val logger = LoggerFactory.getLogger(AccidentRegisterDaoImpl::class.java)
-  fun buildStatSummaryRowSqlByHappenTimeRange(scope: String, geKey: String, ltKey: String): String {
+  fun buildStatSummaryRowSqlByHappenTimeRange(scope: String, from: Int, to: Int): String {
     return """
       select '$scope' scope, count(d.id) total,
         count(case when r.status = ${Approved.value()} then 0 else null end) checked,
@@ -45,30 +48,87 @@ class AccidentRegisterDaoImpl @Autowired constructor(
         count(case when r.overdue then 0 else null end) overdue_register
       from gf_accident_draft d
       left join gf_accident_register r on r.id = d.id
-      where d.happen_time >= :$geKey and d.happen_time < :$ltKey
+      where cast(to_char(d.happen_time, :format) as int) >= $from
+        and cast(to_char(d.happen_time, :format) as int) < $to
       """.trimIndent()
   }
 
+  /**
+   * *验证统计范围条件是否正确
+   *
+   * @param scopeType 统计范围类型，按月、按年和按季度
+   * @param from      统计范围开始点
+   * @param to        统计范围结束点
+   */
+  private fun validateScope(scopeType: ScopeType, from: Int?, to: Int?) {
+    if (null !== from && null !== to) {
+      if (from > to) throw IllegalArgumentException("统计范围的开始时间不可以小于结束时间！")
+      if (scopeType !== ScopeType.Monthly && to.minus(from) > 1)
+        throw IllegalArgumentException("统计范围不可以大于两年！")
+      if (scopeType === ScopeType.Monthly) {
+        val scopeGap = Period.between(
+          LocalDate.parse("${from}01", DateTimeFormatter.ofPattern("yyyyMMdd")),
+          LocalDate.parse("${to}01", DateTimeFormatter.ofPattern("yyyyMMdd"))
+        )
+        if (scopeGap.years > 2 || (scopeGap.years == 2 && scopeGap.months > 0))
+          throw IllegalArgumentException("统计范围不可以大于两年！")
+      }
+    }
+  }
+
   @Suppress("UNCHECKED_CAST")
-  override fun statSummary(): Flux<AccidentRegisterDto4StatSummary> {
-    val now = OffsetDateTime.now().truncatedTo(DAYS)     // zero times
-    val currentMonth = now.withDayOfMonth(1)             // yyyy-MM-01 00:00:00
-    val lastMonth = currentMonth.minusMonths(1)          // yyyy-MM-01 00:00:00
-    val nextMonth = currentMonth.plusMonths(1)           // yyyy-MM-01 00:00:00
-    val currentYear = currentMonth.withMonth(1)          // yyyy-01-01 00:00:00
-    val nextYear = currentYear.plusYears(1)              // yyyy-01-01 00:00:00
-    val sql = buildStatSummaryRowSqlByHappenTimeRange("本月", "currentMonth", "nextMonth") +
-      "\nunion all\n" +
-      buildStatSummaryRowSqlByHappenTimeRange("上月", "lastMonth", "currentMonth") +
-      "\nunion all\n" +
-      buildStatSummaryRowSqlByHappenTimeRange("本年", "currentYear", "nextYear")
+  override fun statSummary(scopeType: ScopeType, from: Int?, to: Int?): Flux<AccidentRegisterDto4StatSummary> {
+    validateScope(scopeType, from, to) // 验证统计范围条件值
+    var scopeStart = when {
+      null === from -> YearMonth.now()
+      else -> when (scopeType) {
+        ScopeType.Monthly -> YearMonth.parse(from.toString(), DateTimeFormatter.ofPattern("yyyyMM"))
+        ScopeType.Yearly -> YearMonth.parse("${from}01", DateTimeFormatter.ofPattern("yyyyMM"))
+        ScopeType.Quarterly -> YearMonth.parse("${from}01", DateTimeFormatter.ofPattern("yyyyMM"))
+      }
+    }
+    val scopeEnd = when {
+      null === to -> YearMonth.now()
+      else -> when (scopeType) {
+        ScopeType.Monthly -> YearMonth.parse(to.toString(), DateTimeFormatter.ofPattern("yyyyMM"))
+        ScopeType.Yearly -> YearMonth.parse("${to}01", DateTimeFormatter.ofPattern("yyyyMM"))
+        ScopeType.Quarterly -> YearMonth.parse("${to}12", DateTimeFormatter.ofPattern("yyyyMM"))
+      }
+    }
+
+    var sql = ""
+    val dateFormat = when (scopeType) {
+      ScopeType.Yearly -> "yyyy"
+      else -> "yyyyMM"
+    }
+    var isFirst = true
+    while (!scopeStart.isAfter(scopeEnd)) {
+      val scope = when (scopeType) {
+        ScopeType.Monthly -> scopeStart.format(DateTimeFormatter.ofPattern("yyyy年MM月"))
+        ScopeType.Yearly -> scopeStart.format(DateTimeFormatter.ofPattern("yyyy年"))
+        ScopeType.Quarterly -> "${scopeStart.year}年第${Math.ceil(scopeStart.month.value / 3.0).toInt()}季度"
+      }
+      val tempScopeEnd = when (scopeType) {
+        ScopeType.Monthly -> scopeStart.plusMonths(1)
+        ScopeType.Yearly -> scopeStart.plusYears(1)
+        ScopeType.Quarterly -> scopeStart.plusMonths(3)
+      }
+      // 迭代生成事故登记汇总统计查询SQL
+      sql += (if (isFirst) "" else "\nunion all\n") + buildStatSummaryRowSqlByHappenTimeRange(
+        scope, scopeStart.format(DateTimeFormatter.ofPattern(dateFormat)).toInt(),
+        tempScopeEnd.format(DateTimeFormatter.ofPattern(dateFormat)).toInt()
+      )
+      // 更新统计范围开始点
+      scopeStart = tempScopeEnd
+      isFirst = false
+    }
+    sql = """
+      with stat_summary(scope, total, checked, checking, drafting, overdue_draft, overdue_register) as ($sql)
+      select * from stat_summary order by scope desc
+    """
     return Flux.fromIterable(
       em.createNativeQuery(sql, AccidentRegisterDto4StatSummary::class.java)
-        .setParameter("lastMonth", lastMonth)
-        .setParameter("currentMonth", currentMonth)
-        .setParameter("nextMonth", nextMonth)
-        .setParameter("currentYear", currentYear)
-        .setParameter("nextYear", nextYear)
+        .setParameter("format", dateFormat)
         .resultList as List<AccidentRegisterDto4StatSummary>
     )
   }

@@ -1,6 +1,7 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.register
 
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
+import cn.gftaxi.traffic.accident.dto.ScopeType
 import cn.gftaxi.traffic.accident.rest.webflux.Utils
 import cn.gftaxi.traffic.accident.rest.webflux.handler.register.StatSummaryHandler.Companion.REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
@@ -15,8 +16,11 @@ import org.springframework.test.web.reactive.server.WebTestClient.bindToRouterFu
 import org.springframework.web.reactive.config.EnableWebFlux
 import org.springframework.web.reactive.function.server.RouterFunctions
 import reactor.core.publisher.Flux
+import reactor.core.publisher.toFlux
 import tech.simter.exception.PermissionDeniedException
 import java.util.*
+import java.util.stream.IntStream
+import kotlin.collections.ArrayList
 
 fun random(start: Int, end: Int) = Random().nextInt(end + 1 - start) + start
 
@@ -37,48 +41,60 @@ class StatSummaryHandlerTest @Autowired constructor(
   @Test
   fun success() {
     // mock
-    val dto = AccidentRegisterDto4StatSummary(
-      scope = "本月",
-      total = random(0, 100),
-      checked = random(0, 100),
-      checking = random(0, 100),
-      drafting = random(0, 100),
-      overdueDraft = random(0, 100),
-      overdueRegister = random(0, 100)
-    )
-    `when`(accidentRegisterService.statSummary())
-      .thenReturn(Flux.just(dto, dto.copy(scope = "上月"), dto.copy(scope = "本年")))
+    val scopeType = ScopeType.Monthly
+    val from = 201801
+    val to = 201812
+    val resultList = ArrayList<AccidentRegisterDto4StatSummary>()
+    IntStream.range(0, 12).forEach({
+      resultList.add(AccidentRegisterDto4StatSummary(
+        scope = "2018 年 ${it + 1} 月",
+        total = random(0, 100),
+        checked = random(0, 100),
+        checking = random(0, 100),
+        drafting = random(0, 100),
+        overdueDraft = random(0, 100),
+        overdueRegister = random(0, 100)
+      ))
+    })
+    resultList.reverse()
+    `when`(accidentRegisterService.statSummary(scopeType, from, to))
+      .thenReturn(resultList.toFlux())
 
     // invoke
-    client.get().uri("/accident-register/stat/summary")
+    client.get().uri("/accident-register/stat/summary/$scopeType?from=$from&to=$to")
       .exchange()
       .expectStatus().isOk
       .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
       .expectBody()
-      .jsonPath("$.[0].scope").isEqualTo("本月")
-      .jsonPath("$.[0].total").isEqualTo(dto.total)
-      .jsonPath("$.[0].checked").isEqualTo(dto.checked)
-      .jsonPath("$.[0].checking").isEqualTo(dto.checking)
-      .jsonPath("$.[0].drafting").isEqualTo(dto.drafting)
-      .jsonPath("$.[0].overdueDraft").isEqualTo(dto.overdueDraft)
-      .jsonPath("$.[0].overdueRegister").isEqualTo(dto.overdueRegister)
-      .jsonPath("$.[1].scope").isEqualTo("上月")
-      .jsonPath("$.[2].scope").isEqualTo("本年")
+      .jsonPath("$.length()").isEqualTo(resultList.size)
+      .jsonPath("$.[0].scope").isEqualTo("2018 年 12 月")
+      .jsonPath("$.[0].total").isEqualTo(resultList[0].total)
+      .jsonPath("$.[0].checked").isEqualTo(resultList[0].checked)
+      .jsonPath("$.[0].checking").isEqualTo(resultList[0].checking)
+      .jsonPath("$.[0].drafting").isEqualTo(resultList[0].drafting)
+      .jsonPath("$.[0].overdueDraft").isEqualTo(resultList[0].overdueDraft)
+      .jsonPath("$.[0].overdueRegister").isEqualTo(resultList[0].overdueRegister)
+      .jsonPath("$.[1].scope").isEqualTo("2018 年 11 月")
+      .jsonPath("$.[11].scope").isEqualTo("2018 年 1 月")
+
 
     // verify
-    verify(accidentRegisterService).statSummary()
+    verify(accidentRegisterService).statSummary(scopeType, from, to)
   }
 
   @Test
   fun failedByPermissionDenied() {
     // mock
-    `when`(accidentRegisterService.statSummary()).thenReturn(Flux.error(PermissionDeniedException()))
+    val scopeType = ScopeType.Monthly
+    val from = 201801
+    val to = 201812
+    `when`(accidentRegisterService.statSummary(scopeType, from, to)).thenReturn(Flux.error(PermissionDeniedException()))
 
     // invoke
-    val response = client.get().uri("/accident-register/stat/summary").exchange()
+    val response = client.get().uri("/accident-register/stat/summary/$scopeType?from=$from&to=$to").exchange()
 
     // verify
     response.expectStatus().isForbidden.expectHeader().contentType(Utils.TEXT_PLAIN_UTF8)
-    verify(accidentRegisterService).statSummary()
+    verify(accidentRegisterService).statSummary(scopeType, from, to)
   }
 }

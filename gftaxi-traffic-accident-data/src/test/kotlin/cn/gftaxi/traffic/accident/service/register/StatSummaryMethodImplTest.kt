@@ -4,6 +4,7 @@ import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.dao.AccidentOperationDao
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
+import cn.gftaxi.traffic.accident.dto.ScopeType
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import cn.gftaxi.traffic.accident.service.AccidentRegisterServiceImpl
@@ -39,6 +40,9 @@ class StatSummaryMethodImplTest @Autowired constructor(
   @Test
   fun success() {
     // mock
+    val scopeType = ScopeType.Monthly
+    val from = 201801
+    val to = 201812
     val dto = AccidentRegisterDto4StatSummary(
       scope = "本月",
       total = random(0, 100),
@@ -49,30 +53,33 @@ class StatSummaryMethodImplTest @Autowired constructor(
       overdueRegister = random(0, 100)
     )
     val expected = listOf(dto, dto.copy(scope = "上月"), dto.copy(scope = "本年"))
-    `when`(accidentRegisterDao.statSummary()).thenReturn(Flux.fromIterable(expected))
+    `when`(accidentRegisterDao.statSummary(scopeType, from, to)).thenReturn(Flux.fromIterable(expected))
     `when`(securityService.verifyHasAnyRole(*READ_ROLES)).thenReturn(Mono.empty())
 
     // invoke
-    val actual = accidentRegisterService.statSummary()
+    val actual = accidentRegisterService.statSummary(scopeType, from, to)
 
     // verify
     StepVerifier.create(actual)
       .expectNextSequence(expected)
       .verifyComplete()
     verify(securityService).verifyHasAnyRole(*READ_ROLES)
-    verify(accidentRegisterDao).statSummary()
+    verify(accidentRegisterDao).statSummary(scopeType, from, to)
   }
 
   @Test
   fun failedByPermissionDenied() {
     // mock
+    val scopeType = ScopeType.Monthly
+    val from = 201801
+    val to = 201812
     `when`(securityService.verifyHasAnyRole(*READ_ROLES)).thenReturn(Mono.error(PermissionDeniedException()))
 
     // invoke and verify
-    StepVerifier.create(accidentRegisterService.statSummary())
+    StepVerifier.create(accidentRegisterService.statSummary(scopeType, from, to))
       .expectError(PermissionDeniedException::class.java)
       .verify()
     verify(securityService).verifyHasAnyRole(*READ_ROLES)
-    verify(accidentRegisterDao, times(0)).statSummary()
+    verify(accidentRegisterDao, times(0)).statSummary(scopeType, from, to)
   }
 }

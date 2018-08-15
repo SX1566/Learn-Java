@@ -23,6 +23,10 @@ object POUtils {
 
   /** 获取下一个事故编号 */
   fun nextCode(ymd: String): String {
+    currentCode = when (currentCode) {
+      99 -> 0
+      else -> currentCode
+    }
     return "${ymd}_${++currentCode}"
   }
 

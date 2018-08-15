@@ -11,7 +11,7 @@ import javax.persistence.Id
  */
 @Entity
 data class AccidentRegisterDto4StatSummary constructor(
-  /** 范围：本月、上月 和 本年 */
+  /** 范围，按月统计时格式为"yyyy年MM月"，按季度或按年时格式为"yyyy年"*/
   @Id val scope: String,
   /** 事故报案总数 */
   val total: Int,
@@ -26,3 +26,25 @@ data class AccidentRegisterDto4StatSummary constructor(
   /** 逾期登记案件数 */
   val overdueRegister: Int
 ) : Serializable
+
+/**
+ * 统计范围。
+ */
+enum class ScopeType(private val value: Short) {
+  /**
+   * 按月。
+   */
+  Monthly(1),
+  /**
+   * 按季度。
+   */
+  Quarterly(2),
+  /**
+   * 按年。
+   */
+  Yearly(4);
+
+  fun value(): Short {
+    return value
+  }
+}

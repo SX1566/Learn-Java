@@ -1,5 +1,6 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.register
 
+import cn.gftaxi.traffic.accident.dto.ScopeType
 import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,7 +23,10 @@ class StatSummaryHandler @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService
 ) : HandlerFunction<ServerResponse> {
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
-    return accidentRegisterService.statSummary().collectList()
+    val scopeType = ScopeType.valueOf(request.pathVariable("scopeType"))
+    val from = request.queryParam("from").orElse(null).toInt()
+    val to = request.queryParam("to").orElse(null).toInt()
+    return accidentRegisterService.statSummary(scopeType, from, to).collectList()
       // response
       .flatMap { ok().contentType(APPLICATION_JSON_UTF8).syncBody(it) }
       // error mapping
@@ -33,6 +37,7 @@ class StatSummaryHandler @Autowired constructor(
 
   companion object {
     /** The default [RequestPredicate] */
-    val REQUEST_PREDICATE: RequestPredicate = RequestPredicates.GET("/accident-register/stat/summary")
+    val REQUEST_PREDICATE: RequestPredicate =
+      RequestPredicates.GET("/accident-register/stat/summary/{scopeType}")
   }
 }
