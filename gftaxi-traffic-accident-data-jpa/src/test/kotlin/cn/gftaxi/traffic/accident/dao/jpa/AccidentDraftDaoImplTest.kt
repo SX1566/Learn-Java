@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import reactor.test.StepVerifier
 import java.time.OffsetDateTime
-import java.time.temporal.ChronoUnit
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import kotlin.test.assertEquals
@@ -94,34 +93,5 @@ class AccidentDraftDaoImplTest @Autowired constructor(
       .expectNext(po3)
       .expectNext(po2)
       .verifyComplete()
-  }
-
-  @Test
-  fun update() {
-    // mock
-    val now = OffsetDateTime.now()
-    val code = "20180713_01"
-    val po = AccidentDraft(null, code, Status.Done, "a", "a", now, now, "a", "a", "a", true, "a", "a", "a", "a")
-    em.persist(po); em.flush(); em.clear()
-    val data = mapOf(
-      "carPlate" to "nPlate", "driverName" to "nDriver", "happenTime" to now.plusHours(1), "describe" to "nDescribe",
-      "reportTime" to now.plusHours(1), "location" to "nLocation", "authorId" to "nAuthor"
-    )
-    val id = po.id!!
-
-    // invoke
-    StepVerifier.create(dao.update(id, data)).expectNext(true).verifyComplete()
-
-    // verify
-    val actual = em.createQuery("select a from AccidentDraft a", AccidentDraft::class.java).singleResult
-    assertEquals(data["carPlate"], actual.carPlate)
-    assertEquals(data["driverName"], actual.driverName)
-    assertEquals((data["happenTime"] as OffsetDateTime).truncatedTo(ChronoUnit.MINUTES), actual.happenTime)
-    assertEquals(data["describe"], actual.describe)
-    assertEquals(data["reportTime"], actual.reportTime)
-    assertEquals(data["location"], actual.location)
-    assertEquals(data["authorId"], actual.authorId)
-
-    StepVerifier.create(dao.update(id, mapOf())).expectNext(true).verifyComplete()
   }
 }

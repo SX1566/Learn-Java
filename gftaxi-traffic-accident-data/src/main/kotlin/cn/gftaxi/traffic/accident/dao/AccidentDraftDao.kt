@@ -49,9 +49,11 @@ interface AccidentDraftDao {
    *
    * 用于修改车号、司机、事发地点、简要描述、事发时间等。
    *
+   * 更新成功返回 `Mono.just(true)`，否则返回 `Mono.just(false)`。
+   * 更新成功是指真的更新了某些数据，如果没有修改任何数据则返回 `Mono.just(false)`。
+   *
    * @param[id] 要修改案件的 ID
    * @param[data] 要更新的信息，key 为 PO 的属性名，value 为相应的 PO 属性值
-   * @return 更新成功返回 true，否则返回 false
    */
   fun update(id: Int, data: Map<String, Any?>): Mono<Boolean>
 

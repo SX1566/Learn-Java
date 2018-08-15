@@ -4,6 +4,7 @@ import cn.gftaxi.traffic.accident.Utils.FORMAT_TO_YYYYMMDD
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.dao.jpa.repository.AccidentDraftJpaRepository
 import cn.gftaxi.traffic.accident.po.AccidentDraft
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -13,7 +14,6 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import tech.simter.exception.NonUniqueException
 import java.time.OffsetDateTime
-import java.time.temporal.ChronoUnit
 import javax.persistence.EntityManager
 import javax.persistence.NoResultException
 import javax.persistence.PersistenceContext
@@ -28,6 +28,7 @@ class AccidentDraftDaoImpl @Autowired constructor(
   @PersistenceContext private val em: EntityManager,
   private val repository: AccidentDraftJpaRepository
 ) : AccidentDraftDao {
+  private val logger = LoggerFactory.getLogger(AccidentDraftDaoImpl::class.java)
   override fun find(pageNo: Int, pageSize: Int, status: AccidentDraft.Status?, fuzzySearch: String?): Mono<Page<AccidentDraft>> {
     val hasStatus = null != status
     val hasFuzzySearch = null != fuzzySearch
@@ -92,24 +93,19 @@ class AccidentDraftDaoImpl @Autowired constructor(
   }
 
   override fun update(id: Int, data: Map<String, Any?>): Mono<Boolean> {
-    val filteredData = data.filterKeys { it.isNotEmpty() }.toMutableMap()
-    if (filteredData.isEmpty()) return Mono.just(true)
+    if (data.isEmpty()) return Mono.just(false)
 
-    if (filteredData.containsKey("happenTime")) {
-      filteredData["happenTime"] = (filteredData["happenTime"] as OffsetDateTime).truncatedTo(ChronoUnit.MINUTES)
+    val ql = "update AccidentDraft set " + data.keys.joinToString(", ") { "$it = :$it" } + " where id = :id"
+    if (logger.isDebugEnabled) {
+      logger.debug("id={}", id)
+      logger.debug(data.toString())
+      logger.debug(ql)
     }
+    val query = em.createQuery(ql)
+    data.keys.forEach { query.setParameter(it, data[it]) }
+    query.setParameter("id", id)
 
-    var setQl = "\n  set "
-    val filteredDataKeys = filteredData.keys.toList()
-    filteredDataKeys.forEach { setQl += "$it = :$it, " }
-    val updateQl = "update AccidentDraft" + setQl.dropLast(2) + "\nwhere id = :id"
-
-    val updateQuery = em.createQuery(updateQl)
-    filteredDataKeys.forEach { updateQuery.setParameter(it, filteredData[it]) }
-    updateQuery.setParameter("id", id)
-
-    val count = updateQuery.executeUpdate()
-    return if (count == 1) Mono.just(true) else Mono.just(false)
+    return if (query.executeUpdate() > 0) Mono.just(true) else Mono.just(false)
   }
 
   override fun nextCode(happenTime: OffsetDateTime): Mono<String> {
