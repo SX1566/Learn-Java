@@ -11,10 +11,12 @@ import cn.gftaxi.traffic.accident.po.AccidentDraft.Status.Todo
 import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType
 import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType
 import cn.gftaxi.traffic.accident.po.AccidentRegister
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.isOverdue
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.*
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -22,12 +24,14 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import java.time.Period
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import javax.persistence.EntityManager
 import javax.persistence.NoResultException
 import javax.persistence.PersistenceContext
+import javax.persistence.Query
 
 /**
  * 事故登记 Dao 实现。
@@ -37,10 +41,13 @@ import javax.persistence.PersistenceContext
  */
 @Component
 class AccidentRegisterDaoImpl @Autowired constructor(
+  @Value("\${app.register-overdue-hours:24}") private val overdueHours: Long,
   @PersistenceContext private val em: EntityManager,
   private val repository: AccidentRegisterJpaRepository
 ) : AccidentRegisterDao {
   private val logger = LoggerFactory.getLogger(AccidentRegisterDaoImpl::class.java)
+  private val overdueSeconds = overdueHours * 60 * 60
+
   fun buildStatSummaryRowSqlByHappenTimeRange(scope: String, from: Int, to: Int): String {
     return """
       select '$scope' scope, count(d.id) total,
@@ -174,7 +181,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
   @Suppress("UNCHECKED_CAST")
   override fun findLastChecked(pageNo: Int, pageSize: Int, status: Status?, search: String?)
     : Mono<Page<AccidentRegisterDto4LastChecked>> {
-    if (null != status && status != Status.Rejected && status != Status.Approved) {
+    if (null != status && status != Rejected && status != Approved) {
       throw IllegalArgumentException("指定的状态条件 $status 不在允许的范围内！")
     }
     val hasSearch = null != search
@@ -203,7 +210,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
     val countSql = "select count(r.id) from gf_accident_register r $where"
 
     val statusValue = status?.value()
-      ?: listOf(Status.Approved.value(), Status.Rejected.value())
+      ?: listOf(Approved.value(), Rejected.value())
     val rowsQuery = em.createNativeQuery(rowsSql, AccidentRegisterDto4LastChecked::class.java)
       .setParameter("operationType", listOf(OperationType.Approval.value(), OperationType.Rejection.value()))
       .setParameter("status", statusValue)
@@ -244,5 +251,48 @@ class AccidentRegisterDaoImpl @Autowired constructor(
       if (e is NoResultException || e.cause is NoResultException) Mono.empty()
       else Mono.error(e)
     }
+  }
+
+  override fun toCheck(id: Int): Mono<Boolean> {
+    try {
+      // 获取状态、事发时间、首次提交时间
+      val data = em.createQuery("select status, happenTime, registerTime from AccidentRegister where id = :id", Array<Any>::class.java)
+        .setParameter("id", id)
+        .singleResult
+      val status = data[0] as Status
+      if (status != Draft && status != Rejected) return Mono.just(false)
+      val happenTime = data[1] as OffsetDateTime
+      val registerTime = data[2] as OffsetDateTime?
+
+
+      // 更新状态
+      val query: Query
+      if (registerTime == null) { // 首次提交
+        val now = OffsetDateTime.now()
+        val overdue = isOverdue(happenTime, now, overdueSeconds)
+        query = em.createQuery(
+          """update AccidentRegister set status = :status,
+               overdue = :overdue,
+               registerTime = :registerTime
+               where id = :id and status <> :status""".trimIndent()
+        ).setParameter("id", id)
+          .setParameter("status", ToCheck)
+          .setParameter("overdue", overdue)
+          .setParameter("registerTime", now)
+      } else {                    // 审核不通过后的再次提交
+        query = em.createQuery(
+          "update AccidentRegister set status = :status where id = :id and status <> :status"
+        ).setParameter("id", id)
+          .setParameter("status", ToCheck)
+      }
+      return if (query.executeUpdate() > 0) Mono.just(true) else Mono.just(false)
+    } catch (e: Exception) {
+      return if (e is NoResultException || e.cause is NoResultException) Mono.just(false) // 案件不存在
+      else Mono.error(e)
+    }
+  }
+
+  override fun checked(id: Int, passed: Boolean): Mono<Boolean> {
+    TODO("not implemented")
   }
 }

@@ -90,10 +90,9 @@ interface AccidentRegisterDao {
    *    逾期登记的阈值通过系统属性 `app.register-overdue-hours` 设置(默认为 24 小时)。
    *
    * 更新成功返回 Mono.just(true)，否则返回 Mono.just(false)
+   * 更新成功是指真的更新为了新的状态，如果状态没有更新则返回 `Mono.just(false)`。
    */
-  fun toCheck(id: Int): Mono<Boolean> {
-    TODO("not implemented")
-  }
+  fun toCheck(id: Int): Mono<Boolean>
 
   /**
    * 更新案件为指定的审核结果。
@@ -104,8 +103,7 @@ interface AccidentRegisterDao {
    * 2. [passed] 为 false 时更新案件状态为审核不通过 [Rejected]。
    *
    * 更新成功返回 Mono.just(true)，否则返回 Mono.just(false)。
+   * 更新成功是指真的更新为了新的状态，如果状态没有更新则返回 `Mono.just(false)`。
    */
-  fun checked(id: Int, passed: Boolean): Mono<Boolean> {
-    TODO("not implemented")
-  }
+  fun checked(id: Int, passed: Boolean): Mono<Boolean>
 }
