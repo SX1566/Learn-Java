@@ -58,8 +58,10 @@ interface AccidentDraftDao {
   /**
    * 根据事发时间生成未使用的事故编号。
    *
+   * 生成的事故编号格式为 yyyyMMdd_nn，其中 yyyyMMdd 为 [happenTime] 参数的年月日部分，
+   * nn 为两位数字的日流水号，从 01 到 99。
+   *
    * @param happenTime 事发时间
-   * @return 事故编号，格式为 yyyyMMdd_nn
    */
   fun nextCode(happenTime: OffsetDateTime): Mono<String>
 }

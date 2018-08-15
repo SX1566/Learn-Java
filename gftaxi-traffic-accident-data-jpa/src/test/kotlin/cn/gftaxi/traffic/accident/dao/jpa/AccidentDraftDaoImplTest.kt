@@ -1,6 +1,5 @@
 package cn.gftaxi.traffic.accident.dao.jpa
 
-import cn.gftaxi.traffic.accident.Utils.FORMAT_TO_YYYYMMDD
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentDraft.Status
@@ -124,29 +123,5 @@ class AccidentDraftDaoImplTest @Autowired constructor(
     assertEquals(data["authorId"], actual.authorId)
 
     StepVerifier.create(dao.update(id, mapOf())).expectNext(true).verifyComplete()
-  }
-
-  @Test
-  fun nextCode() {
-    // mock
-    val now = OffsetDateTime.now()
-    val ymd = now.format(FORMAT_TO_YYYYMMDD)
-
-    // invoke and verify
-    StepVerifier.create(dao.nextCode(now)).expectNext("${ymd}_01").verifyComplete()
-
-    // mock
-    em.persist(AccidentDraft(null, "${ymd}_01", Status.Done, "plate1", "driver", now, now, "", "", "", true, "", "", "", ""))
-    em.flush(); em.clear()
-
-    // invoke and verify
-    StepVerifier.create(dao.nextCode(now)).expectNext("${ymd}_02").verifyComplete()
-
-    // mock
-    em.persist(AccidentDraft(null, "${ymd}_10", Status.Done, "plate2", "driver", now, now, "", "", "", true, "", "", "", ""))
-    em.flush(); em.clear()
-
-    // invoke and verify
-    StepVerifier.create(dao.nextCode(now)).expectNext("${ymd}_11").verifyComplete()
   }
 }
