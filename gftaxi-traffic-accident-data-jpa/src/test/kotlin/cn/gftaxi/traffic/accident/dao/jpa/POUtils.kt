@@ -28,7 +28,7 @@ object POUtils {
 
   private var idMap = hashMapOf<String, Int>()
   /** 获取指定类型的下一个自动 ID 值 */
-  private fun nextId(type: String): Int {
+  fun nextId(type: String): Int {
     if (!idMap.containsKey(type)) idMap[type] = 1
     else idMap[type] = idMap[type]!! + 1
     return idMap[type]!!
