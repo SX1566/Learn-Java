@@ -2,6 +2,7 @@ package cn.gftaxi.traffic.accident.dao.jpa
 
 import cn.gftaxi.traffic.accident.Utils.FORMAT_TO_YYYYMMDD
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
+import cn.gftaxi.traffic.accident.dao.jpa.repository.AccidentDraftJpaRepository
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
