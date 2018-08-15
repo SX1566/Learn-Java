@@ -37,7 +37,7 @@ class AccidentDraftDaoImpl @Autowired constructor(
     var whereQl = if (hasStatus) "\n  and status = :status" else ""
     if (hasFuzzySearch) whereQl += "\n  and (code like :search or carPlate like :search or driverName like :search)"
     countQl += whereQl
-    rowsQl = "$rowsQl$whereQl\norder by reportTime desc"
+    rowsQl = "$rowsQl$whereQl\norder by status asc, happenTime desc"
 
     val rowsQuery = em.createQuery(rowsQl, AccidentDraft::class.java)
       .setFirstResult(tech.simter.data.Page.calculateOffset(pageNo, pageSize))
