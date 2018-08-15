@@ -101,20 +101,6 @@ class AccidentDraftDaoImplTest @Autowired constructor(
   }
 
   @Test
-  fun get() {
-    // mock
-    val now = OffsetDateTime.now()
-    val po1 = AccidentDraft(null, "20180713_01", Status.Done, "search", "driver", now, now, "", "", "", true, "", "", "", "")
-    em.persist(po1); em.flush(); em.clear()
-
-    // invoke
-    val actual = dao.get(po1.id!!)
-
-    // verify
-    StepVerifier.create(actual).expectNext(po1).verifyComplete()
-  }
-
-  @Test
   fun create() {
     // mock
     val now = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES)

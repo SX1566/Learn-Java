@@ -70,11 +70,8 @@ class AccidentDraftDaoImpl @Autowired constructor(
   }
 
   override fun get(id: Int): Mono<AccidentDraft> {
-    return try {
-      Mono.just(repository.getOne(id))
-    } catch (e: EntityNotFoundException) {
-      Mono.empty()
-    }
+    val po = repository.findById(id)
+    return if (po.isPresent) Mono.just(po.get()) else Mono.empty()
   }
 
   override fun create(po: AccidentDraft): Mono<AccidentDraft> {
