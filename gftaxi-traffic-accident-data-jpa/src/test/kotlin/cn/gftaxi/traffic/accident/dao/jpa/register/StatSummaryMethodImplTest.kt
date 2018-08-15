@@ -7,6 +7,7 @@ import cn.gftaxi.traffic.accident.dao.jpa.POUtils.nextCode
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentDraft
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentRegister
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
+import cn.gftaxi.traffic.accident.dto.ScopeType
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentRegister
 import org.junit.jupiter.api.Test
@@ -18,9 +19,12 @@ import reactor.test.StepVerifier
 import java.time.Month
 import java.time.OffsetDateTime
 import java.time.Year
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
+import kotlin.test.assertEquals
 
 /**
  * Test [AccidentRegisterDao.statSummary].
@@ -36,39 +40,109 @@ class StatSummaryMethodImplTest @Autowired constructor(
   private val logger = LoggerFactory.getLogger(StatSummaryMethodImplTest::class.java)
 
   @Test
-  fun test() {
+  fun testByMonthly() {
     // mock
-    val now = OffsetDateTime.now()
-    // 构建本月数据
-    val expectedCurrentMonthStat = initYearMonthData(Year.of(now.year), now.month)
-    // 构建上月数据
-    val expectedLastMonthStat = initYearMonthData(Year.of(now.year), now.month.minus(1))
-    // 本年数据 = 本月 + 上月
-    val expectedCurrentYearStat = AccidentRegisterDto4StatSummary(
-      scope = "本年",
-      total = expectedCurrentMonthStat.total + expectedLastMonthStat.total,
-      checked = expectedCurrentMonthStat.checked + expectedLastMonthStat.checked,
-      checking = expectedCurrentMonthStat.checking + expectedLastMonthStat.checking,
-      drafting = expectedCurrentMonthStat.drafting + expectedLastMonthStat.drafting,
-      overdueDraft = expectedCurrentMonthStat.overdueDraft + expectedLastMonthStat.overdueDraft,
-      overdueRegister = expectedCurrentMonthStat.overdueRegister + expectedLastMonthStat.overdueRegister
-    )
-    em.flush()
-    em.clear()
+    val scopeType = ScopeType.Monthly
+    var startDate = OffsetDateTime.now().minusYears(2)
+    val endDate = OffsetDateTime.now().minusMonths(1)
+    val from = startDate.format(DateTimeFormatter.ofPattern("yyyyMM")).toInt()
+    val to = endDate.format(DateTimeFormatter.ofPattern("yyyyMM")).toInt()
+    val expect = ArrayList<AccidentRegisterDto4StatSummary>()
+    while (!startDate.isAfter(endDate)) {
+      expect.add(initYearMonthData(scopeType, Year.of(startDate.year), startDate.month))
+      startDate = startDate.plusMonths(1)
+    }
+    expect.reverse()
 
     // invoke
-    val actual = dao.statSummary()
+    val actual = dao.statSummary(scopeType, from, to)
 
     // verify
-    StepVerifier.create(actual)
-      .expectNext(expectedCurrentMonthStat)
-      .expectNext(expectedLastMonthStat)
-      .expectNext(expectedCurrentYearStat)
-      .verifyComplete()
+    StepVerifier.create(actual.collectList())
+      .consumeNextWith {
+        assertEquals(it.size, expect.size)
+        it.forEach { ad ->
+          val expectDto = expect.filter { ad.scope.contentEquals(it.scope) }[0]
+          assertEquals(ad.total, expectDto.total)
+          assertEquals(ad.drafting, expectDto.drafting)
+          assertEquals(ad.checking, expectDto.checking)
+          assertEquals(ad.checked, expectDto.checked)
+          assertEquals(ad.overdueDraft, expectDto.overdueDraft)
+          assertEquals(ad.overdueRegister, expectDto.overdueRegister)
+        }
+      }.verifyComplete()
+  }
+
+  @Test
+  fun testByYearly() {
+    // mock
+    val scopeType = ScopeType.Yearly
+    var startDate = OffsetDateTime.now().minusYears(1)
+    val endDate = OffsetDateTime.now()
+    val from = startDate.format(DateTimeFormatter.ofPattern("yyyy")).toInt()
+    val to = endDate.format(DateTimeFormatter.ofPattern("yyyy")).toInt()
+    val expect = ArrayList<AccidentRegisterDto4StatSummary>()
+    while (!startDate.isAfter(endDate)) {
+      expect.add(initYearMonthData(scopeType, Year.of(startDate.year), startDate.month))
+      startDate = startDate.plusYears(1)
+    }
+    expect.reverse()
+
+    // invoke
+    val actual = dao.statSummary(scopeType, from, to)
+
+    // verify
+    StepVerifier.create(actual.collectList())
+      .consumeNextWith {
+        assertEquals(it.size, expect.size)
+        it.forEach { ad ->
+          val expectDto = expect.filter { ad.scope.contentEquals(it.scope) }[0]
+          assertEquals(ad.total, expectDto.total)
+          assertEquals(ad.drafting, expectDto.drafting)
+          assertEquals(ad.checking, expectDto.checking)
+          assertEquals(ad.checked, expectDto.checked)
+          assertEquals(ad.overdueDraft, expectDto.overdueDraft)
+          assertEquals(ad.overdueRegister, expectDto.overdueRegister)
+        }
+      }.verifyComplete()
+  }
+
+  @Test
+  fun testByQuarterly() {
+    // mock
+    val scopeType = ScopeType.Quarterly
+    var startDate = YearMonth.of(Year.now().minusYears(1).value,1)
+    val endDate = YearMonth.of(Year.now().value,12)
+    val from = startDate.format(DateTimeFormatter.ofPattern("yyyy")).toInt()
+    val to = endDate.format(DateTimeFormatter.ofPattern("yyyy")).toInt()
+    val expect = ArrayList<AccidentRegisterDto4StatSummary>()
+    while (!startDate.isAfter(endDate)) {
+      expect.add(initYearMonthData(scopeType, Year.of(startDate.year), startDate.month))
+      startDate = startDate.plusMonths(3)
+    }
+    expect.reverse()
+
+    // invoke
+    val actual = dao.statSummary(scopeType, from, to)
+
+    // verify
+    StepVerifier.create(actual.collectList())
+      .consumeNextWith {
+        assertEquals(it.size, expect.size)
+        it.forEach { ad ->
+          val expectDto = expect.filter { ad.scope.contentEquals(it.scope) }[0]
+          assertEquals(ad.total, expectDto.total)
+          assertEquals(ad.drafting, expectDto.drafting)
+          assertEquals(ad.checking, expectDto.checking)
+          assertEquals(ad.checked, expectDto.checked)
+          assertEquals(ad.overdueDraft, expectDto.overdueDraft)
+          assertEquals(ad.overdueRegister, expectDto.overdueRegister)
+        }
+      }.verifyComplete()
   }
 
   // 构建指定月份的事故报案、事故登记信息
-  private fun initYearMonthData(year: Year, month: Month): AccidentRegisterDto4StatSummary {
+  private fun initYearMonthData(scopeType: ScopeType, year: Year, month: Month): AccidentRegisterDto4StatSummary {
     logger.debug("==============year=${year.value}, month=${month.value}")
     val now = OffsetDateTime.now()
     val ymTime = OffsetDateTime.of(year.value, month.value, 1, now.hour, now.minute, 0, 0, now.offset)
@@ -178,10 +252,10 @@ class StatSummaryMethodImplTest @Autowired constructor(
     }
 
     return AccidentRegisterDto4StatSummary(
-      scope = when {
-        year.value == now.year && month == now.month -> "本月"
-        year.value == now.year && month == now.month.minus(1) -> "上月"
-        else -> throw IllegalArgumentException("不支持的年月参数")
+      scope = when (scopeType) {
+        ScopeType.Monthly -> "${year.value}年${when {month.value < 10 -> "0${month.value}" else -> month.value }}月"
+        ScopeType.Yearly -> "${year.value}年"
+        ScopeType.Quarterly -> "${year.value}年第${Math.ceil(month.value / 3.0).toInt()}季度"
       },
       total = total,
       checked = checked,

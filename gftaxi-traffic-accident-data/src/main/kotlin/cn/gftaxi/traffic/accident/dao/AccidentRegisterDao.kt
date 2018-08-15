@@ -3,6 +3,7 @@ package cn.gftaxi.traffic.accident.dao
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4LastChecked
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
+import cn.gftaxi.traffic.accident.dto.ScopeType
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentRegister
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
@@ -17,8 +18,17 @@ import reactor.core.publisher.Mono
  * @author RJ
  */
 interface AccidentRegisterDao {
-  /** 按本月、上月、本年的顺序获取事故登记汇总统计信息。 */
-  fun statSummary(): Flux<AccidentRegisterDto4StatSummary>
+  /**
+   * 按本月、上月、本年的顺序获取事故登记汇总统计信息。
+   *
+   * 返回结果按"范围"的逆序排序
+   *
+   * @param scopeType 统计范围
+   * @param from      统计范围开始点
+   * @param to        统计范围结束点
+   * @throws [IllegalArgumentException] 如果统计范围的开始点和结束点跨度大于两年或统计范围开始点大于结束点
+   */
+  fun statSummary(scopeType: ScopeType, from: Int?, to: Int?): Flux<AccidentRegisterDto4StatSummary>
 
   /**
    * 获取待登记、待审核案件信息。
