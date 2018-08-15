@@ -39,7 +39,8 @@ interface AccidentDraftDao {
   /**
    * 创建新的报案。
    *
-   * @throws [NonUniqueException] 指定车号和事发时间的案件已经存在
+   * 如果相同编号或者 "车号和事发时间" 的案件已经存在，
+   * 则返回类型为 [NonUniqueException] 的 [Mono.error]
    */
   fun create(po: AccidentDraft): Mono<AccidentDraft>
 

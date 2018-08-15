@@ -15,7 +15,7 @@ import tech.simter.exception.NonUniqueException
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 import javax.persistence.EntityManager
-import javax.persistence.EntityNotFoundException
+import javax.persistence.NoResultException
 import javax.persistence.PersistenceContext
 
 /**
@@ -75,13 +75,20 @@ class AccidentDraftDaoImpl @Autowired constructor(
   }
 
   override fun create(po: AccidentDraft): Mono<AccidentDraft> {
-    val isNotExists =
-      em.createQuery("select 0 from AccidentDraft where carPlate = :carPlate and happenTime = :happenTime")
+    return try {
+      val code: String = em.createQuery(
+        "select code from AccidentDraft where code = :code or (carPlate = :carPlate and happenTime = :happenTime)",
+        String::class.java
+      ).setParameter("code", po.code)
         .setParameter("carPlate", po.carPlate)
         .setParameter("happenTime", po.happenTime)
-        .resultList.isEmpty()
-    return if (isNotExists) Mono.just(repository.save(po))
-    else throw NonUniqueException("指定车号和事发时间的案件已经存在！")
+        .setMaxResults(1)
+        .singleResult
+      if (code == po.code) Mono.error(NonUniqueException("相同编号的案件已经存在！"))
+      else Mono.error(NonUniqueException("指定车号和事发时间的案件已经存在！"))
+    } catch (e: NoResultException) {
+      Mono.just(repository.save(po))
+    }
   }
 
   override fun update(id: Int, data: Map<String, Any?>): Mono<Boolean> {

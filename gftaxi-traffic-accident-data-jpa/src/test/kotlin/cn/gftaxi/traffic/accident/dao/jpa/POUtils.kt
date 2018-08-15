@@ -47,14 +47,15 @@ object POUtils {
     code: String,
     status: AccidentDraft.Status,
     happenTime: OffsetDateTime,
-    overdue: Boolean = false
+    overdue: Boolean = false,
+    carPlate: String? = null
   ): AccidentDraft {
     return AccidentDraft(
       code = code,
       status = status,
       happenTime = happenTime,
       overdue = overdue,
-      carPlate = random("粤A."),
+      carPlate = carPlate ?: random("粤A."),
       driverName = random("driver"),
       location = random("location"),
       // 超过 12 小时为逾期报案

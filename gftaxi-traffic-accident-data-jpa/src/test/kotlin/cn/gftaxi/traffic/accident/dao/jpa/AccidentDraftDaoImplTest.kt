@@ -4,19 +4,16 @@ import cn.gftaxi.traffic.accident.Utils.FORMAT_TO_YYYYMMDD
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentDraft.Status
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import reactor.test.StepVerifier
-import tech.simter.exception.NonUniqueException
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 /**
  * 测试事故报案 Dao 实现。
@@ -98,23 +95,6 @@ class AccidentDraftDaoImplTest @Autowired constructor(
       .expectNext(po3)
       .expectNext(po2)
       .verifyComplete()
-  }
-
-  @Test
-  fun create() {
-    // mock
-    val now = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES)
-    val origin = AccidentDraft(null, "20180713_01", Status.Done, "search", "driver", now, now, "", "", "", true, "", "", "", "")
-    val expected = origin.copy(happenTime = origin.happenTime.truncatedTo(ChronoUnit.MINUTES))
-
-    // invoke
-    StepVerifier.create(dao.create(expected))
-      .consumeNextWith { assertNotNull(it.id) }
-      .verifyComplete()
-
-    // verify
-    assertEquals(expected, em.createQuery("select a from AccidentDraft a", AccidentDraft::class.java).singleResult)
-    assertThrows(NonUniqueException::class.java, { dao.create(origin).block() })
   }
 
   @Test
