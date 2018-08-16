@@ -30,7 +30,7 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
     {
       id: "driverName", label: "当事司机", width: "8em",
       filter: function (value, row) {
-        return `[${driverTypeMap[row.driverType] || row.driverType}] ${value}`
+        return `${null === row.driverType ? "" : `[${driverTypeMap[row.driverType]}]`} ${value}`
       }
     },
     {id: "location", label: "事发地点", width: "13em"},
