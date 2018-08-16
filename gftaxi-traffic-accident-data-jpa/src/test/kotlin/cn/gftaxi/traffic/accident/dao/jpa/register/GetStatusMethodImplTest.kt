@@ -1,6 +1,7 @@
 package cn.gftaxi.traffic.accident.dao.jpa.register
 
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
+import cn.gftaxi.traffic.accident.dao.jpa.AccidentRegisterDaoImpl
 import cn.gftaxi.traffic.accident.dao.jpa.ModuleConfiguration
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentDraft
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentRegister
@@ -17,7 +18,7 @@ import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
 /**
- * Test [AccidentRegisterDao.getStatus].
+ * Test [AccidentRegisterDaoImpl.getStatus].
  *
  * @author RJ
  */

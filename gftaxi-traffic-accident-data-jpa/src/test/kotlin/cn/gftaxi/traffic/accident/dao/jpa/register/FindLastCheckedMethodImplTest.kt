@@ -2,6 +2,7 @@ package cn.gftaxi.traffic.accident.dao.jpa.register
 
 import cn.gftaxi.traffic.accident.Utils.FORMAT_TO_YYYYMMDD
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
+import cn.gftaxi.traffic.accident.dao.jpa.AccidentRegisterDaoImpl
 import cn.gftaxi.traffic.accident.dao.jpa.ModuleConfiguration
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.nextCode
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentDraft
@@ -29,7 +30,7 @@ import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
 /**
- * Test [AccidentRegisterDao.findLastChecked].
+ * Test [AccidentRegisterDaoImpl.findLastChecked].
  *
  * @author RJ
  */
