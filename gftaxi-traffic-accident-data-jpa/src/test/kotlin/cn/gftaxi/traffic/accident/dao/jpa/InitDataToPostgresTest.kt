@@ -34,7 +34,7 @@ import javax.sql.DataSource
  * ```
  * mvn test -P test,postgres -D test=cn.gftaxi.traffic.accident.dao.jpa.InitDataToPostgresTest
  * ```
- * 初始化数据只可以执行一次，多次执行回报唯一性约束失败的。
+ * 初始化数据只可以执行一次，多次执行会报唯一性约束失败的。
  *
  * @author RJ
  */
