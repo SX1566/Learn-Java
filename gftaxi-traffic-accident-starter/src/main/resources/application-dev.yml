@@ -51,6 +51,9 @@ logging:
     #org.hibernate.engine.spi.QueryParameters: TRACE      # TRACE for show jpql query parameter
     #org.hibernate.type.descriptor.converter.AttributeConverterSqlTypeDescriptorAdapter: DEBUG # DEBUG for value convert, such as 'Converted value on binding : Enabled -> 2'
 
+    #---- hibernate transaction ----#
+    org.hibernate.engine.transaction: DEBUG # DEBUG for show transaction start/end
+
     #---- quartz ----#
     org.quartz.core.QuartzScheduler: WARN # INFO for show config
     org.quartz.core.JobRunShell: DEBUG     # DEBUG for show running job, such as 'Calling execute on job GD122.交管平台会话保持'
