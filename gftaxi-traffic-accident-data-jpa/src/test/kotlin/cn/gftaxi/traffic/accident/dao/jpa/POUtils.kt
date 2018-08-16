@@ -40,7 +40,7 @@ object POUtils {
 
   private var strMap = hashMapOf("粤A." to 100000)
   /** 生成带固定前缀的唯一字符串 */
-  private fun random(prefix: String): String {
+  fun random(prefix: String): String {
     if (!strMap.containsKey(prefix)) strMap[prefix] = 1
     else strMap[prefix] = strMap[prefix]!! + 1
     return "$prefix${strMap[prefix]}"
@@ -52,7 +52,8 @@ object POUtils {
     status: AccidentDraft.Status,
     happenTime: OffsetDateTime,
     overdue: Boolean = false,
-    carPlate: String? = null
+    carPlate: String? = null,
+    driverName: String? = null
   ): AccidentDraft {
     return AccidentDraft(
       code = code,
@@ -60,7 +61,7 @@ object POUtils {
       happenTime = happenTime,
       overdue = overdue,
       carPlate = carPlate ?: random("粤A."),
-      driverName = random("driver"),
+      driverName = driverName ?: random("driver"),
       location = random("location"),
       // 超过 12 小时为逾期报案
       reportTime = when {
