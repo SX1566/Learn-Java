@@ -11,6 +11,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
       el: $page[0],
       data: {
         ui: {
+          fixedWidth: '75.2em',
           isChecker: isChecker,
           happenTime: "",
           sexList: [{id: "Male", label: "男"}, {id: "Female", label: "女"}],
@@ -268,7 +269,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
   }
 
   // 自定义窗口的 data-option 配置
-  Page.option = {width: 1100, minWidth: 1100, height: 830, minHeight: 830};
+  Page.option = {width: 1011, minWidth: 600, height: 620, minHeight: 300};
   Page.option.buttons = [
     {id: "save", text: "保存", click: "save", style: "display:none"},
     {id: "submit", text: "确认提交", click: "submit", style: "display:none"},
