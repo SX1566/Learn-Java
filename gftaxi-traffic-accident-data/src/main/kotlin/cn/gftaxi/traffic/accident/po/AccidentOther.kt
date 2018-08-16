@@ -18,7 +18,7 @@ import javax.persistence.*
 data class AccidentOther constructor(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  val id: Int?,
+  val id: Int? = null,
   /** 所属事故 */
   @ManyToOne(optional = false)
   @JoinColumn(name = "pid", nullable = false)
@@ -33,25 +33,25 @@ data class AccidentOther constructor(
   val type: String,
   /** 归属 */
   @Column(length = 50)
-  val belong: String?,
+  val belong: String? = null,
   /** 联系人 */
   @Column(length = 50)
-  val linkmanName: String?,
+  val linkmanName: String? = null,
   /** 联系电话 */
   @Column(length = 50)
-  val linkmanPhone: String?,
+  val linkmanPhone: String? = null,
   /** 受损情况 */
   @Column(length = 50)
-  val damageState: String?,
+  val damageState: String? = null,
   /** 损失预估（元） */
   @Column(precision = 10, scale = 2)
-  val damageMoney: BigDecimal?,
+  val damageMoney: BigDecimal? = null,
   /** 实际损失（元） */
   @Column(precision = 10, scale = 2)
-  val actualMoney: BigDecimal?,
+  val actualMoney: BigDecimal? = null,
   /** 跟进形式 */
   @Column(length = 50)
-  val followType: String?,
+  val followType: String? = null,
   /** 更新时间 */
-  val updatedTime: OffsetDateTime
+  val updatedTime: OffsetDateTime? = null
 )
