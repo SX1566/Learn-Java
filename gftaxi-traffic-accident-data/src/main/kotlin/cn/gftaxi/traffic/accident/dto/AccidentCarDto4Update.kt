@@ -19,7 +19,7 @@ data class AccidentCarDto4Update(
 ) {
   var id: Int? by changedProperties
   var sn: Short? by changedProperties
-  var plate: String? by changedProperties
+  var name: String? by changedProperties
   var type: String? by changedProperties
   var model: String? by changedProperties
   var towCount: Short? by changedProperties

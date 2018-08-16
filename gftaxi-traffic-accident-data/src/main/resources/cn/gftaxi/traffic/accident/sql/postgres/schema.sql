@@ -201,7 +201,7 @@ create table gf_accident_car (
   id           serial primary key,
   pid          int references gf_accident_register on delete cascade,
   sn           smallint    not null,
-  plate        varchar(10) not null,
+  name         varchar(10) not null,
   type         varchar(50),
   model        varchar(50),
   tow_count    smallint,
@@ -212,12 +212,12 @@ create table gf_accident_car (
   damage_money decimal(10, 2),
   follow_type  varchar(50),
   updatedTime  timestamptz not null,
-  constraint gf_accident_car_plate_happen_time_ukey unique (pid, plate)
+  constraint gf_accident_car_plate_happen_time_ukey unique (pid, name)
 );
 comment on table gf_accident_car               is '事故当事车辆';
 comment on column gf_accident_car.pid          is '所属事故ID';
 comment on column gf_accident_car.sn           is '同一事故内的序号';
-comment on column gf_accident_car.plate        is '车号，如 粤A123456';
+comment on column gf_accident_car.name         is '车号，如 粤A123456';
 comment on column gf_accident_car.type         is '分类：自车、三者';
 comment on column gf_accident_car.model        is '车型：出租车、小轿车、...';
 comment on column gf_accident_car.tow_count    is '拖车次数';

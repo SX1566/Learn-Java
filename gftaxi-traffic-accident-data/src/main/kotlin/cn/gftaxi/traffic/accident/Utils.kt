@@ -109,7 +109,7 @@ object Utils {
     val dto = AccidentCarDto4Update()
     dto.id = po.id
     dto.sn = po.sn
-    dto.plate = po.plate
+    dto.name = po.name
     dto.type = po.type
     dto.model = po.model
     dto.towCount = po.towCount

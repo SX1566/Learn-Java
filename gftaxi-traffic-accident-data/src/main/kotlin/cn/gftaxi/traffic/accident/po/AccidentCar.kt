@@ -27,7 +27,7 @@ data class AccidentCar constructor(
   val sn: Short,
   /** 车号，如 粤A.123456 */
   @Column(length = 10)
-  val plate: String,
+  val name: String,
   /** 分类 */
   @Column(length = 50)
   val type: String,
