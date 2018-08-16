@@ -150,8 +150,8 @@ with cfg(sn, pkey, key, address, name) as (
   select '1101', 'micro-service', 'accident', 'http://127.0.0.1:9102/accident', '交通事故'
   union select '1102', 'micro-service-internet', 'accident', 'http://gftaxi.cn:9102/accident', '交通事故'
   -- 文件服务器
-  union select '1103', 'micro-service', 'file', 'http://127.0.0.1:9013/file', '文件服务器'
-  union select '1104', 'micro-service-internet', 'file', 'http://gftaxi.cn:9013/file', '文件服务器'
+  union select '1103', 'micro-service', 'file', 'http://127.0.0.1:9013', '文件服务器'
+  union select '1104', 'micro-service-internet', 'file', 'http://gftaxi.cn:9013', '文件服务器'
 )
 insert into bc_option_item(id, status_, key_, value_, order_, pid)
   select nextval('core_sequence'), 0, c.key, c.address::text || ' | ' || c.name::text, c.sn
