@@ -37,6 +37,7 @@ class ModuleConfiguration @Autowired constructor(
   private val accidentRegisterStatSummaryHandler: StatSummaryHandler,
   private val accidentRegisterFindTodoHandler: FindTodoHandler,
   private val accidentRegisterFindLastCheckedHandler: FindLastCheckedHandler,
+  private val accidentRegisterGetHandler: GetHandler,
   private val accidentRegisterUpdateHandler: UpdateHandler,
   private val accidentRegisterToCheckHandler: ToCheckHandler,
   private val accidentRegisterCheckedHandler: CheckedHandler,
@@ -69,17 +70,19 @@ class ModuleConfiguration @Autowired constructor(
       AccidentDraftHandler.UPDATE_REQUEST_PREDICATE.invoke(accidentDraftHandler::update)
 
       //==== 事故登记相关 ====
-      // GET /accident-register/stat/summary 获取汇总统计信息
+      // GET /accident-register/stat/summary   获取汇总统计信息
       StatSummaryHandler.REQUEST_PREDICATE.invoke(accidentRegisterStatSummaryHandler::handle)
-      // GET /accident-register/todo         获取待登记、待审核案件信息
+      // GET /accident-register/todo           获取待登记、待审核案件信息
       FindTodoHandler.REQUEST_PREDICATE.invoke(accidentRegisterFindTodoHandler::handle)
-      // GET /accident-register/last-checked      获取已审核案件的最后审核信息
+      // GET /accident-register/last-checked   获取已审核案件的最后审核信息
       FindLastCheckedHandler.REQUEST_PREDICATE.invoke(accidentRegisterFindLastCheckedHandler::handle)
-      // PATCH /accident-register/{id}       更新案件信息
+      // GET /accident-register/{id}           获取案件信息
+      GetHandler.REQUEST_PREDICATE.invoke(accidentRegisterGetHandler::handle)
+      // PATCH /accident-register/{id}         更新案件信息
       UpdateHandler.REQUEST_PREDICATE.invoke(accidentRegisterUpdateHandler::handle)
       // POST /accident-register/to-check/{id} 提交案件信息
       ToCheckHandler.REQUEST_PREDICATE.invoke(accidentRegisterToCheckHandler::handle)
-      // POST /accident-register/checked/{id} 审核案件信息
+      // POST /accident-register/checked/{id}  审核案件信息
       CheckedHandler.REQUEST_PREDICATE.invoke(accidentRegisterCheckedHandler::handle)
 
       //==== 全局 ====
