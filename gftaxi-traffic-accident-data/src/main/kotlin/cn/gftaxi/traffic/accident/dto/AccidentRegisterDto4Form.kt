@@ -67,7 +67,7 @@ data class AccidentRegisterDto4Form constructor(
   val locationLevel1: String? = null,
   val locationLevel2: String? = null,
   val locationLevel3: String? = null,
-  val locationOther: String? = null,
+  val location: String? = null,
   val gpsSpeed: Short? = null,
   val describe: String? = null,
   val dealDepartment: String? = null,

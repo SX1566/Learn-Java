@@ -109,7 +109,7 @@ create table gf_accident_register (
   location_level1               varchar(50),
   location_level2               varchar(50),
   location_level3               varchar(50),
-  location_other                varchar(255) not null,
+  location                      varchar(255) not null,
   gps_speed                     smallint,
   -- 处理部门相关
   deal_department               varchar(50),
@@ -173,7 +173,7 @@ comment on column gf_accident_register.overdue              is '是否逾期登�
 comment on column gf_accident_register.location_level1      is '事发地点的省级';
 comment on column gf_accident_register.location_level2      is '事发地点的地级';
 comment on column gf_accident_register.location_level3      is '事发地点的县级';
-comment on column gf_accident_register.location_other       is '事发地点的县级下面的详细地点';
+comment on column gf_accident_register.location             is '事发地点的县级下面的详细地点';
 comment on column gf_accident_register.gps_speed            is 'GPS车速，km/h';
 -- 处理部门、保险公司相关
 comment on column gf_accident_register.deal_department      is '处理部门';

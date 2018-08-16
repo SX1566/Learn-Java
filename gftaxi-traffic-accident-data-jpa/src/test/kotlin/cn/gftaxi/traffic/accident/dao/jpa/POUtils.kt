@@ -97,7 +97,7 @@ object POUtils {
       driverType = driverType,
 
       happenTime = draft.happenTime,
-      locationOther = draft.location,
+      location = draft.location,
       gpsSpeed = 30,
       overdue = overdue,
       // 超过 24 小时为逾期登记

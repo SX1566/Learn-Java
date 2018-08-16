@@ -65,7 +65,7 @@ object Utils {
       locationLevel1 = po.locationLevel1,
       locationLevel2 = po.locationLevel2,
       locationLevel3 = po.locationLevel3,
-      locationOther = po.locationOther,
+      location = po.location,
       gpsSpeed = po.gpsSpeed,
       describe = po.describe,
       dealDepartment = po.dealDepartment,

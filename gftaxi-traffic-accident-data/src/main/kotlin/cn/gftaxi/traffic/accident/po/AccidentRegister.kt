@@ -123,7 +123,7 @@ data class AccidentRegister(
   val locationLevel3: String? = null,
   /** 事发地点的县级下面的详细地点 */
   @Column(length = 255)
-  val locationOther: String,
+  val location: String,
   /** GPS车速，km/h */
   val gpsSpeed: Short? = null,
 

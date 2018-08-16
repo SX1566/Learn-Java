@@ -60,7 +60,7 @@ data class AccidentRegisterDto4Update(
   var locationLevel1: String?  by changedProperties
   var locationLevel2: String?  by changedProperties
   var locationLevel3: String?  by changedProperties
-  var locationOther: String?  by changedProperties
+  var location: String?  by changedProperties
   var gpsSpeed: Short?  by changedProperties
   var describe: String?  by changedProperties
   var dealDepartment: String?  by changedProperties
