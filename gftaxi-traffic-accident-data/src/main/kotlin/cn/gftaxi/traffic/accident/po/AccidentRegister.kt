@@ -184,27 +184,27 @@ data class AccidentRegister(
   /** 历史营运违章次数 */
   val historyServiceOffenceCount: Short? = null,
   /** 历史服务投诉次数 */
-  val historyComplainCount: Short? = null,
+  val historyComplainCount: Short? = null
   //== 历史统计结束 ==
-
+) {
   // 当事车辆列表
   @OnDelete(action = CASCADE) // 加上这个自动建表语句才会有 ON DELETE CASCADE
   @OneToMany(fetch = EAGER, cascade = [ALL], orphanRemoval = true, mappedBy = "parent")
   @OrderBy("sn asc")
-  val cars: Set<AccidentCar>? = null,
+  var cars: Set<AccidentCar>? = null
 
   // 当事人列表
   @OnDelete(action = CASCADE)
   @OneToMany(fetch = EAGER, cascade = [ALL], orphanRemoval = true, mappedBy = "parent")
   @OrderBy("sn asc")
-  val peoples: Set<AccidentPeople>? = null,
+  var peoples: Set<AccidentPeople>? = null
 
   // 其他物体列表
   @OnDelete(action = CASCADE)
   @OneToMany(fetch = EAGER, cascade = [ALL], orphanRemoval = true, mappedBy = "parent")
   @OrderBy("sn asc")
-  val others: Set<AccidentOther>? = null
-) {
+  var others: Set<AccidentOther>? = null
+
   companion object {
     /** 查询角色 */
     const val ROLE_READ = "ACCIDENT_REGISTER_READ"
