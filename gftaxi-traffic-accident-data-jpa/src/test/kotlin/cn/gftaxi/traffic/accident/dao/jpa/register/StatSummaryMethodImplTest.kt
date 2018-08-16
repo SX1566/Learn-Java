@@ -253,7 +253,7 @@ class StatSummaryMethodImplTest @Autowired constructor(
 
     return AccidentRegisterDto4StatSummary(
       scope = when (scopeType) {
-        ScopeType.Monthly -> "${year.value}年${when {month.value < 10 -> "0${month.value}" else -> month.value }}月"
+        ScopeType.Monthly -> "${year.value}年${when {month.value < 10 -> "0${month.value}" else -> "${month.value}" }}月"
         ScopeType.Yearly -> "${year.value}年"
         ScopeType.Quarterly -> "${year.value}年第${Math.ceil(month.value / 3.0).toInt()}季度"
       },
