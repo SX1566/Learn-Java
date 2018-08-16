@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY
 import java.math.BigDecimal
+import java.time.OffsetDateTime
 
 /**
  * 更新事故其他物体信息用 DTO。
@@ -28,6 +29,7 @@ data class AccidentOtherDto4Update(
   var damageMoney: BigDecimal? by changedProperties
   var actualMoney: BigDecimal? by changedProperties
   var followType: String? by changedProperties
+  var updatedTime: OffsetDateTime? by changedProperties
 
   override fun toString(): String {
     return "${AccidentOtherDto4Update::class.simpleName}=$changedProperties"

@@ -211,7 +211,7 @@ create table gf_accident_car (
   damage_state varchar(50),
   damage_money decimal(10, 2),
   follow_type  varchar(50),
-  updatedTime  timestamptz not null,
+  updated_time  timestamptz not null,
   constraint gf_accident_car_plate_happen_time_ukey unique (pid, name)
 );
 comment on table gf_accident_car               is '事故当事车辆';
@@ -227,7 +227,7 @@ comment on column gf_accident_car.repair_money is '维修费（元）';
 comment on column gf_accident_car.damage_state is '受损情况';
 comment on column gf_accident_car.damage_money is '损失预估（元）';
 comment on column gf_accident_car.follow_type  is '跟进形式';
-comment on column gf_accident_car.updatedTime  is '更新时间';
+comment on column gf_accident_car.updated_time is '更新时间';
 
 create table gf_accident_people (
   id               serial primary key,
@@ -244,7 +244,7 @@ create table gf_accident_people (
   treatment_money  decimal(10, 2),
   compensate_money decimal(10, 2),
   follow_type      varchar(50),
-  updatedTime      timestamptz not null,
+  updated_time     timestamptz not null,
   constraint gf_accident_people_pid_name_ukey unique (pid, name)
 );
 comment on table gf_accident_people                   is '事故当事人';
@@ -261,7 +261,7 @@ comment on column gf_accident_people.damage_money     is '损失预估（元）'
 comment on column gf_accident_people.treatment_money  is '医疗费用（元）';
 comment on column gf_accident_people.compensate_money is '赔偿损失（元）';
 comment on column gf_accident_people.follow_type      is '跟进形式';
-comment on column gf_accident_people.updatedTime      is '更新时间';
+comment on column gf_accident_people.updated_time     is '更新时间';
 
 create table gf_accident_other (
   id            serial primary key,
@@ -276,7 +276,7 @@ create table gf_accident_other (
   damage_money  decimal(10, 2),
   actual_money  decimal(10, 2),
   follow_type   varchar(50),
-  updatedTime   timestamptz not null,
+  updated_time  timestamptz not null,
   constraint gf_accident_other_pid_name_ukey unique (pid, name)
 );
 comment on table gf_accident_other                is '事故其他物体';
@@ -291,7 +291,7 @@ comment on column gf_accident_other.damage_state  is '受损情况';
 comment on column gf_accident_other.damage_money  is '损失预估（元）';
 comment on column gf_accident_other.actual_money  is '实际损失（元）';
 comment on column gf_accident_other.follow_type   is '跟进形式';
-comment on column gf_accident_other.updatedTime   is '更新时间';
+comment on column gf_accident_other.updated_time  is '更新时间';
 
 -- 获取汉字拼音首字母的大写 select cn_first_char('事故性质') > SGXZ
 -- 来源：http://blog.qdac.cc/?p=1281

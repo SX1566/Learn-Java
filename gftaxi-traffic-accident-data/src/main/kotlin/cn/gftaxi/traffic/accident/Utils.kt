@@ -119,6 +119,7 @@ object Utils {
     dto.damageState = po.damageState
     dto.damageMoney = po.damageMoney
     dto.followType = po.followType
+    dto.updatedTime = po.updatedTime
     return dto
   }
 
@@ -140,6 +141,7 @@ object Utils {
     dto.treatmentMoney = po.treatmentMoney
     dto.compensateMoney = po.compensateMoney
     dto.followType = po.followType
+    dto.updatedTime = po.updatedTime
     return dto
   }
 
@@ -159,6 +161,7 @@ object Utils {
     dto.damageMoney = po.damageMoney
     dto.actualMoney = po.actualMoney
     dto.followType = po.followType
+    dto.updatedTime = po.updatedTime
     return dto
   }
 }
