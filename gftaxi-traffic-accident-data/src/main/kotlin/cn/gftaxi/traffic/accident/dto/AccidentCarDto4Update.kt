@@ -1,9 +1,11 @@
 package cn.gftaxi.traffic.accident.dto
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY
+import org.springframework.format.annotation.DateTimeFormat
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 
@@ -30,6 +32,8 @@ data class AccidentCarDto4Update(
   var damageState: String? by changedProperties
   var damageMoney: BigDecimal? by changedProperties
   var followType: String? by changedProperties
+  @get:JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+  @set:DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
   var updatedTime: OffsetDateTime? by changedProperties
 
   override fun toString(): String {
