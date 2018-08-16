@@ -20,6 +20,7 @@
     <simter.version>0.6-SNAPSHOT</simter.version>
     <simter-kv.version>0.3-SNAPSHOT</simter-kv.version>
     <simter-category.version>0.2-SNAPSHOT</simter-category.version>
+    <kotlin.compiler.incremental>false</kotlin.compiler.incremental>
   </properties>
   <modules>
     <module>gftaxi-traffic-accident-dependencies</module>
