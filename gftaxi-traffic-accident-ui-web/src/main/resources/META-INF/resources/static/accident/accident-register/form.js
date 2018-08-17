@@ -51,7 +51,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           return this.ui.driverStates.find(d => d.id === this.e.driverType).label;
         },
         isShowRoadCategories: function () {
-          return !["财产1级", "财产2级"].includes(this.e.level)
+          return !["财产 1 级", "财产 2 级"].includes(this.e.level)
         }
       },
       components: {
