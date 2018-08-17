@@ -6,12 +6,15 @@ import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4LastChecked
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
 import cn.gftaxi.traffic.accident.dto.ScopeType
+import cn.gftaxi.traffic.accident.po.AccidentCar
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentDraft.Status.Todo
 import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType
 import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType
+import cn.gftaxi.traffic.accident.po.AccidentPeople
 import cn.gftaxi.traffic.accident.po.AccidentRegister
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.isOverdue
+import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.*
 import org.slf4j.LoggerFactory
@@ -21,6 +24,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.LocalDate
@@ -40,6 +44,7 @@ import javax.persistence.Query
  * @author RJ
  */
 @Component
+@Transactional
 class AccidentRegisterDaoImpl @Autowired constructor(
   @Value("\${app.register-overdue-hours:24}") private val overdueHours: Long,
   @PersistenceContext private val em: EntityManager,
@@ -239,7 +244,78 @@ class AccidentRegisterDaoImpl @Autowired constructor(
   }
 
   override fun createBy(accidentDraft: AccidentDraft): Mono<AccidentRegister> {
-    TODO("not implemented")
+    val draft = em.merge(accidentDraft)
+    val accidentRegister = AccidentRegister(
+      // 基本信息
+      status = Status.Draft,
+      draft = draft,
+
+      // 复制信息
+      happenTime = accidentDraft.happenTime,
+      carPlate = accidentDraft.carPlate,
+      driverName = accidentDraft.driverName,
+      location = accidentDraft.location,
+      hitForm = accidentDraft.hitForm,
+      hitType = accidentDraft.hitType,
+      describe = accidentDraft.describe,
+
+      // 自动解析事发地点的省级、地级、县级 TODO
+      locationLevel1 = null,
+      locationLevel2 = null,
+      locationLevel3 = null,
+
+      // 自动匹配的车辆信息 TODO
+      carId = null,
+      motorcadeName = null,
+      carModel = null,
+      carContractType = null,
+      carContractDrivers = null,
+      carOperateDate = null,
+
+      // 自动匹配的司机信息 TODO
+      driverId = null,
+      driverType = null,
+      driverPhone = null,
+      driverOrigin = null,
+      driverLinkmanName = null,
+      driverLinkmanPhone = null,
+      driverHiredDate = null,
+      driverLicenseDate = null,
+      driverDriveYears = null,
+      driverAge = null,
+      driverIdentityCode = null,
+      driverServiceCode = null,
+      driverPicId = null,
+
+      // 历史统计信息 TODO
+      historyComplainCount = null,
+      historyServiceOffenceCount = null,
+      historyTrafficOffenceCount = null,
+      historyAccidentCount = null
+    )
+
+    // 自动创建一条自车类型的当事车辆信息
+    val now = OffsetDateTime.now()
+    accidentRegister.cars = setOf(AccidentCar(
+      sn = 0,
+      parent = accidentRegister,
+      name = accidentRegister.carPlate,
+      type = "自车",
+      updatedTime = now
+    ))
+
+    // 自动创建一条自车类型的当事人信息
+    accidentRegister.peoples = setOf(AccidentPeople(
+      sn = 0,
+      parent = accidentRegister,
+      name = accidentRegister.driverName,
+      type = "自车",
+      updatedTime = now
+    ))
+
+    accidentRegister.others = setOf()
+    em.persist(accidentRegister)
+    return Mono.just(accidentRegister)
   }
 
   override fun getStatus(id: Int): Mono<Status> {
