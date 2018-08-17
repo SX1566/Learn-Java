@@ -223,7 +223,7 @@
               <td class="value">
                 <input v-if="isReadOnly" type="text" class="ui-widget-content" v-model="e.dealDepartment" readonly>
                 <select v-else class="ui-widget-content" v-model="e.dealDepartment" data-validate="required">
-                  <option v-for="option in categories.CLBM" :value="option">{{option}}</option>
+                  <option v-for="option in categories.SGCLBM" :value="option">{{option}}</option>
                 </select>
               </td>
               <td class="label">*保险公司:</td>
@@ -239,7 +239,7 @@
               <td class="value">
                 <input v-if="isReadOnly" type="text" class="ui-widget-content" v-model="e.dealWay" readonly>
                 <select v-else class="ui-widget-content" v-model="e.dealWay" data-validate="required">
-                  <option v-for="option in categories.CLFS" :value="option">{{option}}</option>
+                  <option v-for="option in categories.SGCLFS" :value="option">{{option}}</option>
                 </select>
               </td>
               <td class="label">
