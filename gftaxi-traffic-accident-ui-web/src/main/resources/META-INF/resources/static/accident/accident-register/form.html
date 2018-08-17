@@ -426,9 +426,12 @@
          :style="{minWidth: ui.fixedWidth, lineHeight: '1.8em', borderWidth: '1px 0 0 0'}">
       <div style="display: inline-block;padding-left: 0.5em">当事车辆:</div>
       <ul v-if="!isReadOnly" class="inputIcons" style="position: absolute;right:8px">
-        <li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移项目" @click="moveUpItem('cars')"></li>
-        <li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移项目" @click="moveDownItem('cars')"></li>
-        <li class="inputIcon ui-icon ui-icon-circle-close" title="删除项目" @click="removeItem('cars')"></li>
+        <template v-if="e.cars.length > 1">
+          <li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移项目" @click="moveUpItem('cars')"></li>
+          <li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移项目" @click="moveDownItem('cars')"></li>
+        </template>
+        <li v-if="isShowItemDeleteButton.cars" class="inputIcon ui-icon ui-icon-circle-close" title="删除项目"
+            @click="removeItem('cars')"></li>
       </ul>
     </div>
     <table class="simple" :style="{minWidth: ui.fixedWidth, width: '100%'}">
@@ -535,9 +538,12 @@
          :style="{minWidth: ui.fixedWidth, lineHeight: '1.8em', borderWidth: '1px 0 0 0'}">
       <div style="display: inline-block;padding-left: 0.5em">当事人:</div>
       <ul v-if="!isReadOnly" class="inputIcons" style="position: absolute;right:8px">
-        <li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移项目" @click="moveUpItem('peoples')"></li>
-        <li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移项目" @click="moveDownItem('peoples')"></li>
-        <li class="inputIcon ui-icon ui-icon-circle-close" title="删除项目" @click="removeItem('peoples')"></li>
+        <template v-if="e.peoples.length > 1">
+          <li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移项目" @click="moveUpItem('peoples')"></li>
+          <li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移项目" @click="moveDownItem('peoples')"></li>
+        </template>
+        <li v-if="isShowItemDeleteButton.peoples" class="inputIcon ui-icon ui-icon-circle-close" title="删除项目"
+            @click="removeItem('peoples')"></li>
       </ul>
     </div>
     <table class="simple" :style="{minWidth: ui.fixedWidth, width: '100%'}">
@@ -650,9 +656,12 @@
          :style="{minWidth: ui.fixedWidth, lineHeight: '1.8em', borderWidth: '1px 0 0 0'}">
       <div style="display: inline-block;padding-left: 0.5em">其他物体:</div>
       <ul v-if="!isReadOnly" class="inputIcons" style="position: absolute;right:8px">
+        <template v-if="e.others.length > 1">
         <li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移项目" @click="moveUpItem('others')"></li>
         <li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移项目" @click="moveDownItem('others')"></li>
-        <li class="inputIcon ui-icon ui-icon-circle-close" title="删除项目" @click="removeItem('others')"></li>
+        </template>
+        <li v-if="isShowItemDeleteButton.others" class="inputIcon ui-icon ui-icon-circle-close" title="删除项目"
+            @click="removeItem('others')"></li>
       </ul>
     </div>
     <table class="simple" :style="{minWidth: ui.fixedWidth, width: '100%'}">

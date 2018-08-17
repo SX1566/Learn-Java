@@ -52,6 +52,13 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
         },
         isShowRoadCategories: function () {
           return !["财产 1 级", "财产 2 级"].includes(this.e.level)
+        },
+        isShowItemDeleteButton: function () {
+          return {
+            cars: this.e.cars.some(i => i.selected),
+            peoples: this.e.peoples.some(i => i.selected),
+            others: this.e.others.some(i => i.selected),
+          }
         }
       },
       components: {
