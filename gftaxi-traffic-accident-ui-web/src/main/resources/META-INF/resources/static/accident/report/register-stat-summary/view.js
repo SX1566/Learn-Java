@@ -32,7 +32,7 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
           return `${accident.dataServer}/accident-register/stat/summary/${this.scopeType.toLowerCase()}`;
         },
         columns: function () {
-          let scopeWidths = {Monthly: "6.5em", Quarterly: "9em", Yearly: "5em"};
+          let scopeWidths = {Monthly: "7.5em", Quarterly: "9em", Yearly: "5em"};
           return [
             {id: "scope", label: "统计范围", width: scopeWidths[this.scopeType]},
             {id: "total", label: "事故总数", width: "6em", rowCellStyle: "text-align: center"},
