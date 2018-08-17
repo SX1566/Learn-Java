@@ -78,10 +78,7 @@
                   <li class="inputIcon ui-icon ui-icon-circle-plus" title="点击选择" @click="selectDriver"></li>
                 </ul>
               </td>
-              <td class="label">
-                <身份></身份>
-                证号:
-              </td>
+              <td class="label">身份证号:</td>
               <td class="value">
                 <input type="text" :class="{'ui-widget-content':true, 'ui-state-disabled':!isReadOnly}"
                        v-model="e.driverIdentityCode" readonly>
