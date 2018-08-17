@@ -219,7 +219,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           this.e[module].push({updateTime: new Date().format("yyyy-MM-dd hh:mm")});
         },
         /**
-         * 移除应付项目
+         * 移除项目
          * @param module 需要添加行的模块，cars（当事车辆）、peoples（当事人）、others（其他物品）
          */
         removeItem: function (module) {
@@ -232,7 +232,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           });
         },
         /**
-         * 上移应付项目
+         * 上移项目
          * @param module 需要添加行的模块，cars（当事车辆）、peoples（当事人）、others（其他物品）
          */
         moveUpItem: function (module) {
@@ -248,7 +248,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           this.e[module].splice(index - 1, 0, this.e[module].splice(index, 1)[0]); // 上移
         },
         /**
-         * 下移应付项目
+         * 下移项目
          * @param module 需要添加行的模块，cars（当事车辆）、peoples（当事人）、others（其他物品）
          */
         moveDownItem: function (module) {
