@@ -10,6 +10,7 @@ import cn.gftaxi.traffic.accident.po.AccidentRegister
 import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType
 import org.slf4j.LoggerFactory
 import java.time.OffsetDateTime
+import java.util.*
 import javax.persistence.EntityManager
 
 /**
@@ -20,6 +21,9 @@ import javax.persistence.EntityManager
 object POUtils {
   private val logger = LoggerFactory.getLogger(POUtils::class.java)
   private var currentCode: Int = 0
+
+  /** 在指定区间随机生成一个数字 */
+  fun randomInt(start: Int, end: Int) = Random().nextInt(end + 1 - start) + start
 
   /** 获取下一个事故编号 */
   fun nextCode(ymd: String): String {
