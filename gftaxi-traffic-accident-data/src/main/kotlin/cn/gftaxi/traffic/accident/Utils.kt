@@ -25,6 +25,18 @@ object Utils {
   /** 格式化日期为 yyyyMMdd 格式的处理器 */
   val FORMAT_TO_YYYYMMDD: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
 
+  /**
+   * 将车号改造为 "粤A123456" 格式。
+   *
+   * 1. "粤A.123456"  to "粤A123456"
+   * 2. "粤A•123456"  to "粤A123456"
+   * 3. "粤A・123456" to "粤A123456"
+   * 4. "Q2M45"      to "Q2M45"
+   */
+  fun polishCarPlate(carPlate: String): String {
+    return carPlate.replace("•", "").replace("・", "").replace(".", "")
+  }
+
   private const val YEAR_SECONDS: Long = 365 * 24 * 60 * 60
   /** 计算两个时间之间的年份数 */
   fun calculateYears(start: Instant, end: Instant): Float {
