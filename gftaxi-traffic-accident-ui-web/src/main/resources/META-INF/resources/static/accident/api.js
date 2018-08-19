@@ -207,13 +207,20 @@ define(["bc", "context"], function (bc, context) {
       return cors(url, "GET");
     },
     /**
-     * 在线查看附件
+     * 在线查看指定 Id 附件
      * @param id 附件Id
      */
-    inline: function (id) {
+    inlineById: function (id) {
       window.open(`${fileDataServer}/inline/${id}`);
     },
     /**
+     * 在线查看指定模块分组附件
+     * @param module 附件所属模块，如：ARxxx，AR 为 AccidentRegister 的缩写，xxx为事故登记的 Id
+     * @param subgroup 附件所属模块的分组
+     */
+    inlineByModule: function (module, subgroup) {
+      window.open(`${fileDataServer}/inline/parent/${module}/${subgroup}`);
+    },
      * 计算两个时间之间相差的小时数
      * @param startDate 开始时间
      * @param endDate 结束事件
