@@ -1,5 +1,6 @@
 package cn.gftaxi.traffic.accident.dao
 
+import cn.gftaxi.traffic.accident.dto.CaseRelatedInfoDto
 import reactor.core.publisher.Mono
 import java.time.LocalDate
 
@@ -15,4 +16,15 @@ interface BcDao {
    * 如果车辆不存在或未分配车队则返回 `Mono.just("")`。
    */
   fun getMotorcadeName(carPlate: String, date: LocalDate): Mono<String>
+
+  /**
+   * 获取指定指定车号 [carPlate]、司机姓名 [driverName] 在指定日 [date] 对应的 BC 系统配置信息。
+   *
+   * 根据迁移记录、劳动合同等相关信息去获取。
+   *
+   * 如果指定的车号 [carPlate] 在 BC 系统中不存在，返回的信息中车辆相关的信息域的值为 null。
+   * 如果指定的司机姓名 [driverName] 在 BC 系统中不存在，返回的信息中司机相关的信息域的值为 null。
+   * 如果在 BC 系统找不到任何信息，返回相关信息域的值都为 null 的 [CaseRelatedInfoDto] 实例对象而不是[Mono.empty]。
+   */
+  fun getCaseRelatedInfo(carPlate: String, driverName: String, date: LocalDate): Mono<CaseRelatedInfoDto>
 }
