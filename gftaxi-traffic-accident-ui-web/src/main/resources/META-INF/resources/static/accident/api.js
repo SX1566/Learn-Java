@@ -67,18 +67,18 @@ define(["bc", "context"], function (bc, context) {
     return url;
   }
 
-  let categories = cors(`${accidentDataServer}/category/group/`, "GET").then(r => {
-    return r
-  });
+  let categories = cors(`${accidentDataServer}/category/group/`, "GET").then(r => {return r});
 
   //==== 一些常数定义 ====
   const api = {
-    /** 数据服务地址 */
+    /** 交通事故数据服务地址 */
     dataServer: accidentDataServer,
     /** 前端静态文件服务地址 */
     staticServer: accidentStaticServer,
+    /** 交通事故分类信息 */
     categories: categories,
-
+    /** 文件数据服务地址 */
+    fileDataServer:fileDataServer,
 
     /**
      * 打开模块的表单窗口。
@@ -99,8 +99,8 @@ define(["bc", "context"], function (bc, context) {
       });
     },
     /** 获取指定路径资源 */
-    get: function (url, method, data) {
-      return cors(url, method, data);
+    get: function (url, data) {
+      return cors(url, "GET", data);
     },
     /**
      * 获取模块列表信息。
