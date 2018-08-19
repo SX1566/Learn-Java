@@ -18,7 +18,8 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           driverStates: [{id: "Official", label: "正班"}, {id: "Shift", label: "替班"}, {id: "Outside", label: "非编"}]
         },
         categories: {},
-        e: {status: "Draft"}
+        e: {status: "Draft"},
+        accidentAttachments: []
       },
       ready: function () {
         let id = $page.data("data");
@@ -31,7 +32,10 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
             $page.parent().find(".autoHeight").keyup()
           }, 200);
         });
+        // 加载分类标准信息
         accident.categories.then(r => Vue.set(this, "categories", r));
+        // 加载事故登记附件
+        this.loadAccidentAttachments();
       },
       watch: {
         'ui.happenTime': function (value) {
@@ -69,6 +73,12 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
         "accident-other-column-definitions": {template: $page.find("script[name=accident-other-column-definitions]").html()}
       },
       methods: {
+      /** 加载事故附件信息 */
+      loadAccidentAttachments: function () {
+        accident.get(`${accident.fileDataServer}/parent/AR${this.e.id}/3`).then(attachments => {
+          this.accidentAttachments = attachments
+        })
+      },
         /**
          * 保存表单
          * @param option 回调函数
@@ -264,6 +274,29 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           let index = selectedIndexes[0];
           if (index === this.e[module].length - 1) return; // 最后一条无法下移
           this.e[module].splice(index + 1, 0, this.e[module].splice(index, 1)[0]); // 下移
+        },
+        /**
+         * 在线查看附件，如果配置参数有附件 Id 则按 Id 查看附件否则按照模块和分组查看
+         * @param option 配置参数
+         * @option id 附件 Id
+         * @option subgroup 附件当前登记模块的所属分组
+         */
+        inline: function (option) {
+          if (option.id) accident.inlineById(option.id);
+          else accident.inlineByModule(`AR${this.e.id}`, option.subgroup);
+        },
+        /** 生成事故附件图片地址 */
+        initAccidentAttachmentUrl: function (id) {
+          return `${accident.fileDataServer}/inline/${id}`;
+        },
+        /** 生成事故附件图标样式 */
+        initAccidentAttachmentIcon: function (ext) {
+          return `file-icon ${ext}`
+        },
+        /** 判断附件是否图片类型 */
+        isImageExt: function (ext) {
+          let imageExts = ["BMP", "JPG", "JPEG", "PNG", "GIF"];
+          return imageExts.includes(ext.toUpperCase());
         },
         // 初始化表单按钮
         showHideButtons: function () {
