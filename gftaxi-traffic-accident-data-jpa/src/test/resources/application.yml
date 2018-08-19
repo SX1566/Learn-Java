@@ -2,6 +2,12 @@ spring:
   jpa:
     properties:
       hibernate.show_sql: false      # true for log to console directly
+bc.db:
+  host: localhost
+  port: 5432
+  name: bcsystem
+  username: bcsystem
+  password: bcsystem
 logging:
   #file: target/test.log
   level:                             # one of TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF
