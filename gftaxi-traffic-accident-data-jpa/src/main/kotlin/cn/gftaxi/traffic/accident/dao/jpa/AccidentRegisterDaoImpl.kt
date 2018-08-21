@@ -162,7 +162,8 @@ class AccidentRegisterDaoImpl @Autowired constructor(
       select d.id, d.code, d.car_plate, d.driver_name, d.happen_time, d.hit_form, d.hit_type,
       (case when r.id is null then null else r.driver_type end) driver_type,
       (case when r.id is null then d.location else r.location end) as location,
-      r.motorcade_name, d.author_name, d.author_id, d.report_time, d.overdue overdue_report,
+      (case when r.id is null then d.motorcade_name else r.motorcade_name end) as motorcade_name,
+      d.author_name, d.author_id, d.report_time, d.overdue overdue_report,
       r.register_time, r.overdue overdue_register,
       (case when d.status = ${Todo.value()} then null else (
         select operate_time
@@ -203,7 +204,8 @@ class AccidentRegisterDaoImpl @Autowired constructor(
       )
       select distinct r.id, d.code, r.car_plate, r.driver_name, r.driver_type,
         (case when r.id is null then d.location else r.location end) as location,
-        r.motorcade_name, r.happen_time, o.comment checked_comment, o.operator_name checker_name,
+        (case when r.id is null then d.motorcade_name else r.motorcade_name end) as motorcade_name,
+        r.happen_time, o.comment checked_comment, o.operator_name checker_name,
         l.checked_count, l.checked_time, o.attachment_id
       from gf_accident_register r
       inner join gf_accident_draft d on d.id = r.id
