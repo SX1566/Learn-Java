@@ -6,6 +6,7 @@ import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentDraft.Status
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -13,7 +14,6 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import tech.simter.exception.NotFoundException
 import tech.simter.security.SecurityService
-import java.util.concurrent.TimeUnit
 
 /**
  * 事故报案 Service 实现。
@@ -23,9 +23,11 @@ import java.util.concurrent.TimeUnit
 @Service
 @Transactional
 class AccidentDraftServiceImpl @Autowired constructor(
+  @Value("\${app.draft-overdue-hours:12}") private val overdueHours: Long,
   private val securityService: SecurityService,
   private val accidentDraftDao: AccidentDraftDao
 ) : AccidentDraftService {
+  private val overdueSeconds = overdueHours * 60 * 60
   override fun find(pageNo: Int, pageSize: Int, status: Status?, fuzzySearch: String?): Mono<Page<AccidentDraft>> {
     securityService.verifyHasRole(AccidentDraft.ROLE_READ)
     return accidentDraftDao.find(pageNo, pageSize, status, fuzzySearch)
@@ -56,7 +58,7 @@ class AccidentDraftServiceImpl @Autowired constructor(
           location = dto.location,
           hitForm = dto.hitForm,
           hitType = dto.hitType,
-          overdue = AccidentDraft.isOverdue(dto.happenTime, dto.reportTime, TimeUnit.HOURS.toSeconds(12)),
+          overdue = AccidentDraft.isOverdue(dto.happenTime, dto.reportTime, overdueSeconds),
           source = dto.source,
           authorName = dto.authorName,
           authorId = dto.authorId,
