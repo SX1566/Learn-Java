@@ -35,7 +35,7 @@ class AccidentDraftDaoImpl @Autowired constructor(
     var rowsQl = "select a from AccidentDraft a where 0 = 0"
     var countQl = "select count(code) from AccidentDraft where 0 = 0"
     var whereQl = if (hasStatus) "\n  and status = :status" else ""
-    if (hasFuzzySearch) whereQl += "\n  and (code like :search or carPlate like :search or driverName like :search)"
+    if (hasFuzzySearch) whereQl += "\n  and (code like :search or carPlate like :search or driverName like :search or motorcade_name like :search)"
     countQl += whereQl
     rowsQl = "$rowsQl$whereQl\norder by status asc, happenTime desc"
 
