@@ -24,28 +24,28 @@ class BcDaoImpl @Autowired constructor(
   private val logger = LoggerFactory.getLogger(BcDaoImpl::class.java)
   private var jdbc: NamedParameterJdbcTemplate = NamedParameterJdbcTemplate(dataSource)
 
-  override fun getMotorcadeName(carPlate: String, date: LocalDate): Mono<String> {
+  private fun getMotorcadeNameBlock(carPlate: String, date: LocalDate): String? {
     val sql = """
-      select (case when hm.id is null then m.name else hm.name end) as name
-      from bs_car c
-      left join bs_motorcade m on m.id = c.motorcade_id
-      left join bs_car_driver_history h on h.to_car_id = c.id and h.move_type = 6
-      left join bs_motorcade hm on hm.id = h.to_motorcade_id
+      select m.name
+      from bs_car c, car__find_history_company_and_motorcade(c.id, :date) cm
+      inner join bs_motorcade m on m.id = cm.motorcade_id
       where (c.plate_no = :plate or (concat(c.plate_type, c.plate_no) = :plate))
-      -- 寻找最接近 date 参数的最早的那条迁移记录
-      order by (case sign(:date - h.move_date) when 0 then 2 when 1 then 1 else -1 end) desc
-        , abs(:date - h.move_date) asc, h.move_date asc
-      limit 1
       """.trimIndent()
-    logger.debug("sql={}", sql)
     return try {
-      val motorcadeName = jdbc.queryForObject(sql, mapOf(
-        "plate" to polishCarPlate(carPlate),
+      jdbc.queryForObject(sql, mapOf(
+        "plate" to carPlate,
         "date" to java.sql.Date.valueOf(date)
       ), String::class.java)
-      if (motorcadeName == null) Mono.just("") else Mono.just(motorcadeName)
     } catch (e: EmptyResultDataAccessException) {
-      Mono.just("")
+      null
+    }
+  }
+
+  override fun getMotorcadeName(carPlate: String, date: LocalDate): Mono<String> {
+    val motorcadeName = getMotorcadeNameBlock(polishCarPlate(carPlate), date)
+    return if (motorcadeName == null) Mono.just("") else Mono.just(motorcadeName)
+  }
+
     }
   }
 }
