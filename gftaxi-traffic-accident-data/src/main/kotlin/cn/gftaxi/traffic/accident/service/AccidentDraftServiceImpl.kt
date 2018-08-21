@@ -45,19 +45,37 @@ class AccidentDraftServiceImpl @Autowired constructor(
     securityService.verifyHasRole(AccidentDraft.ROLE_SUBMIT)
     return accidentDraftDao
       .nextCode(dto.happenTime)
-      .flatMap {
-        accidentDraftDao.create(AccidentDraft(null,
-          it, Status.Todo, dto.carPlate, dto.driverName, dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
-          dto.hitType, AccidentDraft.isOverdue(dto.happenTime, dto.reportTime, TimeUnit.HOURS.toSeconds(12)),
-          dto.source, dto.authorName, dto.authorId, dto.describe
+      .flatMap { code ->
+        accidentDraftDao.create(AccidentDraft(
+          code = code,
+          status = Status.Todo,
+          carPlate = dto.carPlate,
+          driverName = dto.driverName,
+          happenTime = dto.happenTime,
+          reportTime = dto.reportTime,
+          location = dto.location,
+          hitForm = dto.hitForm,
+          hitType = dto.hitType,
+          overdue = AccidentDraft.isOverdue(dto.happenTime, dto.reportTime, TimeUnit.HOURS.toSeconds(12)),
+          source = dto.source,
+          authorName = dto.authorName,
+          authorId = dto.authorId,
+          describe = dto.describe
         )).map { Pair(it.id!!, it.code) }
       }
   }
 
   override fun modify(id: Int, dto: AccidentDraftDto4Modify): Mono<Void> {
     securityService.verifyHasRole(AccidentDraft.ROLE_MODIFY)
-    val data = mapOf("carPlate" to dto.carPlate, "driverName" to dto.driverName, "happenTime" to dto.happenTime
-      , "location" to dto.location, "hitForm" to dto.hitForm, "hitType" to dto.hitType, "describe" to dto.describe)
+    val data = mapOf(
+      "carPlate" to dto.carPlate,
+      "driverName" to dto.driverName,
+      "happenTime" to dto.happenTime,
+      "location" to dto.location,
+      "hitForm" to dto.hitForm,
+      "hitType" to dto.hitType,
+      "describe" to dto.describe
+    )
     return accidentDraftDao
       .update(id, data)
       .flatMap {
