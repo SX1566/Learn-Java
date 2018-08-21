@@ -13,8 +13,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           statuses: {"Todo": "待登记", "Done": "已登记"},
           hitForms: [""],
           hitTypes: [""],
-          driverNames: [],
-          happenTime: ""
+          driverNames: []
         },
         e: {status: "Todo", source: "BC"}
       },
@@ -46,14 +45,6 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
             this.loadHitTypes();
             this.showHideButtons();
           }
-        }
-      },
-      watch: {
-        'ui.happenTime': function (value) {
-          Vue.set(this.e, "happenTime", value.replace("T", " "));
-        },
-        'e.happenTime': function (value) {
-          Vue.set(this.ui, "happenTime", value.replace(" ", "T"));
         }
       },
       computed: {

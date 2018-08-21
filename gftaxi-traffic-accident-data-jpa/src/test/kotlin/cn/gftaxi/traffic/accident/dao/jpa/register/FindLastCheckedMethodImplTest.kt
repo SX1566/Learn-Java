@@ -41,7 +41,8 @@ class FindLastCheckedMethodImplTest @Autowired constructor(
   private val dao: AccidentRegisterDao
 ) {
   lateinit var onlyReportRecord: AccidentDraft
-  lateinit var accidentRegisterRecords: Map<Status, Pair<AccidentRegister, Map<OperationType, AccidentOperation>>>
+  lateinit var accidentRegisterRecords:
+    Map<Status, Triple<AccidentRegister, AccidentDraft, Map<OperationType, AccidentOperation>>>
 
   // 构建初始化数据
   fun initData() {
@@ -83,9 +84,9 @@ class FindLastCheckedMethodImplTest @Autowired constructor(
         val record = accidentRegisterRecords[Approved]!!
         verifyDetail(
           actualDto = page.content[0],
-          expectedDraft = record.first.draft,
+          expectedDraft = record.second,
           expectedRegister = record.first,
-          expectedLastCheckedOperation = record.second[Approval]!!
+          expectedLastCheckedOperation = record.third[Approval]!!
         )
       }
       .verifyComplete()
@@ -101,9 +102,9 @@ class FindLastCheckedMethodImplTest @Autowired constructor(
         val record = accidentRegisterRecords[Rejected]!!
         verifyDetail(
           actualDto = page.content[0],
-          expectedDraft = record.first.draft,
+          expectedDraft = record.second,
           expectedRegister = record.first,
-          expectedLastCheckedOperation = record.second[Rejection]!!
+          expectedLastCheckedOperation = record.third[Rejection]!!
         )
       }
       .verifyComplete()
@@ -119,18 +120,18 @@ class FindLastCheckedMethodImplTest @Autowired constructor(
         var record = accidentRegisterRecords[Rejected]!!
         verifyDetail(
           actualDto = page.content[0],
-          expectedDraft = record.first.draft,
+          expectedDraft = record.second,
           expectedRegister = record.first,
-          expectedLastCheckedOperation = record.second[Rejection]!!
+          expectedLastCheckedOperation = record.third[Rejection]!!
         )
 
         // 审核通过案件 1 宗
         record = accidentRegisterRecords[Approved]!!
         verifyDetail(
           actualDto = page.content[1],
-          expectedDraft = record.first.draft,
+          expectedDraft = record.second,
           expectedRegister = record.first,
-          expectedLastCheckedOperation = record.second[Approval]!!
+          expectedLastCheckedOperation = record.third[Approval]!!
         )
       }
       .verifyComplete()

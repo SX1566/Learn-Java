@@ -74,7 +74,6 @@ class CreateByMethodImplTest @Autowired constructor(
     StepVerifier.create(accidentRegister)
       .consumeNextWith {
         result = it
-        assertEquals(accidentDraft, it.draft)
 
         // 验证复制的字段
         assertEquals(accidentDraft.id, it.id)

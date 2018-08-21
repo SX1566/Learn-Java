@@ -27,7 +27,9 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           Vue.set(this, "e", json);
           this.showHideButtons();
           // 初始化"简要描述"栏自动行高
-          $page.parent().find(".autoHeight").keyup();
+          setTimeout(() => {
+            $page.parent().find(".autoHeight").keyup()
+          }, 200);
         });
         accident.categories.then(r => Vue.set(this, "categories", r));
       },

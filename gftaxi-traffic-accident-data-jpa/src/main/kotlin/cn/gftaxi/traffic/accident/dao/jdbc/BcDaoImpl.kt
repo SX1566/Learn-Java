@@ -157,7 +157,6 @@ class BcDaoImpl @Autowired constructor(
       }
     }
     logger.debug("mm={}", mm)
-    logger.debug("mmc={}", mm?.get("move_date")?.javaClass)
     val driverType: DriverType? = when (car) {
       null -> null
       else -> when (maker) {
@@ -166,7 +165,8 @@ class BcDaoImpl @Autowired constructor(
           null -> null
           else -> with(mm) {
             val moveDate = mm["move_date"] as java.sql.Date
-            if (moveDate < java.sql.Date.valueOf(date)) null
+            val working = mm["working"] as Boolean
+            if (!working && moveDate < java.sql.Date.valueOf(date)) null
             else {
               if ((mm["move_name"] as String).startsWith("替班")) Shift else Official
             }

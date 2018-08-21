@@ -82,7 +82,7 @@ class InitDataToPostgresTest @Autowired constructor(
 
     // 对审核不通过的那条增加多一次的提交和审核不通过记录（连续两次不通过）
     val register = records[AccidentRegister.Status.Rejected]!!.first
-    var rejection = records[AccidentRegister.Status.Rejected]!!.second[OperationType.Rejection]!!
+    var rejection = records[AccidentRegister.Status.Rejected]!!.third[OperationType.Rejection]!!
     // 1. 再次提交审核
     val confirmation2 = POUtils.randomAccidentOperation(
       operateTime = rejection.operateTime.plusHours(1),

@@ -177,11 +177,14 @@
             <tr>
               <td class="label">*事发时间:</td>
               <td class="value relative">
-                <input v-else type="text" v-model="e.happenTime" class="bc-datetime ui-widget-content"
-                       data-validate="required" :readonly="isReadOnly">
-                <ul class="inputIcons">
-                  <li class="selectCalendar inputIcon ui-icon ui-icon-calendar" data-cfg="ui.happenTime"></li>
-                </ul>
+                <template v-if="!readOnly">
+                  <input type="text" name="e.happenTime" v-model="e.happenTime" class="bc-datetime ui-widget-content"
+                         data-validate="required">
+                  <ul class="inputIcons">
+                    <li class="selectCalendar inputIcon ui-icon ui-icon-calendar" data-cfg="e.happenTime"></li>
+                  </ul>
+                </template>
+                <input v-else type="text" v-model="e.happenTime" class="ui-widget-content" readonly>
               </td>
               <td class="label">报案时间:</td>
               <td class="value">
@@ -212,7 +215,7 @@
               </td>
             </tr>
             <tr>
-              <td class="label">*事发经过:</td>
+              <td class="label top">*事发经过:</td>
               <td class="value" colspan="3">
                   <textarea v-model="e.describe" data-validate="required"
                             class="ui-widget-content autoHeight" :readOnly="isReadOnly"/>

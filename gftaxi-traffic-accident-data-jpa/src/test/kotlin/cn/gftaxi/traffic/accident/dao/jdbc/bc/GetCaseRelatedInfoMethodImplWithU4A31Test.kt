@@ -197,7 +197,24 @@ class GetCaseRelatedInfoMethodImplWithU4A31Test @Autowired constructor(
   }
 
   @Test
-  fun `8 2018-02-22 黄俊强 注销未有去向 后`() {
+  fun `8 2018-02-22 黄俊强 注销未有去向 前`() {
+    StepVerifier.create(bcDao.getCaseRelatedInfo(
+      carPlate = carPlate,
+      driverName = driverName,
+      date = LocalDate.of(2018, 2, 1).plusDays(10)
+    )).expectNext(CAR_DRIVER_BASE_INFO.copy(
+      driverType = Official,
+      motorcadeName = "二分二队",
+      contractDrivers = "黄俊权, 黄俊强",
+
+      // 有对班
+      relatedDriverName = "黄俊权",
+      relatedDriverPhone = "13538851358"
+    )).verifyComplete()
+  }
+
+  @Test
+  fun `9 2018-02-22 黄俊强 注销未有去向 后`() {
     StepVerifier.create(bcDao.getCaseRelatedInfo(
       carPlate = carPlate,
       driverName = driverName,

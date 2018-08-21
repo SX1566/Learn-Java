@@ -4,14 +4,9 @@ import cn.gftaxi.traffic.accident.dto.AccidentCarDto4Update
 import cn.gftaxi.traffic.accident.dto.AccidentOtherDto4Update
 import cn.gftaxi.traffic.accident.dto.AccidentPeopleDto4Update
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
-import cn.gftaxi.traffic.accident.po.AccidentCar
-import cn.gftaxi.traffic.accident.po.AccidentOther
-import cn.gftaxi.traffic.accident.po.AccidentPeople
-import cn.gftaxi.traffic.accident.po.AccidentRegister
-import java.time.Instant
+import cn.gftaxi.traffic.accident.po.*
 import java.time.LocalDate
 import java.time.OffsetDateTime
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 /**
@@ -37,95 +32,98 @@ object Utils {
     return carPlate.replace("•", "").replace("・", "").replace(".", "")
   }
 
-  private const val YEAR_SECONDS: Long = 365 * 24 * 60 * 60
-  /** 计算两个时间之间的年份数 */
-  fun calculateYears(start: Instant, end: Instant): Float {
-    return (end.epochSecond - start.epochSecond).toFloat().div(YEAR_SECONDS)
+  /** 计算两个时间之间的年份数，不足一年时舍弃 */
+  fun calculateYears(start: LocalDate, end: LocalDate): Int {
+    return if (end <= start) 0
+    else {
+      if (end.withYear(start.year) >= start) end.year - start.year
+      else end.year - start.year - 1
+    }
   }
 
-  /** 计算两个时间之间的年份数 */
-  fun calculateYears(start: LocalDate, end: OffsetDateTime): Float {
-    return calculateYears(start.atStartOfDay(ZoneId.systemDefault()).toInstant(), end.toInstant())
+  /** 计算两个日期之间的年份数，不足一年时舍弃 */
+  fun calculateYears(start: LocalDate, end: OffsetDateTime): Int {
+    return calculateYears(start, end.toLocalDate())
   }
 
   /**
    * 转换 [AccidentRegister] 为 [AccidentRegisterDto4Form]。
    */
-  fun convert(po: AccidentRegister): AccidentRegisterDto4Form {
+  fun convert(register: AccidentRegister, draft: AccidentDraft): AccidentRegisterDto4Form {
     return AccidentRegisterDto4Form(
-      id = po.id,
+      id = register.id,
 
       // 车辆信息
-      carPlate = po.carPlate,
-      carId = po.carId,
-      motorcadeName = po.motorcadeName,
+      carPlate = register.carPlate,
+      carId = register.carId,
+      motorcadeName = register.motorcadeName,
 
       // 车辆冗余信息
-      carModel = po.carModel,
-      carOperateDate = po.carOperateDate,
-      carContractType = po.carContractType,
-      carContractDrivers = po.carContractDrivers,
+      carModel = register.carModel,
+      carOperateDate = register.carOperateDate,
+      carContractType = register.carContractType,
+      carContractDrivers = register.carContractDrivers,
 
       // 司机信息
-      driverName = po.driverName,
-      driverId = po.driverId,
-      driverType = po.driverType,
-      driverLinkmanName = po.driverLinkmanName,
-      driverLinkmanPhone = po.driverLinkmanPhone,
+      driverName = register.driverName,
+      driverId = register.driverId,
+      driverType = register.driverType,
+      driverLinkmanName = register.driverLinkmanName,
+      driverLinkmanPhone = register.driverLinkmanPhone,
 
       // 司机冗余信息
-      driverHiredDate = po.driverHiredDate,
-      driverPhone = po.driverPhone,
-      driverIdentityCode = po.driverIdentityCode,
-      driverServiceCode = po.driverServiceCode,
-      driverOrigin = po.driverOrigin,
-      driverAge = po.driverAge,
-      driverLicenseDate = po.driverLicenseDate,
-      driverDriveYears = po.driverDriveYears,
-      driverPicId = po.driverPicId,
+      driverHiredDate = register.driverHiredDate,
+      driverPhone = register.driverPhone,
+      driverIdentityCode = register.driverIdentityCode,
+      driverServiceCode = register.driverServiceCode,
+      driverOrigin = register.driverOrigin,
+      driverAge = register.driverAge,
+      driverLicenseDate = register.driverLicenseDate,
+      driverDriveYears = register.driverDriveYears,
+      driverPicId = register.driverPicId,
 
       // 事故信息
-      code = po.draft.code,
-      status = po.status,
-      draftTime = po.draft.reportTime,
-      happenTime = po.happenTime,
-      locationLevel1 = po.locationLevel1,
-      locationLevel2 = po.locationLevel2,
-      locationLevel3 = po.locationLevel3,
-      location = po.location,
-      gpsSpeed = po.gpsSpeed,
-      describe = po.describe,
-      dealDepartment = po.dealDepartment,
-      dealWay = po.dealWay,
-      insuranceCompany = po.insuranceCompany,
-      insuranceCode = po.insuranceCode,
+      code = draft.code,
+      status = register.status,
+      draftTime = draft.reportTime,
+      happenTime = register.happenTime,
+      locationLevel1 = register.locationLevel1,
+      locationLevel2 = register.locationLevel2,
+      locationLevel3 = register.locationLevel3,
+      location = register.location,
+      gpsSpeed = register.gpsSpeed,
+      describe = register.describe,
+      dealDepartment = register.dealDepartment,
+      dealWay = register.dealWay,
+      insuranceCompany = register.insuranceCompany,
+      insuranceCode = register.insuranceCode,
 
       // 分类标准
-      loadState = po.loadState,
-      level = po.level,
-      hitForm = po.hitForm,
-      hitType = po.hitType,
-      weather = po.weather,
-      drivingDirection = po.drivingDirection,
-      light = po.light,
-      roadType = po.roadType,
-      roadStructure = po.roadStructure,
-      roadState = po.roadState,
+      loadState = register.loadState,
+      level = register.level,
+      hitForm = register.hitForm,
+      hitType = register.hitType,
+      weather = register.weather,
+      drivingDirection = register.drivingDirection,
+      light = register.light,
+      roadType = register.roadType,
+      roadStructure = register.roadStructure,
+      roadState = register.roadState,
 
       // 历史统计
-      historyAccidentCount = po.historyAccidentCount,
-      historyTrafficOffenceCount = po.historyTrafficOffenceCount,
-      historyServiceOffenceCount = po.historyServiceOffenceCount,
-      historyComplainCount = po.historyComplainCount,
+      historyAccidentCount = register.historyAccidentCount,
+      historyTrafficOffenceCount = register.historyTrafficOffenceCount,
+      historyServiceOffenceCount = register.historyServiceOffenceCount,
+      historyComplainCount = register.historyComplainCount,
 
       // 当事车辆列表
-      cars = po.cars?.map { convert(it) },
+      cars = register.cars?.map { convert(it) },
 
       // 当事人列表
-      peoples = po.peoples?.map { convert(it) },
+      peoples = register.peoples?.map { convert(it) },
 
       // 其他物体列表
-      others = po.others?.map { convert(it) }
+      others = register.others?.map { convert(it) }
     )
   }
 

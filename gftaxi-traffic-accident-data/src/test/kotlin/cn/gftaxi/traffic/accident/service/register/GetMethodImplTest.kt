@@ -1,6 +1,7 @@
 package cn.gftaxi.traffic.accident.service.register
 
 import cn.gftaxi.traffic.accident.POUtils
+import cn.gftaxi.traffic.accident.POUtils.randomAccidentDraft
 import cn.gftaxi.traffic.accident.Utils.convert
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.dao.AccidentOperationDao
@@ -62,22 +63,23 @@ class GetMethodImplTest @Autowired constructor(
     // mock
     val id = 1
     `when`(securityService.verifyHasAnyRole(*READ_ROLES)).thenReturn(Mono.empty())
-    val registerPo = POUtils.randomAccidentRegister()
+    val draft = randomAccidentDraft(id = id)
+    val registerPo = POUtils.randomAccidentRegister(draft)
     `when`(accidentRegisterDao.get(id)).thenReturn(Mono.empty())
-    `when`(accidentDraftDao.get(id)).thenReturn(Mono.just(registerPo.draft))
-    `when`(accidentRegisterDao.createBy(registerPo.draft)).thenReturn(Mono.just(registerPo))
+    `when`(accidentDraftDao.get(id)).thenReturn(Mono.just(draft))
+    `when`(accidentRegisterDao.createBy(draft)).thenReturn(Mono.just(registerPo))
 
     // invoke
     val actual = accidentRegisterService.get(id)
 
     // verify
     StepVerifier.create(actual)
-      .expectNext(convert(registerPo))
+      .expectNext(convert(registerPo, draft))
       .verifyComplete()
     verify(securityService).verifyHasAnyRole(*READ_ROLES)
     verify(accidentRegisterDao).get(id)
     verify(accidentDraftDao).get(id)
-    verify(accidentRegisterDao).createBy(registerPo.draft)
+    verify(accidentRegisterDao).createBy(draft)
   }
 
   @Test
@@ -85,19 +87,21 @@ class GetMethodImplTest @Autowired constructor(
     // mock
     val id = 1
     `when`(securityService.verifyHasAnyRole(*READ_ROLES)).thenReturn(Mono.empty())
-    val registerPo = POUtils.randomAccidentRegister()
+    val draft = randomAccidentDraft(id = id)
+    val registerPo = POUtils.randomAccidentRegister(draft = draft)
     `when`(accidentRegisterDao.get(id)).thenReturn(Mono.just(registerPo))
+    `when`(accidentDraftDao.get(id)).thenReturn(Mono.just(draft))
 
     // invoke
     val actual = accidentRegisterService.get(id)
 
     // verify
     StepVerifier.create(actual)
-      .expectNext(convert(registerPo))
+      .expectNext(convert(registerPo, draft))
       .verifyComplete()
     verify(securityService).verifyHasAnyRole(*READ_ROLES)
     verify(accidentRegisterDao).get(id)
-    verify(accidentDraftDao, times(0)).get(id)
+    verify(accidentDraftDao).get(id)
     verify(accidentRegisterDao, times(0)).createBy(any())
   }
 

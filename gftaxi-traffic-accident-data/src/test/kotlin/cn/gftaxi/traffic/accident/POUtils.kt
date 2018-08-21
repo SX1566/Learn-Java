@@ -52,12 +52,14 @@ object POUtils {
 
   /** 构建新的事故报案 */
   fun randomAccidentDraft(
+    id: Int? = nextId("draft"),
     code: String = nextCode(),
     status: AccidentDraft.Status = Todo,
     happenTime: OffsetDateTime = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES).minusDays(1),
     overdue: Boolean = false
   ): AccidentDraft {
     return AccidentDraft(
+      id = id,
       code = code,
       status = status,
       happenTime = happenTime,
@@ -80,13 +82,13 @@ object POUtils {
 
   /** 构建新的事故登记 */
   fun randomAccidentRegister(
-    draft: AccidentDraft = randomAccidentDraft(),
+    draft: AccidentDraft,
     status: AccidentRegister.Status = Draft,
     driverType: DriverType = DriverType.Official,
     overdue: Boolean? = null
   ): AccidentRegister {
     return AccidentRegister(
-      draft = draft,
+      id = draft.id,
       status = status,
 
       carPlate = draft.carPlate,
