@@ -221,6 +221,7 @@ define(["bc", "context"], function (bc, context) {
     inlineByModule: function (module, subgroup) {
       window.open(`${fileDataServer}/inline/parent/${module}/${subgroup}`);
     },
+    /**
      * 计算两个时间之间相差的小时数
      * @param startDate 开始时间
      * @param endDate 结束事件
