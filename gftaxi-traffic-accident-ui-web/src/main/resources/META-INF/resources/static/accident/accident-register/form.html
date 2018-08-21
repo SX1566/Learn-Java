@@ -245,13 +245,9 @@
                   <option v-for="option in categories.SGCLFS" :value="option">{{option}}</option>
                 </select>
               </td>
-              <td class="label">
-                <div class="little">保险报案编号</div>
-                :
-              </td>
+              <td class="label"><div class="little">保险报案编号</div>:</td>
               <td class="value">
-                <input type="text" class="ui-widget-content" data-validate="required"
-                       v-model="e.insuranceCode" :readOnly="isReadOnly">
+                <input type="text" class="ui-widget-content" v-model="e.insuranceCode" :readOnly="isReadOnly">
               </td>
             </tr>
             </tbody>
