@@ -12,7 +12,6 @@ import java.time.temporal.ChronoUnit
 import javax.persistence.*
 import javax.persistence.CascadeType.ALL
 import javax.persistence.FetchType.EAGER
-import javax.persistence.FetchType.LAZY
 
 /**
  * 事故登记 PO。
@@ -26,13 +25,9 @@ import javax.persistence.FetchType.LAZY
   uniqueConstraints = [UniqueConstraint(columnNames = ["carPlate", "happenTime"])]
 )
 data class AccidentRegister(
+  /** 等于事故报案的 ID */
   @Id
   val id: Int? = null,
-  /** 事故报告，@MapsId 保证事故报告与事故登记直接使用主键作为外键关联，即他们有相同的 ID */
-  @MapsId
-  @OneToOne(optional = false, fetch = LAZY)
-  @JoinColumn(name = "id")
-  val draft: AccidentDraft,
   /** 状态 */
   @Convert(converter = AccidentRegisterStatusConverter::class)
   val status: Status,

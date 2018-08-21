@@ -39,7 +39,8 @@ class FindTodoMethodImplTest @Autowired constructor(
   private val dao: AccidentRegisterDao
 ) {
   lateinit var onlyReportRecord: AccidentDraft
-  lateinit var accidentRegisterRecords: Map<Status, Pair<AccidentRegister, Map<OperationType, AccidentOperation>>>
+  lateinit var accidentRegisterRecords:
+    Map<Status, Triple<AccidentRegister, AccidentDraft, Map<OperationType, AccidentOperation>>>
 
   // 构建初始化数据
   fun initData() {
@@ -84,7 +85,7 @@ class FindTodoMethodImplTest @Autowired constructor(
         val record = accidentRegisterRecords[Draft]!!
         verifyDetail(
           actualDto = it,
-          expectedDraft = record.first.draft,
+          expectedDraft = record.second,
           expectedRegister = record.first
         )
       }
@@ -97,9 +98,9 @@ class FindTodoMethodImplTest @Autowired constructor(
         val record = accidentRegisterRecords[ToCheck]!!
         verifyDetail(
           actualDto = it,
-          expectedDraft = record.first.draft,
+          expectedDraft = record.second,
           expectedRegister = record.first,
-          expectedLastSubmitOperation = record.second[Confirmation]
+          expectedLastSubmitOperation = record.third[Confirmation]
         )
       }
       .verifyComplete()
@@ -118,7 +119,7 @@ class FindTodoMethodImplTest @Autowired constructor(
         val record = accidentRegisterRecords[Draft]!!
         verifyDetail(
           actualDto = it,
-          expectedDraft = record.first.draft,
+          expectedDraft = record.second,
           expectedRegister = record.first
         )
       }
@@ -127,9 +128,9 @@ class FindTodoMethodImplTest @Autowired constructor(
         val record = accidentRegisterRecords[ToCheck]!!
         verifyDetail(
           actualDto = it,
-          expectedDraft = record.first.draft,
+          expectedDraft = record.second,
           expectedRegister = record.first,
-          expectedLastSubmitOperation = record.second[Confirmation]
+          expectedLastSubmitOperation = record.third[Confirmation]
         )
       }
       .verifyComplete()

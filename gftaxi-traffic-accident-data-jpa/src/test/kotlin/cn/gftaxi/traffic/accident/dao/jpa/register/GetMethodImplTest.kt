@@ -55,7 +55,6 @@ class GetMethodImplTest @Autowired constructor(
     StepVerifier.create(actual)
       .consumeNextWith {
         assertEquals(accidentRegister.id, it.id)
-        assertEquals(accidentRegister.draft, it.draft)
         assertEquals(accidentRegister.happenTime, it.happenTime)
         assertEquals(accidentRegister.carPlate, it.carPlate)
         assertEquals(accidentRegister.driverName, it.driverName)

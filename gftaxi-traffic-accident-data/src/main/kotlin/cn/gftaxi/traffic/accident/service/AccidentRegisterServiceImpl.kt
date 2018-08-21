@@ -43,7 +43,7 @@ class AccidentRegisterServiceImpl @Autowired constructor(
   override fun statSummary(scopeType: ScopeType, from: Int?, to: Int?): Flux<AccidentRegisterDto4StatSummary> {
     return securityService.verifyHasAnyRole(*READ_ROLES)
       .then(Mono.just(0).flatMap {
-        accidentRegisterDao.statSummary(scopeType,from,to).collectList()
+        accidentRegisterDao.statSummary(scopeType, from, to).collectList()
       }).flatMapIterable { it.asIterable() }
   }
 
@@ -77,11 +77,11 @@ class AccidentRegisterServiceImpl @Autowired constructor(
                   if (it == Mono.empty<AccidentDraft>()) Mono.error(NotFoundException("案件不存在：id=$id"))
                   else it
                 }
-                .flatMap { accidentRegisterDao.createBy(it) }
-            } else it
+                .flatMap { accidentRegisterDao.createBy(it).zipWith(Mono.just(it)) }
+            } else it.zipWith(accidentDraftDao.get(id))
           }
           // 3. po 转 dto
-          .map { convert(it) }
+          .map { convert(it.t1, it.t2) }
       })
   }
 

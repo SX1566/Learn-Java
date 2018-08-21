@@ -90,7 +90,7 @@ object POUtils {
     registerTime: OffsetDateTime? = null
   ): AccidentRegister {
     return AccidentRegister(
-      draft = draft,
+      id = draft.id,
       status = status,
 
       carPlate = draft.carPlate,
@@ -146,7 +146,7 @@ object POUtils {
     driverType: DriverType,
     overdueReport: Boolean = false,
     overdueRegister: Boolean? = null
-  ): Pair<AccidentRegister, Map<OperationType, AccidentOperation>> {
+  ): Triple<AccidentRegister, AccidentDraft, Map<OperationType, AccidentOperation>> {
     val operations = hashMapOf<OperationType, AccidentOperation>()
     // 事故报案
     val accidentDraft = randomAccidentDraft(
@@ -213,9 +213,9 @@ object POUtils {
     }
 
     // 返回创建好的信息
-    val pair = Pair(accidentRegister, operations)
-    if (logger.isDebugEnabled) logger.debug(pair.toString())
-    return pair
+    val triple = Triple(accidentRegister, accidentDraft, operations)
+    if (logger.isDebugEnabled) logger.debug(triple.toString())
+    return triple
   }
 
   /**
@@ -227,8 +227,9 @@ object POUtils {
    * @param[positive] 按时间正序还是逆序构建数据
    */
   fun randomAccidentRegisterRecord4EachStatus(em: EntityManager, baseTime: OffsetDateTime, positive: Boolean)
-    : Map<AccidentRegister.Status, Pair<AccidentRegister, Map<OperationType, AccidentOperation>>> {
-    val accidentRegisters = hashMapOf<AccidentRegister.Status, Pair<AccidentRegister, Map<OperationType, AccidentOperation>>>()
+    : Map<AccidentRegister.Status, Triple<AccidentRegister, AccidentDraft, Map<OperationType, AccidentOperation>>> {
+    val accidentRegisters = hashMapOf<AccidentRegister.Status, Triple<AccidentRegister, AccidentDraft,
+      Map<OperationType, AccidentOperation>>>()
     var minus = 0L
     val dir = if (positive) 1L else -1L
 

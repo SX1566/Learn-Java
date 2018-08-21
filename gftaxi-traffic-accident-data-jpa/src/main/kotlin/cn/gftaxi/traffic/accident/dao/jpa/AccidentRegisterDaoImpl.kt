@@ -251,12 +251,11 @@ class AccidentRegisterDaoImpl @Autowired constructor(
       driverName = accidentDraft.driverName,
       date = accidentDraft.happenTime.toLocalDate()
     ).map {
-      val draft = em.merge(accidentDraft)
       val now = OffsetDateTime.now()
       val accidentRegister = AccidentRegister(
         // 基本信息
         status = Status.Draft,
-        draft = draft,
+        id = accidentDraft.id,
 
         // 复制信息
         happenTime = accidentDraft.happenTime,
@@ -321,8 +320,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
       ))
 
       accidentRegister.others = setOf()
-      em.persist(accidentRegister)
-      accidentRegister
+      repository.save(accidentRegister)
     }
   }
 
