@@ -16,9 +16,9 @@ import javax.sql.DataSource
 class BcDataSourceConfiguration @Autowired constructor(
   @Value("\${bc.db.host:localhost}") private val host: String,
   @Value("\${bc.db.port:5432}") private val port: String,
-  @Value("\${bc.db.name:bcsystem}") private val name: String,
-  @Value("\${bc.db.username:reader}") private val username: String,
-  @Value("\${bc.db.password:reader}") private val password: String
+  @Value("\${bc.db.name:test_bcsystem}") private val name: String,
+  @Value("\${bc.db.username:test}") private val username: String,
+  @Value("\${bc.db.password:password}") private val password: String
 ) {
   @Bean
   fun bcDataSource(): DataSource {

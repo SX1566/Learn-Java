@@ -1,6 +1,7 @@
 package cn.gftaxi.traffic.accident.dao.jpa
 
 import cn.gftaxi.traffic.accident.Utils.FORMAT_TO_YYYYMMDD
+import cn.gftaxi.traffic.accident.dto.CaseRelatedInfoDto
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentOperation
 import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType
@@ -275,5 +276,40 @@ object POUtils {
     )
 
     return accidentRegisters
+  }
+
+  fun randomCaseRelatedInfoDto(): CaseRelatedInfoDto {
+    val now = OffsetDateTime.now()
+    return CaseRelatedInfoDto(
+      // 事发时的信息
+      motorcadeName = random("mc"),
+      contractType = random("contractType"),
+      contractDrivers = random("contractDrivers"),
+
+      // 当事车辆信息
+      carId = nextId("car"),
+      carModel = random("carModel"),
+      carOperateDate = now.minusYears(3).toLocalDate(),
+
+      // 当事司机信息
+      driverId = nextId("driver"),
+      driverUid = random("driverUid"),
+      driverType = DriverType.Official,
+      driverPhone = random("driverPhone"),
+      driverHiredDate = now.minusYears(2).toLocalDate(),
+      driverBirthDate = now.minusYears(30).toLocalDate(),
+      driverIdentityCode = random("driverIdentityCode"),
+      driverServiceCode = random("driverServiceCode"),
+      driverOrigin = random("driverOrigin"),
+      driverLicenseDate = now.minusYears(10).toLocalDate(),
+      relatedDriverName = random("relatedDriverName"),
+      relatedDriverPhone = random("relatedDriverPhone"),
+
+      // 历史统计
+      historyAccidentCount = randomInt(0, 10).toShort(),
+      historyTrafficOffenceCount = randomInt(0, 10).toShort(),
+      historyServiceOffenceCount = randomInt(0, 10).toShort(),
+      historyComplainCount = randomInt(0, 10).toShort()
+    )
   }
 }

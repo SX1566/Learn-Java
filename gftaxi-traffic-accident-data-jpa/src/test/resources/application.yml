@@ -13,9 +13,12 @@ logging:
   level:                             # one of TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF
     root: ERROR
     #cn.gftaxi.traffic.accident.dao.jpa: DEBUG
+    #cn.gftaxi.traffic.accident.dao.jdbc: DEBUG
 
     #org.springframework: WARN
     #org.springframework.jdbc.datasource.init.ScriptUtils: INFO # INFO for show executing SQL script
+    #org.springframework.jdbc.core.JdbcTemplate: DEBUG # DEBUG to show jdbc sql
+    #org.springframework.jdbc.core.StatementCreatorUtils: TRACE # TRACE to show SQL parameter value
 
     #---- hibernate sql ----#
     #org.hibernate.SQL: DEBUG                             # DEBUG for log by logger
