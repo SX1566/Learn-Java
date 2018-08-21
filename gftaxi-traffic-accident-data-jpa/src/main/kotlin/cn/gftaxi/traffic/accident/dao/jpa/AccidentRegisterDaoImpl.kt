@@ -289,8 +289,8 @@ class AccidentRegisterDaoImpl @Autowired constructor(
         driverLinkmanPhone = it.relatedDriverPhone,
         driverHiredDate = it.driverHiredDate,
         driverLicenseDate = it.driverLicenseDate,
-        driverDriveYears = it.driverLicenseDate?.let { calculateYears(it, now).toBigDecimal() },
-        driverAge = it.driverBirthDate?.let { calculateYears(it, now).toBigDecimal() },
+        driverDriveYears = it.driverLicenseDate?.let { calculateYears(it, accidentDraft.happenTime).toBigDecimal() },
+        driverAge = it.driverBirthDate?.let { calculateYears(it, accidentDraft.happenTime).toBigDecimal() },
         driverIdentityCode = it.driverIdentityCode,
         driverServiceCode = it.driverServiceCode,
 
