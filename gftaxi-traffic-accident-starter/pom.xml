@@ -226,9 +226,9 @@
         <!-- bcsystem database -->
         <bc.db.host>localhost</bc.db.host>
         <bc.db.port>5432</bc.db.port>
-        <bc.db.name>test_bcsystem</bc.db.name>
-        <bc.db.username>test</bc.db.username>
-        <bc.db.password>password</bc.db.password>
+        <bc.db.name>bcsystem</bc.db.name>
+        <bc.db.username>bcsystem</bc.db.username>
+        <bc.db.password>bcsystem</bc.db.password>
       </properties>
       <dependencies>
         <dependency>
@@ -287,8 +287,8 @@
         <bc.db.host>localhost</bc.db.host>
         <bc.db.port>5432</bc.db.port>
         <bc.db.name>bcsystem</bc.db.name>
-        <bc.db.username>bcsystem</bc.db.username>
-        <bc.db.password>password</bc.db.password>
+        <bc.db.username>reader</bc.db.username>
+        <bc.db.password>reader</bc.db.password>
       </properties>
       <dependencies>
         <dependency>
