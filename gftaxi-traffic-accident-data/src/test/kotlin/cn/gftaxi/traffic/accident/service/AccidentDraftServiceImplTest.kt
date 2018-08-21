@@ -1,10 +1,14 @@
 package cn.gftaxi.traffic.accident.service
 
+import cn.gftaxi.traffic.accident.POUtils.random
+import cn.gftaxi.traffic.accident.POUtils.randomAccidentDraft
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
+import cn.gftaxi.traffic.accident.dao.BcDao
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Modify
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentDraft.Status
+import com.nhaarman.mockito_kotlin.any
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
@@ -28,19 +32,19 @@ import java.time.OffsetDateTime
  * @author JF
  */
 @SpringJUnitConfig(AccidentDraftServiceImpl::class)
-@MockBean(AccidentDraftDao::class, SecurityService::class)
+@MockBean(AccidentDraftDao::class, SecurityService::class, BcDao::class)
 class AccidentDraftServiceImplTest @Autowired constructor(
   private val accidentDraftService: AccidentDraftService,
   private val accidentDraftDao: AccidentDraftDao,
-  private val securityService: SecurityService
+  private val securityService: SecurityService,
+  private val bcDao: BcDao
 ) {
   @Test
   fun findWithRole() {
     // mock
-    val now = OffsetDateTime.now()
     val pageNo = 1
     val pageSize = 25
-    val po = AccidentDraft(null, "code", Status.Done, "plate", "driver", now, now, "", "", "", true, "", "", "", "")
+    val po = randomAccidentDraft(status = Status.Done, overdue = true)
     val expected = PageImpl(listOf(po), PageRequest.of(pageNo, pageSize), 1)
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_READ)
     `when`(accidentDraftDao.find(pageNo, pageSize, Status.Todo, "search")).thenReturn(Mono.just(expected))
@@ -66,8 +70,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
   @Test
   fun findTodo() {
     // mock
-    val now = OffsetDateTime.now()
-    val expected = AccidentDraft(null, "code", Status.Done, "plate", "driver", now, now, "", "", "", true, "", "", "", "")
+    val expected = randomAccidentDraft(status = Status.Done, overdue = true)
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_READ)
     `when`(accidentDraftDao.findTodo()).thenReturn(Flux.just(expected))
 
@@ -84,8 +87,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
   fun get() {
     // mock
     val id = 1
-    val now = OffsetDateTime.now()
-    val expected = AccidentDraft(id, "code", Status.Done, "plate", "driver", now, now, "", "", "", true, "", "", "", "")
+    val expected = randomAccidentDraft(status = Status.Done, overdue = true)
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_READ)
     `when`(accidentDraftDao.get(id)).thenReturn(Mono.just(expected))
 
@@ -102,14 +104,22 @@ class AccidentDraftServiceImplTest @Autowired constructor(
   fun submitWithRole() {
     // mock
     val expected = Pair(1, "code")
-    val dto = AccidentDraftDto4Submit("plate", "driver", OffsetDateTime.now(), "location", "", "", "", "", "", "")
-    val po = AccidentDraft(expected.first, expected.second, Status.Todo, dto.carPlate, dto.driverName,
-      dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
-      dto.hitType, false, dto.source, dto.authorName, dto.authorId, dto.describe
+    val po = randomAccidentDraft(id = expected.first, code = expected.second, status = Status.Done, overdue = true)
+    val dto = AccidentDraftDto4Submit(
+      carPlate = po.carPlate,
+      driverName = po.driverName,
+      happenTime = po.happenTime,
+      location = po.location,
+      hitForm = po.hitForm,
+      hitType = po.hitType,
+      source = "BC",
+      authorName = random("authorName"),
+      authorId = random("authorId")
     )
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
     `when`(accidentDraftDao.nextCode(dto.happenTime)).thenReturn(Mono.just(expected.second))
-    `when`(accidentDraftDao.create(com.nhaarman.mockito_kotlin.any())).thenReturn(Mono.just(po))
+    `when`(accidentDraftDao.create(any())).thenReturn(Mono.just(po))
+    `when`(bcDao.getMotorcadeName(any(), any())).thenReturn(Mono.just("test"))
 
     // invoke
     val actual = accidentDraftService.submit(dto)
@@ -118,13 +128,22 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     StepVerifier.create(actual).expectNext(expected).verifyComplete()
     verify(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
     verify(accidentDraftDao).nextCode(dto.happenTime)
-    verify(accidentDraftDao).create(com.nhaarman.mockito_kotlin.any())
+    verify(accidentDraftDao).create(any())
+    verify(bcDao).getMotorcadeName(any(), any())
   }
 
   @Test
   fun submitWithoutRole() {
     // mock
-    val dto = AccidentDraftDto4Submit("plate", "driver", OffsetDateTime.now(), "location", "", "", "", "", "", "")
+    val dto = AccidentDraftDto4Submit(
+      carPlate = "plate",
+      driverName = "driver",
+      happenTime = OffsetDateTime.now(),
+      location = "location",
+      source = "BC",
+      authorName = random("authorName"),
+      authorId = random("authorId")
+    )
     doThrow(SecurityException()).`when`(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
 
     // invoke and verify
@@ -135,17 +154,28 @@ class AccidentDraftServiceImplTest @Autowired constructor(
   fun submitButNonUnique() {
     // mock
     val code = "code"
-    val dto = AccidentDraftDto4Submit("plate", "driver", OffsetDateTime.now(), "location", "", "", "", "", "", "")
-    val po = AccidentDraft(null,
-      code, Status.Todo, dto.carPlate, dto.driverName, dto.happenTime, dto.reportTime, dto.location, dto.hitForm,
-      dto.hitType, false, dto.source, dto.authorName, dto.authorId, dto.describe
+    val po = randomAccidentDraft(id = 1, code = code, status = Status.Done, overdue = true)
+    val dto = AccidentDraftDto4Submit(
+      carPlate = po.carPlate,
+      driverName = po.driverName,
+      happenTime = po.happenTime,
+      location = po.location,
+      hitForm = po.hitForm,
+      hitType = po.hitType,
+      source = "BC",
+      authorName = random("authorName"),
+      authorId = random("authorId")
     )
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
     `when`(accidentDraftDao.nextCode(dto.happenTime)).thenReturn(Mono.just(code))
-    doThrow(NonUniqueException()).`when`(accidentDraftDao).create(po)
+    `when`(accidentDraftDao.create(any())).thenReturn(Mono.error(NonUniqueException()))
+    `when`(bcDao.getMotorcadeName(any(), any())).thenReturn(Mono.just("test"))
 
     // invoke and verify
     StepVerifier.create(accidentDraftService.submit(dto)).verifyError(NonUniqueException::class)
+    verify(accidentDraftDao).nextCode(dto.happenTime)
+    verify(bcDao).getMotorcadeName(any(), any())
+    verify(accidentDraftDao).create(any())
   }
 
   @Test

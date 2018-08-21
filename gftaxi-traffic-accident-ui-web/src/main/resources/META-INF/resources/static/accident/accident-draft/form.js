@@ -133,7 +133,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
             onOk: function (car) {
               // 设置车辆和车队
               Vue.set(this.vm.e, "carPlate", car.plate);
-              Vue.set(this.vm.e, "motorcade", car.motorcadeName);
+              Vue.set(this.vm.e, "motorcadeName", car.motorcadeName);
               // 加载车辆的营运司机
               this.vm.loadCarMans(car.id);
             }
