@@ -138,7 +138,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
         selectCar: function () {
           bs.selectCar({
             vm: this,
-            status: "-1,0", multiple: false,
+            status: "-1,0,1", multiple: false,
             onOk: function (car) {
               // 设置车辆和车队
               Vue.set(this.vm.e, "carPlate", car.plate);
