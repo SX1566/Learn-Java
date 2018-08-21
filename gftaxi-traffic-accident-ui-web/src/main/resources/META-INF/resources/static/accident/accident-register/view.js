@@ -26,7 +26,7 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
       }
     },
     {id: "motorcadeName", label: "事发车队", width: "5em"},
-    {id: "carPlate", label: "事故车号", width: "6em", rowCellClass: "monospace"},
+    {id: "carPlate", label: "事故车号", width: "7em", rowCellClass: "monospace"},
     {
       id: "driverName", label: "当事司机", width: "8em",
       filter: function (value, row) {

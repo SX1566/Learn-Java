@@ -1,6 +1,8 @@
 package cn.gftaxi.traffic.accident.dao.jpa
 
+import cn.gftaxi.traffic.accident.Utils.calculateYears
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
+import cn.gftaxi.traffic.accident.dao.BcDao
 import cn.gftaxi.traffic.accident.dao.jpa.repository.AccidentRegisterJpaRepository
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4LastChecked
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
@@ -14,7 +16,6 @@ import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType
 import cn.gftaxi.traffic.accident.po.AccidentPeople
 import cn.gftaxi.traffic.accident.po.AccidentRegister
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.isOverdue
-import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.*
 import org.slf4j.LoggerFactory
@@ -48,7 +49,8 @@ import javax.persistence.Query
 class AccidentRegisterDaoImpl @Autowired constructor(
   @Value("\${app.register-overdue-hours:24}") private val overdueHours: Long,
   @PersistenceContext private val em: EntityManager,
-  private val repository: AccidentRegisterJpaRepository
+  private val repository: AccidentRegisterJpaRepository,
+  private val bcDao: BcDao
 ) : AccidentRegisterDao {
   private val logger = LoggerFactory.getLogger(AccidentRegisterDaoImpl::class.java)
   private val overdueSeconds = overdueHours * 60 * 60
@@ -244,78 +246,84 @@ class AccidentRegisterDaoImpl @Autowired constructor(
   }
 
   override fun createBy(accidentDraft: AccidentDraft): Mono<AccidentRegister> {
-    val draft = em.merge(accidentDraft)
-    val accidentRegister = AccidentRegister(
-      // 基本信息
-      status = Status.Draft,
-      draft = draft,
-
-      // 复制信息
-      happenTime = accidentDraft.happenTime,
+    return bcDao.getCaseRelatedInfo(
       carPlate = accidentDraft.carPlate,
       driverName = accidentDraft.driverName,
-      location = accidentDraft.location,
-      hitForm = accidentDraft.hitForm,
-      hitType = accidentDraft.hitType,
-      describe = accidentDraft.describe,
+      date = accidentDraft.happenTime.toLocalDate()
+    ).map {
+      val draft = em.merge(accidentDraft)
+      val now = OffsetDateTime.now()
+      val accidentRegister = AccidentRegister(
+        // 基本信息
+        status = Status.Draft,
+        draft = draft,
 
-      // 自动解析事发地点的省级、地级、县级 TODO
-      locationLevel1 = null,
-      locationLevel2 = null,
-      locationLevel3 = null,
+        // 复制信息
+        happenTime = accidentDraft.happenTime,
+        carPlate = accidentDraft.carPlate,
+        driverName = accidentDraft.driverName,
+        location = accidentDraft.location,
+        hitForm = accidentDraft.hitForm,
+        hitType = accidentDraft.hitType,
+        describe = accidentDraft.describe,
 
-      // 自动匹配的车辆信息 TODO
-      carId = null,
-      motorcadeName = null,
-      carModel = null,
-      carContractType = null,
-      carContractDrivers = null,
-      carOperateDate = null,
+        // 自动解析事发地点的省级、地级、县级 TODO
+        locationLevel1 = null,
+        locationLevel2 = null,
+        locationLevel3 = null,
 
-      // 自动匹配的司机信息 TODO
-      driverId = null,
-      driverType = null,
-      driverPhone = null,
-      driverOrigin = null,
-      driverLinkmanName = null,
-      driverLinkmanPhone = null,
-      driverHiredDate = null,
-      driverLicenseDate = null,
-      driverDriveYears = null,
-      driverAge = null,
-      driverIdentityCode = null,
-      driverServiceCode = null,
-      driverPicId = null,
+        // 自动匹配的车辆信息
+        carId = it.carId,
+        motorcadeName = it.motorcadeName,
+        carModel = it.carModel,
+        carContractType = it.contractType,
+        carContractDrivers = it.contractDrivers,
+        carOperateDate = it.carOperateDate,
 
-      // 历史统计信息 TODO
-      historyComplainCount = null,
-      historyServiceOffenceCount = null,
-      historyTrafficOffenceCount = null,
-      historyAccidentCount = null
-    )
+        // 自动匹配的司机信息
+        driverId = it.driverId,
+        driverPicId = "S:${it.driverUid}",
+        driverType = it.driverType,
+        driverPhone = it.driverPhone,
+        driverOrigin = it.driverOrigin,
+        driverLinkmanName = it.relatedDriverName,
+        driverLinkmanPhone = it.relatedDriverPhone,
+        driverHiredDate = it.driverHiredDate,
+        driverLicenseDate = it.driverLicenseDate,
+        driverDriveYears = it.driverLicenseDate?.let { calculateYears(it, now).toBigDecimal() },
+        driverAge = it.driverBirthDate?.let { calculateYears(it, now).toBigDecimal() },
+        driverIdentityCode = it.driverIdentityCode,
+        driverServiceCode = it.driverServiceCode,
 
-    // 自动创建一条自车类型的当事车辆信息
-    val now = OffsetDateTime.now()
-    accidentRegister.cars = setOf(AccidentCar(
-      sn = 0,
-      parent = accidentRegister,
-      name = accidentRegister.carPlate,
-      type = "自车",
-      updatedTime = now
-    ))
+        // 历史统计信息
+        historyComplainCount = it.historyComplainCount,
+        historyServiceOffenceCount = it.historyServiceOffenceCount,
+        historyTrafficOffenceCount = it.historyTrafficOffenceCount,
+        historyAccidentCount = it.historyAccidentCount
+      )
 
-    // 自动创建一条自车类型的当事人信息
-    accidentRegister.peoples = setOf(AccidentPeople(
-      sn = 0,
-      parent = accidentRegister,
-      name = accidentRegister.driverName,
-      type = "自车",
-      updatedTime = now
-    ))
+      // 自动创建一条自车类型的当事车辆信息
+      accidentRegister.cars = setOf(AccidentCar(
+        sn = 0,
+        parent = accidentRegister,
+        name = accidentRegister.carPlate,
+        type = "自车",
+        updatedTime = now
+      ))
 
-    accidentRegister.others = setOf()
-    em.persist(accidentRegister)
-    return Mono.just(accidentRegister)
+      // 自动创建一条自车类型的当事人信息
+      accidentRegister.peoples = setOf(AccidentPeople(
+        sn = 0,
+        parent = accidentRegister,
+        name = accidentRegister.driverName,
+        type = "自车",
+        updatedTime = now
+      ))
+
+      accidentRegister.others = setOf()
+      em.persist(accidentRegister)
+      accidentRegister
+    }
   }
 
   override fun getStatus(id: Int): Mono<Status> {

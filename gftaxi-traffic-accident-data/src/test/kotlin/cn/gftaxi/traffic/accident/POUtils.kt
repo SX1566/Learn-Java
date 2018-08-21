@@ -15,6 +15,7 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.util.*
 
 /**
  * 构建 PO 实例测试数据的工具类。
@@ -24,6 +25,9 @@ import java.time.temporal.ChronoUnit
 object POUtils {
   private val logger = LoggerFactory.getLogger(POUtils::class.java)
   private var currentCode: Int = 0
+
+  /** 在指定区间随机生成一个数字 */
+  fun randomInt(start: Int, end: Int) = Random().nextInt(end + 1 - start) + start
 
   /** 获取下一个事故编号 */
   fun nextCode(ymd: String = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"))): String {

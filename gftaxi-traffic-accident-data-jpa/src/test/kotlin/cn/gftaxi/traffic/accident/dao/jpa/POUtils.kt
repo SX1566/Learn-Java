@@ -1,6 +1,7 @@
 package cn.gftaxi.traffic.accident.dao.jpa
 
 import cn.gftaxi.traffic.accident.Utils.FORMAT_TO_YYYYMMDD
+import cn.gftaxi.traffic.accident.dto.CaseRelatedInfoDto
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentOperation
 import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType
@@ -10,6 +11,7 @@ import cn.gftaxi.traffic.accident.po.AccidentRegister
 import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType
 import org.slf4j.LoggerFactory
 import java.time.OffsetDateTime
+import java.util.*
 import javax.persistence.EntityManager
 
 /**
@@ -20,6 +22,9 @@ import javax.persistence.EntityManager
 object POUtils {
   private val logger = LoggerFactory.getLogger(POUtils::class.java)
   private var currentCode: Int = 0
+
+  /** 在指定区间随机生成一个数字 */
+  fun randomInt(start: Int, end: Int) = Random().nextInt(end + 1 - start) + start
 
   /** 获取下一个事故编号 */
   fun nextCode(ymd: String): String {
@@ -271,5 +276,40 @@ object POUtils {
     )
 
     return accidentRegisters
+  }
+
+  fun randomCaseRelatedInfoDto(): CaseRelatedInfoDto {
+    val now = OffsetDateTime.now()
+    return CaseRelatedInfoDto(
+      // 事发时的信息
+      motorcadeName = random("mc"),
+      contractType = random("contractType"),
+      contractDrivers = random("contractDrivers"),
+
+      // 当事车辆信息
+      carId = nextId("car"),
+      carModel = random("carModel"),
+      carOperateDate = now.minusYears(3).toLocalDate(),
+
+      // 当事司机信息
+      driverId = nextId("driver"),
+      driverUid = random("driverUid"),
+      driverType = DriverType.Official,
+      driverPhone = random("driverPhone"),
+      driverHiredDate = now.minusYears(2).toLocalDate(),
+      driverBirthDate = now.minusYears(30).toLocalDate(),
+      driverIdentityCode = random("driverIdentityCode"),
+      driverServiceCode = random("driverServiceCode"),
+      driverOrigin = random("driverOrigin"),
+      driverLicenseDate = now.minusYears(10).toLocalDate(),
+      relatedDriverName = random("relatedDriverName"),
+      relatedDriverPhone = random("relatedDriverPhone"),
+
+      // 历史统计
+      historyAccidentCount = randomInt(0, 10).toShort(),
+      historyTrafficOffenceCount = randomInt(0, 10).toShort(),
+      historyServiceOffenceCount = randomInt(0, 10).toShort(),
+      historyComplainCount = randomInt(0, 10).toShort()
+    )
   }
 }

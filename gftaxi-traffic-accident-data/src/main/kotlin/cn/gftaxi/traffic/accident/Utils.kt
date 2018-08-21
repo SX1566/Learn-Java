@@ -8,6 +8,10 @@ import cn.gftaxi.traffic.accident.po.AccidentCar
 import cn.gftaxi.traffic.accident.po.AccidentOther
 import cn.gftaxi.traffic.accident.po.AccidentPeople
 import cn.gftaxi.traffic.accident.po.AccidentRegister
+import java.time.Instant
+import java.time.LocalDate
+import java.time.OffsetDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 /**
@@ -20,6 +24,29 @@ object Utils {
   val FORMAT_DATE_TIME_TO_MINUTE: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
   /** 格式化日期为 yyyyMMdd 格式的处理器 */
   val FORMAT_TO_YYYYMMDD: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+
+  /**
+   * 将车号改造为 "粤A123456" 格式。
+   *
+   * 1. "粤A.123456"  to "粤A123456"
+   * 2. "粤A•123456"  to "粤A123456"
+   * 3. "粤A・123456" to "粤A123456"
+   * 4. "Q2M45"      to "Q2M45"
+   */
+  fun polishCarPlate(carPlate: String): String {
+    return carPlate.replace("•", "").replace("・", "").replace(".", "")
+  }
+
+  private const val YEAR_SECONDS: Long = 365 * 24 * 60 * 60
+  /** 计算两个时间之间的年份数 */
+  fun calculateYears(start: Instant, end: Instant): Float {
+    return (end.epochSecond - start.epochSecond).toFloat().div(YEAR_SECONDS)
+  }
+
+  /** 计算两个时间之间的年份数 */
+  fun calculateYears(start: LocalDate, end: OffsetDateTime): Float {
+    return calculateYears(start.atStartOfDay(ZoneId.systemDefault()).toInstant(), end.toInstant())
+  }
 
   /**
    * 转换 [AccidentRegister] 为 [AccidentRegisterDto4Form]。
