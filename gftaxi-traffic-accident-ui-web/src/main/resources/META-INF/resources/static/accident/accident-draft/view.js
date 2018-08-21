@@ -28,7 +28,7 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
         return value ? "是" : "否";
       }
     },
-    {id: "motorcade", label: "所属车队", width: "5em"},
+    {id: "motorcadeName", label: "事发车队", width: "5em"},
     {id: "source", label: "报案来源", width: "5em"},
   ];
 

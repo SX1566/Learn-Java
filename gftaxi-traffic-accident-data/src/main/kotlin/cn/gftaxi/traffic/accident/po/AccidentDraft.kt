@@ -28,6 +28,9 @@ data class AccidentDraft(
   /** 状态 */
   @Convert(converter = AccidentDraftStatusConverter::class)
   val status: Status,
+  /** 事发车队名称 */
+  @Column(length = 10)
+  val motorcadeName: String? = null,
   /** 事故车号，如 "粤A.12345" */
   @Column(length = 10)
   val carPlate: String,

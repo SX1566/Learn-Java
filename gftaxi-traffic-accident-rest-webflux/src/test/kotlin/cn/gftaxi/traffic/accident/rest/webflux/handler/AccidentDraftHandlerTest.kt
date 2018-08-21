@@ -40,6 +40,16 @@ class AccidentDraftHandlerTest @Autowired constructor(
   private val accidentDraftService: AccidentDraftService,
   private val handler: AccidentDraftHandler
 ) {
+  private fun randomAccidentDraft(id: Int? = null, code: String): AccidentDraft {
+    return AccidentDraft(
+      id = id,
+      code = code, status = AccidentDraft.Status.Todo, carPlate = "car", driverName = "driver",
+      happenTime = OffsetDateTime.now(), reportTime = OffsetDateTime.now(), location = "location",
+      hitForm = "hitForm", hitType = "hitType", overdue = false,
+      source = "source", authorName = "authorName", authorId = "authorId"
+    )
+  }
+
   @Test
   fun find() {
     val client = bindToRouterFunction(RouterFunctions.route(FIND_REQUEST_PREDICATE, HandlerFunction(handler::find))).build()
@@ -50,10 +60,7 @@ class AccidentDraftHandlerTest @Autowired constructor(
     val status = AccidentDraft.Status.Todo
     val code = "20180709_01"
     val list = ArrayList<AccidentDraft>()
-    list.add(AccidentDraft(null,
-      code, AccidentDraft.Status.Todo, "car", "driver", OffsetDateTime.now(),
-      OffsetDateTime.now(), "location", "hitForm", "hitType", false,
-      "source", "authorName", "authorId", ""))
+    list.add(randomAccidentDraft(code = code))
     `when`(accidentDraftService.find(pageNo, pageSize, status, search))
       .thenReturn(Mono.just(PageImpl(list, PageRequest.of(pageNo, pageSize), list.size.toLong())))
 
@@ -79,10 +86,7 @@ class AccidentDraftHandlerTest @Autowired constructor(
     val id = 1
     val code = "20180709_01"
     `when`(accidentDraftService.get(id))
-      .thenReturn(Mono.just(AccidentDraft(id,
-        code, AccidentDraft.Status.Todo, "car", "driver", OffsetDateTime.now(),
-        OffsetDateTime.now(), "location", "hitForm", "hitType", false,
-        "source", "authorName", "authorId", "")))
+      .thenReturn(Mono.just(randomAccidentDraft(id = id, code = code)))
 
     // invoke
     client.get().uri("/accident-draft/$id")

@@ -37,9 +37,9 @@
                 <li class="inputIcon ui-icon ui-icon-circle-plus" title="点击选择" @click="selectCar"></li>
               </ul>
             </td>
-            <td class="label">所属车队：</td>
+            <td class="label">事发车队：</td>
             <td class="value">
-              <input type="text" v-model="e.motorcade" :class="{'ui-widget-content':true, 'ui-state-disabled':!readOnly}"
+              <input type="text" v-model="e.motorcadeName" :class="{'ui-widget-content':true, 'ui-state-disabled':!readOnly}"
                      placeholder="上报案件后自动生成" readonly>
             </td>
           </tr>

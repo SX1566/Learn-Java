@@ -39,46 +39,48 @@ comment on column gf_accident_operation.attachment_name is '附件名称';
 
 -- create tables
 create table gf_accident_draft (
-  id          serial primary key,
-  code        varchar(11) unique,
-  status      smallint     not null,
-  car_plate   varchar(10)  not null,
-  driver_name varchar(10)  not null,
-  happen_time timestamptz  not null,
-  report_time timestamptz  not null,
-  location    varchar(100) not null,
-  hit_form    varchar(50)  not null,
-  hit_type    varchar(50)  not null,
-  overdue     boolean      not null,
-  source      varchar(10)  not null,
-  author_name varchar(50)  not null,
-  author_id   varchar(50)  not null,
-  describe    text,
+  id             serial        primary key,
+  code           varchar(11)  unique,
+  status         smallint     not null,
+  motorcade_name varchar(10),
+  car_plate      varchar(10)  not null,
+  driver_name    varchar(10)  not null,
+  happen_time    timestamptz   not null,
+  report_time    timestamptz   not null,
+  location       varchar(100) not null,
+  hit_form       varchar(50)  not null,
+  hit_type       varchar(50)  not null,
+  overdue        boolean       not null,
+  source         varchar(10)  not null,
+  author_name    varchar(50)  not null,
+  author_id      varchar(50)  not null,
+  describe       text,
   constraint gf_accident_draft_car_plate_happen_time_ukey unique (car_plate, happen_time)
 );
-comment on table gf_accident_draft              is '事故报案';
-comment on column gf_accident_draft.code        is '事故编号，格式为 yyyyMMdd_nn';
-comment on column gf_accident_draft.status      is '状态：1-待登记、2-已登记';
-comment on column gf_accident_draft.car_plate   is '车号，如 "粤A123456"';
-comment on column gf_accident_draft.driver_name is '当事司机姓名';
-comment on column gf_accident_draft.happen_time is '事发时间';
-comment on column gf_accident_draft.report_time is '报案时间';
-comment on column gf_accident_draft.location    is '事发地点';
-comment on column gf_accident_draft.hit_form    is '事故形态';
-comment on column gf_accident_draft.hit_type    is '碰撞类型';
-comment on column gf_accident_draft.overdue     is '是否逾期报案';
-comment on column gf_accident_draft.source      is '报案来源：BC-BC系统Web端、EMAIL-邮件、WEIXIN-微信、SMS-短信、{appId}-应用ID';
-comment on column gf_accident_draft.author_name is '接案人姓名';
-comment on column gf_accident_draft.author_id   is '接案人标识：邮件报案为邮箱、短信报案为手机号、其余为对应的登陆账号';
-comment on column gf_accident_draft.describe    is '简要描述';
+comment on table gf_accident_draft                 is '事故报案';
+comment on column gf_accident_draft.code           is '事故编号，格式为 yyyyMMdd_nn';
+comment on column gf_accident_draft.status         is '状态：1-待登记、2-已登记';
+comment on column gf_accident_draft.motorcade_name is '事发车队名称';
+comment on column gf_accident_draft.car_plate      is '车号，如 "粤A123456"';
+comment on column gf_accident_draft.driver_name    is '当事司机姓名';
+comment on column gf_accident_draft.happen_time    is '事发时间';
+comment on column gf_accident_draft.report_time    is '报案时间';
+comment on column gf_accident_draft.location       is '事发地点';
+comment on column gf_accident_draft.hit_form       is '事故形态';
+comment on column gf_accident_draft.hit_type       is '碰撞类型';
+comment on column gf_accident_draft.overdue        is '是否逾期报案';
+comment on column gf_accident_draft.source         is '报案来源：BC-BC系统Web端、EMAIL-邮件、WEIXIN-微信、SMS-短信、{appId}-应用ID';
+comment on column gf_accident_draft.author_name    is '接案人姓名';
+comment on column gf_accident_draft.author_id      is '接案人标识：邮件报案为邮箱、短信报案为手机号、其余为对应的登陆账号';
+comment on column gf_accident_draft.describe       is '简要描述';
 
 create table gf_accident_register (
   id                            integer primary key references gf_accident_draft on delete no action,
   status                        smallint     not null,
+  motorcade_name                varchar(10),
   -- 车辆信息
   car_id                        int,
   car_plate                     varchar(10)  not null,
-  motorcade_name                varchar(10),
   -- 司机信息
   driver_id                     int,
   driver_name                   varchar(8)   not null,
@@ -137,11 +139,11 @@ create table gf_accident_register (
   constraint gf_accident_register_car_plate_happen_time_ukey unique (car_plate, happen_time)
 );
 comment on table gf_accident_register                       is '事故登记';
--- 车辆信息
 comment on column gf_accident_register.status               is '状态：1-待登记、2-待审核、4-审核不通过、8-审核通过';
+comment on column gf_accident_register.motorcade_name       is '事发车队名称';
+-- 车辆信息
 comment on column gf_accident_register.car_id               is '车辆 ID，对应 BC 系统车辆 ID';
 comment on column gf_accident_register.car_plate            is '事故车号，如 "粤A.12345';
-comment on column gf_accident_register.motorcade_name       is '事发车队名称';
 comment on column gf_accident_register.car_model            is '车辆/车型';
 comment on column gf_accident_register.car_operate_date     is '车辆/投产日期';
 comment on column gf_accident_register.car_contract_type    is '车辆/合同性质';

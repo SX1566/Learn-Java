@@ -1,6 +1,7 @@
 package cn.gftaxi.traffic.accident.service
 
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
+import cn.gftaxi.traffic.accident.dao.BcDao
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Modify
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
 import cn.gftaxi.traffic.accident.po.AccidentDraft
@@ -25,7 +26,8 @@ import tech.simter.security.SecurityService
 class AccidentDraftServiceImpl @Autowired constructor(
   @Value("\${app.draft-overdue-hours:12}") private val overdueHours: Long,
   private val securityService: SecurityService,
-  private val accidentDraftDao: AccidentDraftDao
+  private val accidentDraftDao: AccidentDraftDao,
+  private val bcDao: BcDao
 ) : AccidentDraftService {
   private val overdueSeconds = overdueHours * 60 * 60
   override fun find(pageNo: Int, pageSize: Int, status: Status?, fuzzySearch: String?): Mono<Page<AccidentDraft>> {
@@ -48,22 +50,25 @@ class AccidentDraftServiceImpl @Autowired constructor(
     return accidentDraftDao
       .nextCode(dto.happenTime)
       .flatMap { code ->
-        accidentDraftDao.create(AccidentDraft(
-          code = code,
-          status = Status.Todo,
-          carPlate = dto.carPlate,
-          driverName = dto.driverName,
-          happenTime = dto.happenTime,
-          reportTime = dto.reportTime,
-          location = dto.location,
-          hitForm = dto.hitForm,
-          hitType = dto.hitType,
-          overdue = AccidentDraft.isOverdue(dto.happenTime, dto.reportTime, overdueSeconds),
-          source = dto.source,
-          authorName = dto.authorName,
-          authorId = dto.authorId,
-          describe = dto.describe
-        )).map { Pair(it.id!!, it.code) }
+        bcDao.getMotorcadeName(dto.carPlate, dto.happenTime.toLocalDate()).flatMap {
+          accidentDraftDao.create(AccidentDraft(
+            code = code,
+            status = Status.Todo,
+            motorcadeName = if (it.isEmpty()) null else it,
+            carPlate = dto.carPlate,
+            driverName = dto.driverName,
+            happenTime = dto.happenTime,
+            reportTime = dto.reportTime,
+            location = dto.location,
+            hitForm = dto.hitForm,
+            hitType = dto.hitType,
+            overdue = AccidentDraft.isOverdue(dto.happenTime, dto.reportTime, overdueSeconds),
+            source = dto.source,
+            authorName = dto.authorName,
+            authorId = dto.authorId,
+            describe = dto.describe
+          )).map { Pair(it.id!!, it.code) }
+        }
       }
   }
 
