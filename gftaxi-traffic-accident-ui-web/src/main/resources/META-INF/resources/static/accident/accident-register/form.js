@@ -1,4 +1,5 @@
-define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], function (bc, bs, carMan, Vue, context, accident) {
+define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','static/accident/simter-file/api'],
+  function (bc, bs, carMan, Vue, context, accident, file) {
   "use strict";
   let resourceKey = "accident-register";
   let isRecorder = context.is("ACCIDENT_REGISTER_SUBMIT");
@@ -152,10 +153,24 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           bc.msg.alert("功能开发中！");
           //todo
         },
-        /** 上传事故附件 */
-        uploadAccidentAttachment: function () {
-          bc.msg.alert("功能开发中！");
-          //todo
+        /** 上传事故照片、附件 */
+        uploadAccidentAttachment: function (files) {
+          // console.log(files[0].readAsBinaryString());
+          file.uploadByStream(files, {
+            vm: this,
+            puid: `AR${this.e.id}`,
+            subgroup: 3,
+            onOk: function () {
+              bc.msg.slide("上传成功");
+              this.vm.loadAccidentAttachments();
+            },
+            onError: function () {
+              bc.msg.slide("上传失败");
+            },
+            onProgress: function () {
+              // todo
+            }
+          })
         },
         /** 上传审核附件 */
         uploadCheckedAttachment: function () {
@@ -305,6 +320,9 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
             $page.parent().find("button#save").show();
           if (["Draft", "Rejected"].includes(this.e.status) && isRecorder) $page.parent().find("button#submit").show();
           if (this.e.status === "ToCheck" && isChecker) $page.parent().find("button#check").show();
+        },
+        triggerUploadAccidentAttachment: function () {
+          $page.find("input[name='uploadAccidentAttachment']").click();
         }
       }
     })

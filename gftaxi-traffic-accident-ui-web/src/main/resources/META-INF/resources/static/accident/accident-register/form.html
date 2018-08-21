@@ -273,7 +273,9 @@
         <div class="ui-widget-content relative unflex" style="line-height: 1.8em; border-width: 0 1px">
           <div style="display: inline-block;padding-left: 0.5em">现场图片、附件:</div>
           <ul v-if="!isReadOnly" class="inputIcons" style="position: absolute;right:8px">
-            <li class="inputIcon ui-icon ui-icon-arrowthickstop-1-n" title="上传" @click="uploadAccidentAttachment"></li>
+            <li class="inputIcon ui-icon ui-icon-arrowthickstop-1-n" title="上传" @click="triggerUploadAccidentAttachment">
+              <input hidden type="file" name="uploadAccidentAttachment" @change="uploadAccidentAttachment($event.target.files)"/>
+            </li>
           </ul>
         </div>
         <div class="ui-widget-content flex" style="height: 11em;">
