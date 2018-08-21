@@ -5,10 +5,8 @@ import cn.gftaxi.traffic.accident.dto.AccidentOtherDto4Update
 import cn.gftaxi.traffic.accident.dto.AccidentPeopleDto4Update
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
 import cn.gftaxi.traffic.accident.po.*
-import java.time.Instant
 import java.time.LocalDate
 import java.time.OffsetDateTime
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 /**
@@ -34,15 +32,18 @@ object Utils {
     return carPlate.replace("•", "").replace("・", "").replace(".", "")
   }
 
-  private const val YEAR_SECONDS: Long = 365 * 24 * 60 * 60
-  /** 计算两个时间之间的年份数 */
-  fun calculateYears(start: Instant, end: Instant): Float {
-    return (end.epochSecond - start.epochSecond).toFloat().div(YEAR_SECONDS)
+  /** 计算两个时间之间的年份数，不足一年时舍弃 */
+  fun calculateYears(start: LocalDate, end: LocalDate): Int {
+    return if (end <= start) 0
+    else {
+      if (end.withYear(start.year) >= start) end.year - start.year
+      else end.year - start.year - 1
+    }
   }
 
-  /** 计算两个时间之间的年份数 */
-  fun calculateYears(start: LocalDate, end: OffsetDateTime): Float {
-    return calculateYears(start.atStartOfDay(ZoneId.systemDefault()).toInstant(), end.toInstant())
+  /** 计算两个日期之间的年份数，不足一年时舍弃 */
+  fun calculateYears(start: LocalDate, end: OffsetDateTime): Int {
+    return calculateYears(start, end.toLocalDate())
   }
 
   /**
