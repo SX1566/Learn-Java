@@ -31,6 +31,7 @@ data class AccidentRegisterDto4Form constructor(
 
   // 车辆冗余信息
   val carModel: String? = null,
+  @JsonFormat(pattern = "yyyy-MM-dd")
   val carOperateDate: LocalDate? = null,
   val carContractType: String? = null,
   val carContractDrivers: String? = null,
@@ -44,12 +45,14 @@ data class AccidentRegisterDto4Form constructor(
   val driverLinkmanPhone: String? = null,
 
   // 司机冗余信息
+  @JsonFormat(pattern = "yyyy-MM-dd")
   val driverHiredDate: LocalDate? = null,
   val driverPhone: String? = null,
   val driverIdentityCode: String? = null,
   val driverServiceCode: String? = null,
   val driverOrigin: String? = null,
   val driverAge: BigDecimal? = null,
+  @JsonFormat(pattern = "yyyy-MM-dd")
   val driverLicenseDate: LocalDate? = null,
   val driverDriveYears: BigDecimal? = null,
   val driverPicId: String? = null,
