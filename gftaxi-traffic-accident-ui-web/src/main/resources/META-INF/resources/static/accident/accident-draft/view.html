@@ -1,6 +1,6 @@
 <div title="事故报案" class="bc-page" data-type='list'
      data-js='["static/accident/accident-draft/view.js"]'
-     data-option='{"width":1172, "height":386, "minHeight":386, "minWidth":889, "maxWidth":1172, "minimizable":true, "maximizable":true}'>
+     data-option='{"width":1050, "height":386, "minHeight":200, "minWidth":600, "minimizable":true, "maximizable":true}'>
   <bc-grid v-ref:grid :columns="columns" :url="url" :query.sync="condition" :pageable="true" @dblclick-row="dblclickRow">
     <bc-toolbar slot="top">
       <bc-button v-if="isSubmitter" icon-class="ui-icon-document" text="新建" @click="create"></bc-button>

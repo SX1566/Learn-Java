@@ -13,10 +13,11 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
         else return value;
       }
     },
-    {id: "code", label: "事故编号", width: "7.5em"},
+    {id: "happenTime", label: "事发时间", width: "10em"},
+    {id: "motorcadeName", label: "事发车队", width: "5em"},
+    // {id: "code", label: "事故编号", width: "7.5em"},
     {id: "carPlate", label: "事故车号", width: "7em", rowCellClass: "monospace"},
     {id: "driverName", label: "当事司机", width: "5em"},
-    {id: "happenTime", label: "事发时间", width: "10em"},
     {id: "location", label: "事发地点", width: "13em"},
     {id: "hitForm", label: "事故形态", width: "7em"},
     {id: "hitType", label: "碰撞类型", width: "5em"},
@@ -28,7 +29,6 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
         return value ? "是" : "否";
       }
     },
-    {id: "motorcadeName", label: "事发车队", width: "5em"},
     {id: "source", label: "报案来源", width: "5em"},
   ];
 
