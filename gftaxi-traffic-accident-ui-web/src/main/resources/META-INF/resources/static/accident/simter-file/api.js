@@ -141,9 +141,19 @@ define(["jquery", "bc", "context"], function ($, bc, context) {
           if (xhr.readyState === 4) {
             //累计上传的文件数
             i++;
+
+            let headers = {};
+            xhr.getAllResponseHeaders().replace("\r\n", ";").split(";").filter(i => i.length > 0).forEach(i => {
+              let header = i.split(":");
+              headers[header[0]] = header[1];
+            });
+
+            let result = {
+              headers: headers,
+              body: eval(xhr.responseText)
+            }
             //调用回调函数
-            if (typeof callback == "function")
-              callback(eval("(" + xhr.responseText + ")"));
+            if (typeof callback == "function") callback(result);
           }
         };
 
