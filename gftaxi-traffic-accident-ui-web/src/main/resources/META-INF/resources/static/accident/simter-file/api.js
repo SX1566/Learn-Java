@@ -101,8 +101,6 @@ define(["jquery", "bc", "context"], function ($, bc, context) {
      * @return {Promise}
      */
     uploadByStream: function (files, option) {
-      let xhrs = {};
-
       let url = appendUrlParams(option.url || fileDataServer, {puid: option.puid || 0, subgroup: option.subgroup || 0});
 
       // todo:检测文件数量的限制
@@ -118,9 +116,9 @@ define(["jquery", "bc", "context"], function ($, bc, context) {
       }, 500);//延时小许时间再上传，避免太快看不到效果
 
       // 逐一上传文件
-      function uploadNext() {
+      function uploadNext(result) {
         if (i >= files.length) {//全部上传完毕
-          option.onOk();
+          option.onOk(result);
           return;
         }
 
@@ -132,7 +130,6 @@ define(["jquery", "bc", "context"], function ($, bc, context) {
       //上传一个文件
       function uploadOneFile(key, f, url, callback) {
         let xhr = new XMLHttpRequest();
-        xhrs[key] = xhr;
         if ($.browser.safari) {//Chrome12、Safari5
           xhr.upload.onprogress = option.onProgress;
         } else if ($.browser.mozilla) {//Firefox4
@@ -142,11 +139,11 @@ define(["jquery", "bc", "context"], function ($, bc, context) {
         //上传完毕的处理
         xhr.onreadystatechange = function () {
           if (xhr.readyState === 4) {
-            bc.attach.html5.xhrs[key] = null;
             //累计上传的文件数
             i++;
             //调用回调函数
-            if (typeof callback == "function") callback();
+            if (typeof callback == "function")
+              callback(eval("(" + xhr.responseText + ")"));
           }
         };
 
