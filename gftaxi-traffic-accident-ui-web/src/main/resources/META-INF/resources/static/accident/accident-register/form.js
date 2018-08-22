@@ -297,8 +297,8 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
          * @option subgroup 附件当前登记模块的所属分组
          */
         inline: function (option) {
-          if (option.id) accident.inlineById(option.id);
-          else accident.inlineByModule(`AR${this.e.id}`, option.subgroup);
+          if (option.id) file.inlineById(option.id);
+          else file.inlineByModule(`AR${this.e.id}`, option.subgroup);
         },
         /** 生成事故附件图片地址 */
         initAccidentAttachmentUrl: function (id) {

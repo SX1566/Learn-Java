@@ -7,7 +7,6 @@ define(["bc", "context"], function (bc, context) {
   "use strict";
   let accidentDataServer = `${context.services.accident.address}`;  // 交通事故数据服务地址
   let accidentStaticServer = `${bc.root}/static/accident`;  // 静态文件服务地址
-  let fileDataServer = `${context.services.file.address}`;  // 文件服务器数据服务地址
 
     /**
    * 定义超时用的 Promise。
@@ -77,8 +76,6 @@ define(["bc", "context"], function (bc, context) {
     staticServer: accidentStaticServer,
     /** 交通事故分类信息 */
     categories: categories,
-    /** 文件数据服务地址 */
-    fileDataServer:fileDataServer,
 
     /**
      * 打开模块的表单窗口。
@@ -205,21 +202,6 @@ define(["bc", "context"], function (bc, context) {
       let url = `${accidentDataServer}/category/${sn}/children`;
       if (includeDisabled !== null) url = `${url}?include-disabled=${includeDisabled}`;
       return cors(url, "GET");
-    },
-    /**
-     * 在线查看指定 Id 附件
-     * @param id 附件Id
-     */
-    inlineById: function (id) {
-      window.open(`${fileDataServer}/inline/${id}`);
-    },
-    /**
-     * 在线查看指定模块分组附件
-     * @param module 附件所属模块，如：ARxxx，AR 为 AccidentRegister 的缩写，xxx为事故登记的 Id
-     * @param subgroup 附件所属模块的分组
-     */
-    inlineByModule: function (module, subgroup) {
-      window.open(`${fileDataServer}/inline/parent/${module}/${subgroup}`);
     },
     /**
      * 计算两个时间之间相差的小时数

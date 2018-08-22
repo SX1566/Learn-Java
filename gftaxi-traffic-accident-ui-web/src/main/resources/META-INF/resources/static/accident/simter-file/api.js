@@ -72,6 +72,22 @@ define(["jquery", "bc", "context"], function ($, bc, context) {
     /** 文件数据服务地址 */
     fileDataServer: fileDataServer,
 
+
+    /**
+     * 在线查看指定 Id 附件
+     * @param id 附件Id
+     */
+    inlineById: function (id) {
+      window.open(`${fileDataServer}/inline/${id}`);
+    },
+    /**
+     * 在线查看指定模块分组附件
+     * @param module 附件所属模块，如：ARxxx，AR 为 AccidentRegister 的缩写，xxx为事故登记的 Id
+     * @param subgroup 附件所属模块的分组
+     */
+    inlineByModule: function (module, subgroup) {
+      window.open(`${fileDataServer}/inline/parent/${module}/${subgroup}`);
+    },
     /**
      * 使用流上传文件
      * @param files 文件数据
