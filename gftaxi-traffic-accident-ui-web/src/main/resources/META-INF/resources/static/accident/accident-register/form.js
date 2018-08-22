@@ -321,8 +321,12 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           if (["Draft", "Rejected"].includes(this.e.status) && isRecorder) $page.parent().find("button#submit").show();
           if (this.e.status === "ToCheck" && isChecker) $page.parent().find("button#check").show();
         },
-        triggerUploadAccidentAttachment: function () {
-          $page.find("input[name='uploadAccidentAttachment']").click();
+        /**
+         * 触发上传组件点击事件
+         * @param name 上传组件名称
+         * */
+        triggerUploadButton: function (name) {
+          $page.find(`input[name='${name}']`).click();
         }
       }
     })
