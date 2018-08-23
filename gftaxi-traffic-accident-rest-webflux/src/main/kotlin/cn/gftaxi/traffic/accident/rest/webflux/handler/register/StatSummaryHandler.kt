@@ -23,7 +23,7 @@ class StatSummaryHandler @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService
 ) : HandlerFunction<ServerResponse> {
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
-    val scopeType = ScopeType.valueOf(request.pathVariable("scopeType"))
+    val scopeType = ScopeType.valueOf(uppercaseFirstChar(request.pathVariable("scopeType")))
     val from = request.queryParam("from").orElse(null).toInt()
     val to = request.queryParam("to").orElse(null).toInt()
     return accidentRegisterService.statSummary(scopeType, from, to).collectList()
@@ -33,6 +33,11 @@ class StatSummaryHandler @Autowired constructor(
       .onErrorResume(PermissionDeniedException::class.java, {
         status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
       })
+  }
+
+  // 字符串首字母大写
+  private fun uppercaseFirstChar(str: String): String {
+    return "${str.substring(0, 1).toUpperCase()}${str.substring(1)}"
   }
 
   companion object {
