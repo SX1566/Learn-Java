@@ -171,9 +171,29 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           })
         },
         /** 上传事故现场图 */
-        uploadAccidentPic: function () {
-          bc.msg.alert("功能开发中！");
-          //todo
+        uploadAccidentPic: function (files) {
+          // 验证上传文件是否图片格式
+          if (!files[0].type.includes("image")) {
+            bc.msg.alert("只能上传图片格式的文件！");
+            return;
+          }
+          // 开始上传
+          file.uploadByStream(files, {
+            vm: this,
+            puid: `AR${this.e.id}`,
+            subgroup: 2,
+            onOk: function () {
+              bc.msg.slide("上传成功");
+              // 加载事故现场图信息
+              this.vm.loadAccidentPicAttachments()
+            },
+            onError: function () {
+              bc.msg.slide("上传失败");
+            },
+            onProgress: function () {
+              // todo
+            }
+          })
         },
         /** 编辑事故现场图 */
         editAccidentPic: function () {
