@@ -66,6 +66,13 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
             peoples: this.e.peoples.some(i => i.selected),
             others: this.e.others.some(i => i.selected),
           }
+        },
+        driverPicUrl: function () {
+          if (!this.e.driverPicId) return "#";
+          let picOption = this.e.driverPicId.split(":");
+          return picOption[0] === "S" ?
+            `${bc.root}/bc/image/download?ptype=portrait&puid=${picOption[1]}` :
+            `${file.fileDataServer}/inline/${picOption[1]}`
         }
       },
       components: {
@@ -139,9 +146,29 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           }
         },
         /** 上传当事司机照片 */
-        uploadDriverPic: function () {
-          bc.msg.alert("功能开发中！");
-          // todo
+        uploadDriverPic: function (files) {
+          // 验证上传文件是否图片格式
+          if (!files[0].type.includes("image")) {
+            bc.msg.alert("只能上传图片格式的文件！");
+            return;
+          }
+          // 开始上传
+          file.uploadByStream(files, {
+            vm: this,
+            puid: `AR${this.e.id}`,
+            subgroup: 1,
+            onOk: function (result) {
+              bc.msg.slide("上传成功");
+              // 上传成功更新 driverPicId
+              Vue.set(this.vm.e, "driverPicId", `C:${result.headers.location.replace("/")}`);
+            },
+            onError: function () {
+              bc.msg.slide("上传失败");
+            },
+            onProgress: function () {
+              // todo
+            }
+          })
         },
         /** 上传事故现场图 */
         uploadAccidentPic: function () {
@@ -155,7 +182,6 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
         },
         /** 上传事故照片、附件 */
         uploadAccidentAttachment: function (files) {
-          // console.log(files[0].readAsBinaryString());
           file.uploadByStream(files, {
             vm: this,
             puid: `AR${this.e.id}`,
