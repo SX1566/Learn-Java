@@ -789,13 +789,22 @@
             </label>
           </td>
           <td class="label">
-            <span class="ui-icon ui-icon-arrowthickstop-1-n" title="上传审核附件"
-                  style="vertical-align: middle;display: inline-block;cursor: pointer"
-                  @click="uploadCheckedAttachment"></span>
-            <span style="display: inline-block;cursor: pointer;text-decoration: underline"
-                  @click="uploadCheckedAttachment">上传审核附件</span>:
+            <div style="cursor: pointer" @click="triggerUploadButton('uploadCheckedAttachment')">
+              <span class="ui-icon ui-icon-arrowthickstop-1-n" title="上传审核附件"
+                    style="vertical-align: middle;display: inline-block;margin-right: -0.5em"></span>
+              <span style="display: inline-block;text-decoration: underline">上传审核附件</span>:
+              <input hidden type="file" name="uploadCheckedAttachment"
+                     @change="uploadCheckedAttachment($event.target.files)"/>
+            </div>
           </td>
-          <td class="value"><!-- todo --></td>
+          <td class="value">
+            <span v-if="this.ui.checkedAttachment!==null&&this.ui.checkedAttachment!==undefined"
+                  style="cursor: pointer;margin-left: 0.25em;" @click="inline({id: this.ui.checkedAttachment.id})">
+              <span class="ui-icon ui-icon-document" style="display: inline-block;vertical-align: middle;margin-right: -0.5em"></span>
+              <span style="border-bottom: 1px solid">{{`${this.ui.checkedAttachment.name}.${this.ui.checkedAttachment.ext}`}}</span>
+            </span>
+            <span v-else style="margin-left: 0.25em;">未上传</span>
+          </td>
         </tr>
         <tr>
           <td class="label">审核意见:</td>

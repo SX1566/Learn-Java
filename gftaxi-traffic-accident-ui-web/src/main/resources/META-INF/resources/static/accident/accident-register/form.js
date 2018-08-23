@@ -240,9 +240,22 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           })
         },
         /** 上传审核附件 */
-        uploadCheckedAttachment: function () {
-          bc.msg.alert("功能开发中！");
-          //todo
+        uploadCheckedAttachment: function (files) {
+          file.uploadByStream(files, {
+            vm: this,
+            puid: `AR${this.e.id}`,
+            subgroup: 4,
+            onOk: function () {
+              bc.msg.slide("上传成功");
+              this.vm.loadCheckedAttachments();
+            },
+            onError: function () {
+              bc.msg.slide("上传失败");
+            },
+            onProgress: function () {
+              // todo
+            }
+          })
         },
         /** 选择车辆 */
         selectCar: function () {
