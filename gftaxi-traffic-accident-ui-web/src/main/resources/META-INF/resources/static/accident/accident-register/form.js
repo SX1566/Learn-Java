@@ -371,10 +371,13 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           this.e[module].splice(index + 1, 0, this.e[module].splice(index, 1)[0]); // 下移
         },
         /**
-         * 在线查看附件，如果配置参数有附件 Id 则按 Id 查看附件否则按照模块和分组查看
-         * @param option 配置参数
-         * @option id 附件 Id
-         * @option subgroup 附件当前登记模块的所属分组
+         *  在线查看附件
+         *  选项配置有 id 则使用 id 在线查看附件，否则通过所属模块和分组查看
+         *
+         *  @param option 在线查看选项配置
+         *  @option id 附件Id
+         *  @option puid 附件所属模块
+         *  @option subgroup 附件所属模块的所属分组
          */
         inline: function (option) {
           if (option.id) file.inlineById(option.id);

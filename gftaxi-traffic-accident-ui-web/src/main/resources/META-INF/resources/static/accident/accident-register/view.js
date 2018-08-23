@@ -1,4 +1,5 @@
-define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], function (bc, Vue, context, accident) {
+define(["bc", "vue", "context", "static/accident/api", "static/accident/simter-file/api", "bc/vue/components"],
+  function (bc, Vue, context, accident, file) {
   "use strict";
   let resourceKey = "accident-register";
   let resourceName = "事故登记";
@@ -86,7 +87,7 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
       },
       rowCellClick: function (value, row) {
         if (row.attachmentId)
-          accident.inline(row.attachmentId);
+          file.inline(row.attachmentId);
       }
     },
     {id: "checkerName", label: "审核人", width: "5em"},
