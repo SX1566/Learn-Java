@@ -35,8 +35,8 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
         });
         // 加载分类标准信息
         accident.categories.then(r => Vue.set(this, "categories", r));
-        // 加载事故登记附件
-        this.loadAccidentAttachments();
+        // 加载事故登记表单所有附件
+        this.initAttachments();
       },
       watch: {
         'ui.happenTime': function (value) {
@@ -73,6 +73,9 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           return picOption[0] === "S" ?
             `${bc.root}/bc/image/download?ptype=portrait&puid=${picOption[1]}` :
             `${file.fileDataServer}/inline/${picOption[1]}`
+        },
+        accidentPicUrl: function () {
+          return !this.ui.accidentPic ? "#" : `${file.fileDataServer}/inline/${this.ui.accidentPic.id}`
         }
       },
       components: {
@@ -81,12 +84,30 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
         "accident-other-column-definitions": {template: $page.find("script[name=accident-other-column-definitions]").html()}
       },
       methods: {
-      /** 加载事故附件信息 */
-      loadAccidentAttachments: function () {
-        accident.get(`${accident.fileDataServer}/parent/AR${this.e.id}/3`).then(attachments => {
-          this.accidentAttachments = attachments
-        })
-      },
+        /** 初始化表单附件信息 */
+        initAttachments: function () {
+          this.loadAccidentAttachments();
+          this.loadAccidentPicAttachments();
+          if (["Rejected", "Approved"].includes(this.e.status)) this.loadCheckedAttachments()
+        },
+        /** 加载事故附件信息 */
+        loadAccidentAttachments: function () {
+          accident.get(`${accident.fileDataServer}/parent/AR${this.e.id}/3`).then(attachments => {
+            this.accidentAttachments = attachments
+          })
+        },
+        /** 加载事故现场图信息 */
+        loadAccidentPicAttachments: function () {
+          accident.get(`${accident.fileDataServer}/parent/AR${this.e.id}/2`).then(attachments => {
+            Vue.set(this.ui, "accidentPic", attachments[0]);
+          })
+        },
+        /** 加载表单审核附件信息 */
+        loadCheckedAttachments: function () {
+          accident.get(`${accident.fileDataServer}/parent/AR${this.e.id}/4`).then(attachments => {
+            Vue.set(this.ui, "checkedAttachment", attachments[0]);
+          })
+        },
         /**
          * 保存表单
          * @param option 回调函数
