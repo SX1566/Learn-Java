@@ -16,11 +16,11 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           isChecker: isChecker,
           happenTime: "",
           sexList: [{id: "Male", label: "男"}, {id: "Female", label: "女"}],
-          driverStates: [{id: "Official", label: "正班"}, {id: "Shift", label: "替班"}, {id: "Outside", label: "非编"}]
+          driverStates: [{id: "Official", label: "正班"}, {id: "Shift", label: "替班"}, {id: "Outside", label: "非编"}],
+          accidentAttachments: []
         },
         categories: {},
-        e: {status: "Draft"},
-        accidentAttachments: []
+        e: {status: "Draft"}
       },
       ready: function () {
         let id = $page.data("data");
@@ -93,7 +93,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
         /** 加载事故附件信息 */
         loadAccidentAttachments: function () {
           accident.get(`${accident.fileDataServer}/parent/AR${this.e.id}/3`).then(attachments => {
-            this.accidentAttachments = attachments
+            this.ui.accidentAttachments = attachments
           })
         },
         /** 加载事故现场图信息 */

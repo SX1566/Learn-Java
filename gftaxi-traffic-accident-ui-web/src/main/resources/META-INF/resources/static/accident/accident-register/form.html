@@ -280,7 +280,7 @@
           </ul>
         </div>
         <div class="ui-widget-content flex" style="height: 11em;">
-          <div v-for="attach in accidentAttachments" style="display: inline-block;width: 3.5em;margin: 0.5em;text-align: center">
+          <div v-for="attach in ui.accidentAttachments" style="display: inline-block;width: 3.5em;margin: 0.5em;text-align: center">
             <img v-if="isImageExt(attach.ext)" style="max-width: 100%; max-height: 100%; cursor:pointer; vertical-align: middle"
                  :src="initAccidentAttachmentUrl(attach.id)">
             <span v-else :class="initAccidentAttachmentIcon(attach.ext)" style="margin: 0 auto"></span>
