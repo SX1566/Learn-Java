@@ -20,7 +20,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
       ready: function () {
         let id = $page.data("data");
         if (id) {
-          Vue.set(this.e, "code", id);
+          Vue.set(this.e, "id", id);
           accident.getByModule(resourceKey, id).then(json => {
             Object.keys(json).forEach(key => Vue.set(this.e, key, json[key]));
             this.ui.hitForms.push(this.e.hitForm);
