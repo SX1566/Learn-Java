@@ -86,10 +86,13 @@
               <td rowspan="6" class="ui-widget-content relative">
                 <div style="position: absolute; left: 0; top: 0; bottom: 0; right: 0; text-align: center">
                   <span style="height: 100%; display: inline-block; vertical-align: middle"></span>
-                  <img style="max-width: 100%; max-height: 100%; cursor:pointer; vertical-align: middle" alt="无图" title="点击查看大图" src="#"
-                       @click="uploadDriverPic">
+                  <img style="max-width: 100%; max-height: 100%; cursor:pointer; vertical-align: middle" alt="无图" title="点击查看大图" :src="driverPicUrl"
+                       @click="triggerUploadButton('uploadDriverPic')">
                   <ul v-if="!isReadOnly" class="inputIcons" style="position: absolute; top: 10px; right: 2px">
-                    <li class="inputIcon ui-icon ui-icon-arrowthickstop-1-n" title="上传" @click="uploadAccidentPic"></li>
+                    <li class="inputIcon ui-icon ui-icon-arrowthickstop-1-n" title="上传"
+                        @click="triggerUploadButton('uploadDriverPic')">
+                      <input hidden type="file" name="uploadDriverPic" @change="uploadDriverPic($event.target.files)"/>
+                    </li>
                   </ul>
                 </div>
               </td>
@@ -258,24 +261,26 @@
         <div class="ui-widget-content relative unflex" style="line-height: 1.8em; border-width: 0 1px">
           <div style="display: inline-block;padding-left: 0.5em">事故现场图:</div>
           <ul v-if="!isReadOnly" class="inputIcons" style="position: absolute;right:8px">
-            <li class="inputIcon ui-icon ui-icon-arrowthickstop-1-n" title="上传" @click="uploadAccidentPic"></li>
+            <li class="inputIcon ui-icon ui-icon-arrowthickstop-1-n" title="上传" @click="triggerUploadButton('uploadAccidentPic')">
+              <input hidden type="file" name="uploadAccidentPic" @change="uploadAccidentPic($event.target.files)"/>
+            </li>
           </ul>
         </div>
         <div class="ui-widget-content unflex" style="height: 13em; text-align: center">
           <span style="height: 100%; display: inline-block; vertical-align: middle"></span>
           <img style="max-width:100%; max-height:100%; cursor: pointer; vertical-align: middle" alt="无图" title="点击查看大图"
-               src="#">
+               :src="accidentPicUrl">
         </div>
         <div class="ui-widget-content relative unflex" style="line-height: 1.8em; border-width: 0 1px">
           <div style="display: inline-block;padding-left: 0.5em">现场图片、附件:</div>
           <ul v-if="!isReadOnly" class="inputIcons" style="position: absolute;right:8px">
-            <li class="inputIcon ui-icon ui-icon-arrowthickstop-1-n" title="上传" @click="triggerUploadAccidentAttachment">
+            <li class="inputIcon ui-icon ui-icon-arrowthickstop-1-n" title="上传" @click="triggerUploadButton('uploadAccidentAttachment')">
               <input hidden type="file" name="uploadAccidentAttachment" @change="uploadAccidentAttachment($event.target.files)"/>
             </li>
           </ul>
         </div>
         <div class="ui-widget-content flex" style="height: 11em;">
-          <div v-for="attach in accidentAttachments" style="display: inline-block;width: 3.5em;margin: 0.5em;text-align: center">
+          <div v-for="attach in ui.accidentAttachments" style="display: inline-block;width: 3.5em;margin: 0.5em;text-align: center">
             <img v-if="isImageExt(attach.ext)" style="max-width: 100%; max-height: 100%; cursor:pointer; vertical-align: middle"
                  :src="initAccidentAttachmentUrl(attach.id)">
             <span v-else :class="initAccidentAttachmentIcon(attach.ext)" style="margin: 0 auto"></span>
@@ -784,13 +789,22 @@
             </label>
           </td>
           <td class="label">
-            <span class="ui-icon ui-icon-arrowthickstop-1-n" title="上传审核附件"
-                  style="vertical-align: middle;display: inline-block;cursor: pointer"
-                  @click="uploadCheckedAttachment"></span>
-            <span style="display: inline-block;cursor: pointer;text-decoration: underline"
-                  @click="uploadCheckedAttachment">上传审核附件</span>:
+            <div style="cursor: pointer" @click="triggerUploadButton('uploadCheckedAttachment')">
+              <span class="ui-icon ui-icon-arrowthickstop-1-n" title="上传审核附件"
+                    style="vertical-align: middle;display: inline-block;margin-right: -0.5em"></span>
+              <span style="display: inline-block;text-decoration: underline">上传审核附件</span>:
+              <input hidden type="file" name="uploadCheckedAttachment"
+                     @change="uploadCheckedAttachment($event.target.files)"/>
+            </div>
           </td>
-          <td class="value"><!-- todo --></td>
+          <td class="value">
+            <span v-if="this.ui.checkedAttachment!==null&&this.ui.checkedAttachment!==undefined"
+                  style="cursor: pointer;margin-left: 0.25em;" @click="inline({id: this.ui.checkedAttachment.id})">
+              <span class="ui-icon ui-icon-document" style="display: inline-block;vertical-align: middle;margin-right: -0.5em"></span>
+              <span style="border-bottom: 1px solid">{{`${this.ui.checkedAttachment.name}.${this.ui.checkedAttachment.ext}`}}</span>
+            </span>
+            <span v-else style="margin-left: 0.25em;">未上传</span>
+          </td>
         </tr>
         <tr>
           <td class="label">审核意见:</td>

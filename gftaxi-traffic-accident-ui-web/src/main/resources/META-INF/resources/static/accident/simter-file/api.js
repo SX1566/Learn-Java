@@ -72,6 +72,22 @@ define(["jquery", "bc", "context"], function ($, bc, context) {
     /** 文件数据服务地址 */
     fileDataServer: fileDataServer,
 
+
+    /**
+     * 在线查看指定 Id 附件
+     * @param id 附件Id
+     */
+    inlineById: function (id) {
+      window.open(`${fileDataServer}/inline/${id}`);
+    },
+    /**
+     * 在线查看指定模块分组附件
+     * @param module 附件所属模块，如：ARxxx，AR 为 AccidentRegister 的缩写，xxx为事故登记的 Id
+     * @param subgroup 附件所属模块的分组
+     */
+    inlineByModule: function (module, subgroup) {
+      window.open(`${fileDataServer}/inline/parent/${module}/${subgroup}`);
+    },
     /**
      * 使用流上传文件
      * @param files 文件数据
@@ -85,8 +101,6 @@ define(["jquery", "bc", "context"], function ($, bc, context) {
      * @return {Promise}
      */
     uploadByStream: function (files, option) {
-      let xhrs = {};
-
       let url = appendUrlParams(option.url || fileDataServer, {puid: option.puid || 0, subgroup: option.subgroup || 0});
 
       // todo:检测文件数量的限制
@@ -102,9 +116,9 @@ define(["jquery", "bc", "context"], function ($, bc, context) {
       }, 500);//延时小许时间再上传，避免太快看不到效果
 
       // 逐一上传文件
-      function uploadNext() {
+      function uploadNext(result) {
         if (i >= files.length) {//全部上传完毕
-          option.onOk();
+          option.onOk(result);
           return;
         }
 
@@ -116,7 +130,6 @@ define(["jquery", "bc", "context"], function ($, bc, context) {
       //上传一个文件
       function uploadOneFile(key, f, url, callback) {
         let xhr = new XMLHttpRequest();
-        xhrs[key] = xhr;
         if ($.browser.safari) {//Chrome12、Safari5
           xhr.upload.onprogress = option.onProgress;
         } else if ($.browser.mozilla) {//Firefox4
@@ -126,11 +139,21 @@ define(["jquery", "bc", "context"], function ($, bc, context) {
         //上传完毕的处理
         xhr.onreadystatechange = function () {
           if (xhr.readyState === 4) {
-            bc.attach.html5.xhrs[key] = null;
             //累计上传的文件数
             i++;
+
+            let headers = {};
+            xhr.getAllResponseHeaders().replace("\r\n", ";").split(";").filter(i => i.length > 0).forEach(i => {
+              let header = i.split(":");
+              headers[header[0]] = header[1];
+            });
+
+            let result = {
+              headers: headers,
+              body: eval(xhr.responseText)
+            }
             //调用回调函数
-            if (typeof callback == "function") callback();
+            if (typeof callback == "function") callback(result);
           }
         };
 

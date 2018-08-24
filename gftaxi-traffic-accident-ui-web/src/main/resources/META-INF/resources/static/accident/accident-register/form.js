@@ -16,11 +16,11 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           isChecker: isChecker,
           happenTime: "",
           sexList: [{id: "Male", label: "男"}, {id: "Female", label: "女"}],
-          driverStates: [{id: "Official", label: "正班"}, {id: "Shift", label: "替班"}, {id: "Outside", label: "非编"}]
+          driverStates: [{id: "Official", label: "正班"}, {id: "Shift", label: "替班"}, {id: "Outside", label: "非编"}],
+          accidentAttachments: []
         },
         categories: {},
-        e: {status: "Draft"},
-        accidentAttachments: []
+        e: {status: "Draft"}
       },
       ready: function () {
         let id = $page.data("data");
@@ -35,8 +35,8 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
         });
         // 加载分类标准信息
         accident.categories.then(r => Vue.set(this, "categories", r));
-        // 加载事故登记附件
-        this.loadAccidentAttachments();
+        // 加载事故登记表单所有附件
+        this.initAttachments();
       },
       watch: {
         'ui.happenTime': function (value) {
@@ -66,6 +66,16 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
             peoples: this.e.peoples.some(i => i.selected),
             others: this.e.others.some(i => i.selected),
           }
+        },
+        driverPicUrl: function () {
+          if (!this.e.driverPicId) return "#";
+          let picOption = this.e.driverPicId.split(":");
+          return picOption[0] === "S" ?
+            `${bc.root}/bc/image/download?ptype=portrait&puid=${picOption[1]}` :
+            `${file.fileDataServer}/inline/${picOption[1]}`
+        },
+        accidentPicUrl: function () {
+          return !this.ui.accidentPic ? "#" : `${file.fileDataServer}/inline/${this.ui.accidentPic.id}`
         }
       },
       components: {
@@ -74,12 +84,30 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
         "accident-other-column-definitions": {template: $page.find("script[name=accident-other-column-definitions]").html()}
       },
       methods: {
-      /** 加载事故附件信息 */
-      loadAccidentAttachments: function () {
-        accident.get(`${accident.fileDataServer}/parent/AR${this.e.id}/3`).then(attachments => {
-          this.accidentAttachments = attachments
-        })
-      },
+        /** 初始化表单附件信息 */
+        initAttachments: function () {
+          this.loadAccidentAttachments();
+          this.loadAccidentPicAttachments();
+          if (["Rejected", "Approved"].includes(this.e.status)) this.loadCheckedAttachments()
+        },
+        /** 加载事故附件信息 */
+        loadAccidentAttachments: function () {
+          accident.get(`${accident.fileDataServer}/parent/AR${this.e.id}/3`).then(attachments => {
+            this.ui.accidentAttachments = attachments
+          })
+        },
+        /** 加载事故现场图信息 */
+        loadAccidentPicAttachments: function () {
+          accident.get(`${accident.fileDataServer}/parent/AR${this.e.id}/2`).then(attachments => {
+            Vue.set(this.ui, "accidentPic", attachments[0]);
+          })
+        },
+        /** 加载表单审核附件信息 */
+        loadCheckedAttachments: function () {
+          accident.get(`${accident.fileDataServer}/parent/AR${this.e.id}/4`).then(attachments => {
+            Vue.set(this.ui, "checkedAttachment", attachments[0]);
+          })
+        },
         /**
          * 保存表单
          * @param option 回调函数
@@ -139,14 +167,54 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           }
         },
         /** 上传当事司机照片 */
-        uploadDriverPic: function () {
-          bc.msg.alert("功能开发中！");
-          // todo
+        uploadDriverPic: function (files) {
+          // 验证上传文件是否图片格式
+          if (!files[0].type.includes("image")) {
+            bc.msg.alert("只能上传图片格式的文件！");
+            return;
+          }
+          // 开始上传
+          file.uploadByStream(files, {
+            vm: this,
+            puid: `AR${this.e.id}`,
+            subgroup: 1,
+            onOk: function (result) {
+              bc.msg.slide("上传成功");
+              // 上传成功更新 driverPicId
+              Vue.set(this.vm.e, "driverPicId", `C:${result.headers.location.replace("/")}`);
+            },
+            onError: function () {
+              bc.msg.slide("上传失败");
+            },
+            onProgress: function () {
+              // todo
+            }
+          })
         },
         /** 上传事故现场图 */
-        uploadAccidentPic: function () {
-          bc.msg.alert("功能开发中！");
-          //todo
+        uploadAccidentPic: function (files) {
+          // 验证上传文件是否图片格式
+          if (!files[0].type.includes("image")) {
+            bc.msg.alert("只能上传图片格式的文件！");
+            return;
+          }
+          // 开始上传
+          file.uploadByStream(files, {
+            vm: this,
+            puid: `AR${this.e.id}`,
+            subgroup: 2,
+            onOk: function () {
+              bc.msg.slide("上传成功");
+              // 加载事故现场图信息
+              this.vm.loadAccidentPicAttachments()
+            },
+            onError: function () {
+              bc.msg.slide("上传失败");
+            },
+            onProgress: function () {
+              // todo
+            }
+          })
         },
         /** 编辑事故现场图 */
         editAccidentPic: function () {
@@ -155,7 +223,6 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
         },
         /** 上传事故照片、附件 */
         uploadAccidentAttachment: function (files) {
-          // console.log(files[0].readAsBinaryString());
           file.uploadByStream(files, {
             vm: this,
             puid: `AR${this.e.id}`,
@@ -173,9 +240,22 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           })
         },
         /** 上传审核附件 */
-        uploadCheckedAttachment: function () {
-          bc.msg.alert("功能开发中！");
-          //todo
+        uploadCheckedAttachment: function (files) {
+          file.uploadByStream(files, {
+            vm: this,
+            puid: `AR${this.e.id}`,
+            subgroup: 4,
+            onOk: function () {
+              bc.msg.slide("上传成功");
+              this.vm.loadCheckedAttachments();
+            },
+            onError: function () {
+              bc.msg.slide("上传失败");
+            },
+            onProgress: function () {
+              // todo
+            }
+          })
         },
         /** 选择车辆 */
         selectCar: function () {
@@ -291,14 +371,17 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           this.e[module].splice(index + 1, 0, this.e[module].splice(index, 1)[0]); // 下移
         },
         /**
-         * 在线查看附件，如果配置参数有附件 Id 则按 Id 查看附件否则按照模块和分组查看
-         * @param option 配置参数
-         * @option id 附件 Id
-         * @option subgroup 附件当前登记模块的所属分组
+         *  在线查看附件
+         *  选项配置有 id 则使用 id 在线查看附件，否则通过所属模块和分组查看
+         *
+         *  @param option 在线查看选项配置
+         *  @option id 附件Id
+         *  @option puid 附件所属模块
+         *  @option subgroup 附件所属模块的所属分组
          */
         inline: function (option) {
-          if (option.id) accident.inlineById(option.id);
-          else accident.inlineByModule(`AR${this.e.id}`, option.subgroup);
+          if (option.id) file.inlineById(option.id);
+          else file.inlineByModule(`AR${this.e.id}`, option.subgroup);
         },
         /** 生成事故附件图片地址 */
         initAccidentAttachmentUrl: function (id) {
@@ -321,8 +404,12 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           if (["Draft", "Rejected"].includes(this.e.status) && isRecorder) $page.parent().find("button#submit").show();
           if (this.e.status === "ToCheck" && isChecker) $page.parent().find("button#check").show();
         },
-        triggerUploadAccidentAttachment: function () {
-          $page.find("input[name='uploadAccidentAttachment']").click();
+        /**
+         * 触发上传组件点击事件
+         * @param name 上传组件名称
+         * */
+        triggerUploadButton: function (name) {
+          $page.find(`input[name='${name}']`).click();
         }
       }
     })
