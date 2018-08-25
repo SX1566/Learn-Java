@@ -60,6 +60,11 @@
           </exclusions>
         </dependency>
         <dependency>
+          <groupId>tech.simter.reactive</groupId>
+          <artifactId>simter-reactive-web</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
           <groupId>com.nhaarman</groupId>
           <artifactId>mockito-kotlin</artifactId>
           <version>${mockito-kotlin.version}</version>

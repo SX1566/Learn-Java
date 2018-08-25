@@ -4,6 +4,7 @@ import cn.gftaxi.traffic.accident.Utils
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
 import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType.Official
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Draft
+import cn.gftaxi.traffic.accident.rest.webflux.UnitTestConfiguration
 import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
 import cn.gftaxi.traffic.accident.rest.webflux.handler.register.GetHandler.Companion.REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
@@ -11,30 +12,40 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
-import org.springframework.test.web.reactive.server.WebTestClient.bindToRouterFunction
-import org.springframework.web.reactive.config.EnableWebFlux
+import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.web.reactive.function.server.RouterFunction
 import org.springframework.web.reactive.function.server.RouterFunctions.route
+import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
 import java.time.OffsetDateTime
+
 
 /**
  * Test [GetHandler]。
  *
  * @author RJ
  */
-@SpringJUnitConfig(GetHandler::class)
-@EnableWebFlux
+@SpringJUnitConfig(UnitTestConfiguration::class, GetHandler::class)
 @MockBean(AccidentRegisterService::class)
+@WebFluxTest
 class GetHandlerTest @Autowired constructor(
-  handler: GetHandler,
+  private val client: WebTestClient,
   private val accidentRegisterService: AccidentRegisterService
 ) {
-  private val client = bindToRouterFunction(route(REQUEST_PREDICATE, handler)).build()
+  @Configuration
+  class Cfg {
+    @Bean
+    fun theRoute(handler: GetHandler): RouterFunction<ServerResponse> = route(REQUEST_PREDICATE, handler)
+  }
+
   private fun randomDto(id: Int): AccidentRegisterDto4Form {
     val now = OffsetDateTime.now()
     return AccidentRegisterDto4Form(
@@ -65,6 +76,7 @@ class GetHandlerTest @Autowired constructor(
       .expectStatus().isOk
       .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
       .expectBody()
+      .consumeWith { println(String(it.responseBody!!)) }
       .jsonPath("$.id").isEqualTo(id)
       .jsonPath("$.code").isEqualTo(dto.code!!)
       .jsonPath("$.status").isEqualTo(dto.status!!.name)
