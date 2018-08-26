@@ -1,7 +1,7 @@
 package cn.gftaxi.webflux.dynamicdto
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.*
 import org.springframework.web.reactive.function.server.RequestPredicates.PATCH
@@ -15,17 +15,14 @@ import reactor.core.publisher.Mono
 class PatchHandler @Autowired constructor() : HandlerFunction<ServerResponse> {
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
     return request.bodyToMono<DynamicDto>()
-      .map {
+      .flatMap {
         println(it)
-        it
+        ServerResponse.ok().contentType(APPLICATION_JSON_UTF8).syncBody(it)
       }
-      // response
-      .then(ServerResponse.noContent().build())
   }
 
   companion object {
     /** The default [RequestPredicate] */
-    val REQUEST_PREDICATE: RequestPredicate = PATCH("/date-time/{id}")
-      .and(contentType(MediaType.APPLICATION_JSON_UTF8))
+    val REQUEST_PREDICATE: RequestPredicate = PATCH("/").and(contentType(APPLICATION_JSON_UTF8))
   }
 }

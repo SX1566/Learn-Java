@@ -1,12 +1,19 @@
 package cn.gftaxi.webflux.dynamicdto
 
+import cn.gftaxi.traffic.accident.rest.webflux.UnitTestConfiguration
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
+import org.springframework.http.MediaType.*
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
+import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.bindToRouterFunction
-import org.springframework.web.reactive.config.EnableWebFlux
+import org.springframework.web.reactive.function.server.RouterFunction
 import org.springframework.web.reactive.function.server.RouterFunctions.route
+import org.springframework.web.reactive.function.server.ServerResponse
 import javax.json.Json
 
 /**
@@ -16,48 +23,58 @@ import javax.json.Json
  *
  * @author RJ
  */
-@SpringJUnitConfig(PatchHandler::class, GetHandler::class)
-@EnableWebFlux
+@SpringJUnitConfig(UnitTestConfiguration::class, PatchHandler::class, GetHandler::class)
+@WebFluxTest
 class HandlerTest @Autowired constructor(
+  private val client: WebTestClient,
   private val patchHandler: PatchHandler,
   private val getHandler: GetHandler
 ) {
+  @Configuration
+  class Cfg {
+    @Bean
+    fun getRoute(handler: GetHandler): RouterFunction<ServerResponse> = route(GetHandler.REQUEST_PREDICATE, handler)
+
+    @Bean
+    fun patchRoute(handler: PatchHandler): RouterFunction<ServerResponse> = route(PatchHandler.REQUEST_PREDICATE, handler)
+  }
+
   @Test
   fun patch() {
-    val client = bindToRouterFunction(route(PatchHandler.REQUEST_PREDICATE, patchHandler)).build()
-    // mock
-    val id = 1
+    // data
     val data = Json.createObjectBuilder()
       .add("name", "test")
-      // Use Dto/@set:DateTimeFormat - 实测并没有用上，但 webflux 却可以灵活的转换多种格式
       .add("offsetDateTime", "2018-10-01 08:30")
+      .build()
 
     // invoke
-    val response = client.patch().uri("/date-time/$id")
-      .contentType(MediaType.APPLICATION_JSON_UTF8)
-      .syncBody(data.build().toString())
+    val response = client.patch().uri("/")
+      .contentType(APPLICATION_JSON_UTF8)
+      .syncBody(data.toString())
       .exchange()
 
     // verify
-    response.expectStatus().isNoContent.expectBody().isEmpty
+    response
+      .expectStatus().isOk
+      .expectBody()
+      .consumeWith { println(String(it.responseBody!!)) }
+      .jsonPath("$.offsetDateTime").isEqualTo(data.getString("offsetDateTime"))
+      .jsonPath("$.name").isEqualTo(data.getString("name"))
+      .jsonPath("$.code").doesNotExist()
   }
 
   @Test
   fun get() {
-    val client = bindToRouterFunction(route(GetHandler.REQUEST_PREDICATE, getHandler)).build()
-    // mock
-    val id = 1
-
     // invoke
-    val response = client.get().uri("/date-time/$id")
+    val response = client.get().uri("/")
       .exchange()
 
     // verify
     response.expectStatus().isOk
-      .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+      .expectHeader().contentType(APPLICATION_JSON_UTF8)
       .expectBody()
       .jsonPath("$.name").isEqualTo("test")
-      .jsonPath("$.offsetDateTime").isEqualTo("2018-10-01 08:30:20") // Use Dto/@get:JsonFormat
+      .jsonPath("$.offsetDateTime").isEqualTo("2018-10-01 08:30")
       .jsonPath("$.code").doesNotExist()
   }
 }

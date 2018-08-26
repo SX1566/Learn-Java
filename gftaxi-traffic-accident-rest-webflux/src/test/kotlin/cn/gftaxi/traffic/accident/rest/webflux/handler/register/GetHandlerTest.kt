@@ -76,7 +76,7 @@ class GetHandlerTest @Autowired constructor(
       .expectStatus().isOk
       .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
       .expectBody()
-      .consumeWith { println(String(it.responseBody!!)) }
+      //.consumeWith { println(String(it.responseBody!!)) }
       .jsonPath("$.id").isEqualTo(id)
       .jsonPath("$.code").isEqualTo(dto.code!!)
       .jsonPath("$.status").isEqualTo(dto.status!!.name)
