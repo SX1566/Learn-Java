@@ -385,7 +385,29 @@ class AccidentRegisterDaoImpl @Autowired constructor(
     return if (query.executeUpdate() > 0) Mono.just(true) else Mono.just(false)
   }
 
+  val nestedPropertyKeys = listOf("cars", "peoples", "others")
   override fun update(id: Int, data: Map<String, Any?>): Mono<Boolean> {
-    TODO("not implemented")
+    if (data.isEmpty()) return Mono.just(false)
+
+    // 更新主体属性
+    val main = data.filterKeys { !nestedPropertyKeys.contains(it) }
+    val ql = """|update AccidentRegister
+                |  set ${data.keys.joinToString(",\n|  ") { "$it = :$it" }}
+                |  where id = :id""".trimMargin()
+    if (logger.isDebugEnabled) {
+      logger.debug("ql={}", ql)
+      logger.debug("id={}, data={}", id, data)
+    }
+    val query = em.createQuery(ql).setParameter("id", id)
+    main.keys.forEach { query.setParameter(it, data[it]) }
+    val mainUpdatedSuccess = query.executeUpdate() > 0
+
+    // 更新当事车辆信息 TODO
+
+    // 更新当事人信息 TODO
+
+    // 更新其他物体信息 TODO
+
+    return Mono.just(mainUpdatedSuccess)
   }
 }
