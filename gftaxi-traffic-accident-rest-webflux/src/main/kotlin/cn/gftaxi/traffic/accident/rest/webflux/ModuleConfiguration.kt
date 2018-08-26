@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
-import org.springframework.web.reactive.config.EnableWebFlux
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.router
 
@@ -25,10 +24,10 @@ private const val MODULE = "cn.gftaxi.traffic.accident.rest.webflux"
  * The default context-path of this router is '/'. And can be config by property `gftaxi.rest.context-path.traffic-accident`.
  *
  * @author JF
+ * @author RJ
  */
 @Configuration("$MODULE.ModuleConfiguration")
 @ComponentScan(MODULE)
-@EnableWebFlux
 class ModuleConfiguration @Autowired constructor(
   @Value("\${gftaxi.rest.context-path.traffic-accident:/}") private val contextPath: String,
   private val findSecondaryCategoriesHandler: FindSecondaryCategoriesHandler,

@@ -1,11 +1,6 @@
 package cn.gftaxi.webflux.dynamicdto
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY
-import org.springframework.format.annotation.DateTimeFormat
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 
@@ -21,22 +16,17 @@ import java.time.OffsetDateTime
  *
  * @author RJ
  */
-@JsonInclude(NON_EMPTY)
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class DynamicDto(
+class DynamicDto {
   @JsonIgnore
-  var changedProperties: MutableMap<String, Any?> = mutableMapOf<String, Any?>().withDefault { null }
-) {
+  private val changedProperties: MutableMap<String, Any?> = mutableMapOf<String, Any?>().withDefault { null }
   var name: String? by changedProperties
   var code: String? by changedProperties
   var int: Int? by changedProperties
   var double: Double? by changedProperties
   var bigDecimal: BigDecimal? by changedProperties
-  @get:JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-  @set:DateTimeFormat(pattern = "yyyy-MM-dd HH:00")
   var offsetDateTime: OffsetDateTime?  by changedProperties
 
   override fun toString(): String {
-    return "AccidentRegisterDto4Update=$changedProperties"
+    return "DynamicDto=$changedProperties"
   }
 }

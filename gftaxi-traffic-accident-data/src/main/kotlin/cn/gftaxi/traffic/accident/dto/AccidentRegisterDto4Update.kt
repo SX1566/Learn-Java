@@ -31,6 +31,9 @@ data class AccidentRegisterDto4Update(
 
   // 车辆冗余信息
   var carModel: String?  by changedProperties
+  @get:JsonFormat(pattern = "yyyy-MM-dd")
+  @set:JsonFormat(pattern = "yyyy-MM-dd")
+  @set:DateTimeFormat(pattern = "yyyy-MM-dd")
   var carOperateDate: LocalDate?  by changedProperties
   var carContractType: String?  by changedProperties
   var carContractDrivers: String?  by changedProperties
@@ -43,12 +46,16 @@ data class AccidentRegisterDto4Update(
   var driverLinkmanPhone: String?  by changedProperties
 
   // 司机冗余信息
+  @get:JsonFormat(pattern = "yyyy-MM-dd")
+  @set:DateTimeFormat(pattern = "yyyy-MM-dd")
   var driverHiredDate: LocalDate?  by changedProperties
   var driverPhone: String?  by changedProperties
   var driverIdentityCode: String?  by changedProperties
   var driverServiceCode: String?  by changedProperties
   var driverOrigin: String?  by changedProperties
   var driverAge: BigDecimal?  by changedProperties
+  @get:JsonFormat(pattern = "yyyy-MM-dd")
+  @set:DateTimeFormat(pattern = "yyyy-MM-dd")
   var driverLicenseDate: LocalDate?  by changedProperties
   var driverDriveYears: BigDecimal?  by changedProperties
   var driverPicId: String?  by changedProperties

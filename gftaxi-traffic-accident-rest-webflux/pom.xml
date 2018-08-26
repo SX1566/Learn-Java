@@ -51,6 +51,18 @@
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-starter-json</artifactId>
           <scope>test</scope>
+          <exclusions>
+            <!-- use simter-jackson-ext instead -->
+            <exclusion>
+              <groupId>com.fasterxml.jackson.datatype</groupId>
+              <artifactId>jackson-datatype-jsr310</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>tech.simter.reactive</groupId>
+          <artifactId>simter-reactive-web</artifactId>
+          <scope>test</scope>
         </dependency>
         <dependency>
           <groupId>com.nhaarman</groupId>

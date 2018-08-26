@@ -1,9 +1,6 @@
 package cn.gftaxi.traffic.accident.dao
 
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4LastChecked
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
-import cn.gftaxi.traffic.accident.dto.ScopeType
+import cn.gftaxi.traffic.accident.dto.*
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentRegister
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
@@ -106,4 +103,15 @@ interface AccidentRegisterDao {
    * 更新成功是指真的更新为了新的状态，如果状态没有更新则返回 `Mono.just(false)`。
    */
   fun checked(id: Int, passed: Boolean): Mono<Boolean>
+
+  /**
+   * 更新事故登记信息。
+   *
+   * @param[id] 要修改案件的 ID
+   * @param[data] 要更新的信息，key 为 [AccidentRegisterDto4Update] 属性名，value 为该 DTO 相应的属性值，
+   *              使用者只传入已改动的属性键值对，没有改动的属性不要传入来。
+   *
+   * @return 有更新返回 Mono.just(true)，否则返回 Mono.just(false)
+   */
+  fun update(id: Int, data: Map<String, Any?>): Mono<Boolean>
 }

@@ -5,6 +5,8 @@ import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentOperation
 import cn.gftaxi.traffic.accident.po.AccidentRegister
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.ROLE_MODIFY
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.ROLE_SUBMIT
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.*
 import org.springframework.data.domain.Page
@@ -13,7 +15,6 @@ import reactor.core.publisher.Mono
 import tech.simter.exception.ForbiddenException
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
-import java.time.LocalDate
 
 /**
  * 事故登记 Service。
@@ -83,12 +84,18 @@ interface AccidentRegisterService {
    * 更新时要注意只更新那些与当前值不相同的数据，与当前值相同的数据忽略不处理。
    * 对于被更新了的数据，需要生成相应的 [AccidentOperation] 操作记录，记录详细的更新日志。
    *
+   * 权限控制规则如下：
+   *
+   * 1. 如果案件处于非待登记状态，只有有案件修改权限 [ROLE_MODIFY] 的用户才可以更新案件信息。
+   * 2. 如果案件处于待登记状态，有案件登记权限 [ROLE_SUBMIT] 的用户也可以更新案件信息。
+   *
+   * 如果不符合上述的权限规则，则返回 [PermissionDeniedException] 类型的 [Mono.error]。
+   * 如果案件不存在则返回 [NotFoundException] 类型的 [Mono.error]。
+   *
    * @param[id] 要修改案件的 ID
    * @param[data] 要更新的信息，key 为 [AccidentRegisterDto4Update] 属性名，value 为该 DTO 相应的属性值，
-   *               使用者只传入已改动的属性键值对，没有改动的属性不要传入来。
+   *              使用者只传入已改动的属性键值对，没有改动的属性不要传入来。
    *
-   * @throws [NotFoundException] 案件不存在
-   * @throws [PermissionDeniedException] 无 [AccidentDraft.ROLE_MODIFY] 修改事故登记信息权限
    * @return 更新完毕的 [Mono] 信号
    */
   fun update(id: Int, data: Map<String, Any?>): Mono<Void>
