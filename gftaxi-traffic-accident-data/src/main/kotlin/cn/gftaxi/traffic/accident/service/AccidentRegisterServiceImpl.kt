@@ -12,6 +12,7 @@ import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType
 import cn.gftaxi.traffic.accident.po.AccidentRegister
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.ROLE_CHECK
+import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.ROLE_MODIFY
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.ROLE_SUBMIT
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,6 +23,7 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import tech.simter.exception.ForbiddenException
 import tech.simter.exception.NotFoundException
+import tech.simter.exception.PermissionDeniedException
 import tech.simter.reactive.context.SystemContext.User
 import tech.simter.reactive.security.ReactiveSecurityService
 import java.time.OffsetDateTime
@@ -86,7 +88,39 @@ class AccidentRegisterServiceImpl @Autowired constructor(
   }
 
   override fun update(id: Int, data: Map<String, Any?>): Mono<Void> {
-    TODO("not implemented")
+    return securityService
+      // 1. 获取权限
+      .hasRole(ROLE_SUBMIT, ROLE_MODIFY)
+      // 2. 获取状态
+      .zipWith(accidentRegisterDao.getStatus(id))
+      .switchIfEmpty(Mono.error(NotFoundException("案件不存在：id=$id")))
+      .flatMap {
+        // 3. 判断是否有修改权限
+        if (it.t1.second || (it.t1.first && it.t2 == Status.Draft)) { // 有权限修改
+          // 3.1 执行修改
+          accidentRegisterDao.update(id, data)
+        } else {                                                      // 无权限修改
+          Mono.error(PermissionDeniedException(
+            "status=${it.t2}, ROLE_SUBMIT=${it.t1.first}, ROLE_MODIFY=${it.t1.second}"))
+        }
+      }
+      // 3.2 修改成功后创建一条修改日志
+      .flatMap {
+        if (it) {
+          securityService.getAuthenticatedUser()
+            .map(Optional<User>::get)
+            .flatMap {
+              accidentOperationDao.create(AccidentOperation(
+                operationType = Modification,
+                targetType = TargetType.Register,
+                targetId = id,
+                operateTime = OffsetDateTime.now(),
+                operatorId = it.id,
+                operatorName = it.name
+              ))
+            }
+        } else Mono.empty()
+      }.then()
   }
 
   override fun toCheck(id: Int): Mono<Void> {

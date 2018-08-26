@@ -384,4 +384,8 @@ class AccidentRegisterDaoImpl @Autowired constructor(
       .setParameter("limitedStatus", ToCheck)
     return if (query.executeUpdate() > 0) Mono.just(true) else Mono.just(false)
   }
+
+  override fun update(id: Int, data: Map<String, Any?>): Mono<Boolean> {
+    TODO("not implemented")
+  }
 }
