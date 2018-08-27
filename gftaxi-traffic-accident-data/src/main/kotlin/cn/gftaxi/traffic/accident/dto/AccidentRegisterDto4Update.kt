@@ -1,7 +1,6 @@
 package cn.gftaxi.traffic.accident.dto
 
 import cn.gftaxi.traffic.accident.po.AccidentRegister
-import com.fasterxml.jackson.annotation.JsonIgnore
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -13,11 +12,7 @@ import java.time.OffsetDateTime
  *
  * @author RJ
  */
-class AccidentRegisterDto4Update {
-  /** 属性数据持有者 */
-  @JsonIgnore
-  val data: MutableMap<String, Any?> = mutableMapOf<String, Any?>().withDefault { null }
-
+class AccidentRegisterDto4Update : DynamicDto() {
   // 车辆信息
   var carPlate: String? by data
   var carId: Int? by data
@@ -86,23 +81,4 @@ class AccidentRegisterDto4Update {
 
   // 其他物体列表
   var others: List<AccidentOtherDto4Update>? by data
-
-  override fun toString(): String {
-    return "${AccidentRegisterDto4Update::class.simpleName}=$data"
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-
-    other as AccidentRegisterDto4Update
-
-    if (data != other.data) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return data.hashCode()
-  }
 }
