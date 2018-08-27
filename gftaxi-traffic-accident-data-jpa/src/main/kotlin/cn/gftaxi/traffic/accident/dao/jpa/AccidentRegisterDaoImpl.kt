@@ -4,10 +4,7 @@ import cn.gftaxi.traffic.accident.Utils.calculateYears
 import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.dao.BcDao
 import cn.gftaxi.traffic.accident.dao.jpa.repository.AccidentRegisterJpaRepository
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4LastChecked
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Todo
-import cn.gftaxi.traffic.accident.dto.ScopeType
+import cn.gftaxi.traffic.accident.dto.*
 import cn.gftaxi.traffic.accident.po.AccidentCar
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentDraft.Status.Todo
@@ -386,28 +383,98 @@ class AccidentRegisterDaoImpl @Autowired constructor(
   }
 
   val nestedPropertyKeys = listOf("cars", "peoples", "others")
+
+  @Suppress("UNCHECKED_CAST")
   override fun update(id: Int, data: Map<String, Any?>): Mono<Boolean> {
     if (data.isEmpty()) return Mono.just(false)
 
     // 更新主体属性
     val main = data.filterKeys { !nestedPropertyKeys.contains(it) }
-    val ql = """|update AccidentRegister
+    val mainUpdatedSuccess = if (main.isNotEmpty()) {
+      val ql = """|update AccidentRegister
                 |  set ${data.keys.joinToString(",\n|  ") { "$it = :$it" }}
                 |  where id = :id""".trimMargin()
-    if (logger.isDebugEnabled) {
-      logger.debug("ql={}", ql)
-      logger.debug("id={}, data={}", id, data)
-    }
-    val query = em.createQuery(ql).setParameter("id", id)
-    main.keys.forEach { query.setParameter(it, data[it]) }
-    val mainUpdatedSuccess = query.executeUpdate() > 0
+      if (logger.isDebugEnabled) {
+        logger.debug("ql={}", ql)
+        logger.debug("id={}, data={}", id, data)
+      }
+      val query = em.createQuery(ql).setParameter("id", id)
+      main.keys.forEach { query.setParameter(it, data[it]) }
+      query.executeUpdate() > 0
+    } else true
 
-    // 更新当事车辆信息 TODO
+    // 更新当事车辆信息
+    val cars = data["cars"] as List<AccidentCarDto4Update>?
+    val carUpdatedSuccess = cars?.let {
+      if (cars.isEmpty()) { // 清空现有数据
+        em.createQuery("delete from AccidentCar where parent.id = :pid")
+          .setParameter("pid", id)
+          .executeUpdate() > 0
+      } else {              // 增删改的处理
+        // 获取现有数据
+        val exists = em.createQuery("select t from AccidentCar t where t.parent.id = :pid", AccidentCar::class.java)
+          .setParameter("pid", id)
+          .resultList//.associate { it.id!! to it }
+        // 删除多出的元素
+        val toDeleteItems = exists.filterNot { po -> cars.any { dto -> dto.id == po.id } }
+        val deleteSuccess = if (toDeleteItems.isNotEmpty()) {
+          em.createQuery("delete from AccidentCar where id in (:ids)")
+            .setParameter("ids", toDeleteItems.map { it.id }.toList())
+            .executeUpdate() > 0
+        } else true
+
+        // 处理新增的元素
+        val toCreateItems = cars.filter { it.id == null }
+        val createSuccess = if (toCreateItems.isNotEmpty()) {
+          val register = em.find(AccidentRegister::class.java, id)
+          toCreateItems.forEach {
+            em.persist(AccidentCar(
+              parent = register,
+              sn = it.sn!!,
+              name = it.name!!,
+              type = it.type!!,
+              model = it.model,
+              towCount = it.towCount,
+              towMoney = it.towMoney,
+              repairType = it.repairType,
+              repairMoney = it.repairMoney,
+              damageState = it.damageState,
+              damageMoney = it.damageMoney,
+              followType = it.followType,
+              updatedTime = OffsetDateTime.now()
+            ))
+          }
+          true
+        } else true
+
+        // 处理要更新的元素
+        val toUpdateItems = cars.filter { it.id != null && it.data.size > 1 }
+        val updateSuccess = if (toUpdateItems.isNotEmpty()) {
+          var success = true
+          toUpdateItems.forEach {
+            val itemDate = it.data.filterNot { it.key == "id" || it.key == "updateTime" }
+            val ql = """|update AccidentCar
+                |  set ${itemDate.keys.joinToString(",\n|  ") { "$it = :$it" }}
+                |  where id = :id""".trimMargin()
+            if (logger.isDebugEnabled) {
+              logger.debug("update AccidentCar: ql={}", ql)
+              logger.debug("update AccidentCar: id={}, data={}", it.id, itemDate)
+            }
+            val query = em.createQuery(ql).setParameter("id", it.id)
+            itemDate.keys.forEach { query.setParameter(it, itemDate[it]) }
+            success = success && query.executeUpdate() > 0
+          }
+          success
+        } else true
+
+        deleteSuccess && createSuccess && updateSuccess
+      }
+    } ?: true
 
     // 更新当事人信息 TODO
 
     // 更新其他物体信息 TODO
 
-    return Mono.just(mainUpdatedSuccess)
+    return Mono.just(mainUpdatedSuccess && carUpdatedSuccess)
   }
 }

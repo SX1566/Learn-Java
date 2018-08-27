@@ -8,15 +8,16 @@ import cn.gftaxi.traffic.accident.dao.jpa.POUtils
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.nextCode
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.nextId
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.random
+import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentCar
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentDraft
+import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomInt
+import cn.gftaxi.traffic.accident.dto.AccidentCarDto4Update
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Update
-import cn.gftaxi.traffic.accident.po.AccidentDraft
+import cn.gftaxi.traffic.accident.po.*
 import cn.gftaxi.traffic.accident.po.AccidentDraft.Status.Todo
-import cn.gftaxi.traffic.accident.po.AccidentRegister
 import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -55,8 +56,15 @@ class UpdateMethodImplTest @Autowired constructor(
     }
   }
 
-  private fun randomRegister(happenTime: OffsetDateTime, status: AccidentRegister.Status,
-                             overdue: Boolean? = null, registerTime: OffsetDateTime? = null)
+  private fun randomRegister(
+    happenTime: OffsetDateTime,
+    status: AccidentRegister.Status,
+    overdue: Boolean? = null,
+    registerTime: OffsetDateTime? = null,
+    cars: Set<AccidentCar>? = null,
+    peoples: Set<AccidentPeople>? = null,
+    others: Set<AccidentOther>? = null
+  )
     : AccidentRegister {
     val accidentDraft = randomAccidentDraft(
       code = nextCode(happenTime.format(FORMAT_TO_YYYYMMDD)),
@@ -69,7 +77,10 @@ class UpdateMethodImplTest @Autowired constructor(
       status = status,
       driverType = DriverType.Official,
       overdue = overdue,
-      registerTime = registerTime
+      registerTime = registerTime,
+      cars = cars,
+      peoples = peoples,
+      others = others
     )
     em.persist(accidentRegister)
     return accidentRegister
@@ -104,7 +115,7 @@ class UpdateMethodImplTest @Autowired constructor(
   }
 
   @Test
-  fun `Success update main properties`() {
+  fun `Main properties success update`() {
     // 1. 构建一条事故登记数据
     val happenTime = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES)
     val po = randomRegister(
@@ -126,7 +137,7 @@ class UpdateMethodImplTest @Autowired constructor(
     dto = AccidentRegisterDto4Update()
     dto::class.memberProperties.filter { !excludePropertyKeys.contains(it.name) }.forEach {
       it as KMutableProperty<*>
-      when (it.returnType.classifier) {
+      when (it.returnType.classifier) { // 随机生成一些属性值
         String::class -> it.setter.call(dto, random("Str"))
         Int::class -> it.setter.call(dto, nextId("Int"))
         Short::class -> it.setter.call(dto, nextId("Int").toShort())
@@ -151,5 +162,131 @@ class UpdateMethodImplTest @Autowired constructor(
     dto.data.forEach { key, value ->
       assertEquals(value, AccidentRegister::class.memberProperties.first { it.name == key }.get(updatedPo))
     }
+  }
+
+  @Test
+  fun `Cars success create`() {
+    // 1. 构建一条事故登记数据
+    val happenTime = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES)
+    val po = randomRegister(
+      status = Status.Draft,
+      happenTime = happenTime
+    )
+    em.flush();em.clear()
+
+    // 2. 添加当事车辆
+    // 2.1 构建数据
+    val carDto = AccidentCarDto4Update().apply {
+      sn = 0
+      name = po.carPlate
+      type = "自车"
+    }
+    val dto = AccidentRegisterDto4Update().apply { cars = listOf(carDto) }
+
+    // 2.2 执行数据添加
+    val now = OffsetDateTime.now()
+    StepVerifier.create(dao.update(po.id!!, dto.data)).expectNext(true).verifyComplete()
+    em.flush();em.clear()
+
+    // 2.3 验证数据添加成功
+    val carPo1 = em.createQuery("select c from AccidentCar c where c.parent.id = :pid", AccidentCar::class.java)
+      .setParameter("pid", po.id).singleResult
+    assertNotNull(carPo1.id)
+    assertEquals(carDto.sn, carPo1.sn)
+    assertEquals(carDto.name, carPo1.name)
+    assertEquals(carDto.type, carPo1.type)
+    assertTrue(carPo1.updatedTime!!.isAfter(now))
+
+    // 其他属性的值应为 null
+    AccidentCar::class.memberProperties
+      .filterNot { listOf("id", "sn", "name", "type", "parent", "updatedTime").contains(it.name) }
+      .forEach { assertNull(it.get(carPo1)) }
+  }
+
+  @Test
+  fun `Cars success update`() {
+    val now = OffsetDateTime.now()
+    // 1. 构建一条事故登记数据，包含一条当事车辆信息
+    val happenTime = now.truncatedTo(ChronoUnit.MINUTES)
+    val registerPo = randomRegister(
+      status = Status.Draft,
+      happenTime = happenTime
+    )
+    val carPo = randomAccidentCar(parent = registerPo)
+    registerPo.cars = setOf(carPo)
+    em.flush();em.clear()
+
+    // 2. 更新当事车辆数据
+    // 2.1 构建数据
+    val carDto = AccidentCarDto4Update().apply {
+      id = carPo.id
+      model = "出租车"
+      towCount = randomInt(20, 30).toShort()
+      damageMoney = BigDecimal("${randomInt(200, 300)}.00")
+    }
+    val registerDto = AccidentRegisterDto4Update().apply { cars = listOf(carDto) }
+
+    // 2.2 执行数据更新
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    em.flush();em.clear()
+
+    // 2.3 验证数据更新成功
+    val updatedCarPo = em.createQuery("select c from AccidentCar c where c.parent.id = :pid", AccidentCar::class.java)
+      .setParameter("pid", registerPo.id).singleResult
+    assertEquals(carPo.id, updatedCarPo.id)
+
+    // 如下属性应该更新为新的值：
+    assertNotEquals(carPo.model, updatedCarPo.model)
+    assertNotEquals(carPo.towCount, updatedCarPo.towCount)
+    assertNotEquals(carPo.damageMoney, updatedCarPo.damageMoney)
+
+    assertEquals(carDto.model, updatedCarPo.model)
+    assertEquals(carDto.towCount, updatedCarPo.towCount)
+    assertEquals(carDto.damageMoney, updatedCarPo.damageMoney)
+    assertTrue(updatedCarPo.updatedTime!!.isAfter(now))
+
+    // 其他属性应保持原值没有更新
+    AccidentCar::class.memberProperties
+      .filterNot { listOf("id", "parent", "updatedTime", "model", "towCount", "damageMoney").contains(it.name) }
+      .forEach { assertEquals(it.get(carPo), it.get(updatedCarPo)) }
+  }
+
+  @Test
+  fun `Cars success delete`() {
+    val now = OffsetDateTime.now()
+    // 1. 构建一条事故登记数据，包含2条当事车辆信息
+    val happenTime = now.truncatedTo(ChronoUnit.MINUTES)
+    val registerPo = randomRegister(
+      status = Status.Draft,
+      happenTime = happenTime
+    )
+    val carPo1 = randomAccidentCar(parent = registerPo)
+    val carPo2 = randomAccidentCar(parent = registerPo)
+    registerPo.cars = setOf(carPo1, carPo2)
+    em.flush();em.clear()
+
+    // 2. 删除 1 条当事车辆
+    val toKeepCarDto = AccidentCarDto4Update().apply { id = carPo1.id }
+    var registerDto = AccidentRegisterDto4Update().apply { cars = listOf(toKeepCarDto) }
+
+    // 2.2 执行数据删除
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    em.flush();em.clear()
+
+    // 2.3 验证数据删除成功
+    var result = em.createQuery("select c from AccidentCar c where c.parent.id = :pid", AccidentCar::class.java)
+      .setParameter("pid", registerPo.id).resultList
+    assertEquals(1, result.size)
+    assertEquals(carPo1, result[0])
+
+    // 3. 清空数据
+    registerDto = AccidentRegisterDto4Update().apply { cars = listOf() } // 空的集合代表要清空数据
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    em.flush();em.clear()
+
+    // 3.2 验证数据清空成功
+    result = em.createQuery("select c from AccidentCar c where c.parent.id = :pid", AccidentCar::class.java)
+      .setParameter("pid", registerPo.id).resultList
+    assertEquals(0, result.size)
   }
 }
