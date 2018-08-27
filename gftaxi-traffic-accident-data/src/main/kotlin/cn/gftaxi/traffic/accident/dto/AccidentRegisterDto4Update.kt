@@ -1,12 +1,7 @@
 package cn.gftaxi.traffic.accident.dto
 
 import cn.gftaxi.traffic.accident.po.AccidentRegister
-import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY
-import org.springframework.format.annotation.DateTimeFormat
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -18,91 +13,96 @@ import java.time.OffsetDateTime
  *
  * @author RJ
  */
-@JsonInclude(NON_EMPTY)
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class AccidentRegisterDto4Update(
+class AccidentRegisterDto4Update {
+  /** 属性数据持有者 */
   @JsonIgnore
-  var changedProperties: MutableMap<String, Any?> = mutableMapOf<String, Any?>().withDefault { null }
-) {
+  val data: MutableMap<String, Any?> = mutableMapOf<String, Any?>().withDefault { null }
+
   // 车辆信息
-  var carPlate: String? by changedProperties
-  var carId: Int? by changedProperties
-  var motorcadeName: String? by changedProperties
+  var carPlate: String? by data
+  var carId: Int? by data
+  var motorcadeName: String? by data
 
   // 车辆冗余信息
-  var carModel: String?  by changedProperties
-  @get:JsonFormat(pattern = "yyyy-MM-dd")
-  @set:JsonFormat(pattern = "yyyy-MM-dd")
-  @set:DateTimeFormat(pattern = "yyyy-MM-dd")
-  var carOperateDate: LocalDate?  by changedProperties
-  var carContractType: String?  by changedProperties
-  var carContractDrivers: String?  by changedProperties
+  var carModel: String?  by data
+  var carOperateDate: LocalDate?  by data
+  var carContractType: String?  by data
+  var carContractDrivers: String?  by data
 
   // 司机信息
-  var driverName: String?  by changedProperties
-  var driverId: Int?  by changedProperties
-  var driverType: AccidentRegister.DriverType?  by changedProperties
-  var driverLinkmanName: String?  by changedProperties
-  var driverLinkmanPhone: String?  by changedProperties
+  var driverName: String?  by data
+  var driverId: Int?  by data
+  var driverType: AccidentRegister.DriverType?  by data
+  var driverLinkmanName: String?  by data
+  var driverLinkmanPhone: String?  by data
 
   // 司机冗余信息
-  @get:JsonFormat(pattern = "yyyy-MM-dd")
-  @set:DateTimeFormat(pattern = "yyyy-MM-dd")
-  var driverHiredDate: LocalDate?  by changedProperties
-  var driverPhone: String?  by changedProperties
-  var driverIdentityCode: String?  by changedProperties
-  var driverServiceCode: String?  by changedProperties
-  var driverOrigin: String?  by changedProperties
-  var driverAge: BigDecimal?  by changedProperties
-  @get:JsonFormat(pattern = "yyyy-MM-dd")
-  @set:DateTimeFormat(pattern = "yyyy-MM-dd")
-  var driverLicenseDate: LocalDate?  by changedProperties
-  var driverDriveYears: BigDecimal?  by changedProperties
-  var driverPicId: String?  by changedProperties
+  var driverHiredDate: LocalDate?  by data
+  var driverPhone: String?  by data
+  var driverIdentityCode: String?  by data
+  var driverServiceCode: String?  by data
+  var driverOrigin: String?  by data
+  var driverAge: BigDecimal?  by data
+  var driverLicenseDate: LocalDate?  by data
+  var driverDriveYears: BigDecimal?  by data
+  var driverPicId: String?  by data
 
   // 事故信息
-  @get:JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-  @set:DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-  var happenTime: OffsetDateTime?  by changedProperties
-  var locationLevel1: String?  by changedProperties
-  var locationLevel2: String?  by changedProperties
-  var locationLevel3: String?  by changedProperties
-  var location: String?  by changedProperties
-  var gpsSpeed: Short?  by changedProperties
-  var describe: String?  by changedProperties
-  var dealDepartment: String?  by changedProperties
-  var dealWay: String?  by changedProperties
-  var insuranceCompany: String?  by changedProperties
-  var insuranceCode: String?  by changedProperties
+  var happenTime: OffsetDateTime?  by data
+  var locationLevel1: String?  by data
+  var locationLevel2: String?  by data
+  var locationLevel3: String?  by data
+  var location: String?  by data
+  var gpsSpeed: Short?  by data
+  var describe: String?  by data
+  var dealDepartment: String?  by data
+  var dealWay: String?  by data
+  var insuranceCompany: String?  by data
+  var insuranceCode: String?  by data
 
   // 分类标准
-  var loadState: String?  by changedProperties
-  var level: String?  by changedProperties
-  var hitForm: String?  by changedProperties
-  var hitType: String?  by changedProperties
-  var weather: String?  by changedProperties
-  var drivingDirection: String?  by changedProperties
-  var light: String?  by changedProperties
-  var loadType: String?  by changedProperties
-  var roadStructure: String?  by changedProperties
-  var roadState: String?  by changedProperties
+  var loadState: String?  by data
+  var level: String?  by data
+  var hitForm: String?  by data
+  var hitType: String?  by data
+  var weather: String?  by data
+  var drivingDirection: String?  by data
+  var light: String?  by data
+  var roadType: String?  by data
+  var roadStructure: String?  by data
+  var roadState: String?  by data
 
   // 历史统计
-  var historyAccidentCount: Short?  by changedProperties
-  var historyTrafficOffenceCount: Short?  by changedProperties
-  var historyServiceOffenceCount: Short?  by changedProperties
-  var historyComplainCount: Short?  by changedProperties
+  var historyAccidentCount: Short?  by data
+  var historyTrafficOffenceCount: Short?  by data
+  var historyServiceOffenceCount: Short?  by data
+  var historyComplainCount: Short?  by data
 
   // 当事车辆列表
-  var cars: List<AccidentCarDto4Update>? by changedProperties
+  var cars: List<AccidentCarDto4Update>? by data
 
   // 当事人列表
-  var peoples: List<AccidentPeopleDto4Update>? by changedProperties
+  var peoples: List<AccidentPeopleDto4Update>? by data
 
   // 其他物体列表
-  var others: List<AccidentOtherDto4Update>? by changedProperties
+  var others: List<AccidentOtherDto4Update>? by data
 
   override fun toString(): String {
-    return "${AccidentRegisterDto4Update::class.simpleName}=$changedProperties"
+    return "${AccidentRegisterDto4Update::class.simpleName}=$data"
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+
+    other as AccidentRegisterDto4Update
+
+    if (data != other.data) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return data.hashCode()
   }
 }

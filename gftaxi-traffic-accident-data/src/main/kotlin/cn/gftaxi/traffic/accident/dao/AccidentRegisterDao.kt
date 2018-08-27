@@ -107,11 +107,11 @@ interface AccidentRegisterDao {
   /**
    * 更新事故登记信息。
    *
-   * @param[id] 要修改案件的 ID
-   * @param[data] 要更新的信息，key 为 [AccidentRegisterDto4Update] 属性名，value 为该 DTO 相应的属性值，
-   *              使用者只传入已改动的属性键值对，没有改动的属性不要传入来。
+   * 更新成功返回 `Mono.just(true)`，否则返回 `Mono.just(false)`。
+   * 更新成功是指真的更新了某些数据，如果没有修改任何数据则返回 `Mono.just(false)`。
    *
-   * @return 有更新返回 Mono.just(true)，否则返回 Mono.just(false)
+   * @param[id] 案件 ID
+   * @param[data] 要更新的信息，key 为 [AccidentRegisterDto4Update] 属性名，value 为该 DTO 相应的属性值。
    */
   fun update(id: Int, data: Map<String, Any?>): Mono<Boolean>
 }

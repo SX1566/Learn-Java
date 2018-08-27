@@ -15,7 +15,7 @@ class AccidentRegisterDto4UpdateTest {
   fun `missing field`() {
     val json = "{}"
     val dto = ObjectMapper().readValue(json, AccidentRegisterDto4Update::class.java)
-    assertTrue(dto.changedProperties.isEmpty())
+    assertTrue(dto.data.isEmpty())
     assertNull(dto.carPlate)
   }
 
@@ -24,7 +24,7 @@ class AccidentRegisterDto4UpdateTest {
     val json = "{\"carPlate\": null, \"carId\": 1, \"motorcadeName\": \"一分一队\"}"
     val dto = ObjectMapper().readValue(json, AccidentRegisterDto4Update::class.java)
     //println(dto)
-    assertEquals(3, dto.changedProperties.size)
+    assertEquals(3, dto.data.size)
     assertNull(dto.carPlate)
     assertEquals(1, dto.carId)
     assertEquals("一分一队", dto.motorcadeName)
@@ -38,7 +38,7 @@ class AccidentRegisterDto4UpdateTest {
       .findAndRegisterModules()
       .readValue(json, AccidentRegisterDto4Update::class.java)
     //println(dto)
-    assertEquals(1, dto.changedProperties.size)
+    assertEquals(1, dto.data.size)
     assertNull(dto.carPlate)
   }
 

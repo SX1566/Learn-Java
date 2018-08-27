@@ -31,7 +31,7 @@ class UpdateHandler @Autowired constructor(
       // 将请求体的 json 转换为 DTO
       .bodyToMono<AccidentRegisterDto4Update>()
       // 执行信息更新
-      .flatMap { accidentRegisterService.update(request.pathVariable("id").toInt(), it.changedProperties) }
+      .flatMap { accidentRegisterService.update(request.pathVariable("id").toInt(), it.data) }
       // response
       .then(noContent().build())
       // error mapping
