@@ -2,9 +2,16 @@ simter:
   jwt:
     secret-key: @simter.jwt.secret-key@
     require-authorized: @simter.jwt.require-authorized@
-  rest.context-path.kv: /kv
-gftaxi:
-  rest.context-path.traffic-accident: /accident
+module:
+  version:
+    gftaxi-traffic-accident: @project.version@
+    simter: @simter.version@
+    simter-kv: @simter-kv.version@
+    simter-category: @simter-category.version@
+  rest-context-path:
+    gftaxi-traffic-accident: /accident
+    simter-kv: /kv
+    simter-category: /category
 db:
   platform: @db.platform@
   init-mode: @db.init-mode@
@@ -28,8 +35,6 @@ app.mail:
   receive-subject: BC事故报案
   receive-last-minutes: 10
   app.mail.mail-id-file: /data/accident/mail-id.txt
-app.version:
-  traffic-accident: @project.version@
 server:
   port: ${port:9102}
   servlet:

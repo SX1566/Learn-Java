@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
+import org.springframework.http.MediaType.*
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.router
 
@@ -29,9 +30,9 @@ private const val MODULE = "cn.gftaxi.traffic.accident.rest.webflux"
 @Configuration("$MODULE.ModuleConfiguration")
 @ComponentScan(MODULE)
 class ModuleConfiguration @Autowired constructor(
-  @Value("\${gftaxi.rest.context-path.traffic-accident:/}") private val contextPath: String,
+  @Value("\${module.version.gftaxi-traffic-accident:UNKNOWN}") private val version: String,
+  @Value("\${module.rest-context-path.gftaxi-traffic-accident:/accident}") private val contextPath: String,
   private val findSecondaryCategoriesHandler: FindSecondaryCategoriesHandler,
-  @Value("\${app.version.traffic-accident:NOT_SET}") private val version: String,
   private val accidentDraftHandler: AccidentDraftHandler,
   private val accidentRegisterStatSummaryHandler: StatSummaryHandler,
   private val accidentRegisterFindTodoHandler: FindTodoHandler,
@@ -45,7 +46,8 @@ class ModuleConfiguration @Autowired constructor(
   private val logger = LoggerFactory.getLogger(ModuleConfiguration::class.java)
 
   init {
-    logger.warn("gftaxi.rest.context-path.traffic-accident='{}'", contextPath)
+    logger.warn("module.rest-context-path.gftaxi-traffic-accident='{}'", contextPath)
+    logger.warn("module.version.gftaxi-traffic-accident='{}'", version)
   }
 
   /** Register a `RouterFunction<ServerResponse>` with all routers for this module */
@@ -86,7 +88,7 @@ class ModuleConfiguration @Autowired constructor(
 
       //==== 全局 ====
       // GET
-      GET("/", { ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).syncBody("gftaxi-traffic-accident module v$version") })
+      GET("/", { ServerResponse.ok().contentType(TEXT_PLAIN).syncBody("gftaxi-traffic-accident-$version") })
       // OPTIONS /*
       OPTIONS("/**", { ServerResponse.noContent().build() })
     }

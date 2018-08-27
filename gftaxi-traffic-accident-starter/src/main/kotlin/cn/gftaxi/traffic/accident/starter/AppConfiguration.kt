@@ -22,8 +22,10 @@ import java.time.OffsetDateTime
 @Configuration("cn.gftaxi.traffic.accident.starter.AppConfiguration")
 @EnableWebFlux
 class AppConfiguration @Autowired constructor(
-  @Value("\${app.version.traffic-accident: UNKNOWN}")
-  private val version: String
+  @Value("\${module.version.simter:UNKNOWN}") private val simterVersion: String,
+  @Value("\${module.version.simter-kv:UNKNOWN}") private val kvVersion: String,
+  @Value("\${module.version.simter-category:UNKNOWN}") private val categoryVersion: String,
+  @Value("\${module.version.gftaxi-traffic-accident:UNKNOWN}") private val accidentVersion: String
 ) {
   /**
    * Register by method [DelegatingWebFluxConfiguration.setConfigurers].
@@ -44,25 +46,32 @@ class AppConfiguration @Autowired constructor(
         registry!!.addMapping("/**")
           .allowedOrigins("*")
           .allowedMethods("*")
-          .allowedHeaders("Authorization", "Content-Type")
-          //.exposedHeaders("header1")
+          .allowedHeaders("Authorization", "Content-Type", "Content-Disposition")
+          .exposedHeaders("Location")
           .allowCredentials(false)
           .maxAge(1800) // seconds
       }
     }
   }
 
+  private val startTime = OffsetDateTime.now()
+  private val rootPage: String = """
+    <h2>交通事故微服务</h2>
+    <div>系统启动时间：$startTime</div>
+    <div>模块版本信息：</div>
+    <ul>
+      <li>gftaxi-traffic-accident-$accidentVersion</li>
+      <li>simter-$simterVersion</li>
+      <li>simter-kv-$kvVersion</li>
+      <li>simter-category-$categoryVersion</li>
+    </ul>
+  """.trimIndent()
+
   /**
    * Other application routes.
    */
   @Bean
   fun rootRoutes() = router {
-    val now = OffsetDateTime.now()
-    "/".nest {
-      GET("/", {
-        ok().contentType(MediaType.TEXT_HTML)
-          .syncBody("<h2>GFTaxi traffic-accident Server</h2><div>Version : $version</div><div>Start at : $now</div>")
-      })
-    }
+    "/".nest { GET("/", { ok().contentType(MediaType.TEXT_HTML).syncBody(rootPage) }) }
   }
 }
