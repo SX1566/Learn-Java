@@ -5,7 +5,7 @@
   <parent>
     <groupId>tech.simter</groupId>
     <artifactId>simter-build</artifactId>
-    <version>0.6-SNAPSHOT</version>
+    <version>0.6.0</version>
     <!-- lookup parent from repository -->
     <relativePath/>
   </parent>
@@ -17,9 +17,9 @@
   <properties>
     <revision>0.2-SNAPSHOT</revision>
     <traffic-accident.version>${revision}</traffic-accident.version>
-    <simter.version>0.6-SNAPSHOT</simter.version>
-    <simter-kv.version>0.3-SNAPSHOT</simter-kv.version>
-    <simter-category.version>0.2-SNAPSHOT</simter-category.version>
+    <simter.version>0.6.0</simter.version>
+    <simter-kv.version>0.3.1</simter-kv.version>
+    <simter-category.version>0.2.1</simter-category.version>
     <kotlin.compiler.incremental>false</kotlin.compiler.incremental>
   </properties>
   <modules>
