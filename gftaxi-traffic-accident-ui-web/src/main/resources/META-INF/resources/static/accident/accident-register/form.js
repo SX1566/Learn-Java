@@ -92,19 +92,19 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
         },
         /** 加载事故附件信息 */
         loadAccidentAttachments: function () {
-          accident.get(`${accident.fileDataServer}/parent/AR${this.e.id}/3`).then(attachments => {
+          accident.get(`${file.fileDataServer}/parent/AR${this.e.id}/3`).then(attachments => {
             this.ui.accidentAttachments = attachments
           })
         },
         /** 加载事故现场图信息 */
         loadAccidentPicAttachments: function () {
-          accident.get(`${accident.fileDataServer}/parent/AR${this.e.id}/2`).then(attachments => {
+          accident.get(`${file.fileDataServer}/parent/AR${this.e.id}/2`).then(attachments => {
             Vue.set(this.ui, "accidentPic", attachments[0]);
           })
         },
         /** 加载表单审核附件信息 */
         loadCheckedAttachments: function () {
-          accident.get(`${accident.fileDataServer}/parent/AR${this.e.id}/4`).then(attachments => {
+          accident.get(`${file.fileDataServer}/parent/AR${this.e.id}/4`).then(attachments => {
             Vue.set(this.ui, "checkedAttachment", attachments[0]);
           })
         },
@@ -385,7 +385,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
         },
         /** 生成事故附件图片地址 */
         initAccidentAttachmentUrl: function (id) {
-          return `${accident.fileDataServer}/inline/${id}`;
+          return `${file.fileDataServer}/inline/${id}`;
         },
         /** 生成事故附件图标样式 */
         initAccidentAttachmentIcon: function (ext) {
