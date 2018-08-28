@@ -31,7 +31,7 @@ define(["bc", "vue", "context", "static/accident/api", "static/accident/simter-f
     {
       id: "driverName", label: "当事司机", width: "8em",
       filter: function (value, row) {
-        return `${null === row.driverType ? "" : `[${driverTypeMap[row.driverType]}]`} ${value}`
+        return row.driverType && row.driverType !== undefined ? `[${driverTypeMap[row.driverType]}] ${value}` : value;
       }
     },
     {id: "location", label: "事发地点", width: "13em"},
@@ -67,7 +67,7 @@ define(["bc", "vue", "context", "static/accident/api", "static/accident/simter-f
     {
       id: "driverName", label: "当事司机", width: "8em",
       filter: function (value, row) {
-        return `[${driverTypeMap[row.driverType] || row.driverType}] ${value}`
+        return row.driverType && row.driverType !== undefined ? `[${driverTypeMap[row.driverType]}] ${value}` : value;
       }
     },
     {id: "location", label: "事发地点", width: "13em"},
