@@ -181,7 +181,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
             onOk: function (result) {
               bc.msg.slide("上传成功");
               // 上传成功更新 driverPicId
-              Vue.set(this.vm.e, "driverPicId", `C:${result.headers.location.replace("/")}`);
+              Vue.set(this.vm.e, "driverPicId", `C:${result.headers.location.replace(" /","")}`);
             },
             onError: function () {
               bc.msg.slide("上传失败");
