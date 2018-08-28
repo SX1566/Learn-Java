@@ -110,6 +110,23 @@ interface AccidentRegisterDao {
    * 更新成功返回 `Mono.just(true)`，否则返回 `Mono.just(false)`。
    * 更新成功是指真的更新了某些数据，如果没有修改任何数据则返回 `Mono.just(false)`。
    *
+   * ## 对于当事车辆（cars）、当事人（peoples）、其他物体（others）这 3 个子列表信息的更新说明如下：
+   * 1. 如果 [data] 中没有相应的 key，代表无需处理。
+   * 2. 如果 [data] 中有相应的 key，且其值为 size=0 的 [List]，代表要清空相应的子列表信息。
+   * 3. 如果 [data] 中有相应的 key，且其值为 size>0 的 [List]，[List] 内的元素用 item 代表时：
+   *   - 【增】如果 item 没有 id，代表为新增一个元素，新增元素的属性值都在 item.data 内。
+   *   - 【改】如果 item 有 id，代表更新现有元素的其它属性值，要更新的属性值都在 item.data 内；
+   *           此时若 item.data 内没有除 id 外的其它属性数据，则代表此元素无需任何修改，直接忽略无需处理。
+   *   - 【删】系统中现有的子列表元素多出的部分就是代表此次要删除的元素。
+   *
+   * ## 更新当事车辆信息的例子：
+   *
+   * 假设系统中现有 id=1、2 两条当事车辆信息，传入的 [data] 参数中 [data]&lceil;"cars"&rfloor; 的值为
+   * `[{sn: 1, carPlate="xxx"}, {id:1, sn: 2, model: "小车"}]`。这代表：
+   * 1. {sn: 1, carPlate="xxx"} 为新增的数据，updatedTime 设为当前时间。
+   * 2. 更新 id=1 的现有数据的 sn=2、model="小车"，updatedTime 更新为当前时间，其余属性不更新。
+   * 3. 删除 id=2 的现有数据。
+   *
    * @param[id] 案件 ID
    * @param[data] 要更新的信息，key 为 [AccidentRegisterDto4Update] 属性名，value 为该 DTO 相应的属性值。
    */
