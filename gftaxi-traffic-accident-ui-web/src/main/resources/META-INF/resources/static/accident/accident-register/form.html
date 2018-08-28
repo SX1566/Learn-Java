@@ -84,9 +84,8 @@
                        v-model="e.driverIdentityCode" readonly>
               </td>
               <td rowspan="6" class="ui-widget-content relative">
-                <div style="position: absolute; left: 0; top: 0; bottom: 0; right: 0; text-align: center">
-                  <span style="height: 100%; display: inline-block; vertical-align: middle"></span>
-                  <img style="max-width: 100%; max-height: 100%; cursor:pointer; vertical-align: middle" alt="无图" title="点击查看大图" :src="driverPicUrl"
+                <div style="position:absolute;left:0;top:0;bottom:0;right:0;display:flex;justify-content:center;align-items:center">
+                  <img style="max-width:100%;max-height:100%;cursor:pointer" alt="无图" title="点击查看大图" :src="driverPicUrl"
                        @click="inlineDriverPic">
                   <ul v-if="!isReadOnly" class="inputIcons" style="position: absolute; top: 10px; right: 2px">
                     <li class="inputIcon ui-icon ui-icon-arrowthickstop-1-n" title="上传"
@@ -266,9 +265,8 @@
             </li>
           </ul>
         </div>
-        <div class="ui-widget-content unflex" style="height: 13em; text-align: center">
-          <span style="height: 100%; display: inline-block; vertical-align: middle"></span>
-          <img style="max-width:100%; max-height:100%; cursor: pointer; vertical-align: middle" alt="无图" title="点击查看大图"
+        <div class="ui-widget-content unflex" style="height:13em;display:flex;justify-content:center;align-items:center">
+          <img style="max-width:100%;max-height:100%;cursor:pointer" alt="无图" title="点击查看大图"
                :src="accidentPicUrl" @click="inline({id: this.ui.accidentPic.id})">
         </div>
         <div class="ui-widget-content relative unflex" style="line-height: 1.8em; border-width: 0 1px">
