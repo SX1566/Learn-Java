@@ -270,19 +270,31 @@
                :src="accidentPicUrl" @click="inline({id: this.ui.accidentPic.id})">
         </div>
         <div class="ui-widget-content relative unflex" style="line-height: 1.8em; border-width: 0 1px">
-          <div style="display: inline-block;padding-left: 0.5em">现场图片、附件:</div>
+          <div style="display: inline-block;padding-left: 0.5em">现场图片、附件:
+            <label>
+              <input type="checkbox" class="ui-widget-content" v-model="ui.autoWrapAttachName" style="width:auto;vertical-align:middle;margin-top:-1px">显示附件全名
+            </label>
+          </div>
           <ul v-if="!isReadOnly" class="inputIcons" style="position: absolute;right:8px">
             <li class="inputIcon ui-icon ui-icon-arrowthickstop-1-n" title="上传" @click="triggerUploadButton('uploadAccidentAttachment')">
               <input hidden type="file" name="uploadAccidentAttachment" @change="uploadAccidentAttachment($event.target.files)"/>
             </li>
           </ul>
         </div>
-        <div class="ui-widget-content flex" style="height: 11em;">
-          <div v-for="attach in ui.accidentAttachments" style="display: inline-block;width: 3.5em;margin: 0.5em;text-align: center">
-            <img v-if="isImageExt(attach.ext)" style="max-width: 100%; max-height: 100%; cursor:pointer; vertical-align: middle"
-                 :src="initAccidentAttachmentUrl(attach.id)">
-            <span v-else :class="initAccidentAttachmentIcon(attach.ext)" style="margin: 0 auto"></span>
-            {{attach.name}}.{{attach.ext}}
+        <div class="ui-widget-content flex" style="height:11em;overflow-y:auto;overflow-x:hidden;
+             display:flex;flex-direction:row;justify-content:left;align-items:stretch;flex-wrap:wrap">
+          <div v-for="attach in ui.accidentAttachments" style="margin:0.5em 0 0 0.5em;
+               display:flex;flex-direction:column;justify-content:stretch" :style="{'width': ui.thumbSize}">
+            <div style="flex: 1 1 0%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center"
+                 :style="{'max-height': ui.thumbSize}">
+              <img v-if="isImageExt(attach.ext)" style="max-width:100%;max-height:100%;cursor:pointer" alt="加载失败"
+                  :src="initAccidentAttachmentUrl(attach.id)" @click="inline({id: attach.id})">
+              <span v-else :class="initAccidentAttachmentIcon(attach.ext)" style="margin: 0 auto;cursor:pointer"
+                    @click="inline({id: attach.id})"></span>
+            </div>
+            <div style="text-align:center;overflow:hidden;text-overflow:ellipsis;cursor:default" 
+                 :style="{'word-break': ui.autoWrapAttachName ? 'break-all' : 'normal'}"
+                 title="{{attach.name}}.{{attach.ext}}">{{attach.name}}.{{attach.ext}}</div>
           </div>
         </div>
         <div class="ui-widget-content unflex" style="line-height: 1.8em; border-width: 0 1px">

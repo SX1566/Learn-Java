@@ -12,6 +12,8 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
       el: $page[0],
       data: {
         ui: {
+          autoWrapAttachName : false,
+          thumbSize : '8em',
           fixedWidth: '75.2em',
           isChecker: isChecker,
           happenTime: "",
