@@ -2,14 +2,14 @@ package cn.gftaxi.traffic.accident.dao.jpa
 
 import cn.gftaxi.traffic.accident.Utils.FORMAT_TO_YYYYMMDD
 import cn.gftaxi.traffic.accident.dto.CaseRelatedInfoDto
-import cn.gftaxi.traffic.accident.po.AccidentDraft
-import cn.gftaxi.traffic.accident.po.AccidentOperation
+import cn.gftaxi.traffic.accident.po.*
 import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType
 import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType.*
 import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType
-import cn.gftaxi.traffic.accident.po.AccidentRegister
+import cn.gftaxi.traffic.accident.po.AccidentPeople.Sex.Male
 import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType
 import org.slf4j.LoggerFactory
+import java.math.BigDecimal
 import java.time.OffsetDateTime
 import java.util.*
 import javax.persistence.EntityManager
@@ -87,9 +87,12 @@ object POUtils {
     status: AccidentRegister.Status,
     driverType: DriverType,
     overdue: Boolean? = null,
-    registerTime: OffsetDateTime? = null
+    registerTime: OffsetDateTime? = null,
+    cars: Set<AccidentCar>? = null,
+    peoples: Set<AccidentPeople>? = null,
+    others: Set<AccidentOther>? = null
   ): AccidentRegister {
-    return AccidentRegister(
+    val accidentRegister = AccidentRegister(
       id = draft.id,
       status = status,
 
@@ -115,6 +118,10 @@ object POUtils {
       hitForm = draft.hitForm,
       hitType = draft.hitType
     )
+    accidentRegister.cars = cars
+    accidentRegister.peoples = peoples
+    accidentRegister.others = others
+    return accidentRegister
   }
 
   /** 构建新的事故操作记录 */
@@ -311,6 +318,80 @@ object POUtils {
       historyTrafficOffenceCount = randomInt(0, 10).toShort(),
       historyServiceOffenceCount = randomInt(0, 10).toShort(),
       historyComplainCount = randomInt(0, 10).toShort()
+    )
+  }
+
+  /** 构建新的当事车辆 */
+  fun randomAccidentCar(
+    parent: AccidentRegister,
+    sn: Short = 0,
+    name: String = random("name"),
+    type: String = random("type"),
+    model: String = random("model")
+  ): AccidentCar {
+    return AccidentCar(
+      parent = parent,
+      sn = sn,
+      name = name,
+      type = type,
+      model = model,
+      towCount = randomInt(1, 10).toShort(),
+      towMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      repairType = random("repairType"),
+      repairMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      damageState = random("damageState"),
+      damageMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      followType = random("followType"),
+      updatedTime = OffsetDateTime.now()
+    )
+  }
+
+  /** 构建新的当事人 */
+  fun randomAccidentPeople(
+    parent: AccidentRegister,
+    sn: Short = 0,
+    name: String = random("name"),
+    type: String = random("type"),
+    phone: String = random("phone")
+  ): AccidentPeople {
+    return AccidentPeople(
+      parent = parent,
+      sn = sn,
+      name = name,
+      type = type,
+      sex = Male,
+      phone = phone,
+      transportType = random("transportType"),
+      duty = random("duty"),
+      damageState = random("damageState"),
+      damageMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      treatmentMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      compensateMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      followType = random("followType"),
+      updatedTime = OffsetDateTime.now()
+    )
+  }
+
+  /** 构建新的其他物体 */
+  fun randomAccidentOther(
+    parent: AccidentRegister,
+    sn: Short = 0,
+    name: String = random("name"),
+    type: String = random("type")
+  ): AccidentOther {
+    return AccidentOther(
+      parent = parent,
+      sn = sn,
+      name = name,
+      type = type,
+      belong = random("belong"),
+      linkmanName = random("linkmanName"),
+      linkmanPhone = random("linkmanPhone"),
+      damageState = random("damageState"),
+      damageMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      actualMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      followType = random("followType"),
+      updatedTime = OffsetDateTime.now()
     )
   }
 }
