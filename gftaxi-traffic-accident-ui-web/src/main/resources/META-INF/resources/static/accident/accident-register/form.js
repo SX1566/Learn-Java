@@ -370,6 +370,9 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           if (index === this.e[module].length - 1) return; // 最后一条无法下移
           this.e[module].splice(index + 1, 0, this.e[module].splice(index, 1)[0]); // 下移
         },
+        inlineDriverPic: function () {
+          window.open(this.driverPicUrl)
+        },
         /**
          *  在线查看附件
          *  选项配置有 id 则使用 id 在线查看附件，否则通过所属模块和分组查看
