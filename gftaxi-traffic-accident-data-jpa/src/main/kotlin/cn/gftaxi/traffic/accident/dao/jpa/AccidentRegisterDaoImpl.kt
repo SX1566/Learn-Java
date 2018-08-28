@@ -390,7 +390,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
     val main = data.filterKeys { !nestedPropertyKeys.contains(it) }
     val mainUpdatedSuccess = if (main.isNotEmpty()) {
       val ql = """|update AccidentRegister
-                |  set ${data.keys.joinToString(",\n|  ") { "$it = :$it" }}
+                |  set ${main.keys.joinToString(",\n|  ") { "$it = :$it" }}
                 |  where id = :id""".trimMargin()
       if (logger.isDebugEnabled) {
         logger.debug("ql={}", ql)
