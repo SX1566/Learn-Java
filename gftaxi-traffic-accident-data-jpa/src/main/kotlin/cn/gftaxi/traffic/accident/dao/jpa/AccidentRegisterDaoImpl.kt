@@ -5,13 +5,10 @@ import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
 import cn.gftaxi.traffic.accident.dao.BcDao
 import cn.gftaxi.traffic.accident.dao.jpa.repository.AccidentRegisterJpaRepository
 import cn.gftaxi.traffic.accident.dto.*
-import cn.gftaxi.traffic.accident.po.AccidentCar
-import cn.gftaxi.traffic.accident.po.AccidentDraft
+import cn.gftaxi.traffic.accident.po.*
 import cn.gftaxi.traffic.accident.po.AccidentDraft.Status.Todo
 import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType
 import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType
-import cn.gftaxi.traffic.accident.po.AccidentPeople
-import cn.gftaxi.traffic.accident.po.AccidentRegister
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.isOverdue
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
 import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.*
@@ -30,6 +27,7 @@ import java.time.OffsetDateTime
 import java.time.Period
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import java.util.function.BiFunction
 import javax.persistence.EntityManager
 import javax.persistence.NoResultException
 import javax.persistence.PersistenceContext
@@ -405,76 +403,91 @@ class AccidentRegisterDaoImpl @Autowired constructor(
 
     // 更新当事车辆信息
     val cars = data["cars"] as List<AccidentCarDto4Update>?
-    val carUpdatedSuccess = cars?.let {
-      if (cars.isEmpty()) { // 清空现有数据
-        em.createQuery("delete from AccidentCar where parent.id = :pid")
-          .setParameter("pid", id)
-          .executeUpdate() > 0
-      } else {              // 增删改的处理
-        // 获取现有数据
-        val exists = em.createQuery("select t from AccidentCar t where t.parent.id = :pid", AccidentCar::class.java)
-          .setParameter("pid", id)
-          .resultList//.associate { it.id!! to it }
-        // 删除多出的元素
-        val toDeleteItems = exists.filterNot { po -> cars.any { dto -> dto.id == po.id } }
-        val deleteSuccess = if (toDeleteItems.isNotEmpty()) {
-          em.createQuery("delete from AccidentCar where id in (:ids)")
-            .setParameter("ids", toDeleteItems.map { it.id }.toList())
-            .executeUpdate() > 0
-        } else true
-
-        // 处理新增的元素
-        val toCreateItems = cars.filter { it.id == null }
-        val createSuccess = if (toCreateItems.isNotEmpty()) {
-          val register = em.find(AccidentRegister::class.java, id)
-          toCreateItems.forEach {
-            em.persist(AccidentCar(
-              parent = register,
-              sn = it.sn!!,
-              name = it.name!!,
-              type = it.type!!,
-              model = it.model,
-              towCount = it.towCount,
-              towMoney = it.towMoney,
-              repairType = it.repairType,
-              repairMoney = it.repairMoney,
-              damageState = it.damageState,
-              damageMoney = it.damageMoney,
-              followType = it.followType,
-              updatedTime = OffsetDateTime.now()
-            ))
-          }
-          true
-        } else true
-
-        // 处理要更新的元素
-        val toUpdateItems = cars.filter { it.id != null && it.data.size > 1 }
-        val updateSuccess = if (toUpdateItems.isNotEmpty()) {
-          var success = true
-          toUpdateItems.forEach {
-            val itemDate = it.data.filterNot { it.key == "id" || it.key == "updateTime" }
-            val ql = """|update AccidentCar
-                |  set ${itemDate.keys.joinToString(",\n|  ") { "$it = :$it" }}
-                |  where id = :id""".trimMargin()
-            if (logger.isDebugEnabled) {
-              logger.debug("update AccidentCar: ql={}", ql)
-              logger.debug("update AccidentCar: id={}, data={}", it.id, itemDate)
-            }
-            val query = em.createQuery(ql).setParameter("id", it.id)
-            itemDate.keys.forEach { query.setParameter(it, itemDate[it]) }
-            success = success && query.executeUpdate() > 0
-          }
-          success
-        } else true
-
-        deleteSuccess && createSuccess && updateSuccess
-      }
-    } ?: true
+    val carUpdatedSuccess = cars?.let({
+      updateSubList(id, cars, AccidentCar::class.java, dto2po = BiFunction { dto, register ->
+        AccidentCar(
+          parent = register,
+          sn = dto.sn!!,
+          name = dto.name!!,
+          type = dto.type!!,
+          model = dto.model,
+          towCount = dto.towCount,
+          towMoney = dto.towMoney,
+          repairType = dto.repairType,
+          repairMoney = dto.repairMoney,
+          damageState = dto.damageState,
+          damageMoney = dto.damageMoney,
+          followType = dto.followType,
+          updatedTime = OffsetDateTime.now()
+        )
+      })
+    }) ?: true
 
     // 更新当事人信息 TODO
 
     // 更新其他物体信息 TODO
 
     return Mono.just(mainUpdatedSuccess && carUpdatedSuccess)
+  }
+
+  /**
+   * 事故当事车辆、当事人、其他物品信息更新封装。
+   *
+   * 更新成功返回 true，否则返回 false。
+   *
+   * @param[pid] 事故登记 ID
+   * @param[dtoList] 事故当事车辆、当事人、其他物品信息更新 DTO 列表
+   * @param[poClazz] 事故当事车辆、当事人、其他物品信息的 PO 对应的类型信息
+   * @param[dto2po] DTO 转 PO 函数
+   */
+  private fun <DTO : AccidentRegisterSubListBaseDto, PO : IdEntity> updateSubList(
+    pid: Int, dtoList: List<DTO>, poClazz: Class<PO>,
+    dto2po: BiFunction<DTO, AccidentRegister, PO>): Boolean {
+    return if (dtoList.isEmpty()) { // 清空现有数据
+      em.createQuery("delete from ${poClazz.simpleName} where parent.id = :pid")
+        .setParameter("pid", pid)
+        .executeUpdate() > 0
+    } else {                       // 增删改的处理
+      // 获取现有数据
+      val exists = em.createQuery("select t from ${poClazz.simpleName} t where t.parent.id = :pid", poClazz)
+        .setParameter("pid", pid)
+        .resultList
+      // 删除多出的元素
+      val toDeleteItems = exists.filterNot { po -> dtoList.any { dto -> dto.id == po.id } }
+      val deleteSuccess = if (toDeleteItems.isNotEmpty()) {
+        em.createQuery("delete from ${poClazz.simpleName} where id in (:ids)")
+          .setParameter("ids", toDeleteItems.map { it.id }.toList())
+          .executeUpdate() > 0
+      } else true
+
+      // 处理新增的元素
+      val toCreateItems = dtoList.filter { it.id == null }
+      val createSuccess = if (toCreateItems.isNotEmpty()) {
+        val register = em.find(AccidentRegister::class.java, pid)
+        toCreateItems.forEach { em.persist(dto2po.apply(it, register)) }
+        true
+      } else true
+
+      // 处理要更新的元素
+      val toUpdateItems = dtoList.filter { it.id != null && it.data.size > 1 }
+      val updateSuccess = if (toUpdateItems.isNotEmpty()) {
+        var success = true
+        toUpdateItems.forEach {
+          val itemDate = it.data.filterNot { it.key == "id" || it.key == "updateTime" }
+          val ql = """|update ${poClazz.simpleName}
+                |  set ${itemDate.keys.joinToString(",\n|  ") { "$it = :$it" }}
+                |  where id = :id""".trimMargin()
+          if (logger.isDebugEnabled) {
+            logger.debug("update : ql={}", ql)
+            logger.debug("update : id={}, data={}", it.id, itemDate)
+          }
+          val query = em.createQuery(ql).setParameter("id", it.id)
+          itemDate.keys.forEach { query.setParameter(it, itemDate[it]) }
+          success = success && query.executeUpdate() > 0
+        }
+        success
+      } else true
+      deleteSuccess && createSuccess && updateSuccess
+    }
   }
 }
