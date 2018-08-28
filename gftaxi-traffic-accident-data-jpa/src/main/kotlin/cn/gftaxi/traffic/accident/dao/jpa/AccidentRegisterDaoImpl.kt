@@ -386,7 +386,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
   override fun update(id: Int, data: Map<String, Any?>): Mono<Boolean> {
     if (data.isEmpty()) return Mono.just(false)
 
-    // 更新主体属性
+    // 1. 更新主体属性
     val main = data.filterKeys { !nestedPropertyKeys.contains(it) }
     val mainUpdatedSuccess = if (main.isNotEmpty()) {
       val ql = """|update AccidentRegister
@@ -401,7 +401,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
       query.executeUpdate() > 0
     } else true
 
-    // 更新当事车辆信息
+    // 2. 更新当事车辆信息
     val cars = data["cars"] as List<AccidentCarDto4Update>?
     val carUpdatedSuccess = cars?.let({
       updateSubList(id, cars, AccidentCar::class.java, dto2po = BiFunction { dto, register ->
@@ -423,11 +423,32 @@ class AccidentRegisterDaoImpl @Autowired constructor(
       })
     }) ?: true
 
-    // 更新当事人信息 TODO
+    // 3. 更新当事人信息
+    val peoples = data["peoples"] as List<AccidentPeopleDto4Update>?
+    val peopleUpdatedSuccess = peoples?.let({
+      updateSubList(id, peoples, AccidentPeople::class.java, dto2po = BiFunction { dto, register ->
+        AccidentPeople(
+          parent = register,
+          sn = dto.sn!!,
+          name = dto.name!!,
+          type = dto.type!!,
+          sex = dto.sex,
+          phone = dto.phone,
+          transportType = dto.transportType,
+          duty = dto.duty,
+          damageState = dto.damageState,
+          damageMoney = dto.damageMoney,
+          treatmentMoney = dto.treatmentMoney,
+          compensateMoney = dto.compensateMoney,
+          followType = dto.followType,
+          updatedTime = OffsetDateTime.now()
+        )
+      })
+    }) ?: true
 
-    // 更新其他物体信息 TODO
+    // 4. 更新其他物体信息 TODO
 
-    return Mono.just(mainUpdatedSuccess && carUpdatedSuccess)
+    return Mono.just(mainUpdatedSuccess && carUpdatedSuccess && peopleUpdatedSuccess)
   }
 
   /**

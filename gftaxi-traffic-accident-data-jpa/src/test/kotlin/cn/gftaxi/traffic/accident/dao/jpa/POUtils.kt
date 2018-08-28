@@ -6,6 +6,7 @@ import cn.gftaxi.traffic.accident.po.*
 import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType
 import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType.*
 import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType
+import cn.gftaxi.traffic.accident.po.AccidentPeople.Sex.Male
 import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType
 import org.slf4j.LoggerFactory
 import java.math.BigDecimal
@@ -340,6 +341,32 @@ object POUtils {
       repairMoney = BigDecimal("${randomInt(1, 100)}.00"),
       damageState = random("damageState"),
       damageMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      followType = random("followType"),
+      updatedTime = OffsetDateTime.now()
+    )
+  }
+
+  /** 构建新的当事人 */
+  fun randomAccidentPeople(
+    parent: AccidentRegister,
+    sn: Short = 0,
+    name: String = random("name"),
+    type: String = random("type"),
+    phone: String = random("phone")
+  ): AccidentPeople {
+    return AccidentPeople(
+      parent = parent,
+      sn = sn,
+      name = name,
+      type = type,
+      sex = Male,
+      phone = phone,
+      transportType = random("transportType"),
+      duty = random("duty"),
+      damageState = random("damageState"),
+      damageMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      treatmentMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      compensateMoney = BigDecimal("${randomInt(1, 100)}.00"),
       followType = random("followType"),
       updatedTime = OffsetDateTime.now()
     )
