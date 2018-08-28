@@ -171,6 +171,7 @@ class UpdateMethodImplTest @Autowired constructor(
 
   @Test
   fun `Cars success create`() {
+    val now = OffsetDateTime.now().minusSeconds(1)
     // 1. 构建一条事故登记数据
     val happenTime = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES)
     val registerPo = randomRegister(
@@ -189,7 +190,6 @@ class UpdateMethodImplTest @Autowired constructor(
     val registerDto = AccidentRegisterDto4Update().apply { cars = listOf(carDto) }
 
     // 2.2 执行数据添加
-    val now = OffsetDateTime.now()
     StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
     em.flush();em.clear()
 
@@ -210,7 +210,7 @@ class UpdateMethodImplTest @Autowired constructor(
 
   @Test
   fun `Cars success update`() {
-    val now = OffsetDateTime.now()
+    val now = OffsetDateTime.now().minusSeconds(1)
     // 1. 构建一条事故登记数据，包含一条当事车辆信息
     val happenTime = now.truncatedTo(ChronoUnit.MINUTES)
     val registerPo = randomRegister(
@@ -258,7 +258,7 @@ class UpdateMethodImplTest @Autowired constructor(
 
   @Test
   fun `Cars success delete`() {
-    val now = OffsetDateTime.now()
+    val now = OffsetDateTime.now().minusSeconds(1)
     // 1. 构建一条事故登记数据，包含2条当事车辆信息
     val happenTime = now.truncatedTo(ChronoUnit.MINUTES)
     val registerPo = randomRegister(
@@ -297,6 +297,7 @@ class UpdateMethodImplTest @Autowired constructor(
 
   @Test
   fun `Peoples success create`() {
+    val now = OffsetDateTime.now().minusSeconds(1)
     // 1. 构建一条事故登记数据
     val happenTime = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES)
     val registerPo = randomRegister(
@@ -315,7 +316,6 @@ class UpdateMethodImplTest @Autowired constructor(
     val registerDto = AccidentRegisterDto4Update().apply { peoples = listOf(peopleDto) }
 
     // 2.2 执行数据添加
-    val now = OffsetDateTime.now()
     StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
     em.flush();em.clear()
 
@@ -336,7 +336,7 @@ class UpdateMethodImplTest @Autowired constructor(
 
   @Test
   fun `Peoples success update`() {
-    val now = OffsetDateTime.now()
+    val now = OffsetDateTime.now().minusSeconds(1)
     // 1. 构建一条事故登记数据，包含一条当事人信息
     val happenTime = now.truncatedTo(ChronoUnit.MINUTES)
     val registerPo = randomRegister(
@@ -384,7 +384,7 @@ class UpdateMethodImplTest @Autowired constructor(
 
   @Test
   fun `Peoples success delete`() {
-    val now = OffsetDateTime.now()
+    val now = OffsetDateTime.now().minusSeconds(1)
     // 1. 构建一条事故登记数据，包含2条当事人信息
     val happenTime = now.truncatedTo(ChronoUnit.MINUTES)
     val registerPo = randomRegister(
@@ -423,6 +423,7 @@ class UpdateMethodImplTest @Autowired constructor(
 
   @Test
   fun `Others success create`() {
+    val now = OffsetDateTime.now().minusSeconds(1)
     // 1. 构建一条事故登记数据
     val happenTime = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES)
     val registerPo = randomRegister(
@@ -441,7 +442,6 @@ class UpdateMethodImplTest @Autowired constructor(
     val registerDto = AccidentRegisterDto4Update().apply { others = listOf(otherDto) }
 
     // 2.2 执行数据添加
-    val now = OffsetDateTime.now()
     StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
     em.flush();em.clear()
 
@@ -462,7 +462,7 @@ class UpdateMethodImplTest @Autowired constructor(
 
   @Test
   fun `Others success update`() {
-    val now = OffsetDateTime.now()
+    val now = OffsetDateTime.now().minusSeconds(1)
     // 1. 构建一条事故登记数据，包含一条其他物体信息
     val happenTime = now.truncatedTo(ChronoUnit.MINUTES)
     val registerPo = randomRegister(
@@ -507,7 +507,7 @@ class UpdateMethodImplTest @Autowired constructor(
 
   @Test
   fun `Others success delete`() {
-    val now = OffsetDateTime.now()
+    val now = OffsetDateTime.now().minusSeconds(1)
     // 1. 构建一条事故登记数据，包含2条其他物体信息
     val happenTime = now.truncatedTo(ChronoUnit.MINUTES)
     val registerPo = randomRegister(
