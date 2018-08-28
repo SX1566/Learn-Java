@@ -18,7 +18,7 @@ import javax.persistence.*
 data class AccidentPeople constructor(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  val id: Int? = null,
+  override val id: Int? = null,
   /** 所属事故 */
   @ManyToOne(optional = false)
   @JoinColumn(name = "pid", nullable = false)
@@ -59,7 +59,7 @@ data class AccidentPeople constructor(
   val followType: String? = null,
   /** 更新时间 */
   val updatedTime: OffsetDateTime? = null
-) {
+) : IdEntity {
   /**
    * 性别。
    */
