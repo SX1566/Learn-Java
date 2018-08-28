@@ -10,9 +10,11 @@ import cn.gftaxi.traffic.accident.dao.jpa.POUtils.nextId
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.random
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentCar
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentDraft
+import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentOther
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentPeople
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomInt
 import cn.gftaxi.traffic.accident.dto.AccidentCarDto4Update
+import cn.gftaxi.traffic.accident.dto.AccidentOtherDto4Update
 import cn.gftaxi.traffic.accident.dto.AccidentPeopleDto4Update
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Update
 import cn.gftaxi.traffic.accident.po.*
@@ -335,7 +337,7 @@ class UpdateMethodImplTest @Autowired constructor(
   @Test
   fun `Peoples success update`() {
     val now = OffsetDateTime.now()
-    // 1. 构建一条事故登记数据，包含一条当事车辆信息
+    // 1. 构建一条事故登记数据，包含一条当事人信息
     val happenTime = now.truncatedTo(ChronoUnit.MINUTES)
     val registerPo = randomRegister(
       status = Status.Draft,
@@ -345,7 +347,7 @@ class UpdateMethodImplTest @Autowired constructor(
     registerPo.peoples = setOf(peoplePo)
     em.flush();em.clear()
 
-    // 2. 更新当事车辆数据
+    // 2. 更新当事人数据
     // 2.1 构建数据
     val peopleDto = AccidentPeopleDto4Update().apply {
       id = peoplePo.id
@@ -383,7 +385,7 @@ class UpdateMethodImplTest @Autowired constructor(
   @Test
   fun `Peoples success delete`() {
     val now = OffsetDateTime.now()
-    // 1. 构建一条事故登记数据，包含2条当事车辆信息
+    // 1. 构建一条事故登记数据，包含2条当事人信息
     val happenTime = now.truncatedTo(ChronoUnit.MINUTES)
     val registerPo = randomRegister(
       status = Status.Draft,
@@ -394,7 +396,7 @@ class UpdateMethodImplTest @Autowired constructor(
     registerPo.peoples = setOf(peoplePo1, peoplePo2)
     em.flush();em.clear()
 
-    // 2. 删除 1 条当事车辆
+    // 2. 删除 1 条当事人
     val toKeepPeopleDto = AccidentPeopleDto4Update().apply { id = peoplePo1.id }
     var registerDto = AccidentRegisterDto4Update().apply { peoples = listOf(toKeepPeopleDto) }
 
@@ -415,6 +417,129 @@ class UpdateMethodImplTest @Autowired constructor(
 
     // 3.2 验证数据清空成功
     result = em.createQuery("select c from AccidentPeople c where c.parent.id = :pid", AccidentPeople::class.java)
+      .setParameter("pid", registerPo.id).resultList
+    assertEquals(0, result.size)
+  }
+
+  @Test
+  fun `Others success create`() {
+    // 1. 构建一条事故登记数据
+    val happenTime = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES)
+    val registerPo = randomRegister(
+      status = Status.Draft,
+      happenTime = happenTime
+    )
+    em.flush();em.clear()
+
+    // 2. 添加其他物体
+    // 2.1 构建数据
+    val otherDto = AccidentOtherDto4Update().apply {
+      sn = 0
+      name = random("name")
+      type = "自车"
+    }
+    val registerDto = AccidentRegisterDto4Update().apply { others = listOf(otherDto) }
+
+    // 2.2 执行数据添加
+    val now = OffsetDateTime.now()
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    em.flush();em.clear()
+
+    // 2.3 验证数据添加成功
+    val otherPo1 = em.createQuery("select c from AccidentOther c where c.parent.id = :pid", AccidentOther::class.java)
+      .setParameter("pid", registerPo.id).singleResult
+    assertNotNull(otherPo1.id)
+    assertEquals(otherDto.sn, otherPo1.sn)
+    assertEquals(otherDto.name, otherPo1.name)
+    assertEquals(otherDto.type, otherPo1.type)
+    assertTrue(otherPo1.updatedTime!!.isAfter(now))
+
+    // 其他属性的值应为 null
+    AccidentOther::class.memberProperties
+      .filterNot { listOf("id", "sn", "name", "type", "parent", "updatedTime").contains(it.name) }
+      .forEach { assertNull(it.get(otherPo1)) }
+  }
+
+  @Test
+  fun `Others success update`() {
+    val now = OffsetDateTime.now()
+    // 1. 构建一条事故登记数据，包含一条其他物体信息
+    val happenTime = now.truncatedTo(ChronoUnit.MINUTES)
+    val registerPo = randomRegister(
+      status = Status.Draft,
+      happenTime = happenTime
+    )
+    val otherPo = randomAccidentOther(parent = registerPo)
+    registerPo.others = setOf(otherPo)
+    em.flush();em.clear()
+
+    // 2. 更新其他物体数据
+    // 2.1 构建数据
+    val otherDto = AccidentOtherDto4Update().apply {
+      id = otherPo.id
+      name = random("name")
+      damageMoney = BigDecimal("${randomInt(200, 300)}.00")
+    }
+    val registerDto = AccidentRegisterDto4Update().apply { others = listOf(otherDto) }
+
+    // 2.2 执行数据更新
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    em.flush();em.clear()
+
+    // 2.3 验证数据更新成功
+    val updatedOtherPo = em.createQuery("select c from AccidentOther c where c.parent.id = :pid", AccidentOther::class.java)
+      .setParameter("pid", registerPo.id).singleResult
+    assertEquals(otherPo.id, updatedOtherPo.id)
+
+    // 如下属性应该更新为新的值：
+    assertNotEquals(otherPo.name, updatedOtherPo.name)
+    assertNotEquals(otherPo.damageMoney, updatedOtherPo.damageMoney)
+
+    assertEquals(otherDto.name, updatedOtherPo.name)
+    assertEquals(otherDto.damageMoney, updatedOtherPo.damageMoney)
+    assertTrue(updatedOtherPo.updatedTime!!.isAfter(now))
+
+    // 其他属性应保持原值没有更新
+    AccidentOther::class.memberProperties
+      .filterNot { listOf("id", "parent", "updatedTime", "name", "damageMoney").contains(it.name) }
+      .forEach { assertEquals(it.get(otherPo), it.get(updatedOtherPo)) }
+  }
+
+  @Test
+  fun `Others success delete`() {
+    val now = OffsetDateTime.now()
+    // 1. 构建一条事故登记数据，包含2条其他物体信息
+    val happenTime = now.truncatedTo(ChronoUnit.MINUTES)
+    val registerPo = randomRegister(
+      status = Status.Draft,
+      happenTime = happenTime
+    )
+    val otherPo1 = randomAccidentOther(parent = registerPo)
+    val otherPo2 = randomAccidentOther(parent = registerPo)
+    registerPo.others = setOf(otherPo1, otherPo2)
+    em.flush();em.clear()
+
+    // 2. 删除 1 条其他物体
+    val toKeepOtherDto = AccidentOtherDto4Update().apply { id = otherPo1.id }
+    var registerDto = AccidentRegisterDto4Update().apply { others = listOf(toKeepOtherDto) }
+
+    // 2.2 执行数据删除
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    em.flush();em.clear()
+
+    // 2.3 验证数据删除成功
+    var result = em.createQuery("select c from AccidentOther c where c.parent.id = :pid", AccidentOther::class.java)
+      .setParameter("pid", registerPo.id).resultList
+    assertEquals(1, result.size)
+    assertEquals(otherPo1, result[0])
+
+    // 3. 清空数据
+    registerDto = AccidentRegisterDto4Update().apply { others = listOf() } // 空的集合代表要清空数据
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    em.flush();em.clear()
+
+    // 3.2 验证数据清空成功
+    result = em.createQuery("select c from AccidentOther c where c.parent.id = :pid", AccidentOther::class.java)
       .setParameter("pid", registerPo.id).resultList
     assertEquals(0, result.size)
   }

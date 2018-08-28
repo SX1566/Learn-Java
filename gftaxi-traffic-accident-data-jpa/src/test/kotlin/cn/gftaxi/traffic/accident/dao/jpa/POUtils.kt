@@ -371,4 +371,27 @@ object POUtils {
       updatedTime = OffsetDateTime.now()
     )
   }
+
+  /** 构建新的其他物体 */
+  fun randomAccidentOther(
+    parent: AccidentRegister,
+    sn: Short = 0,
+    name: String = random("name"),
+    type: String = random("type")
+  ): AccidentOther {
+    return AccidentOther(
+      parent = parent,
+      sn = sn,
+      name = name,
+      type = type,
+      belong = random("belong"),
+      linkmanName = random("linkmanName"),
+      linkmanPhone = random("linkmanPhone"),
+      damageState = random("damageState"),
+      damageMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      actualMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      followType = random("followType"),
+      updatedTime = OffsetDateTime.now()
+    )
+  }
 }

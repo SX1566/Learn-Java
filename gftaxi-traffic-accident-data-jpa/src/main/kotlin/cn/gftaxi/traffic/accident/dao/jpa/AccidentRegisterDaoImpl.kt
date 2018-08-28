@@ -446,9 +446,28 @@ class AccidentRegisterDaoImpl @Autowired constructor(
       })
     }) ?: true
 
-    // 4. 更新其他物体信息 TODO
+    // 4. 更新其他物体信息
+    val others = data["others"] as List<AccidentOtherDto4Update>?
+    val otherUpdatedSuccess = others?.let({
+      updateSubList(id, others, AccidentOther::class.java, dto2po = BiFunction { dto, register ->
+        AccidentOther(
+          parent = register,
+          sn = dto.sn!!,
+          name = dto.name!!,
+          type = dto.type!!,
+          belong = dto.belong,
+          linkmanName = dto.linkmanName,
+          linkmanPhone = dto.linkmanPhone,
+          damageState = dto.damageState,
+          damageMoney = dto.damageMoney,
+          actualMoney = dto.actualMoney,
+          followType = dto.followType,
+          updatedTime = OffsetDateTime.now()
+        )
+      })
+    }) ?: true
 
-    return Mono.just(mainUpdatedSuccess && carUpdatedSuccess && peopleUpdatedSuccess)
+    return Mono.just(mainUpdatedSuccess && carUpdatedSuccess && peopleUpdatedSuccess && otherUpdatedSuccess)
   }
 
   /**
