@@ -127,6 +127,12 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
             data[key] = value;
           });
 
+          // 当事人、车辆和其它物品添加序号
+          ["cars", "peoples", "others"].forEach(it => {
+            if (!this.e[it]) return;
+            this.e[it].forEach((item, index) => item.sn = index + 1);
+          });
+
           accident.save(resourceKey, this.e.id || null, data).then(result => {
             if (isNew) Vue.set(this.e, "id", result.id);
             if (typeof(option.afterSuccess) === "function") option.afterSuccess();
