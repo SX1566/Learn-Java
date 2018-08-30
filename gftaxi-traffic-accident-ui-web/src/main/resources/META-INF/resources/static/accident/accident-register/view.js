@@ -119,15 +119,13 @@ define(["bc", "vue", "context", "static/accident/api", "static/accident/simter-f
           columns: todoColumns,
           title: "",
           status: "",
-          statuses: [{id: "Draft", label: "待登记"}, {id: "ToCheck", label: "已登待审"}],
-          ui: {isOpen: true}
+          statuses: [{id: "Draft", label: "待登记"}, {id: "ToCheck", label: "已登待审"}]
         },
         checkedView: {
           url: `${accident.dataServer}/${resourceKey}/last-checked`,
           columns: checkedColumns,
           status: "Rejected",
-          statuses: [{id: "Rejected", label: "审核不通过"}, {id: "Approved", label: "审核通过"}],
-          ui: {isOpen: true}
+          statuses: [{id: "Rejected", label: "审核不通过"}, {id: "Approved", label: "审核通过"}]
         }
       },
       ready: function () {
@@ -170,7 +168,6 @@ define(["bc", "vue", "context", "static/accident/api", "static/accident/simter-f
             data: data.id,
             afterClose: (status) => {
               if (status) {
-                this.reloadStatSum();
                 this.reloadTodo();
                 this.reloadChecked();
               }
