@@ -37,6 +37,7 @@ import java.util.*
 )
 class ToCheckMethodImplTest @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService,
+  private val accidentDraftDao: AccidentDraftDao,
   private val accidentRegisterDao: AccidentRegisterDao,
   private val accidentOperationDao: AccidentOperationDao,
   private val securityService: ReactiveSecurityService
@@ -51,6 +52,7 @@ class ToCheckMethodImplTest @Autowired constructor(
     // reset
     Mockito.reset(securityService)
     Mockito.reset(accidentOperationDao)
+    Mockito.reset(accidentDraftDao)
     Mockito.reset(accidentRegisterDao)
 
     // mock
@@ -58,6 +60,7 @@ class ToCheckMethodImplTest @Autowired constructor(
     val user = Optional.of(User(id = 0, account = "tester", name = "Tester"))
     `when`(securityService.verifyHasAnyRole(ROLE_SUBMIT)).thenReturn(Mono.empty())
     `when`(securityService.getAuthenticatedUser()).thenReturn(Mono.just(user))
+    `when`(accidentDraftDao.update(any(), any())).thenReturn(Mono.just(true))
     `when`(accidentRegisterDao.getStatus(id)).thenReturn(Mono.just(status))
     `when`(accidentRegisterDao.toCheck(id)).thenReturn(Mono.just(true))
     `when`(accidentOperationDao.create(any())).thenReturn(Mono.empty())
@@ -69,6 +72,7 @@ class ToCheckMethodImplTest @Autowired constructor(
     StepVerifier.create(actual).verifyComplete()
     verify(securityService).verifyHasAnyRole(ROLE_SUBMIT)
     verify(securityService).getAuthenticatedUser()
+    verify(accidentDraftDao).update(any(), any())
     verify(accidentRegisterDao).getStatus(id)
     verify(accidentRegisterDao).toCheck(id)
     verify(accidentOperationDao).create(any())
