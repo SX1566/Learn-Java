@@ -17,7 +17,7 @@
         :class="{'verticalMiddle' : true,'ui-icon':true, 'ui-icon-carat-1-n':statSumView.ui.isOpen, 'ui-icon-carat-1-s':!statSumView.ui.isOpen}"
         :title="statSumView.ui.isOpen ? '点击隐藏内容' : '点击展示内容'" @click="showHideView('todoView')"></span>
     </div>
-    <bc-grid v-if="todoView.ui.isOpen" v-ref:todo :columns="todoView.columns" :url="todoView.url"
+    <bc-grid v-ref:todo :columns="todoView.columns" :url="todoView.url"
              :query.sync="todoViewCondition" :refreshable="false" class="flex" style="border-bottom: none"
              :single-choice="true" @dblclick-row="dblclickRow"></bc-grid>
 
@@ -36,7 +36,7 @@
         :class="{'verticalMiddle' : true,'ui-icon':true, 'ui-icon-carat-1-n':statSumView.ui.isOpen, 'ui-icon-carat-1-s':!statSumView.ui.isOpen}"
         :title="checkedView.ui.isOpen ? '点击隐藏内容' : '点击展示内容'" @click="showHideView('checkedView')"></span>
     </div>
-    <bc-grid v-if="checkedView.ui.isOpen" v-ref:checked :columns="checkedView.columns" :url="checkedView.url"
+    <bc-grid v-ref:checked :columns="checkedView.columns" :url="checkedView.url"
              :pageable="true" :refreshable="false" :query.sync="checkedViewCondition" class="flex"
              :single-choice="true" @dblclick-row="dblclickRow"></bc-grid>
   </div>

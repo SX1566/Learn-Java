@@ -137,13 +137,16 @@ class AccidentRegisterServiceImpl @Autowired constructor(
             }
           }
           // 3. 如果案件状态不对，返回 Forbidden 错误
-          .map<Status> {
+          .flatMap {
             if (it != Status.Draft && it != Status.Rejected)
               throw ForbiddenException("案件不是待登记或审核不通过状态：id=$id")
-            else it
+
+            // 更新事故报案状态为已登记
+            accidentDraftDao.update(id, mapOf("status" to AccidentDraft.Status.Done)).flatMap {
+              if (it) accidentRegisterDao.toCheck(id) // 提交案件
+              else Mono.just(false)
+            }
           }
-          // 4. 提交案件
-          .flatMap { accidentRegisterDao.toCheck(id) }
           // 5. 如果提交成功则创建一条操作日志
           .flatMap {
             if (it) {

@@ -127,6 +127,12 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
             data[key] = value;
           });
 
+          // 当事人、车辆和其它物品添加序号
+          ["cars", "peoples", "others"].forEach(it => {
+            if (!this.e[it]) return;
+            this.e[it].forEach((item, index) => item.sn = index + 1);
+          });
+
           accident.save(resourceKey, this.e.id || null, data).then(result => {
             if (isNew) Vue.set(this.e, "id", result.id);
             if (typeof(option.afterSuccess) === "function") option.afterSuccess();
@@ -142,7 +148,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           // 保存表单数据
           this.save({
             afterSuccess: function () {
-              accident.patch(`${resourceKey}/to-check`, id).then(() => {
+              accident.save(`${resourceKey}/to-check/${id}`).then(() => {
                 bc.msg.slide("提交成功！");
                 $page.data("status", "saved");
                 $page.dialog("close");  // 提交完成后关闭表单
@@ -156,7 +162,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           let data = {result: this.e.result, comment: this.e.comment};
           if (this.e.attachmentId) data.attachmentId = this.e.attachmentId;
           let check = function (id, data) {
-            accident.patch(`${resourceKey}/checked`, id, data).then(() => {
+            accident.save(`${resourceKey}/checked/${id}`, null, data).then(() => {
               bc.msg.slide("审核完成！");
               $page.data("status", "saved");
               $page.dialog("close");  // 审核完成后关闭表单
