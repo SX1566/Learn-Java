@@ -162,7 +162,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           let data = {result: this.e.result, comment: this.e.comment};
           if (this.e.attachmentId) data.attachmentId = this.e.attachmentId;
           let check = function (id, data) {
-            accident.save(`${resourceKey}/checked/${id}`, data).then(() => {
+            accident.save(`${resourceKey}/checked/${id}`, null, data).then(() => {
               bc.msg.slide("审核完成！");
               $page.data("status", "saved");
               $page.dialog("close");  // 审核完成后关闭表单
