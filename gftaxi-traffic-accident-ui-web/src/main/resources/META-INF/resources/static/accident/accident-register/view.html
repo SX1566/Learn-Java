@@ -5,7 +5,7 @@
     <!-- 待登记 -->
     <div class="ui-widget-header title" style="position: relative;border:none" class="unflex">
       <span class="text">{{todoView.title}}</span>
-      <template v-if="isRecorder" v-for="status in todoView.statuses">
+      <template v-if="isRecorder&&!isChecker" v-for="status in todoView.statuses">
         <label style="vertical-align:middle">
           <input type="radio" name="todoStatus" :value="status.id" v-model="todoView.status" class="ui-widget-content"
                  style="width:auto;vertical-align:middle;margin-top:-1px">{{status.label}}

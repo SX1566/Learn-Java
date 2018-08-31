@@ -114,6 +114,7 @@ define(["bc", "vue", "context", "static/accident/api", "static/accident/simter-f
       el: $page[0],
       data: {
         isRecorder: isRecorder,
+        isChecker: isChecker,
         todoView: {
           url: `${accident.dataServer}/${resourceKey}/todo`,
           columns: todoColumns,
