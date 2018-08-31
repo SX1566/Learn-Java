@@ -159,8 +159,11 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
         /** 审核 */
         check: function () {
           let id = this.e.id;
-          let data = {result: this.e.result, comment: this.e.comment};
-          if (this.e.attachmentId) data.attachmentId = this.e.attachmentId;
+          let data = {passed: this.e.passed, comment: this.e.comment};
+          if (this.ui.checkedAttachment) Object.assign(data, {
+            attachmentId: this.ui.checkedAttachment.id,
+            attachmentName: `${this.ui.checkedAttachment.name}.${this.ui.checkedAttachment.ext}`
+          });
           let check = function (id, data) {
             accident.save(`${resourceKey}/checked/${id}`, null, data).then(() => {
               bc.msg.slide("审核完成！");

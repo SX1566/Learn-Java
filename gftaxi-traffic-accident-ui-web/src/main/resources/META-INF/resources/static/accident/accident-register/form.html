@@ -788,12 +788,12 @@
           <td class="label">审核结果:</td>
           <td class="value">
             <label style="vertical-align:middle">
-              <input type="radio" name="checkedResult" value="Approved" v-model="e.result"
+              <input type="radio" name="checkedResult" value="true" v-model="e.passed"
                      data-validate="required" class="ui-widget-content"
                      style="width:auto;vertical-align:middle;margin-top:-1px">通过
             </label>
             <label style="vertical-align:middle">
-              <input type="radio" name="checkedResult" value="Rejected" v-model="e.result"
+              <input type="radio" name="checkedResult" value="false" v-model="e.passed"
                      data-validate="required" class="ui-widget-content"
                      style="width:auto;vertical-align:middle;margin-top:-1px">不通过
             </label>
