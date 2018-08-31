@@ -87,7 +87,7 @@ define(["bc", "vue", "context", "static/accident/api", "static/accident/simter-f
       },
       rowCellClick: function (value, row) {
         if (row.attachmentId)
-          file.inline(row.attachmentId);
+          file.inlineById(row.attachmentId);
       }
     },
     {id: "checkerName", label: "审核人", width: "5em"},
