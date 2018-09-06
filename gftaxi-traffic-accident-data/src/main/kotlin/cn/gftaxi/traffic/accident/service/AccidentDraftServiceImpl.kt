@@ -2,7 +2,6 @@ package cn.gftaxi.traffic.accident.service
 
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.dao.BcDao
-import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Modify
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentDraft.Status
@@ -15,6 +14,7 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import tech.simter.exception.NotFoundException
 import tech.simter.security.SecurityService
+import java.time.OffsetDateTime
 
 /**
  * 事故报案 Service 实现。
@@ -72,22 +72,36 @@ class AccidentDraftServiceImpl @Autowired constructor(
       }
   }
 
-  override fun modify(id: Int, dto: AccidentDraftDto4Modify): Mono<Void> {
+  override fun modify(id: Int, data: Map<String, Any?>): Mono<Void> {
     securityService.verifyHasRole(AccidentDraft.ROLE_MODIFY)
-    val data = mapOf(
-      "carPlate" to dto.carPlate,
-      "driverName" to dto.driverName,
-      "happenTime" to dto.happenTime,
-      "location" to dto.location,
-      "hitForm" to dto.hitForm,
-      "hitType" to dto.hitType,
-      "describe" to dto.describe
-    )
-    return accidentDraftDao
-      .update(id, data)
-      .flatMap {
-        if (it) Mono.empty<Void>()
-        else Mono.error(NotFoundException("指定的案件不存在"))
-      }
+    val carPlate: String? = data["carPlate"] as? String
+    val happenTime: OffsetDateTime? = data["happenTime"] as? OffsetDateTime
+    return if (carPlate != null || happenTime != null) {
+      // 分支1==>车牌或事发时间需更新
+      accidentDraftDao.get(id).flatMap { accidentDraft ->
+        val updatedCarPlate = carPlate ?: accidentDraft.carPlate
+        val updatedHappenTime = happenTime ?: accidentDraft.happenTime
+        bcDao.getMotorcadeName(updatedCarPlate, updatedHappenTime.toLocalDate()).map { motorcadeName ->
+          val mutableMap =
+            mutableMapOf<String, Any?>("motorcadeName" to if (motorcadeName.isEmpty()) null else motorcadeName)
+          // 事发时间更新时，逾期才需要更新
+          happenTime?.let {
+            mutableMap.put("overdue", AccidentDraft.isOverdue(happenTime, accidentDraft.reportTime, overdueSeconds))
+          }
+          mutableMap
+        }
+      }.switchIfEmpty(Mono.error(NotFoundException("指定的案件不存在")))
+    } else {
+      // 分支2==>车牌和事发时间都不需更新
+      Mono.fromSupplier { mutableMapOf<String, Any?>() }
+    }.flatMap {
+      it.putAll(data)
+      accidentDraftDao.update(id, it)
+    }.flatMap {
+      if (it)
+        Mono.empty<Void>()
+      else
+        Mono.error(NotFoundException("指定的案件不存在"))
+    }
   }
 }

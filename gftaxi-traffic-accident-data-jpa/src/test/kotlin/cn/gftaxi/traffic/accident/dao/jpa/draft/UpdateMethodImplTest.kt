@@ -32,15 +32,15 @@ class UpdateMethodImplTest @Autowired constructor(
   private val dao: AccidentDraftDao
 ) {
   private fun randomModifyDto(nullDescribe: Boolean = false): AccidentDraftDto4Modify {
-    return AccidentDraftDto4Modify(mutableMapOf(
-      "location" to nextCode("location"),
-      "carPlate" to nextCode("car"),
-      "driverName" to nextCode("driver"),
-      "hitForm" to nextCode("hitForm"),
-      "hitType" to nextCode("hitType"),
-      "describe" to (if (nullDescribe) null else nextCode("describe")),
-      "happenTime" to OffsetDateTime.now()
-    ))
+    return AccidentDraftDto4Modify().apply {
+      location = nextCode("location")
+      carPlate = nextCode("carPlate")
+      driverName = nextCode("driver")
+      hitForm = nextCode("hitForm")
+      hitType = nextCode("hitType")
+      describe = if (nullDescribe) null else nextCode("describe")
+      happenTime = OffsetDateTime.now()
+    }
   }
 
   @Test
@@ -49,7 +49,7 @@ class UpdateMethodImplTest @Autowired constructor(
     val dto = randomModifyDto()
 
     // invoke and verify
-    StepVerifier.create(dao.update(1, dto.changedProperties)).expectNext(false).verifyComplete()
+    StepVerifier.create(dao.update(1, dto.data)).expectNext(false).verifyComplete()
   }
 
   @Test
@@ -134,7 +134,7 @@ class UpdateMethodImplTest @Autowired constructor(
     val modifyDto = randomModifyDto(nullDescribe = true)
 
     // invoke and verify
-    StepVerifier.create(dao.update(po.id!!, modifyDto.changedProperties))
+    StepVerifier.create(dao.update(po.id!!, modifyDto.data))
       .expectNext(true).verifyComplete()
     em.run {
       flush()
@@ -144,7 +144,7 @@ class UpdateMethodImplTest @Autowired constructor(
     // verify: po 的相关属性应该更新了
     val updatedPo = em.find(AccidentDraft::class.java, po.id)
     assertNotNull(updatedPo)
-    modifyDto.changedProperties.forEach { key, value ->
+    modifyDto.data.forEach { key, value ->
       assertEquals(value, AccidentDraft::class.memberProperties.first { it.name == key }.get(updatedPo))
     }
   }

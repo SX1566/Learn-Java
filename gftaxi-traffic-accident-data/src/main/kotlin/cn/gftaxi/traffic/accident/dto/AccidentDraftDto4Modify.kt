@@ -1,6 +1,5 @@
 package cn.gftaxi.traffic.accident.dto
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import java.time.OffsetDateTime
@@ -14,31 +13,13 @@ import java.time.OffsetDateTime
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class AccidentDraftDto4Modify(
-  @JsonIgnore
-  var changedProperties: MutableMap<String, Any?> = mutableMapOf<String, Any?>().withDefault { null }
-) {
-  var carPlate: String? by changedProperties
-  var driverName: String? by changedProperties
-  var happenTime: OffsetDateTime? by changedProperties
-  var location: String? by changedProperties
-  var hitForm: String? by changedProperties
-  var hitType: String? by changedProperties
-  var describe: String? by changedProperties
+class AccidentDraftDto4Modify : DynamicDto() {
+  var carPlate: String? by data
+  var driverName: String? by data
+  var happenTime: OffsetDateTime? by data
+  var location: String? by data
+  var hitForm: String? by data
+  var hitType: String? by data
+  var describe: String? by data
 
-  override fun toString(): String {
-    return "${AccidentDraftDto4Modify::class.simpleName}=$changedProperties"
-  }
-
-  constructor(carPlate: String, driverName: String, happenTime: OffsetDateTime,
-              location: String, hitForm: String, hitType: String, describe: String)
-    : this(mutableMapOf<String, Any?>(
-    "carPlate" to carPlate,
-    "driverName" to driverName,
-    "happenTime" to happenTime,
-    "location" to location,
-    "hitForm" to hitForm,
-    "hitType" to hitType,
-    "describe" to describe
-  ).withDefault { null })
 }
