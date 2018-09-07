@@ -1,9 +1,9 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler
 
 import cn.gftaxi.traffic.accident.Utils.FORMAT_DATE_TIME_TO_MINUTE
-import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Modify
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
 import cn.gftaxi.traffic.accident.po.AccidentDraft
+import cn.gftaxi.traffic.accident.rest.webflux.Utils
 import cn.gftaxi.traffic.accident.rest.webflux.handler.AccidentDraftHandler.Companion.FIND_REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.rest.webflux.handler.AccidentDraftHandler.Companion.GET_REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.rest.webflux.handler.AccidentDraftHandler.Companion.SUBMIT_REQUEST_PREDICATE
@@ -24,7 +24,7 @@ import org.springframework.test.web.reactive.server.WebTestClient.bindToRouterFu
 import org.springframework.web.reactive.function.server.HandlerFunction
 import org.springframework.web.reactive.function.server.RouterFunctions
 import reactor.core.publisher.Mono
-import java.time.LocalDateTime
+import tech.simter.exception.NotFoundException
 import java.time.OffsetDateTime
 import java.util.*
 import javax.json.Json
@@ -142,31 +142,40 @@ class AccidentDraftHandlerTest @Autowired constructor(
   }
 
   @Test
-  fun update() {
+  fun updateBySuccess() {
     val client = bindToRouterFunction(RouterFunctions.route(UPDATE_REQUEST_PREDICATE, HandlerFunction(handler::update))).build()
     // mock
     val id = 1
-    val happenTimeOfString = LocalDateTime.now().format(FORMAT_DATE_TIME_TO_MINUTE)
-    val happenTime = OffsetDateTime.of(LocalDateTime.parse(happenTimeOfString, FORMAT_DATE_TIME_TO_MINUTE), OffsetDateTime.now().offset)
-    val dto = AccidentDraftDto4Modify("carPlate", "driver", happenTime, "location", "hitForm", "hitType", "describe")
-    val data = Json.createObjectBuilder()
-    data.add("carPlate", dto.carPlate)
-    data.add("driverName", dto.driverName)
-    data.add("happenTime", happenTimeOfString)
-    data.add("location", dto.location)
-    data.add("hitForm", dto.hitForm)
-    data.add("hitType", dto.hitType)
-    data.add("describe", dto.describe)
+    val data = Json.createObjectBuilder().add("carPlate", "粤A.N3402").add("driverName", "driver")
     `when`(accidentDraftService.modify(any(), any())).thenReturn(Mono.empty())
 
     // invoke
-    client.patch().uri("/accident-draft/$id")
+    val response = client.patch().uri("/accident-draft/$id")
       .contentType(MediaType.APPLICATION_JSON_UTF8)
       .syncBody(data.build().toString())
       .exchange()
-      .expectStatus().isNoContent
 
     // verify
+    response.expectStatus().isNoContent.expectBody().isEmpty
+    verify(accidentDraftService).modify(any(), any())
+  }
+
+  @Test
+  fun updateByNotFound() {
+    val client = bindToRouterFunction(RouterFunctions.route(UPDATE_REQUEST_PREDICATE, HandlerFunction(handler::update))).build()
+    // mock
+    val id = 1
+    val data = Json.createObjectBuilder().add("carPlate", "粤A.N3402").add("driverName", "driver")
+    `when`(accidentDraftService.modify(any(), any())).thenReturn(Mono.error(NotFoundException("指定的案件不存在")))
+
+    // invoke
+    val response = client.patch().uri("/accident-draft/$id")
+      .contentType(MediaType.APPLICATION_JSON_UTF8)
+      .syncBody(data.build().toString())
+      .exchange()
+
+    // verify
+    response.expectStatus().isNotFound.expectHeader().contentType(Utils.TEXT_PLAIN_UTF8)
     verify(accidentDraftService).modify(any(), any())
   }
 }

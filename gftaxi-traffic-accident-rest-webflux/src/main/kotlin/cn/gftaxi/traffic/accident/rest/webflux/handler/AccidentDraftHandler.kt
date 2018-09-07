@@ -4,14 +4,17 @@ import cn.gftaxi.traffic.accident.Utils.FORMAT_DATE_TIME_TO_MINUTE
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Modify
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
 import cn.gftaxi.traffic.accident.po.AccidentDraft
+import cn.gftaxi.traffic.accident.rest.webflux.Utils
 import cn.gftaxi.traffic.accident.service.AccidentDraftService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.*
 import reactor.core.publisher.Mono
 import tech.simter.exception.NonUniqueException
+import tech.simter.exception.NotFoundException
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import javax.json.Json
@@ -110,18 +113,17 @@ class AccidentDraftHandler @Autowired constructor(
   }
 
   fun update(request: ServerRequest): Mono<ServerResponse> {
-    return request.bodyToMono<Map<String, String>>()
+    return request
+      .bodyToMono<AccidentDraftDto4Modify>()
       .flatMap {
-        accidentDraftService
-          .modify(
-            request.pathVariable("id").toInt(),
-            AccidentDraftDto4Modify(
-              it["carPlate"]!!, it["driverName"]!!, toOffsetDateTime(it["happenTime"]!!), it["location"]!!,
-              it["hitForm"]!!, it["hitType"]!!, if (it.size == 7) it["describe"]!! else ""
-            )
-          )
+        accidentDraftService.modify(request.pathVariable("id").toInt(), it.data)
       }
       .then(ServerResponse.noContent().build())
+      //找不到id对应的资源
+      .onErrorResume(NotFoundException::class.java, {
+        ServerResponse.status(HttpStatus.NOT_FOUND)
+          .contentType(Utils.TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
+      })
   }
 
   /** 时间字符串转 OffsetDateTime 类型 */

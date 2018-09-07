@@ -4,7 +4,6 @@ import cn.gftaxi.traffic.accident.POUtils.random
 import cn.gftaxi.traffic.accident.POUtils.randomAccidentDraft
 import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.dao.BcDao
-import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Modify
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentDraft.Status
@@ -182,14 +181,13 @@ class AccidentDraftServiceImplTest @Autowired constructor(
   fun modifyWithRole() {
     // mock
     val id = 1
-    val dto = AccidentDraftDto4Modify("plate", "driver", OffsetDateTime.now(), "location", "hitForm", "hitType", "desc")
-    val data = mapOf("carPlate" to dto.carPlate, "driverName" to dto.driverName, "happenTime" to dto.happenTime
-      , "location" to dto.location, "hitForm" to dto.hitForm, "hitType" to dto.hitType, "describe" to dto.describe)
+    val now = OffsetDateTime.now()
+    val data = mutableMapOf<String, Any?>().withDefault { null }
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
-    `when`(accidentDraftDao.update(id, data)).thenReturn(Mono.just(true))
+    `when`(accidentDraftDao.update(any(), any())).thenReturn(Mono.just(true))
 
     // invoke
-    val actual = accidentDraftService.modify(id, dto)
+    val actual = accidentDraftService.modify(id, data)
 
     // verify
     StepVerifier.create(actual).expectNext().verifyComplete()
@@ -198,28 +196,73 @@ class AccidentDraftServiceImplTest @Autowired constructor(
   }
 
   @Test
-  fun modifyWithoutRole() {
+  fun modifyWithRoleChangeCarPlateOrHappenTime() {
     // mock
     val id = 1
-    val dto = AccidentDraftDto4Modify("plate", "driver", OffsetDateTime.now(), "location", "hitForm", "hitType", "desc")
-    doThrow(SecurityException()).`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
+    val now = OffsetDateTime.now()
+    val motorcadeName = "第一大队"
+    val data = mutableMapOf<String, Any?>().withDefault { null }
+    data.put("carPlate", "a")
+    data.put("happenTime", now)
+    val accidentDraft = AccidentDraft(id = 1, code = "code1", status = AccidentDraft.Status.Todo, carPlate = "plate001"
+      , driverName = "driver001", happenTime = now, reportTime = now.minusHours(12), location = "广州"
+      , overdue = true, source = "BC", authorName = "Admin", authorId = "021")
+    doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
+    `when`(accidentDraftDao.get(id)).thenReturn(Mono.just(accidentDraft))
+    `when`(bcDao.getMotorcadeName(any(), any())).thenReturn(Mono.just(motorcadeName))
+    `when`(accidentDraftDao.update(any(), any())).thenReturn(Mono.just(true))
 
-    // invoke and verify
-    assertThrows(SecurityException::class.java, { accidentDraftService.modify(id, dto).subscribe() })
+    // invoke
+    val actual = accidentDraftService.modify(id, data)
+
+    // verify
+    StepVerifier.create(actual).expectNext().verifyComplete()
+    verify(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
+    verify(accidentDraftDao).get(id)
+    verify(bcDao).getMotorcadeName(any(), any())
+    verify(accidentDraftDao).update(any(), any())
   }
 
   @Test
-  fun modifyWithException() {
+  fun modifyWithoutRole() {
     // mock
     val id = 1
-    val dto = AccidentDraftDto4Modify("plate", "driver", OffsetDateTime.now(), "location", "hitForm", "hitType", "desc")
-    val data = mapOf("carPlate" to dto.carPlate, "driverName" to dto.driverName, "happenTime" to dto.happenTime
-      , "location" to dto.location, "hitForm" to dto.hitForm, "hitType" to dto.hitType, "describe" to dto.describe)
+    val data: MutableMap<String, Any?> = mutableMapOf<String, Any?>().withDefault { null }
+    doThrow(SecurityException()).`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
+
+    // invoke and verify
+    assertThrows(SecurityException::class.java, { accidentDraftService.modify(id, data).subscribe() })
+  }
+
+  @Test
+  fun modifyWithNotFoundByGet() {
+    // mock
+    val id = 1
+    var data = mutableMapOf<String, Any?>().withDefault { null }
+    data.put("carPlate", "粤A.12345")
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
-    `when`(accidentDraftDao.update(id, data)).thenReturn(Mono.just(false))
+    `when`(accidentDraftDao.get(id)).thenReturn(Mono.empty())
 
     // invoke
-    val actual = accidentDraftService.modify(id, dto)
+    val actual = accidentDraftService.modify(id, data)
+
+    // verify
+    StepVerifier.create(actual).verifyError(NotFoundException::class)
+    verify(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
+    verify(accidentDraftDao).get(id)
+  }
+
+  @Test
+  fun modifyWithNotFoundByUpdate() {
+    // mock
+    val id = 1
+    var data = mutableMapOf<String, Any?>().withDefault { null }
+    doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
+    `when`(accidentDraftDao.get(id)).thenReturn(Mono.empty())
+    `when`(accidentDraftDao.update(any(), any())).thenReturn(Mono.just(false))
+
+    // invoke
+    val actual = accidentDraftService.modify(id, data)
 
     // verify
     StepVerifier.create(actual).verifyError(NotFoundException::class)

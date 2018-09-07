@@ -55,8 +55,10 @@ interface AccidentDraftService {
    * 修改报案信息。
    *
    * @param[id] 要修改案件的 ID
+   * @param[data] 要更新的信息，key 为 [AccidentDraftDto4Modify] 属性名，value 为该 DTO 相应的属性值，
+   *              使用者只传入已改动的属性键值对，没有改动的属性不要传入来。
    * @throws [SecurityException] 无 [AccidentDraft.ROLE_MODIFY] 修改报案信息权限
    * @throws [NotFoundException] 指定的案件编号不存在
    */
-  fun modify(id: Int, dto: AccidentDraftDto4Modify): Mono<Void>
+  fun modify(id: Int, data: Map<String, Any?>): Mono<Void>
 }
