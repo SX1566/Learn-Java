@@ -71,7 +71,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           accident.findCategory("SGXT", false)
             .then(json => {
               Vue.set(this.ui, "hitForms", this.ui.hitForms.concat(
-                json.filter(h => !this.ui.hitForms.includes(h.name)).map(h => h.name)
+                json.filter(h => this.ui.hitForms.indexOf(h.name) < 0).map(h => h.name)
               ))
             });
         },
@@ -80,7 +80,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           accident.findCategory("PZLX", false)
             .then(json => {
               Vue.set(this.ui, "hitTypes", this.ui.hitTypes.concat(
-                json.filter(h => !this.ui.hitTypes.includes(h.name)).map(h => h.name)
+                json.filter(h => this.ui.hitTypes.indexOf(h.name) < 0).map(h => h.name)
               ))
             });
         },
@@ -103,7 +103,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           if (isNew) saveKeys = saveKeys.concat(["source", "authorName", "authorId"]);
           let data = {};
           Object.keys(this.e).forEach(key => {
-            if (saveKeys.includes(key)) {
+            if (saveKeys.indexOf(key) > -1) {
               data[key] = this.e[key];
             }
           });
