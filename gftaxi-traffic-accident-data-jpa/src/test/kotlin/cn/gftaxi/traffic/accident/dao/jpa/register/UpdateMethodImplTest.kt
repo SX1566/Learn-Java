@@ -51,12 +51,12 @@ class UpdateMethodImplTest @Autowired constructor(
 ) {
   private fun randomDto4Update(nullDescribe: Boolean = false): AccidentRegisterDto4Update {
     return AccidentRegisterDto4Update().apply {
-      location = nextCode("location")
-      carPlate = nextCode("car")
-      driverName = nextCode("driver")
-      hitForm = nextCode("hitForm")
-      hitType = nextCode("hitType")
-      describe = (if (nullDescribe) null else nextCode("describe")) // test for set null value
+      location = random("location")
+      carPlate = random("car")
+      driverName = random("driver")
+      hitForm = random("hitForm")
+      hitType = random("hitType")
+      describe = (if (nullDescribe) null else random("describe")) // test for set null value
       happenTime = OffsetDateTime.now()
     }
   }

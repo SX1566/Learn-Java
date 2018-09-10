@@ -5,6 +5,7 @@ import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.dao.jpa.AccidentDraftDaoImpl
 import cn.gftaxi.traffic.accident.dao.jpa.ModuleConfiguration
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.nextCode
+import cn.gftaxi.traffic.accident.dao.jpa.POUtils.random
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentDraft
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Modify
 import cn.gftaxi.traffic.accident.po.AccidentDraft
@@ -33,12 +34,12 @@ class UpdateMethodImplTest @Autowired constructor(
 ) {
   private fun randomModifyDto(nullDescribe: Boolean = false): AccidentDraftDto4Modify {
     return AccidentDraftDto4Modify().apply {
-      location = nextCode("location")
-      carPlate = nextCode("carPlate")
-      driverName = nextCode("driver")
-      hitForm = nextCode("hitForm")
-      hitType = nextCode("hitType")
-      describe = if (nullDescribe) null else nextCode("describe")
+      location = random("location")
+      carPlate = random("car")
+      driverName = random("driver")
+      hitForm = random("hitForm")
+      hitType = random("hitType")
+      describe = if (nullDescribe) null else random("describe")
       happenTime = OffsetDateTime.now()
     }
   }

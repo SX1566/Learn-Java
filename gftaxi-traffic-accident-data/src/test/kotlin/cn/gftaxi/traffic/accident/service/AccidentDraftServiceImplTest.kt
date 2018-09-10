@@ -181,7 +181,6 @@ class AccidentDraftServiceImplTest @Autowired constructor(
   fun modifyWithRole() {
     // mock
     val id = 1
-    val now = OffsetDateTime.now()
     val data = mutableMapOf<String, Any?>().withDefault { null }
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
     `when`(accidentDraftDao.update(any(), any())).thenReturn(Mono.just(true))
