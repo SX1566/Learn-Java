@@ -53,14 +53,14 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           if (!isRecorder && !isEditor) return true; // 无登记和修改权限
           else if (this.e.status === "Draft" && !isRecorder) return true; // 待登记状态但不是登记角色
           // 已登记但不是修改角色
-          else if (["ToCheck", "Rejected", "Approved"].includes(this.e.status) && !isEditor) return true;
+          else if (["ToCheck", "Rejected", "Approved"].indexOf(this.e.status) > -1 && !isEditor) return true;
           else return false;
         },
         driverTypeLabel: function () {
           return this.ui.driverStates.find(d => d.id === this.e.driverType).label;
         },
         isShowRoadCategories: function () {
-          return !["财产 1 级", "财产 2 级"].includes(this.e.level)
+          return ["财产 1 级", "财产 2 级"].indexOf(this.e.level) < 0;
         },
         isShowItemDeleteButton: function () {
           return {
@@ -90,7 +90,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
         initAttachments: function () {
           this.loadAccidentAttachments();
           this.loadAccidentPicAttachments();
-          if (["Rejected", "Approved"].includes(this.e.status)) this.loadCheckedAttachments()
+          if (["Rejected", "Approved"].indexOf(this.e.status) > -1) this.loadCheckedAttachments()
         },
         /** 加载事故附件信息 */
         loadAccidentAttachments: function () {
@@ -121,7 +121,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           let ignoreKeys = ["status", "historyAccidentCount", "historyTrafficOffenceCount",
             "historyServiceOffenceCount", "historyComplainCount", "result", "comment", "attachmentId", "attachmentName"];
           Object.keys(this.e).forEach(key => {
-            if (ignoreKeys.includes(key)) return;
+            if (ignoreKeys.indexOf(key) > -1) return;
             let value = this.e[key];
             if (!value || (Array.isArray(value) && value.length <= 0)) return;
             data[key] = value;
@@ -180,7 +180,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
         /** 上传当事司机照片 */
         uploadDriverPic: function (files) {
           // 验证上传文件是否图片格式
-          if (!files[0].type.includes("image")) {
+          if (files[0].type.indexOf("image") < 0) {
             bc.msg.alert("只能上传图片格式的文件！");
             return;
           }
@@ -192,7 +192,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
             onOk: function (result) {
               bc.msg.slide("上传成功");
               // 上传成功更新 driverPicId
-              Vue.set(this.vm.e, "driverPicId", `C:${result.headers.location.replace(" /","")}`);
+              Vue.set(this.vm.e, "driverPicId", `C:${result.headers.Location.replace(" /", "")}`);
             },
             onError: function () {
               bc.msg.slide("上传失败");
@@ -205,7 +205,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
         /** 上传事故现场图 */
         uploadAccidentPic: function (files) {
           // 验证上传文件是否图片格式
-          if (!files[0].type.includes("image")) {
+          if (files[0].type.indexOf("image") < 0) {
             bc.msg.alert("只能上传图片格式的文件！");
             return;
           }
@@ -408,14 +408,14 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
         /** 判断附件是否图片类型 */
         isImageExt: function (ext) {
           let imageExts = ["BMP", "JPG", "JPEG", "PNG", "GIF"];
-          return imageExts.includes(ext.toUpperCase());
+          return imageExts.indexOf(ext.toUpperCase()) > -1;
         },
         // 初始化表单按钮
         showHideButtons: function () {
           if (!isManager) return;
           if ((this.e.status === "Draft" && isRecorder) || (this.e.status !== "Draft" && isEditor))
             $page.parent().find("button#save").show();
-          if (["Draft", "Rejected"].includes(this.e.status) && isRecorder) $page.parent().find("button#submit").show();
+          if (["Draft", "Rejected"].indexOf(this.e.status) > -1 && isRecorder) $page.parent().find("button#submit").show();
           if (this.e.status === "ToCheck" && isChecker) $page.parent().find("button#check").show();
         },
         /**
