@@ -1,0 +1,635 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:Window" id="1" x="6" y="34" width="969" height="2486" text="事故报告" measuredWidth="969" measuredHeight="2486" minimizeButton="true" maximizeButton="true"/>
+  <widgets xsi:type="model:Shape" id="136" x="6" y="53" width="969" height="36" text="基本情况：（事故编号 20180418_06）" measuredWidth="969" measuredHeight="36" background="#ccc" textAlignment="Left" shapeType="rectangle">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="810" x="11" y="94" measuredWidth="601" measuredHeight="107">
+    <widgets xsi:type="model:Group" id="520" width="601" height="107" text="车辆信息" measuredWidth="601" measuredHeight="107">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="522" x="15" y="18" text="事故车号：粤A.Z0F41" measuredWidth="123" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="523" x="15" y="45" text="事发车队：一分六队" measuredWidth="114" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="525" x="272" y="18" text="车型：现代 BH7183MY" measuredWidth="134" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="528" x="249" y="45" text="投产日期：2013-10-17" measuredWidth="132" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="530" x="15" y="72" text="合同性质：承包合同" measuredWidth="114" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="534" x="249" y="72" text="承包司机：黄战通、黄新" measuredWidth="138" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="617" x="11" y="206" measuredWidth="601" measuredHeight="186">
+    <widgets xsi:type="model:Group" id="536" width="601" height="186" text="司机信息" measuredWidth="601" measuredHeight="186">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="538" x="19" y="18" text="当事司机：李小明" measuredWidth="102" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="562" x="19" y="45" text="驾驶状态：正班" measuredWidth="90" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="567" x="19" y="72" text="入职日期：2011-12-20" measuredWidth="132" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="569" x="248" y="18" text="身份证号：460021196801113211" measuredWidth="192" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="583" x="19" y="99" text="联系电话：13798026112" measuredWidth="143" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="594" x="248" y="45" text="资格证号：252560" measuredWidth="108" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="596" x="272" y="72" text="籍贯：海南省" measuredWidth="78" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="600" x="12" y="126" text="紧急联系人：AAA" measuredWidth="96" measuredHeight="24" textAlignment="Right">
+      <font size="10px" bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="606" x="243" y="126" text="初领驾照日期：1992-10-26" measuredWidth="117" measuredHeight="22" textAlignment="Right">
+      <font size="9px" bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="610" x="272" y="99" text="年龄：46" measuredWidth="56" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="602" x="14" y="153" text="紧急联系电话：1234567890" measuredWidth="119" measuredHeight="22" textAlignment="Right">
+      <font size="9px" bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="612" x="252" y="153" text="驾龄(年)：22.6" measuredWidth="86" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Image" id="700" x="467" y="18" width="128" height="160" measuredWidth="128" measuredHeight="160" src="司机照片.png" grayscale="true"/>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="710" x="616" y="87" measuredWidth="359" measuredHeight="437">
+    <widgets xsi:type="model:Accordion" id="706" width="359" height="437" text="事故现场图：" measuredWidth="359" measuredHeight="437" selection="0">
+      <items x="0" y="2" width="359" height="27" text="事故现场图："/>
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Master" id="1124" x="16" y="37" measuredWidth="327" measuredHeight="297">
+      <screen xsi:type="model:Screen" href="assets/事故现场图.screen#/"/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="809" x="11" y="398" measuredWidth="601" measuredHeight="191">
+    <widgets xsi:type="model:Group" id="620" width="601" height="191" text="事故信息" measuredWidth="601" measuredHeight="191">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="626" x="250" y="18" text="报案时间：2018-04-18 09:00" measuredWidth="167" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="653" x="20" y="18" text="事发时间：2018-07-09 07:50" measuredWidth="167" measuredHeight="25" textAlignment="Right">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="658" x="20" y="45" text="事发地点：广东省/广州市/荔湾区/花地大道北路段" measuredWidth="273" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="673" x="20" y="131" text="处理部门：快赔中心" measuredWidth="114" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="675" x="20" y="159" text="处理方式：快撤快赔" measuredWidth="114" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="692" x="249" y="159" text="保险报案编号：105180" measuredWidth="132" measuredHeight="25" textAlignment="Right">
+      <font size="12px" bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="834" x="250" y="132" text="GPS车速：80 km/h" measuredWidth="113" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Text" id="955" x="78" y="76" width="516" height="51" text="司机黄新驾驶Z0F41在荔湾区花地大道北路段由南向北行驶，由于我方车辆未保持安全行驶距离，与粤A.A12U4发生追尾碰撞，导致粤A.A12U4尾部受损，事故中无人受伤，无人死亡；自车无需拯救。" measuredWidth="516" measuredHeight="51">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="956" x="19" y="73" text="事发经过：" measuredWidth="66" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="838" x="616" y="522" measuredWidth="359" measuredHeight="73">
+    <widgets xsi:type="model:Accordion" id="775" width="359" height="73" text="倒查信息：%(font:-1)(从事发日向前推 1 年期间当事司机的统计-不含本宗)%" measuredWidth="359" measuredHeight="73" selection="0">
+      <items x="0" y="2" width="359" height="27" text="倒查信息：%(font:-1)(从事发日向前推 1 年期间当事司机的统计-不含本宗)%"/>
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Text" id="780" x="7" y="34" text="历史事故 3 宗，交通违法 1 次，&#xD;&#xA;营运违章 1 次，服务投诉 1 次。" measuredWidth="175" measuredHeight="34">
+      <font/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="828" x="6" y="714" measuredWidth="969" measuredHeight="116">
+    <widgets xsi:type="model:Shape" id="227" width="969" height="36" text="分类因素：" measuredWidth="969" measuredHeight="36" background="#ccc" textAlignment="Left" shapeType="rectangle">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="733" x="8" y="67" text="载重情况：载客" measuredWidth="90" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="751" x="393" y="40" text="天气：晴" measuredWidth="54" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="753" x="393" y="67" text="行驶方向：由南向北" measuredWidth="114" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="755" x="786" y="41" text="路面状况：良好" measuredWidth="90" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="757" x="207" y="40" text="事故形态： 车辆与人事故" measuredWidth="142" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="765" x="8" y="40" text="事故等级：死亡 1 级" measuredWidth="117" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="767" x="592" y="41" text="光线条件：良好" measuredWidth="90" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="769" x="592" y="68" text="道路类型： 城市一般道路" measuredWidth="142" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="771" x="786" y="68" text="路表情况：干燥" measuredWidth="90" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="773" x="207" y="67" text="碰撞类型：追尾碰撞" measuredWidth="114" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Icon" id="972" x="939" y="5" measuredWidth="24" measuredHeight="24" icon="checked (medium)"/>
+    <widgets xsi:type="model:Label" id="974" x="32" y="91" text="备注：" measuredWidth="42" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="975" x="63" y="91" width="756" measuredWidth="756" measuredHeight="25">
+      <font/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="1021" x="6" y="1259" measuredWidth="1155" measuredHeight="458">
+    <widgets xsi:type="model:WidgetGroup" id="854" measuredWidth="1155" measuredHeight="160">
+      <widgets xsi:type="model:Shape" id="313" width="1155" height="30" text="当事车辆：" measuredWidth="1155" measuredHeight="30" background="#ccc" textAlignment="Left" shapeType="rectangle">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="475" x="866" y="2" text="{arrow-up}  {arrow-down}  {delete}" measuredWidth="70" measuredHeight="25" foreground="#999">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Table" id="843" y="45" width="1155" height="115" text="=(w:30). 序号,=(w:60). 分类,=(w:80). 车号,=(w:80). 车型,=(w:70). 拖车次数,=(w:80). 维修分类,=(w:115). 受损情况,=(w:76). ,=(w:76). ,=(w:76). ,=(w:76). ,=(w:76). ,=(w:76). ,=(w:65).跟进形式,=. 更新时间&#xD;&#xA;1,>. 自车 {desc},粤A.Z0F41,>. 出租车 {desc},>. 1 {neutral},>. 自厂修复 {desc},>. 前部 {desc},>. %(color:gray)1000.00%,>. %(color:gray)100.00%,>. %(color:gray)1100.00%,>. 1010.00 {neutral},>. 110.00 {neutral},>. 1120.00,>. 系统 {desc},&lt;. %(color:gray)2018-03-25 10:00%&#xD;&#xA;2,>. 三者 {desc},粤A.A12U4,>. 小轿车 {desc},>. 0 {neutral},>. 外厂修复 {desc},>. 后部 {desc},>. %(color:gray)2000.00%,>. %(color:gray)200.00%,>. %(color:gray)2200.00%,>. 2010.00 {neutral},>. 210.00 {neutral},>. 2220.00,>. 电话 {desc},&lt;. %(color:gray)2018-03-25 10:00%&#xD;&#xA;{circled-plus}," measuredWidth="1155" measuredHeight="115" rowHeight="28" horizontalLines="true" alternative="#eee">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Table" id="846" y="28" width="1155" height="46" text="=(w:30). 序号,=(w:60). 分类,=(w:80). 车号,=(w:80). 车型,=(w:70). 拖车次数,=(w:80). 维修分类,=(w:115). 受损情况,=(w:76). ,=(w:76). ,=(w:76). ,=(w:76). ,=(w:76). ,=(w:76). ,=(w:65).跟进形式,=. 更新时间" measuredWidth="1155" measuredHeight="46" rowHeight="45" horizontalLines="true" alternative="#eee">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:WidgetGroup" id="849" x="519" y="28" measuredWidth="230" measuredHeight="46">
+        <widgets xsi:type="model:Table" id="847" y="22" width="230" height="24" text="=(w:77). 维修费,=(w:76). 拖车费,=. 合计" measuredWidth="230" measuredHeight="24" background="#ccc" rowHeight="20" alternative="#ccc" header="false">
+          <font bold="false"/>
+        </widgets>
+        <widgets xsi:type="model:Shape" id="848" width="230" height="24" text="损失预估(元)" measuredWidth="230" measuredHeight="24" background="#ccc" shapeType="rectangle">
+          <font/>
+        </widgets>
+      </widgets>
+      <widgets xsi:type="model:Panel" id="490" x="80" y="130" width="713" height="28" measuredWidth="713" measuredHeight="28" border="none"/>
+      <widgets xsi:type="model:WidgetGroup" id="1125" x="747" y="28" measuredWidth="230" measuredHeight="46">
+        <widgets xsi:type="model:Table" id="1126" y="22" width="230" height="24" text="=(w:77). 维修费,=(w:76). 拖车费,=. 合计" measuredWidth="230" measuredHeight="24" background="#ccc" rowHeight="20" alternative="#ccc" header="false">
+          <font bold="false"/>
+        </widgets>
+        <widgets xsi:type="model:Shape" id="1127" width="230" height="24" text="实际损失(元)" measuredWidth="230" measuredHeight="24" background="#ccc" shapeType="rectangle">
+          <font/>
+        </widgets>
+      </widgets>
+      <widgets xsi:type="model:Icon" id="1128" x="940" y="3" measuredWidth="24" measuredHeight="24" icon="checked (medium)"/>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="856" y="343" measuredWidth="969" measuredHeight="115">
+      <widgets xsi:type="model:Shape" id="499" width="969" height="30" text="其他物体：" measuredWidth="969" measuredHeight="30" background="#ccc" textAlignment="Left" shapeType="rectangle">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Table" id="500" y="28" width="969" height="87" text="=(w:30). 序号,=(w:60). 分类,=(w:180). 物品名称,=(w:80). 归属,=(w:80). 联系人,=(w:90). 联系电话,=(w:100). 受损情况,>(w:80). 损失预估(元),>(w:80). 实际损失(元),=(w:65). 跟进形式,=. 更新时间&#xD;&#xA;1,公共设施, &lt;. 路边护栏,,小李, 13122223333, &lt;. 撞烂,>. %(color:gray)100.00%,>. 100.00 {neutral},>. 系统{desc},&lt;. %(color:gray)2018-03-25 10:00%&#xD;&#xA;{circled-plus}," measuredWidth="969" measuredHeight="87" rowHeight="28" horizontalLines="true" alternative="#eee">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="501" x="871" y="3" text="{arrow-up}  {arrow-down}  {delete}" measuredWidth="70" measuredHeight="25" foreground="#999">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Panel" id="502" x="37" y="85" width="930" height="28" measuredWidth="930" measuredHeight="28" border="none"/>
+      <widgets xsi:type="model:Icon" id="1133" x="940" y="3" measuredWidth="24" measuredHeight="24" icon="checked (medium)"/>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="855" y="158" measuredWidth="1155" measuredHeight="187">
+      <widgets xsi:type="model:Shape" id="493" width="1155" height="30" text="当事人：" measuredWidth="1155" measuredHeight="30" background="#ccc" textAlignment="Left" shapeType="rectangle">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="495" x="866" y="2" text="{arrow-up}  {arrow-down}  {delete}" measuredWidth="70" measuredHeight="25" foreground="#999">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Table" id="850" y="45" width="1155" height="142" text="=(w:30). 序号,=(w:60). 分类,=(w:80). 姓名,=(w:45). 性别,=(w:90). 联系电话,&lt;(w:105). 交通方式,=(w:60). 事故责任,=(w:45). 伤亡,=(w:76). ,=(w:76). ,=(w:76). ,=(w:76). ,=(w:76). ,=(w:76). ,=(w:65).跟进形式,=.更新时间&#xD;&#xA;1,>. 自车 {desc},黄新,>. 男 {desc},13798026112,Z0F41 驾驶员,>. 全责 {desc},>. 伤 {desc},>. %(color:gray)200.00%,>. %(color:gray)100.00%,>. %(color:gray)300.00%,>. 210.00 {neutral},>. 110.00 {neutral},>. 320.00,>. 电话 {desc},&lt;. %(color:gray)2018-03-25 10:00%&#xD;&#xA;2,>. 三者 {desc},招贤生,>. 男 {desc},13808811194,A12U4 驾驶员,>. 无责 {desc},>. 亡 {desc},>. %(color:gray)400.00%,>. %(color:gray)200.00%,>. %(color:gray)600.00%,>. 410.00 {neutral},>. 210.00 {neutral},>. 620.00,>. 电话 {desc},&lt;. %(color:gray)2018-03-25 10:00%&#xD;&#xA;3,>. 三者 {desc},小李,>. 男 {desc},13011112222,行人,>. 无责 {desc},>. 伤 {desc},>. %(color:gray)100.00%, >. %(color:gray)0%,>. %(color:gray)100.00%,>. 110.00 {neutral}, >. 50 {neutral},>. 160.00,>. 电话 {desc},&lt;. %(color:gray)2018-03-25 10:00%&#xD;&#xA;{circled-plus}," measuredWidth="1155" measuredHeight="142" rowHeight="28" horizontalLines="true" alternative="#eee">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Table" id="494" y="28" width="1155" height="46" text="=(w:30). 序号,=(w:60). 分类,=(w:80). 姓名,=(w:45). 性别,=(w:90). 联系电话,=(w:105). 交通方式,=(w:60). 事故责任,=(w:45). 伤亡,=(w:76). ,=(w:76). ,=(w:76). ,=(w:76). ,=(w:76). ,=(w:76). ,=(w:65).跟进形式,=.更新时间" measuredWidth="1155" measuredHeight="46" rowHeight="45" horizontalLines="true" alternative="#eee">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:WidgetGroup" id="851" x="519" y="28" measuredWidth="230" measuredHeight="46">
+        <widgets xsi:type="model:Table" id="852" y="22" width="230" height="24" text="=(w:77). 医疗费,=(w:76). 赔偿损失,=. 合计" measuredWidth="230" measuredHeight="24" background="#ccc" rowHeight="20" alternative="#ccc" header="false">
+          <font bold="false"/>
+        </widgets>
+        <widgets xsi:type="model:Shape" id="853" width="230" height="24" text="损失预估(元)" measuredWidth="230" measuredHeight="24" background="#ccc" shapeType="rectangle">
+          <font/>
+        </widgets>
+      </widgets>
+      <widgets xsi:type="model:Panel" id="496" x="37" y="158" width="1116" height="27" measuredWidth="1116" measuredHeight="27" border="none"/>
+      <widgets xsi:type="model:WidgetGroup" id="1129" x="747" y="28" measuredWidth="230" measuredHeight="46">
+        <widgets xsi:type="model:Table" id="1130" y="22" width="230" height="24" text="=(w:77). 医疗费,=(w:76). 赔偿损失,=. 合计" measuredWidth="230" measuredHeight="24" background="#ccc" rowHeight="20" alternative="#ccc" header="false">
+          <font bold="false"/>
+        </widgets>
+        <widgets xsi:type="model:Shape" id="1131" width="230" height="24" text="实际损失(元)" measuredWidth="230" measuredHeight="24" background="#ccc" shapeType="rectangle">
+          <font/>
+        </widgets>
+      </widgets>
+      <widgets xsi:type="model:Icon" id="1132" x="940" y="3" measuredWidth="24" measuredHeight="24" icon="checked (medium)"/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="1022" x="6" y="2386" measuredWidth="969" measuredHeight="128">
+    <widgets xsi:type="model:Button" id="299" x="891" y="99" text="审核确认" measuredWidth="72" measuredHeight="29">
+      <font size="13px"/>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="789" measuredWidth="969" measuredHeight="97">
+      <widgets xsi:type="model:Label" id="291" x="8" y="40" text="审核结果：" measuredWidth="66" measuredHeight="25">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:TextField" id="292" x="67" y="65" width="896" measuredWidth="896" measuredHeight="25">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="295" x="312" y="40" text="{image} 审核截图.png{trash}" measuredWidth="116" measuredHeight="25">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:RadioButton" id="296" x="70" y="40" text="通过" measuredWidth="44" measuredHeight="25">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:RadioButton" id="297" x="123" y="40" text="不通过" measuredWidth="56" measuredHeight="25">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Shape" id="781" width="969" height="36" text="审核信息：" measuredWidth="969" measuredHeight="36" background="#ccc" textAlignment="Left" shapeType="rectangle">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="782" x="8" y="65" text="审核意见：" measuredWidth="66" measuredHeight="25">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="784" x="199" y="40" text=" {upload} [上传审核附件]：" measuredWidth="114" measuredHeight="25">
+        <font/>
+        <items x="24" y="3" width="72" height="17" text="上传审核附件"/>
+      </widgets>
+      <widgets xsi:type="model:HLine" id="786" x="1" y="91" width="968" measuredWidth="968" measuredHeight="6"/>
+      <widgets xsi:type="model:Label" id="858" x="73" y="66" text="审核不通过时必须填写，审核通过时无需填写" measuredWidth="246" measuredHeight="25" foreground="#f00">
+        <font/>
+      </widgets>
+    </widgets>
+    <widgets xsi:type="model:Button" id="787" x="840" y="99" text="保存" measuredWidth="46" measuredHeight="29">
+      <font size="13px"/>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="794" x="793" y="114" width="45" height="8" measuredWidth="45" measuredHeight="8" foreground="#f00" lineStyle="dashed" left="false" right="true" direction="bottom"/>
+    <widgets xsi:type="model:Label" id="795" x="669" y="102" text="需要事故报告修改权限" measuredWidth="126" measuredHeight="25" textAlignment="Right" foreground="#f00">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="799" x="923" y="53" width="8" height="47" measuredWidth="8" measuredHeight="47" foreground="#f00" lineStyle="dashed" left="false"/>
+    <widgets xsi:type="model:Arrow" id="800" x="884" y="53" width="40" height="8" measuredWidth="40" measuredHeight="8" foreground="#f00" lineStyle="dashed" direction="bottom"/>
+    <widgets xsi:type="model:Label" id="801" x="760" y="41" text="需要事故报告审核权限" measuredWidth="126" measuredHeight="25" textAlignment="Right" foreground="#f00">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="832" x="68" y="17" width="51" height="8" measuredWidth="51" measuredHeight="8" foreground="#f00" lineStyle="dashed" left="false" right="true"/>
+    <widgets xsi:type="model:Label" id="833" x="122" y="6" text="审核时方显示" measuredWidth="78" measuredHeight="25" foreground="#f00">
+      <font/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:Label" id="885" x="11" text="事故报告表单 - v1.0：" measuredWidth="209" measuredHeight="35">
+    <font size="20px" bold="true"/>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="887" x="6" y="593" measuredWidth="969" measuredHeight="119">
+    <widgets xsi:type="model:Shape" id="888" width="969" height="36" text="工作计划：" measuredWidth="969" measuredHeight="36" background="#ccc" textAlignment="Left" shapeType="rectangle">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="926" x="4" y="39" measuredWidth="814" measuredHeight="26">
+      <widgets xsi:type="model:Label" id="897" x="94" y="1" text="约定司机回队时间：" measuredWidth="114" measuredHeight="25" textAlignment="Right">
+        <font bold="false"/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="899" y="1" width="72" text="*1. 约定司机*" measuredWidth="72" measuredHeight="25" textAlignment="Right">
+        <font bold="false"/>
+      </widgets>
+      <widgets xsi:type="model:WidgetGroup" id="910" x="197" measuredWidth="129" measuredHeight="25">
+        <widgets xsi:type="model:TextField" id="911" width="129" text="2018-07-09 10:00" measuredWidth="129" measuredHeight="25">
+          <font/>
+        </widgets>
+        <widgets xsi:type="model:Icon" id="912" x="109" y="5" width="15" height="15" measuredWidth="15" measuredHeight="15" icon="calendar (custom)"/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="913" x="342" y="1" text="司机实际回队时间：" measuredWidth="114" measuredHeight="25" textAlignment="Right">
+        <font bold="false"/>
+      </widgets>
+      <widgets xsi:type="model:WidgetGroup" id="914" x="445" measuredWidth="129" measuredHeight="25">
+        <widgets xsi:type="model:TextField" id="915" width="129" text="2018-07-09 10:20" measuredWidth="129" measuredHeight="25">
+          <font/>
+        </widgets>
+        <widgets xsi:type="model:Icon" id="916" x="109" y="5" width="15" height="15" measuredWidth="15" measuredHeight="15" icon="calendar (custom)"/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="917" x="590" y="1" text="主办：" measuredWidth="42" measuredHeight="25" textAlignment="Right">
+        <font bold="false"/>
+      </widgets>
+      <widgets xsi:type="model:TextField" id="919" x="621" width="73" text="张树葵" measuredWidth="73" measuredHeight="25">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="921" x="710" y="1" text="协办：" measuredWidth="42" measuredHeight="25" textAlignment="Right">
+        <font bold="false"/>
+      </widgets>
+      <widgets xsi:type="model:TextField" id="922" x="741" width="73" text="黄建兴" measuredWidth="73" measuredHeight="25">
+        <font/>
+      </widgets>
+    </widgets>
+    <widgets xsi:type="model:Icon" id="925" x="941" y="6" measuredWidth="24" measuredHeight="24" icon="checked (medium)"/>
+    <widgets xsi:type="model:WidgetGroup" id="927" x="4" y="66" measuredWidth="814" measuredHeight="26">
+      <widgets xsi:type="model:Label" id="928" x="94" y="1" text="安全教育开始时间：" measuredWidth="114" measuredHeight="25" textAlignment="Right">
+        <font bold="false"/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="929" y="1" width="72" text="*2. 安全教育*" measuredWidth="72" measuredHeight="25" textAlignment="Right">
+        <font bold="false"/>
+      </widgets>
+      <widgets xsi:type="model:WidgetGroup" id="930" x="197" measuredWidth="129" measuredHeight="25">
+        <widgets xsi:type="model:TextField" id="931" width="129" text="2018-07-09 10:30" measuredWidth="129" measuredHeight="25">
+          <font/>
+        </widgets>
+        <widgets xsi:type="model:Icon" id="932" x="109" y="5" width="15" height="15" measuredWidth="15" measuredHeight="15" icon="calendar (custom)"/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="933" x="342" y="1" text="安全教育完成时间：" measuredWidth="114" measuredHeight="25" textAlignment="Right">
+        <font bold="false"/>
+      </widgets>
+      <widgets xsi:type="model:WidgetGroup" id="934" x="445" measuredWidth="129" measuredHeight="25">
+        <widgets xsi:type="model:TextField" id="935" width="129" text="2018-07-09 11:00" measuredWidth="129" measuredHeight="25">
+          <font/>
+        </widgets>
+        <widgets xsi:type="model:Icon" id="936" x="109" y="5" width="15" height="15" measuredWidth="15" measuredHeight="15" icon="calendar (custom)"/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="937" x="590" y="1" text="主办：" measuredWidth="42" measuredHeight="25" textAlignment="Right">
+        <font bold="false"/>
+      </widgets>
+      <widgets xsi:type="model:TextField" id="938" x="621" width="73" text="张树葵" measuredWidth="73" measuredHeight="25">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="939" x="710" y="1" text="协办：" measuredWidth="42" measuredHeight="25" textAlignment="Right">
+        <font bold="false"/>
+      </widgets>
+      <widgets xsi:type="model:TextField" id="940" x="741" width="73" text="黄建兴" measuredWidth="73" measuredHeight="25">
+        <font/>
+      </widgets>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="941" x="4" y="93" measuredWidth="814" measuredHeight="26">
+      <widgets xsi:type="model:Label" id="942" x="94" y="1" text="诫勉谈话开始时间：" measuredWidth="114" measuredHeight="25" textAlignment="Right">
+        <font bold="false"/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="943" y="1" width="72" text="*3. 诫勉谈话*" measuredWidth="72" measuredHeight="25" textAlignment="Right">
+        <font bold="false"/>
+      </widgets>
+      <widgets xsi:type="model:WidgetGroup" id="944" x="197" measuredWidth="129" measuredHeight="25">
+        <widgets xsi:type="model:TextField" id="945" width="129" text="2018-07-09 11:00" measuredWidth="129" measuredHeight="25">
+          <font/>
+        </widgets>
+        <widgets xsi:type="model:Icon" id="946" x="109" y="5" width="15" height="15" measuredWidth="15" measuredHeight="15" icon="calendar (custom)"/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="947" x="342" y="1" text="诫勉谈话完成时间：" measuredWidth="114" measuredHeight="25" textAlignment="Right">
+        <font bold="false"/>
+      </widgets>
+      <widgets xsi:type="model:WidgetGroup" id="948" x="445" measuredWidth="129" measuredHeight="25">
+        <widgets xsi:type="model:TextField" id="949" width="129" text="2018-07-09 11:20" measuredWidth="129" measuredHeight="25">
+          <font/>
+        </widgets>
+        <widgets xsi:type="model:Icon" id="950" x="109" y="5" width="15" height="15" measuredWidth="15" measuredHeight="15" icon="calendar (custom)"/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="951" x="590" y="1" text="主办：" measuredWidth="42" measuredHeight="25" textAlignment="Right">
+        <font bold="false"/>
+      </widgets>
+      <widgets xsi:type="model:TextField" id="952" x="621" width="73" text="冼盈" measuredWidth="73" measuredHeight="25">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="953" x="710" y="1" text="协办：" measuredWidth="42" measuredHeight="25" textAlignment="Right">
+        <font bold="false"/>
+      </widgets>
+      <widgets xsi:type="model:TextField" id="954" x="741" width="73" text="黎源" measuredWidth="73" measuredHeight="25">
+        <font/>
+      </widgets>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="958" x="6" y="833" measuredWidth="969" measuredHeight="152">
+    <widgets xsi:type="model:Shape" id="959" width="969" height="36" text="保险信息：{refresh}" measuredWidth="969" measuredHeight="36" background="#ccc" textAlignment="Left" shapeType="rectangle">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Text" id="970" x="5" y="60" width="881" height="92" text="商业险号: PDAA201744010000437377     期限: 2017-10-10 至 2018-10-09      险司: 中保芳村&#xD;&#xA;强制险号: PDZA201744010000494454     期限: 2017-10-10 至 2018-10-09      险司: 中保芳村&#xD;&#xA;责任险号: PZDS201744010000009185&#xD;&#xA;购买险种: \[车身:ZB] \[盗抢:ZB] \[第三者:500000] \[承运人:2000000] \[交强险:122000] \[免赔:0:车身ZB 第三者√座位√] \[座位（司机）:0:10,000.00/座*1座] \[座位（乘客）:0:10,000.00/座*4座]" measuredWidth="881" measuredHeight="92">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="971" x="5" y="37" text="保险报案编号：105180" measuredWidth="132" measuredHeight="25">
+      <font bold="true"/>
+    </widgets>
+    <widgets xsi:type="model:Icon" id="973" x="939" y="5" measuredWidth="24" measuredHeight="24" icon="checked (medium)"/>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="976" x="6" y="985" measuredWidth="969" measuredHeight="276">
+    <widgets xsi:type="model:Master" id="1121" measuredWidth="969" measuredHeight="276">
+      <screen xsi:type="model:Screen" href="assets/事故附件.screen#/"/>
+    </widgets>
+    <widgets xsi:type="model:Icon" id="985" x="939" y="4" measuredWidth="24" measuredHeight="24" icon="checked (medium)"/>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="986" x="6" y="1715" measuredWidth="969" measuredHeight="257">
+    <widgets xsi:type="model:Shape" id="987" width="969" height="36" text="安全教育：" measuredWidth="969" measuredHeight="36" background="#ccc" textAlignment="Left" shapeType="rectangle">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="988" x="895" y="91" text=" {arrow-up}  {arrow-down}  {delete}" measuredWidth="74" measuredHeight="25" foreground="#999">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Table" id="989" y="113" width="969" height="115" text="=(w:30). 序号,=(w:200). 附件名称,=(w:150). 附件编号,=(w:80). 签字日期,=(w:70). 文件大小,=(w:160). 上传时间, =.操作&#xD;&#xA;1, &lt;. 事故经过及认识, &lt;. 123456789, 2018-07-10, >. 100 KB, 2018-07-10 12:00 黄小明, &lt;. [上传] [查看] [删除]&#xD;&#xA;2, &lt;. 承诺书,,,,, &lt;. [上传]&#xD;&#xA;{circled-plus}," measuredWidth="969" measuredHeight="115" rowHeight="28" horizontalLines="true" alternative="#eee">
+      <font/>
+      <items x="700" y="33" width="24" height="17" text="上传"/>
+      <items x="728" y="33" width="24" height="17" text="查看"/>
+      <items x="756" y="33" width="24" height="17" text="删除"/>
+      <items x="700" y="61" width="24" height="17" text="上传"/>
+    </widgets>
+    <widgets xsi:type="model:Panel" id="990" x="36" y="198" width="930" height="28" measuredWidth="930" measuredHeight="28" border="none"/>
+    <widgets xsi:type="model:Icon" id="991" x="939" y="5" measuredWidth="24" measuredHeight="24" icon="unchecked (medium)"/>
+    <widgets xsi:type="model:Label" id="993" x="5" y="39" text="事故原因：" measuredWidth="66" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="994" x="60" y="39" width="904" text="路口没确保安全的情况下通行。" measuredWidth="904" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="995" x="5" y="66" text="处理意见：" measuredWidth="66" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="996" x="60" y="66" width="904" text="司机历史行车记录较差，多违法，多事故，拒绝回场检、不接电话，分公司采取立刻停产整顿。" measuredWidth="904" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="997" x="5" y="91" text="附件：" measuredWidth="42" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="998" x="5" y="232" text="事故经过描述评价：" measuredWidth="114" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Combo" id="1000" x="109" y="232" width="73" text="很清楚" measuredWidth="73" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="1001" x="568" y="232" text="&lt;-- 很清楚、清楚、不清楚、很不清楚，很深刻、深刻、不深刻、很不深刻" measuredWidth="401" measuredHeight="25" foreground="#f00">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="1016" x="189" y="232" text="事故认识程度评价：" measuredWidth="114" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Combo" id="1017" x="293" y="232" width="73" text="很深刻" measuredWidth="73" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="1018" x="373" y="232" text="是否采取进一步处理措施：" measuredWidth="150" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Combo" id="1019" x="513" y="232" width="49" text="是" measuredWidth="49" measuredHeight="25">
+      <font/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="1002" x="6" y="1976" measuredWidth="969" measuredHeight="200">
+    <widgets xsi:type="model:Shape" id="1003" width="969" height="36" text="整改措施：" measuredWidth="969" measuredHeight="36" background="#ccc" textAlignment="Left" shapeType="rectangle">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="1004" x="895" y="91" text=" {arrow-up}  {arrow-down}  {delete}" measuredWidth="74" measuredHeight="25" foreground="#999">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Icon" id="1007" x="939" y="5" measuredWidth="24" measuredHeight="24" icon="checked (medium)"/>
+    <widgets xsi:type="model:Label" id="1008" x="5" y="39" text="整改措施：" measuredWidth="66" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="1009" x="60" y="39" width="904" text="1、分公司经理当面对司机进行谈话，说明其违约行为可作辞退处理，责令参加下月专项培训学习；2、由人事部发出严重警告信。" measuredWidth="904" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="1010" x="5" y="66" text="司机态度：" measuredWidth="66" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="1011" x="60" y="66" width="904" text="司机态度诚恳，希望继续留司服务，望给予一次机会改正。" measuredWidth="904" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="1012" x="5" y="91" text="附件：" measuredWidth="42" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Table" id="1034" y="115" width="969" height="85" text="=(w:30). 序号,=(w:200). 附件名称,=(w:150). 附件编号,=(w:80). 签发日期,=(w:70). 文件大小,=(w:160). 上传时间, =.操作&#xD;&#xA;1, &lt;. 警告信, &lt;. 123456789, 2018-07-10, >. 100 KB, 2018-07-10 12:00 黄小明, &lt;. [上传] [查看] [删除]&#xD;&#xA;{circled-plus}," measuredWidth="969" measuredHeight="85" rowHeight="28" horizontalLines="true" alternative="#eee">
+      <font/>
+      <items x="700" y="33" width="24" height="17" text="上传"/>
+      <items x="728" y="33" width="24" height="17" text="查看"/>
+      <items x="756" y="33" width="24" height="17" text="删除"/>
+    </widgets>
+    <widgets xsi:type="model:Panel" id="1035" x="36" y="172" width="930" height="26" measuredWidth="930" measuredHeight="26" border="none"/>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="1113" x="6" y="2174" measuredWidth="969" measuredHeight="216">
+    <widgets xsi:type="model:Shape" id="1024" width="969" height="36" text="报告提交：" measuredWidth="969" measuredHeight="36" background="#ccc" textAlignment="Left" shapeType="rectangle">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="1029" x="54" y="39" text="司机签名：" measuredWidth="66" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="1030" x="109" y="39" width="129" text="李小明" measuredWidth="129" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="1036" x="277" y="39" text="司机签名时间：" measuredWidth="90" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="1048" x="356" y="39" measuredWidth="129" measuredHeight="25">
+      <widgets xsi:type="model:TextField" id="1049" width="129" text="2018-07-11 10:00" measuredWidth="129" measuredHeight="25">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Icon" id="1050" x="109" y="5" width="15" height="15" measuredWidth="15" measuredHeight="15" icon="calendar (custom)"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="1051" x="507" y="39" text="经办签名：" measuredWidth="66" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="1052" x="562" y="39" width="129" text="张树葵" measuredWidth="129" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="1053" x="701" y="39" text="经办签名时间：" measuredWidth="90" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="1054" x="780" y="39" measuredWidth="129" measuredHeight="25">
+      <widgets xsi:type="model:TextField" id="1055" width="129" text="2018-07-11 10:10" measuredWidth="129" measuredHeight="25">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Icon" id="1056" x="109" y="5" width="15" height="15" measuredWidth="15" measuredHeight="15" icon="calendar (custom)"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="1057" x="6" y="66" text="事故报告开始时间：" measuredWidth="114" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="1058" x="109" y="66" measuredWidth="129" measuredHeight="25">
+      <widgets xsi:type="model:TextField" id="1059" width="129" text="2018-07-11 09:00" measuredWidth="129" measuredHeight="25">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Icon" id="1060" x="109" y="5" width="15" height="15" measuredWidth="15" measuredHeight="15" icon="calendar (custom)"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="1064" x="253" y="66" text="事故报告完成时间：" measuredWidth="114" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="1065" x="356" y="66" measuredWidth="129" measuredHeight="25">
+      <widgets xsi:type="model:TextField" id="1066" width="129" text="2018-07-11 11:00" measuredWidth="129" measuredHeight="25">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Icon" id="1067" x="109" y="5" width="15" height="15" measuredWidth="15" measuredHeight="15" icon="calendar (custom)"/>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="1108" x="24" y="117" measuredWidth="623" measuredHeight="43">
+      <widgets xsi:type="model:Label" id="1069" text="工作计划" measuredWidth="54" measuredHeight="25" textAlignment="Center">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="1073" x="71" text="分类因素" measuredWidth="54" measuredHeight="25" textAlignment="Center">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="1076" x="141" text="保险信息" measuredWidth="54" measuredHeight="25" textAlignment="Center">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="1079" x="212" text="事故凭据" measuredWidth="54" measuredHeight="25" textAlignment="Center">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="1081" x="282" text="当事车辆" measuredWidth="54" measuredHeight="25" textAlignment="Center">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="1083" x="361" text="当事人" measuredWidth="42" measuredHeight="25" textAlignment="Center">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="1085" x="425" text="其他物体" measuredWidth="54" measuredHeight="25" textAlignment="Center">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="1087" x="497" text="安全教育" measuredWidth="54" measuredHeight="25" textAlignment="Center">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Label" id="1089" x="569" text="整改措施" measuredWidth="54" measuredHeight="25" textAlignment="Center">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:WidgetGroup" id="1107" x="13" y="19" measuredWidth="592" measuredHeight="24">
+        <widgets xsi:type="model:Icon" id="1068" measuredWidth="24" measuredHeight="24" icon="checked (medium)"/>
+        <widgets xsi:type="model:Icon" id="1072" x="71" measuredWidth="24" measuredHeight="24" icon="checked (medium)"/>
+        <widgets xsi:type="model:Arrow" id="1090" x="21" y="12" width="53" height="8" measuredWidth="53" measuredHeight="8" left="false" right="true" direction="bottom"/>
+        <widgets xsi:type="model:Arrow" id="1091" x="92" y="12" width="53" height="8" measuredWidth="53" measuredHeight="8" left="false" right="true" direction="bottom"/>
+        <widgets xsi:type="model:Icon" id="1094" x="142" measuredWidth="24" measuredHeight="24" icon="checked (medium)"/>
+        <widgets xsi:type="model:Icon" id="1095" x="213" measuredWidth="24" measuredHeight="24" icon="checked (medium)"/>
+        <widgets xsi:type="model:Arrow" id="1096" x="163" y="12" width="53" height="8" measuredWidth="53" measuredHeight="8" left="false" right="true" direction="bottom"/>
+        <widgets xsi:type="model:Arrow" id="1097" x="234" y="12" width="53" height="8" measuredWidth="53" measuredHeight="8" left="false" right="true" direction="bottom"/>
+        <widgets xsi:type="model:Icon" id="1098" x="284" measuredWidth="24" measuredHeight="24" icon="checked (medium)"/>
+        <widgets xsi:type="model:Icon" id="1099" x="355" measuredWidth="24" measuredHeight="24" icon="checked (medium)"/>
+        <widgets xsi:type="model:Arrow" id="1100" x="305" y="12" width="53" height="8" measuredWidth="53" measuredHeight="8" left="false" right="true" direction="bottom"/>
+        <widgets xsi:type="model:Arrow" id="1101" x="376" y="12" width="53" height="8" measuredWidth="53" measuredHeight="8" left="false" right="true" direction="bottom"/>
+        <widgets xsi:type="model:Icon" id="1102" x="426" measuredWidth="24" measuredHeight="24" icon="checked (medium)"/>
+        <widgets xsi:type="model:Icon" id="1103" x="497" measuredWidth="24" measuredHeight="24" icon="unchecked (medium)"/>
+        <widgets xsi:type="model:Arrow" id="1104" x="447" y="12" width="53" height="8" measuredWidth="53" measuredHeight="8" left="false" right="true" direction="bottom"/>
+        <widgets xsi:type="model:Arrow" id="1105" x="518" y="12" width="53" height="8" measuredWidth="53" measuredHeight="8" left="false" right="true" direction="bottom"/>
+        <widgets xsi:type="model:Icon" id="1106" x="568" measuredWidth="24" measuredHeight="24" icon="checked (medium)"/>
+      </widgets>
+    </widgets>
+    <widgets xsi:type="model:HLine" id="1109" x="1" y="210" width="968" measuredWidth="968" measuredHeight="6"/>
+    <widgets xsi:type="model:Button" id="1110" x="891" y="179" text="提交报告" measuredWidth="72" measuredHeight="29">
+      <font size="13px"/>
+    </widgets>
+    <widgets xsi:type="model:Button" id="1111" x="840" y="179" text="保存" measuredWidth="46" measuredHeight="29">
+      <font size="13px"/>
+    </widgets>
+    <widgets xsi:type="model:HLine" id="1112" x="1" y="171" width="968" measuredWidth="968" measuredHeight="6"/>
+    <widgets xsi:type="model:Arrow" id="1114" x="925" y="147" width="8" height="32" measuredWidth="8" measuredHeight="32" foreground="#f00" lineStyle="dashed" left="false" direction="bottom"/>
+    <widgets xsi:type="model:Arrow" id="1115" x="887" y="147" width="39" height="8" measuredWidth="39" measuredHeight="8" foreground="#f00" lineStyle="dashed" direction="bottom"/>
+    <widgets xsi:type="model:Label" id="1116" x="762" y="135" text="需要事故报告提交权限" measuredWidth="126" measuredHeight="25" textAlignment="Right" foreground="#f00">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="1117" x="793" y="193" width="46" height="8" measuredWidth="46" measuredHeight="8" foreground="#f00" lineStyle="dashed" left="false" right="true"/>
+    <widgets xsi:type="model:Label" id="1118" x="657" y="181" text="提交前可以临时保存信息" measuredWidth="138" measuredHeight="25" textAlignment="Right" foreground="#f00">
+      <font/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:Panel" id="1119" x="2" y="4" width="16" height="16" measuredWidth="16" measuredHeight="16" alpha="0" border="none"/>
+  <widgets xsi:type="model:Panel" id="1120" x="964" y="2508" width="16" height="16" measuredWidth="16" measuredHeight="16" alpha="0" border="none"/>
+  <widgets xsi:type="model:Panel" id="1134" x="1149" y="1600" width="16" height="16" measuredWidth="16" measuredHeight="16" alpha="0" border="none"/>
+  <hRuler/>
+  <vRuler/>
+  <font size="12px"/>
+</model:Screen>
