@@ -2,6 +2,7 @@ package cn.gftaxi.traffic.accident.rest.webflux
 
 import cn.gftaxi.traffic.accident.rest.webflux.handler.FindAllSecondaryCategoriesHandler
 import cn.gftaxi.traffic.accident.rest.webflux.handler.FindSecondaryCategoriesHandler
+import cn.gftaxi.traffic.accident.rest.webflux.handler.report.FindHandler
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -53,6 +54,7 @@ class ModuleConfiguration @Autowired constructor(
   private val registerToCheckHandler: RegisterToCheckHandler,
   private val registerCheckedHandler: RegisterCheckedHandler,
   private val findAllSecondaryCategoriesHandler: FindAllSecondaryCategoriesHandler
+  private val findHandler: FindHandler
 ) {
   private val logger = LoggerFactory.getLogger(ModuleConfiguration::class.java)
 
@@ -96,6 +98,10 @@ class ModuleConfiguration @Autowired constructor(
       RegisterToCheckHandler.REQUEST_PREDICATE.invoke(registerToCheckHandler::handle)
       // POST /accident-register/checked/{id}  审核案件信息
       RegisterCheckedHandler.REQUEST_PREDICATE.invoke(registerCheckedHandler::handle)
+
+      //==== 事故报告相关 ====
+      // GET /accident-report 获取指定状态的案件的分页信息
+      FindHandler.REQUEST_PREDICATE.invoke(findHandler::handle)
 
       //==== 全局 ====
       // GET

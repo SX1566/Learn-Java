@@ -1,8 +1,8 @@
 package cn.gftaxi.traffic.accident.service
 
 import cn.gftaxi.traffic.accident.dto.AccidentReportDto4View
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
+import cn.gftaxi.traffic.accident.po.AccidentReport.Companion.READ_ROLES
+import cn.gftaxi.traffic.accident.po.AccidentReport.Status
 import org.springframework.data.domain.Page
 import reactor.core.publisher.Mono
 import tech.simter.exception.PermissionDeniedException
@@ -11,6 +11,7 @@ import tech.simter.exception.PermissionDeniedException
  * 事故报告 Service。
  *
  * @author RJ
+ * @author zh
  */
 interface AccidentReportService {
   /**
