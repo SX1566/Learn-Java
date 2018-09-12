@@ -72,7 +72,7 @@ data class AccidentDraft(
     /** 修改报案信息角色 */
     const val ROLE_MODIFY = "ACCIDENT_DRAFT_MODIFY"
 
-    /** 判断是否是预期报案 */
+    /** 判断是否是逾期报案 */
     fun isOverdue(happenTime: OffsetDateTime, reportTime: OffsetDateTime, overdueSeconds: Long): Boolean {
       return Duration.between(happenTime, reportTime).get(ChronoUnit.SECONDS) > overdueSeconds
     }
