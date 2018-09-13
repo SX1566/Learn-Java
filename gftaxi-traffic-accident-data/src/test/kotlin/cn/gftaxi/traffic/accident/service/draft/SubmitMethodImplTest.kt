@@ -41,7 +41,7 @@ class SubmitMethodImplTest @Autowired constructor(
   fun submitWithRole() {
     // mock
     val expected = Pair(1, "code")
-    val po = randomAccidentDraft(id = expected.first, code = expected.second, status = Status.Done, overdue = true)
+    val po = randomAccidentDraft(id = expected.first, code = expected.second, status = Status.Done, overdueDraft = true)
     val dto = AccidentDraftDto4Submit().apply {
       carPlate = po.carPlate
       driverName = po.driverName
@@ -91,7 +91,7 @@ class SubmitMethodImplTest @Autowired constructor(
   fun submitButNonUnique() {
     // mock
     val code = "code"
-    val po = randomAccidentDraft(id = 1, code = code, status = Status.Done, overdue = true)
+    val po = randomAccidentDraft(id = 1, code = code, status = Status.Done, overdueDraft = true)
     val dto = AccidentDraftDto4Submit().apply {
       carPlate = po.carPlate
       driverName = po.driverName

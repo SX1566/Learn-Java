@@ -56,7 +56,7 @@ object POUtils {
     code: String,
     status: AccidentDraft.Status,
     happenTime: OffsetDateTime,
-    overdueCreate: Boolean = false,
+    overdueDraft: Boolean = false,
     carPlate: String? = null,
     driverName: String? = null
   ): AccidentDraft {
@@ -64,13 +64,13 @@ object POUtils {
       code = code,
       status = status,
       happenTime = happenTime,
-      overdueCreate = overdueCreate,
+      overdueDraft = overdueDraft,
       carPlate = carPlate ?: random("粤A."),
       driverName = driverName ?: random("driver"),
       location = random("location"),
       // 超过 12 小时为逾期报案
-      createTime = when {
-        overdueCreate -> happenTime.plusHours(12 + 2)
+      draftTime = when {
+        overdueDraft -> happenTime.plusHours(12 + 2)
         else -> happenTime.plusMinutes(1)
       },
       hitForm = random("hitForm"),
@@ -151,7 +151,7 @@ object POUtils {
     status: AccidentRegister.Status,
     happenTime: OffsetDateTime = OffsetDateTime.now(),
     driverType: DriverType,
-    overdueReport: Boolean = false,
+    overdueDraft: Boolean = false,
     overdueRegister: Boolean? = null
   ): Triple<AccidentRegister, AccidentDraft, Map<OperationType, AccidentOperation>> {
     val operations = hashMapOf<OperationType, AccidentOperation>()
@@ -160,7 +160,7 @@ object POUtils {
       code = code,
       status = if (status == AccidentRegister.Status.Draft) AccidentDraft.Status.Todo else AccidentDraft.Status.Done,
       happenTime = happenTime,
-      overdueCreate = overdueReport
+      overdueDraft = overdueDraft
     )
     em.persist(accidentDraft)
 
@@ -175,7 +175,7 @@ object POUtils {
 
     // 事故登记：创建类记录
     val creation = randomAccidentOperation(
-      operateTime = accidentDraft.createTime,
+      operateTime = accidentDraft.draftTime,
       operationType = Creation,
       targetId = accidentRegister.id!!,
       targetType = TargetType.Register

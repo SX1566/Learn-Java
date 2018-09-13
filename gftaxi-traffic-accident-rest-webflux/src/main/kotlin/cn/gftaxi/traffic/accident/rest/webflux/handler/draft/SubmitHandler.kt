@@ -31,7 +31,7 @@ class SubmitHandler @Autowired constructor(
           Json.createObjectBuilder()
             .add("id", it.first)
             .add("code", it.second)
-            .add("createTime", dto.createTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
+            .add("draftTime", dto.draftTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
             .build().toString()
         }
       }

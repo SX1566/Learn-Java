@@ -17,9 +17,9 @@ class AccidentRegisterDto4Form : AccidentCaseDto4FormBaseInfo() {
   @get:Convert(converter = AccidentRegisterStatusConverter::class)
   var status: AccidentRegister.Status? by data
   /** 报案时间 */
-  var createTime: OffsetDateTime? by data
+  var draftTime: OffsetDateTime? by data
   /** 是否逾期报案 */
-  var overdueCreate: Boolean? by data
+  var overdueDraft: Boolean? by data
   /** 登记时间 */
   var registerTime: OffsetDateTime? by data
   /** 是否逾期登记 */

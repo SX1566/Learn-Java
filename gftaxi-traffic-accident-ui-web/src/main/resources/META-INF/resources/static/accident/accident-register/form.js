@@ -118,7 +118,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           if (!bc.validator.validate($page)) return;
           let isNew = !this.e.id;
           let data = {};
-          let ignoreKeys = ["status", "code", "createTime", "historyAccidentCount", "historyTrafficOffenceCount",
+          let ignoreKeys = ["status", "code", "draftTime", "historyAccidentCount", "historyTrafficOffenceCount",
             "historyServiceOffenceCount", "historyComplainCount", "result", "comment", "attachmentId", "attachmentName"];
           Object.keys(this.e).forEach(key => {
             if (ignoreKeys.indexOf(key) > -1) return;

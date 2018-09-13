@@ -33,7 +33,7 @@ class GetMethodImplTest @Autowired constructor(
   fun get() {
     // mock
     val id = 1
-    val expected = randomAccidentDraft(status = Status.Done, overdue = true)
+    val expected = randomAccidentDraft(status = Status.Done, overdueDraft = true)
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_READ)
     `when`(accidentDraftDao.get(id)).thenReturn(Mono.just(expected))
 

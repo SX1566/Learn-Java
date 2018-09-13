@@ -52,7 +52,7 @@ class StatSummaryHandlerTest @Autowired constructor(
         checked = random(0, 100),
         checking = random(0, 100),
         drafting = random(0, 100),
-        overdueCreate = random(0, 100),
+        overdueDraft = random(0, 100),
         overdueRegister = random(0, 100)
       ))
     })
@@ -72,7 +72,7 @@ class StatSummaryHandlerTest @Autowired constructor(
       .jsonPath("$.[0].checked").isEqualTo(resultList[0].checked)
       .jsonPath("$.[0].checking").isEqualTo(resultList[0].checking)
       .jsonPath("$.[0].drafting").isEqualTo(resultList[0].drafting)
-      .jsonPath("$.[0].overdueCreate").isEqualTo(resultList[0].overdueCreate)
+      .jsonPath("$.[0].overdueDraft").isEqualTo(resultList[0].overdueDraft)
       .jsonPath("$.[0].overdueRegister").isEqualTo(resultList[0].overdueRegister)
       .jsonPath("$.[1].scope").isEqualTo("2018 年 11 月")
       .jsonPath("$.[11].scope").isEqualTo("2018 年 1 月")

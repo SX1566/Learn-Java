@@ -60,8 +60,8 @@ class UpdateMethodImplTest @Autowired constructor(
     data["carPlate"] = "a"
     data["happenTime"] = now
     val accidentDraft = AccidentDraft(id = 1, code = "code1", status = AccidentDraft.Status.Todo, carPlate = "plate001"
-      , driverName = "driver001", happenTime = now, createTime = now.minusHours(12), location = "广州"
-      , overdueCreate = true, source = "BC", authorName = "Admin", authorId = "021")
+      , driverName = "driver001", happenTime = now, draftTime = now.minusHours(12), location = "广州"
+      , overdueDraft = true, source = "BC", authorName = "Admin", authorId = "021")
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
     `when`(accidentDraftDao.get(id)).thenReturn(Mono.just(accidentDraft))
     `when`(bcDao.getMotorcadeName(any(), any())).thenReturn(Mono.just(motorcadeName))

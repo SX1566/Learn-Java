@@ -138,7 +138,7 @@ class UpdateMethodImplTest @Autowired constructor(
     updateMainPropertiesAndVerify(po.id!!, dto)
 
     // 4. 测试全部属性都更新一遍
-    val excludePropertyKeys = listOf("cars", "peoples", "others", "data", "createTime", "overdueCreate", "overdueRegister", "code", "id")
+    val excludePropertyKeys = listOf("cars", "peoples", "others", "data", "draftTime", "overdueDraft", "overdueRegister", "code", "id")
     dto = AccidentRegisterDto4Form()
     dto::class.memberProperties.filter { !excludePropertyKeys.contains(it.name) }.forEach {
       it as KMutableProperty<*>

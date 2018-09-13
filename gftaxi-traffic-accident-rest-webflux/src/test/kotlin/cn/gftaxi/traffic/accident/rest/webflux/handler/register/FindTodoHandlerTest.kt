@@ -47,8 +47,8 @@ class FindTodoHandlerTest @Autowired constructor(
       motorcadeName = "一分一队",
       authorName = "小明",
       authorId = "Ming",
-      createTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset),
-      overdueCreate = false,
+      draftTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset),
+      overdueDraft = false,
       registerTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset),
       overdueRegister = false,
       submitTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset)

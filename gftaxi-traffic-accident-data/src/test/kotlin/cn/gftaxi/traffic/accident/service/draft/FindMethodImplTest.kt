@@ -38,7 +38,7 @@ class FindMethodImplTest @Autowired constructor(
     // mock
     val pageNo = 1
     val pageSize = 25
-    val po = randomAccidentDraft(status = Status.Done, overdue = true)
+    val po = randomAccidentDraft(status = Status.Done, overdueDraft = true)
     val expected = PageImpl(listOf(po), PageRequest.of(pageNo, pageSize), 1)
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_READ)
     `when`(accidentDraftDao.find(pageNo, pageSize, Status.Todo, "search")).thenReturn(Mono.just(expected))
@@ -64,7 +64,7 @@ class FindMethodImplTest @Autowired constructor(
   @Test
   fun findTodo() {
     // mock
-    val expected = randomAccidentDraft(status = Status.Done, overdue = true)
+    val expected = randomAccidentDraft(status = Status.Done, overdueDraft = true)
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_READ)
     `when`(accidentDraftDao.findTodo()).thenReturn(Flux.just(expected))
 

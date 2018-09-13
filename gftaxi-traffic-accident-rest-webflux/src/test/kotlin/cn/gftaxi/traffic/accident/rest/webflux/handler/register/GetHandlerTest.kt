@@ -55,7 +55,7 @@ class GetHandlerTest @Autowired constructor(
       carPlate = "粤A.00001"
       driverName = "driver1"
       driverType = Official
-      createTime = OffsetDateTime.of(2018, 1, 1, 10, 0, 0, 0, now.offset)
+      draftTime = OffsetDateTime.of(2018, 1, 1, 10, 0, 0, 0, now.offset)
       happenTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset)
       location = "芳村上市路"
     }
@@ -83,7 +83,7 @@ class GetHandlerTest @Autowired constructor(
       .jsonPath("$.carPlate").isEqualTo(dto.carPlate!!)
       .jsonPath("$.driverName").isEqualTo(dto.driverName!!)
       .jsonPath("$.driverType").isEqualTo(dto.driverType!!.name)
-      .jsonPath("$.createTime").isEqualTo(dto.createTime!!.format(Utils.FORMAT_DATE_TIME_TO_MINUTE))
+      .jsonPath("$.draftTime").isEqualTo(dto.draftTime!!.format(Utils.FORMAT_DATE_TIME_TO_MINUTE))
       .jsonPath("$.happenTime").isEqualTo(dto.happenTime!!.format(Utils.FORMAT_DATE_TIME_TO_MINUTE))
       .jsonPath("$.location").isEqualTo(dto.location!!)
     verify(accidentRegisterService).get(id)

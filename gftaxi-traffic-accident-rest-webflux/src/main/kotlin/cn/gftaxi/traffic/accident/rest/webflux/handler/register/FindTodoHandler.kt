@@ -46,8 +46,8 @@ class FindTodoHandler @Autowired constructor(
           "hitType" to it.hitType,
           "location" to it.location,
           "motorcadeName" to it.motorcadeName,
-          "createTime" to it.createTime.format(FORMAT_DATE_TIME_TO_MINUTE),
-          "overdueCreate" to it.overdueCreate,
+          "draftTime" to it.draftTime.format(FORMAT_DATE_TIME_TO_MINUTE),
+          "overdueDraft" to it.overdueDraft,
           "registerTime" to it.registerTime?.format(FORMAT_DATE_TIME_TO_MINUTE),
           "overdueRegister" to it.overdueRegister,
           "submitTime" to it.submitTime?.format(FORMAT_DATE_TIME_TO_MINUTE)

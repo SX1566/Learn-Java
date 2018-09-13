@@ -22,7 +22,7 @@ data class AccidentRegisterDto4StatSummary constructor(
   /** 尚未登记案件数 */
   val drafting: Int,
   /** 逾期报案案件数 */
-  val overdueCreate: Int,
+  val overdueDraft: Int,
   /** 逾期登记案件数 */
   val overdueRegister: Int
 ) : Serializable

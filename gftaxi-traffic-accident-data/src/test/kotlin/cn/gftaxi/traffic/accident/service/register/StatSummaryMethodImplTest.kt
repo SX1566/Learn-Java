@@ -49,7 +49,7 @@ class StatSummaryMethodImplTest @Autowired constructor(
       checked = random(0, 100),
       checking = random(0, 100),
       drafting = random(0, 100),
-      overdueCreate = random(0, 100),
+      overdueDraft = random(0, 100),
       overdueRegister = random(0, 100)
     )
     val expected = listOf(dto, dto.copy(scope = "上月"), dto.copy(scope = "本年"))

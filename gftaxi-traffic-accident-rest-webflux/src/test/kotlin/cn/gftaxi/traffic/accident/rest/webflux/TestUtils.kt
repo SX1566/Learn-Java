@@ -23,11 +23,11 @@ object TestUtils {
       carPlate = random("car"),
       driverName = random("driver"),
       happenTime = OffsetDateTime.now(),
-      createTime = OffsetDateTime.now(),
+      draftTime = OffsetDateTime.now(),
       location = random("location"),
       hitForm = random("hitForm"),
       hitType = random("hitType"),
-      overdueCreate = false,
+      overdueDraft = false,
       source = random("source"),
       authorName = random("authorName"),
       authorId = random("authorId)")

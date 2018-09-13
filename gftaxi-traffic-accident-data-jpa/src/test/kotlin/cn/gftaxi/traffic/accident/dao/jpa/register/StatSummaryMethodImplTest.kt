@@ -67,7 +67,7 @@ class StatSummaryMethodImplTest @Autowired constructor(
           assertEquals(ad.drafting, expectDto.drafting)
           assertEquals(ad.checking, expectDto.checking)
           assertEquals(ad.checked, expectDto.checked)
-          assertEquals(ad.overdueCreate, expectDto.overdueCreate)
+          assertEquals(ad.overdueDraft, expectDto.overdueDraft)
           assertEquals(ad.overdueRegister, expectDto.overdueRegister)
         }
       }.verifyComplete()
@@ -101,7 +101,7 @@ class StatSummaryMethodImplTest @Autowired constructor(
           assertEquals(ad.drafting, expectDto.drafting)
           assertEquals(ad.checking, expectDto.checking)
           assertEquals(ad.checked, expectDto.checked)
-          assertEquals(ad.overdueCreate, expectDto.overdueCreate)
+          assertEquals(ad.overdueDraft, expectDto.overdueDraft)
           assertEquals(ad.overdueRegister, expectDto.overdueRegister)
         }
       }.verifyComplete()
@@ -135,7 +135,7 @@ class StatSummaryMethodImplTest @Autowired constructor(
           assertEquals(ad.drafting, expectDto.drafting)
           assertEquals(ad.checking, expectDto.checking)
           assertEquals(ad.checked, expectDto.checked)
-          assertEquals(ad.overdueCreate, expectDto.overdueCreate)
+          assertEquals(ad.overdueDraft, expectDto.overdueDraft)
           assertEquals(ad.overdueRegister, expectDto.overdueRegister)
         }
       }.verifyComplete()
@@ -169,7 +169,7 @@ class StatSummaryMethodImplTest @Autowired constructor(
           i % 3 == 1 -> ymTime.withDayOfMonth(15) // 月中
           else -> ymTime.plusMonths(1).withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS).minusSeconds(1) // 月尾（方便检测 SQL 的边界条件）
         },
-        overdueCreate = (i % 3 == 0)
+        overdueDraft = (i % 3 == 0)
       ))
     }
 
@@ -183,7 +183,7 @@ class StatSummaryMethodImplTest @Autowired constructor(
         code = nextCode(ymd),
         status = AccidentDraft.Status.Todo,
         happenTime = ymTime.plusMinutes(i.toLong()),
-        overdueCreate = (i % 2 == 0)
+        overdueDraft = (i % 2 == 0)
       )
       em.persist(accidentDraft)
       em.persist(randomAccidentRegister(
@@ -261,7 +261,7 @@ class StatSummaryMethodImplTest @Autowired constructor(
       checked = checked,
       checking = checking,
       drafting = drafting,
-      overdueCreate = overdueDraft,
+      overdueDraft = overdueDraft,
       overdueRegister = overdueRegister
     )
   }
@@ -276,7 +276,7 @@ class StatSummaryMethodImplTest @Autowired constructor(
         index % 4 == 2 -> baseTime.withDayOfMonth(25) // 月中+10d
         else -> baseTime.plusMonths(1).withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS).minusSeconds(1) // 月尾（方便检测 SQL 的边界条件）
       },
-      overdueCreate = when {
+      overdueDraft = when {
         index % 4 == 0 -> false
         index % 4 == 1 -> false
         index % 4 == 2 -> true

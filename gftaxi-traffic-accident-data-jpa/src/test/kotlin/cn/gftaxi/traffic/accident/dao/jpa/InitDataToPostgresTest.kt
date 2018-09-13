@@ -70,7 +70,7 @@ class InitDataToPostgresTest @Autowired constructor(
       code = nextCode(baseTime.format(FORMAT_TO_YYYYMMDD)),
       status = AccidentDraft.Status.Todo,
       happenTime = baseTime,
-      overdueCreate = false
+      overdueDraft = false
     ))
 
     // 各个状态的事故登记信息都初始化 1 条数据，共 4 条

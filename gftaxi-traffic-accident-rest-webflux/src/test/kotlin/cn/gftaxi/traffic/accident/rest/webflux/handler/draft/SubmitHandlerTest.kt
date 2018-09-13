@@ -58,7 +58,7 @@ class SubmitHandlerTest @Autowired constructor(
       source = "BC"
       authorName = "韩智勇"
       authorId = "hzy"
-      createTime = now
+      draftTime = now
     }
     val data = Json.createObjectBuilder()
     `data`.add("carPlate", dto.carPlate)
@@ -71,7 +71,7 @@ class SubmitHandlerTest @Autowired constructor(
     `data`.add("source", dto.source)
     `data`.add("authorName", dto.authorName)
     `data`.add("authorId", dto.authorId)
-    `data`.add("createTime", dto.createTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
+    `data`.add("draftTime", dto.draftTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
 
     val id = 1
     val code = "20180909_01"
