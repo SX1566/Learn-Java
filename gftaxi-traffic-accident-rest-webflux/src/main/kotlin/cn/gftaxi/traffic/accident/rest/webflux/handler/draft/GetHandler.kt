@@ -1,12 +1,11 @@
-package cn.gftaxi.traffic.accident.rest.webflux.handler.register
+package cn.gftaxi.traffic.accident.rest.webflux.handler.draft
 
 import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
-import cn.gftaxi.traffic.accident.service.AccidentRegisterService
+import cn.gftaxi.traffic.accident.service.AccidentDraftService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus.FORBIDDEN
 import org.springframework.http.HttpStatus.NOT_FOUND
-import org.springframework.http.MediaType
-import org.springframework.http.MediaType.*
+import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.HandlerFunction
 import org.springframework.web.reactive.function.server.RequestPredicate
@@ -20,17 +19,16 @@ import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
 
 /**
- * 获取指定 ID 事故登记信息的 [HandlerFunction]。
+ * 获取指定 ID 事故报案信息的 [HandlerFunction]。
  *
- * @author JF
  * @author RJ
  */
 @Component
 class GetHandler @Autowired constructor(
-  private val accidentRegisterService: AccidentRegisterService
+  private val accidentDraftService: AccidentDraftService
 ) : HandlerFunction<ServerResponse> {
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
-    return accidentRegisterService.get(request.pathVariable("id").toInt())
+    return accidentDraftService.get(request.pathVariable("id").toInt())
       // response
       .flatMap { ok().contentType(APPLICATION_JSON_UTF8).syncBody(it) }
       // error mapping
@@ -44,6 +42,6 @@ class GetHandler @Autowired constructor(
 
   companion object {
     /** The default [RequestPredicate] */
-    val REQUEST_PREDICATE: RequestPredicate = GET("/accident-register/{id}")
+    val REQUEST_PREDICATE: RequestPredicate = GET("/accident-draft/{id}")
   }
 }
