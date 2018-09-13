@@ -20,7 +20,7 @@ import javax.json.Json
  *
  * @author RJ
  */
-@Component
+@Component("cn.gftaxi.traffic.accident.rest.webflux.handler.draft.SubmitHandler")
 class SubmitHandler @Autowired constructor(
   private val accidentDraftService: AccidentDraftService
 ) : HandlerFunction<ServerResponse> {

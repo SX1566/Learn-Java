@@ -23,7 +23,7 @@ import tech.simter.exception.PermissionDeniedException
  *
  * @author RJ
  */
-@Component
+@Component("cn.gftaxi.traffic.accident.rest.webflux.handler.draft.GetHandler")
 class GetHandler @Autowired constructor(
   private val accidentDraftService: AccidentDraftService
 ) : HandlerFunction<ServerResponse> {

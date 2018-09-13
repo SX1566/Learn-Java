@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono
  *
  * @author RJ
  */
-@Component
+@Component("cn.gftaxi.traffic.accident.rest.webflux.handler.draft.FindHandler")
 class FindHandler @Autowired constructor(
   private val accidentDraftService: AccidentDraftService
 ) : HandlerFunction<ServerResponse> {

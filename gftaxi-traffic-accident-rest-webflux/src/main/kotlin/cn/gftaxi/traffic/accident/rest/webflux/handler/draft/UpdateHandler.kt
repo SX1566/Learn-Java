@@ -19,7 +19,7 @@ import tech.simter.exception.NotFoundException
  *
  * @author RJ
  */
-@Component
+@Component("cn.gftaxi.traffic.accident.rest.webflux.handler.draft.UpdateHandler")
 class UpdateHandler @Autowired constructor(
   private val accidentDraftService: AccidentDraftService
 ) : HandlerFunction<ServerResponse> {
