@@ -34,8 +34,8 @@ data class AccidentReportDto4View constructor(
   /** 自车责任 */
   val duty: String? = null,
   /** 报案时间 */
-  val createTime: OffsetDateTime? = null,
-  val overdueCreate: Boolean? = null,
+  val draftTime: OffsetDateTime? = null,
+  val overdueDraft: Boolean? = null,
   /** 登记时间 */
   val registerTime: OffsetDateTime? = null,
   val overdueRegister: Boolean? = null,

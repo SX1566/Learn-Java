@@ -23,6 +23,7 @@ import cn.gftaxi.traffic.accident.rest.webflux.handler.register.GetHandler as Re
 import cn.gftaxi.traffic.accident.rest.webflux.handler.register.StatSummaryHandler as RegisterStatSummaryHandler
 import cn.gftaxi.traffic.accident.rest.webflux.handler.register.ToCheckHandler as RegisterToCheckHandler
 import cn.gftaxi.traffic.accident.rest.webflux.handler.register.UpdateHandler as RegisterUpdateHandler
+import cn.gftaxi.traffic.accident.rest.webflux.handler.report.FindHandler as ReportFindHandler
 
 private const val MODULE = "cn.gftaxi.traffic.accident.rest.webflux"
 
@@ -52,6 +53,7 @@ class ModuleConfiguration @Autowired constructor(
   private val registerUpdateHandler: RegisterUpdateHandler,
   private val registerToCheckHandler: RegisterToCheckHandler,
   private val registerCheckedHandler: RegisterCheckedHandler,
+  private val reportFindHandler: ReportFindHandler,
   private val findAllSecondaryCategoriesHandler: FindAllSecondaryCategoriesHandler
 ) {
   private val logger = LoggerFactory.getLogger(ModuleConfiguration::class.java)
@@ -96,6 +98,10 @@ class ModuleConfiguration @Autowired constructor(
       RegisterToCheckHandler.REQUEST_PREDICATE.invoke(registerToCheckHandler::handle)
       // POST /accident-register/checked/{id}  审核案件信息
       RegisterCheckedHandler.REQUEST_PREDICATE.invoke(registerCheckedHandler::handle)
+
+      //==== 事故报告相关 ====
+      // GET /accident-report 获取指定状态案件的分页信息
+      ReportFindHandler.REQUEST_PREDICATE.invoke(reportFindHandler::handle)
 
       //==== 全局 ====
       // GET

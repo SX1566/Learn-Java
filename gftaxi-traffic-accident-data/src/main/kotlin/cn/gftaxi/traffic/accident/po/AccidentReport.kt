@@ -27,7 +27,7 @@ data class AccidentReport(
   /** 报告时间，等于首次提交审核的时间 */
   val reportTime: OffsetDateTime? = null,
   /** 是否逾期报告 */
-  val overdue: Boolean? = null,
+  val overdueReport: Boolean? = null,
 
   //== 工作计划 ==
   /** 约定司机回队时间 */
