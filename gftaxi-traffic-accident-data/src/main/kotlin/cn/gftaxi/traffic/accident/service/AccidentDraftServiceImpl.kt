@@ -48,24 +48,24 @@ class AccidentDraftServiceImpl @Autowired constructor(
   override fun submit(dto: AccidentDraftDto4Submit): Mono<Pair<Int, String>> {
     securityService.verifyHasRole(AccidentDraft.ROLE_SUBMIT)
     return accidentDraftDao
-      .nextCode(dto.happenTime)
+      .nextCode(dto.happenTime!!)
       .flatMap { code ->
-        bcDao.getMotorcadeName(dto.carPlate, dto.happenTime.toLocalDate()).flatMap {
+        bcDao.getMotorcadeName(dto.carPlate!!, dto.happenTime!!.toLocalDate()).flatMap {
           accidentDraftDao.create(AccidentDraft(
             code = code,
             status = Status.Todo,
             motorcadeName = if (it.isEmpty()) null else it,
-            carPlate = dto.carPlate,
-            driverName = dto.driverName,
-            happenTime = dto.happenTime,
-            reportTime = dto.reportTime,
-            location = dto.location,
+            carPlate = dto.carPlate!!,
+            driverName = dto.driverName!!,
+            happenTime = dto.happenTime!!,
+            reportTime = dto.reportTime!!,
+            location = dto.location!!,
             hitForm = dto.hitForm,
             hitType = dto.hitType,
-            overdue = AccidentDraft.isOverdue(dto.happenTime, dto.reportTime, overdueSeconds),
-            source = dto.source,
-            authorName = dto.authorName,
-            authorId = dto.authorId,
+            overdue = AccidentDraft.isOverdue(dto.happenTime!!, dto.reportTime!!, overdueSeconds),
+            source = dto.source!!,
+            authorName = dto.authorName!!,
+            authorId = dto.authorId!!,
             describe = dto.describe
           )).map { Pair(it.id!!, it.code) }
         }

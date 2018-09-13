@@ -1,14 +1,13 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler
 
 import cn.gftaxi.traffic.accident.Utils.FORMAT_DATE_TIME_TO_MINUTE
-import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Modify
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
+import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Update
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.rest.webflux.Utils
 import cn.gftaxi.traffic.accident.service.AccidentDraftService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatus.*
+import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.MediaType
 import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
 import org.springframework.stereotype.Component
@@ -17,8 +16,6 @@ import org.springframework.web.reactive.function.server.ServerResponse.*
 import reactor.core.publisher.Mono
 import tech.simter.exception.NonUniqueException
 import tech.simter.exception.NotFoundException
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import javax.json.Json
 
 /**
@@ -92,20 +89,13 @@ class AccidentDraftHandler @Autowired constructor(
   }
 
   fun submit(request: ServerRequest): Mono<ServerResponse> {
-    return request.bodyToMono<Map<String, String>>()
-      .map {
-        AccidentDraftDto4Submit(
-          it["carPlate"]!!, it["driverName"]!!, toOffsetDateTime(it["happenTime"]!!), it["location"]!!,
-          it["hitForm"]!!, it["hitType"]!!, if (it.size == 10) it["describe"]!! else "", it["source"]!!,
-          it["authorName"]!!, it["authorId"]!!, OffsetDateTime.now()
-        )
-      }
+    return request.bodyToMono<AccidentDraftDto4Submit>()
       .flatMap { dto ->
         accidentDraftService.submit(dto).map {
           Json.createObjectBuilder()
             .add("id", it.first)
             .add("code", it.second)
-            .add("reportTime", dto.reportTime.format(FORMAT_DATE_TIME_TO_MINUTE))
+            .add("reportTime", dto.reportTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
             .build().toString()
         }
       }
@@ -116,7 +106,7 @@ class AccidentDraftHandler @Autowired constructor(
 
   fun update(request: ServerRequest): Mono<ServerResponse> {
     return request
-      .bodyToMono<AccidentDraftDto4Modify>()
+      .bodyToMono<AccidentDraftDto4Update>()
       .flatMap {
         accidentDraftService.modify(request.pathVariable("id").toInt(), it.data.map)
       }
@@ -125,14 +115,6 @@ class AccidentDraftHandler @Autowired constructor(
       .onErrorResume(NotFoundException::class.java) {
         status(NOT_FOUND).contentType(Utils.TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
       }
-  }
-
-  /** 时间字符串转 OffsetDateTime 类型 */
-  private fun toOffsetDateTime(dateTime: String): OffsetDateTime {
-    return OffsetDateTime.of(
-      LocalDateTime.parse(dateTime, FORMAT_DATE_TIME_TO_MINUTE),
-      OffsetDateTime.now().offset
-    )
   }
 
   companion object {

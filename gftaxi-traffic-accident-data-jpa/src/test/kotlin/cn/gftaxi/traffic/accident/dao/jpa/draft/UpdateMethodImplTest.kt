@@ -7,7 +7,7 @@ import cn.gftaxi.traffic.accident.dao.jpa.ModuleConfiguration
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.nextCode
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.random
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentDraft
-import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Modify
+import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Update
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentDraft.Status.Todo
 import org.junit.jupiter.api.Assertions.*
@@ -32,8 +32,8 @@ class UpdateMethodImplTest @Autowired constructor(
   @PersistenceContext private val em: EntityManager,
   private val dao: AccidentDraftDao
 ) {
-  private fun randomModifyDto(nullDescribe: Boolean = false): AccidentDraftDto4Modify {
-    return AccidentDraftDto4Modify().apply {
+  private fun randomModifyDto(nullDescribe: Boolean = false): AccidentDraftDto4Update {
+    return AccidentDraftDto4Update().apply {
       location = random("location")
       carPlate = random("car")
       driverName = random("driver")

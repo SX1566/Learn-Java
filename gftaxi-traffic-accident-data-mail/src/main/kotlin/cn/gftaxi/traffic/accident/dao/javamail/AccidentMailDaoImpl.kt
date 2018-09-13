@@ -145,24 +145,24 @@ class AccidentMailDaoImpl @Autowired constructor(
     // 修改邮件服务器的邮件状态，把邮件标记为已读
     //message.setFlag(Flags.Flag.SEEN, true)
 
-    return AccidentDraftDto4Submit(
-      source = "MAIL",              // 邮件报案
-      authorName = sender.personal ?: "", // 发送人昵称
-      authorId = sender.address,    // 发送人邮箱
-      reportTime = OffsetDateTime.ofInstant(message.sentDate!!.toInstant(), ZoneOffset.systemDefault()), // 发送时间
+    return AccidentDraftDto4Submit().apply {
+      source = "MAIL"              // 邮件报案
+      authorName = sender.personal ?: "" // 发送人昵称
+      authorId = sender.address    // 发送人邮箱
+      reportTime = OffsetDateTime.ofInstant(message.sentDate!!.toInstant(), ZoneOffset.systemDefault()) // 发送时间
 
-      describe = content, // 邮件内容
+      describe = content // 邮件内容
 
-      carPlate = map["carPlate"] as String,
-      driverName = map["driverName"] as String,
+      carPlate = map["carPlate"] as String
+      driverName = map["driverName"] as String
       happenTime = OffsetDateTime.of(
         LocalDateTime.parse(map["happenTime"] as String, FORMAT_DATE_TIME_TO_MINUTE),
         OffsetDateTime.now().offset
-      ),
-      location = map["location"] as String,
-      hitForm = map["hitForm"] as String,
+      )
+      location = map["location"] as String
+      hitForm = map["hitForm"] as String
       hitType = map["hitType"] as String
-    )
+    }
   }
 
   fun analyticContent(content: String?): Map<String, String> {
