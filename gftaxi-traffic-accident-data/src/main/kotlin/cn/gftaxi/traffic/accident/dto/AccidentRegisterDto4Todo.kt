@@ -27,8 +27,8 @@ data class AccidentRegisterDto4Todo constructor(
   val motorcadeName: String,
   val authorName: String,
   val authorId: String,
-  val reportTime: OffsetDateTime,
-  val overdueReport: Boolean,
+  val draftTime: OffsetDateTime,
+  val overdueDraft: Boolean,
   val registerTime: OffsetDateTime? = null,
   val overdueRegister: Boolean? = null,
   /** 最后提交审核时间 */

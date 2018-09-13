@@ -7,16 +7,9 @@ import java.time.OffsetDateTime
  *
  * @author RJ
  */
-data class AccidentDraftDto4Submit(
-  val carPlate: String,
-  val driverName: String,
-  val happenTime: OffsetDateTime,
-  val location: String,
-  val hitForm: String? = null,
-  val hitType: String? = null,
-  val describe: String? = null,
-  val source: String,
-  val authorName: String,
-  val authorId: String,
-  val reportTime: OffsetDateTime = OffsetDateTime.now()
-)
+class AccidentDraftDto4Submit : AccidentDraftDto4Update() {
+  var source: String? by data
+  var authorName: String? by data
+  var authorId: String? by data
+  var draftTime: OffsetDateTime? by data
+}

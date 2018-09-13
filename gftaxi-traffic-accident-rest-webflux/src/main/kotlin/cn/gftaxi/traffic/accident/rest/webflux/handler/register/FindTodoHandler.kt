@@ -24,7 +24,7 @@ import tech.simter.exception.PermissionDeniedException
  *
  * @author RJ
  */
-@Component
+@Component("cn.gftaxi.traffic.accident.rest.webflux.handler.register.FindTodoHandler")
 class FindTodoHandler @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService
 ) : HandlerFunction<ServerResponse> {
@@ -46,8 +46,8 @@ class FindTodoHandler @Autowired constructor(
           "hitType" to it.hitType,
           "location" to it.location,
           "motorcadeName" to it.motorcadeName,
-          "reportTime" to it.reportTime.format(FORMAT_DATE_TIME_TO_MINUTE),
-          "overdueReport" to it.overdueReport,
+          "draftTime" to it.draftTime.format(FORMAT_DATE_TIME_TO_MINUTE),
+          "overdueDraft" to it.overdueDraft,
           "registerTime" to it.registerTime?.format(FORMAT_DATE_TIME_TO_MINUTE),
           "overdueRegister" to it.overdueRegister,
           "submitTime" to it.submitTime?.format(FORMAT_DATE_TIME_TO_MINUTE)
@@ -56,12 +56,12 @@ class FindTodoHandler @Autowired constructor(
       // response
       .flatMap { ok().contentType(APPLICATION_JSON_UTF8).syncBody(it) }
       // error mapping
-      .onErrorResume(ForbiddenException::class.java, {
+      .onErrorResume(ForbiddenException::class.java) {
         status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
-      })
-      .onErrorResume(PermissionDeniedException::class.java, {
+      }
+      .onErrorResume(PermissionDeniedException::class.java) {
         status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
-      })
+      }
   }
 
   companion object {

@@ -24,7 +24,7 @@ import tech.simter.scheduling.quartz.CronScheduled
 class ReceiveMailScheduler @Autowired constructor(
   private val accidentMailDao: AccidentMailDao,
   private val accidentDraftDao: AccidentDraftDao,
-  @Value("\${app.report-overdue-hours: 12}") // 默认报案时限为12小时
+  @Value("\${app.draft-overdue-hours: 12}") // 默认报案时限为12小时
   private val overdueHours: Long
 ) {
   private val logger = LoggerFactory.getLogger(ReceiveMailScheduler::class.java)
@@ -38,7 +38,7 @@ class ReceiveMailScheduler @Autowired constructor(
   fun execute() {
     try {
       accidentMailDao.receiveMail()          // 收取邮件
-        .flatMap { accidentDraftDao.nextCode(it.happenTime).zipWith(Mono.just(it)) } // 生成事故编号
+        .flatMap { accidentDraftDao.nextCode(it.happenTime!!).zipWith(Mono.just(it)) } // 生成事故编号
         .map { dto2Po(it.t1, it.t2) }        // DTO 转 PO
         .map { accidentDraftDao.create(it) } // 保存 PO
         .blockLast()
@@ -51,17 +51,17 @@ class ReceiveMailScheduler @Autowired constructor(
     return AccidentDraft(
       status = AccidentDraft.Status.Todo,
       code = code,
-      carPlate = dto.carPlate,
-      driverName = dto.driverName,
-      happenTime = dto.happenTime,
-      reportTime = dto.reportTime,
-      location = dto.location,
+      carPlate = dto.carPlate!!,
+      driverName = dto.driverName!!,
+      happenTime = dto.happenTime!!,
+      draftTime = dto.draftTime!!,
+      location = dto.location!!,
       hitForm = dto.hitForm,
       hitType = dto.hitType,
-      overdue = AccidentDraft.isOverdue(dto.happenTime, dto.reportTime, overdueSeconds),
-      source = dto.source,
-      authorName = dto.authorName,
-      authorId = dto.authorId,
+      overdueDraft = AccidentDraft.isOverdue(dto.happenTime!!, dto.draftTime!!, overdueSeconds),
+      source = dto.source!!,
+      authorName = dto.authorName!!,
+      authorId = dto.authorId!!,
       describe = dto.describe
     )
   }

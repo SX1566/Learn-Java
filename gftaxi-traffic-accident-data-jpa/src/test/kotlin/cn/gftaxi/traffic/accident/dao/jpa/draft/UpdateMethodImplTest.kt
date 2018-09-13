@@ -7,7 +7,7 @@ import cn.gftaxi.traffic.accident.dao.jpa.ModuleConfiguration
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.nextCode
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.random
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentDraft
-import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Modify
+import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Update
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentDraft.Status.Todo
 import org.junit.jupiter.api.Assertions.*
@@ -32,8 +32,8 @@ class UpdateMethodImplTest @Autowired constructor(
   @PersistenceContext private val em: EntityManager,
   private val dao: AccidentDraftDao
 ) {
-  private fun randomModifyDto(nullDescribe: Boolean = false): AccidentDraftDto4Modify {
-    return AccidentDraftDto4Modify().apply {
+  private fun randomModifyDto(nullDescribe: Boolean = false): AccidentDraftDto4Update {
+    return AccidentDraftDto4Update().apply {
       location = random("location")
       carPlate = random("car")
       driverName = random("driver")
@@ -50,7 +50,7 @@ class UpdateMethodImplTest @Autowired constructor(
     val dto = randomModifyDto()
 
     // invoke and verify
-    StepVerifier.create(dao.update(1, dto.data)).expectNext(false).verifyComplete()
+    StepVerifier.create(dao.update(1, dto.data.map)).expectNext(false).verifyComplete()
   }
 
   @Test
@@ -135,7 +135,7 @@ class UpdateMethodImplTest @Autowired constructor(
     val modifyDto = randomModifyDto(nullDescribe = true)
 
     // invoke and verify
-    StepVerifier.create(dao.update(po.id!!, modifyDto.data))
+    StepVerifier.create(dao.update(po.id!!, modifyDto.data.map))
       .expectNext(true).verifyComplete()
     em.run {
       flush()
@@ -145,7 +145,7 @@ class UpdateMethodImplTest @Autowired constructor(
     // verify: po 的相关属性应该更新了
     val updatedPo = em.find(AccidentDraft::class.java, po.id)
     assertNotNull(updatedPo)
-    modifyDto.data.forEach { key, value ->
+    modifyDto.data.map.forEach { key, value ->
       assertEquals(value, AccidentDraft::class.memberProperties.first { it.name == key }.get(updatedPo))
     }
   }

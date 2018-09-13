@@ -13,10 +13,10 @@ import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentDraft
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentOther
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentPeople
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomInt
-import cn.gftaxi.traffic.accident.dto.AccidentCarDto4Update
-import cn.gftaxi.traffic.accident.dto.AccidentOtherDto4Update
-import cn.gftaxi.traffic.accident.dto.AccidentPeopleDto4Update
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Update
+import cn.gftaxi.traffic.accident.dto.AccidentCarDto4Form
+import cn.gftaxi.traffic.accident.dto.AccidentOtherDto4Form
+import cn.gftaxi.traffic.accident.dto.AccidentPeopleDto4Form
+import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
 import cn.gftaxi.traffic.accident.po.*
 import cn.gftaxi.traffic.accident.po.AccidentDraft.Status.Todo
 import cn.gftaxi.traffic.accident.po.AccidentPeople.Sex.Female
@@ -49,8 +49,8 @@ class UpdateMethodImplTest @Autowired constructor(
   @PersistenceContext private val em: EntityManager,
   private val dao: AccidentRegisterDao
 ) {
-  private fun randomDto4Update(nullDescribe: Boolean = false): AccidentRegisterDto4Update {
-    return AccidentRegisterDto4Update().apply {
+  private fun randomDto4Update(nullDescribe: Boolean = false): AccidentRegisterDto4Form {
+    return AccidentRegisterDto4Form().apply {
       location = random("location")
       carPlate = random("car")
       driverName = random("driver")
@@ -81,7 +81,7 @@ class UpdateMethodImplTest @Autowired constructor(
       draft = accidentDraft,
       status = status,
       driverType = DriverType.Official,
-      overdue = overdue,
+      overdueRegister = overdue,
       registerTime = registerTime,
       cars = cars,
       peoples = peoples,
@@ -97,7 +97,7 @@ class UpdateMethodImplTest @Autowired constructor(
     val dto = randomDto4Update()
 
     // invoke and verify
-    StepVerifier.create(dao.update(9999, dto.data)).expectNext(false).verifyComplete()
+    StepVerifier.create(dao.update(9999, dto.data.map)).expectNext(false).verifyComplete()
   }
 
   @Test
@@ -130,16 +130,16 @@ class UpdateMethodImplTest @Autowired constructor(
     em.flush();em.clear()
 
     // 2. 测试更新一个字符串属性的情况
-    var dto = AccidentRegisterDto4Update().apply { location = random("location") }
+    var dto = AccidentRegisterDto4Form().apply { location = random("location") }
     updateMainPropertiesAndVerify(po.id!!, dto)
 
     // 3. 测试更新一个日期属性的情况
-    dto = AccidentRegisterDto4Update().apply { this.happenTime = happenTime.minusHours(1) }
+    dto = AccidentRegisterDto4Form().apply { this.happenTime = happenTime.minusHours(1) }
     updateMainPropertiesAndVerify(po.id!!, dto)
 
     // 4. 测试全部属性都更新一遍
-    val excludePropertyKeys = listOf("cars", "peoples", "others", "data")
-    dto = AccidentRegisterDto4Update()
+    val excludePropertyKeys = listOf("cars", "peoples", "others", "data", "draftTime", "overdueDraft", "overdueRegister", "code", "id")
+    dto = AccidentRegisterDto4Form()
     dto::class.memberProperties.filter { !excludePropertyKeys.contains(it.name) }.forEach {
       it as KMutableProperty<*>
       when (it.returnType.classifier) { // 随机生成一些属性值
@@ -150,21 +150,23 @@ class UpdateMethodImplTest @Autowired constructor(
         DriverType::class -> it.setter.call(dto, DriverType.Shift)
         LocalDate::class -> it.setter.call(dto, LocalDate.now())
         OffsetDateTime::class -> it.setter.call(dto, OffsetDateTime.now())
+        Boolean::class -> it.setter.call(dto, false)
+        Status::class -> it.setter.call(dto, Status.Draft)
         else -> throw UnsupportedOperationException(it.returnType.toString())
       }
     }
     updateMainPropertiesAndVerify(po.id!!, dto)
   }
 
-  private fun updateMainPropertiesAndVerify(id: Int, dto: AccidentRegisterDto4Update) {
+  private fun updateMainPropertiesAndVerify(id: Int, dto: AccidentRegisterDto4Form) {
     // invoke and verify
-    StepVerifier.create(dao.update(id, dto.data)).expectNext(true).verifyComplete()
+    StepVerifier.create(dao.update(id, dto.data.map)).expectNext(true).verifyComplete()
     em.flush();em.clear()
 
     // 验证 po 的相关属性应该更新了
     val updatedPo = em.find(AccidentRegister::class.java, id)
     assertNotNull(updatedPo)
-    dto.data.forEach { key, value ->
+    dto.data.map.forEach { key, value ->
       assertEquals(value, AccidentRegister::class.memberProperties.first { it.name == key }.get(updatedPo))
     }
   }
@@ -182,15 +184,15 @@ class UpdateMethodImplTest @Autowired constructor(
 
     // 2. 添加当事车辆
     // 2.1 构建数据
-    val carDto = AccidentCarDto4Update().apply {
+    val carDto = AccidentCarDto4Form().apply {
       sn = 0
       name = registerPo.carPlate
       type = "自车"
     }
-    val registerDto = AccidentRegisterDto4Update().apply { cars = listOf(carDto) }
+    val registerDto = AccidentRegisterDto4Form().apply { cars = listOf(carDto) }
 
     // 2.2 执行数据添加
-    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data.map)).expectNext(true).verifyComplete()
     em.flush();em.clear()
 
     // 2.3 验证数据添加成功
@@ -223,16 +225,16 @@ class UpdateMethodImplTest @Autowired constructor(
 
     // 2. 更新当事车辆数据
     // 2.1 构建数据
-    val carDto = AccidentCarDto4Update().apply {
+    val carDto = AccidentCarDto4Form().apply {
       id = carPo.id
       model = "出租车"
       towCount = randomInt(20, 30).toShort()
       damageMoney = BigDecimal("${randomInt(200, 300)}.00")
     }
-    val registerDto = AccidentRegisterDto4Update().apply { cars = listOf(carDto) }
+    val registerDto = AccidentRegisterDto4Form().apply { cars = listOf(carDto) }
 
     // 2.2 执行数据更新
-    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data.map)).expectNext(true).verifyComplete()
     em.flush();em.clear()
 
     // 2.3 验证数据更新成功
@@ -271,11 +273,11 @@ class UpdateMethodImplTest @Autowired constructor(
     em.flush();em.clear()
 
     // 2. 删除 1 条当事车辆
-    val toKeepCarDto = AccidentCarDto4Update().apply { id = carPo1.id }
-    var registerDto = AccidentRegisterDto4Update().apply { cars = listOf(toKeepCarDto) }
+    val toKeepCarDto = AccidentCarDto4Form().apply { id = carPo1.id }
+    var registerDto = AccidentRegisterDto4Form().apply { cars = listOf(toKeepCarDto) }
 
     // 2.2 执行数据删除
-    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data.map)).expectNext(true).verifyComplete()
     em.flush();em.clear()
 
     // 2.3 验证数据删除成功
@@ -285,8 +287,8 @@ class UpdateMethodImplTest @Autowired constructor(
     assertEquals(carPo1, result[0])
 
     // 3. 清空数据
-    registerDto = AccidentRegisterDto4Update().apply { cars = listOf() } // 空的集合代表要清空数据
-    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    registerDto = AccidentRegisterDto4Form().apply { cars = listOf() } // 空的集合代表要清空数据
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data.map)).expectNext(true).verifyComplete()
     em.flush();em.clear()
 
     // 3.2 验证数据清空成功
@@ -308,15 +310,15 @@ class UpdateMethodImplTest @Autowired constructor(
 
     // 2. 添加当事人
     // 2.1 构建数据
-    val peopleDto = AccidentPeopleDto4Update().apply {
+    val peopleDto = AccidentPeopleDto4Form().apply {
       sn = 0
       name = registerPo.driverName
       type = "自车"
     }
-    val registerDto = AccidentRegisterDto4Update().apply { peoples = listOf(peopleDto) }
+    val registerDto = AccidentRegisterDto4Form().apply { peoples = listOf(peopleDto) }
 
     // 2.2 执行数据添加
-    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data.map)).expectNext(true).verifyComplete()
     em.flush();em.clear()
 
     // 2.3 验证数据添加成功
@@ -349,16 +351,16 @@ class UpdateMethodImplTest @Autowired constructor(
 
     // 2. 更新当事人数据
     // 2.1 构建数据
-    val peopleDto = AccidentPeopleDto4Update().apply {
+    val peopleDto = AccidentPeopleDto4Form().apply {
       id = peoplePo.id
       name = random("driver")
       sex = Female
       damageMoney = BigDecimal("${randomInt(200, 300)}.00")
     }
-    val registerDto = AccidentRegisterDto4Update().apply { peoples = listOf(peopleDto) }
+    val registerDto = AccidentRegisterDto4Form().apply { peoples = listOf(peopleDto) }
 
     // 2.2 执行数据更新
-    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data.map)).expectNext(true).verifyComplete()
     em.flush();em.clear()
 
     // 2.3 验证数据更新成功
@@ -397,11 +399,11 @@ class UpdateMethodImplTest @Autowired constructor(
     em.flush();em.clear()
 
     // 2. 删除 1 条当事人
-    val toKeepPeopleDto = AccidentPeopleDto4Update().apply { id = peoplePo1.id }
-    var registerDto = AccidentRegisterDto4Update().apply { peoples = listOf(toKeepPeopleDto) }
+    val toKeepPeopleDto = AccidentPeopleDto4Form().apply { id = peoplePo1.id }
+    var registerDto = AccidentRegisterDto4Form().apply { peoples = listOf(toKeepPeopleDto) }
 
     // 2.2 执行数据删除
-    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data.map)).expectNext(true).verifyComplete()
     em.flush();em.clear()
 
     // 2.3 验证数据删除成功
@@ -411,8 +413,8 @@ class UpdateMethodImplTest @Autowired constructor(
     assertEquals(peoplePo1, result[0])
 
     // 3. 清空数据
-    registerDto = AccidentRegisterDto4Update().apply { peoples = listOf() } // 空的集合代表要清空数据
-    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    registerDto = AccidentRegisterDto4Form().apply { peoples = listOf() } // 空的集合代表要清空数据
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data.map)).expectNext(true).verifyComplete()
     em.flush();em.clear()
 
     // 3.2 验证数据清空成功
@@ -434,15 +436,15 @@ class UpdateMethodImplTest @Autowired constructor(
 
     // 2. 添加其他物体
     // 2.1 构建数据
-    val otherDto = AccidentOtherDto4Update().apply {
+    val otherDto = AccidentOtherDto4Form().apply {
       sn = 0
       name = random("name")
       type = "自车"
     }
-    val registerDto = AccidentRegisterDto4Update().apply { others = listOf(otherDto) }
+    val registerDto = AccidentRegisterDto4Form().apply { others = listOf(otherDto) }
 
     // 2.2 执行数据添加
-    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data.map)).expectNext(true).verifyComplete()
     em.flush();em.clear()
 
     // 2.3 验证数据添加成功
@@ -475,15 +477,15 @@ class UpdateMethodImplTest @Autowired constructor(
 
     // 2. 更新其他物体数据
     // 2.1 构建数据
-    val otherDto = AccidentOtherDto4Update().apply {
+    val otherDto = AccidentOtherDto4Form().apply {
       id = otherPo.id
       name = random("name")
       damageMoney = BigDecimal("${randomInt(200, 300)}.00")
     }
-    val registerDto = AccidentRegisterDto4Update().apply { others = listOf(otherDto) }
+    val registerDto = AccidentRegisterDto4Form().apply { others = listOf(otherDto) }
 
     // 2.2 执行数据更新
-    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data.map)).expectNext(true).verifyComplete()
     em.flush();em.clear()
 
     // 2.3 验证数据更新成功
@@ -520,11 +522,11 @@ class UpdateMethodImplTest @Autowired constructor(
     em.flush();em.clear()
 
     // 2. 删除 1 条其他物体
-    val toKeepOtherDto = AccidentOtherDto4Update().apply { id = otherPo1.id }
-    var registerDto = AccidentRegisterDto4Update().apply { others = listOf(toKeepOtherDto) }
+    val toKeepOtherDto = AccidentOtherDto4Form().apply { id = otherPo1.id }
+    var registerDto = AccidentRegisterDto4Form().apply { others = listOf(toKeepOtherDto) }
 
     // 2.2 执行数据删除
-    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data.map)).expectNext(true).verifyComplete()
     em.flush();em.clear()
 
     // 2.3 验证数据删除成功
@@ -534,8 +536,8 @@ class UpdateMethodImplTest @Autowired constructor(
     assertEquals(otherPo1, result[0])
 
     // 3. 清空数据
-    registerDto = AccidentRegisterDto4Update().apply { others = listOf() } // 空的集合代表要清空数据
-    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data)).expectNext(true).verifyComplete()
+    registerDto = AccidentRegisterDto4Form().apply { others = listOf() } // 空的集合代表要清空数据
+    StepVerifier.create(dao.update(registerPo.id!!, registerDto.data.map)).expectNext(true).verifyComplete()
     em.flush();em.clear()
 
     // 3.2 验证数据清空成功

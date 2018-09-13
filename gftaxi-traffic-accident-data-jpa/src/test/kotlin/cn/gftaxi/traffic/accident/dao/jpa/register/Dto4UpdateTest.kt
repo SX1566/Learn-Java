@@ -1,6 +1,6 @@
 package cn.gftaxi.traffic.accident.dao.jpa.register
 
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Update
+import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -8,16 +8,16 @@ import kotlin.reflect.full.memberProperties
 import kotlin.test.assertNotNull
 
 /**
- * 检测 [AccidentRegisterDto4Update] 的属性定义是否正确、完整。
+ * 检测 [AccidentRegisterDto4Form] 的属性定义是否正确、完整。
  *
  * @author RJ
  */
 class Dto4UpdateTest {
   @Test
   fun test() {
-    val poProperties = AccidentRegisterDto4Update::class.memberProperties
-    val dtoProperties = AccidentRegisterDto4Update::class.memberProperties
-    val notInDtoProperties = listOf("id", "registerTime", "overdue")
+    val poProperties = AccidentRegisterDto4Form::class.memberProperties
+    val dtoProperties = AccidentRegisterDto4Form::class.memberProperties
+    val notInDtoProperties = listOf("id", "registerTime", "overdueRegister")
     val nestedPropertyKeys = listOf("cars", "peoples", "others")
 
     // po 中可更新的属性应该在 dto 中都有定义

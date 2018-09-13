@@ -18,7 +18,7 @@ import tech.simter.exception.PermissionDeniedException
  *
  * @author RJ
  */
-@Component
+@Component("cn.gftaxi.traffic.accident.rest.webflux.handler.register.StatSummaryHandler")
 class StatSummaryHandler @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService
 ) : HandlerFunction<ServerResponse> {
@@ -30,9 +30,9 @@ class StatSummaryHandler @Autowired constructor(
       // response
       .flatMap { ok().contentType(APPLICATION_JSON_UTF8).syncBody(it) }
       // error mapping
-      .onErrorResume(PermissionDeniedException::class.java, {
+      .onErrorResume(PermissionDeniedException::class.java) {
         status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
-      })
+      }
   }
 
   // 字符串首字母大写

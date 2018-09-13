@@ -38,11 +38,11 @@ define(["bc", "vue", "context", "static/accident/api", "static/accident/simter-f
     {id: "hitForm", label: "事故形态", width: "7em"},
     {id: "hitType", label: "碰撞类型", width: "5em"},
     {id: "authorName", label: "接案人", width: "5em"},
-    {id: "reportTime", label: "报案时间", width: "10em"},
+    {id: "draftTime", label: "报案时间", width: "10em"},
     {
-      id: "overdueReport", label: "逾期报案", width: "5em",
+      id: "overdueDraft", label: "逾期报案", width: "5em",
       filter: function (value, row) {
-        return !value ? "否" : accident.calcInervalDayAndHour(new Date(row.happenTime), new Date(row.reportTime));
+        return !value ? "否" : accident.calcInervalDayAndHour(new Date(row.happenTime), new Date(row.draftTime));
       }
     }
   ];

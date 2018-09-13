@@ -48,17 +48,17 @@ class GetHandlerTest @Autowired constructor(
 
   private fun randomDto(id: Int): AccidentRegisterDto4Form {
     val now = OffsetDateTime.now()
-    return AccidentRegisterDto4Form(
-      id = id,
-      code = "20180101_01",
-      status = Draft,
-      carPlate = "粤A.00001",
-      driverName = "driver1",
-      driverType = Official,
-      draftTime = OffsetDateTime.of(2018, 1, 1, 10, 0, 0, 0, now.offset),
-      happenTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset),
+    return AccidentRegisterDto4Form().apply {
+      this.id = id
+      code = "20180101_01"
+      status = Draft
+      carPlate = "粤A.00001"
+      driverName = "driver1"
+      driverType = Official
+      draftTime = OffsetDateTime.of(2018, 1, 1, 10, 0, 0, 0, now.offset)
+      happenTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset)
       location = "芳村上市路"
-    )
+    }
   }
 
   @Test

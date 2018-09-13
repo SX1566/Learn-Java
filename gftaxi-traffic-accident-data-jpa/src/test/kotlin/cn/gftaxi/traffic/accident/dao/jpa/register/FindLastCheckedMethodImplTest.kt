@@ -53,7 +53,7 @@ class FindLastCheckedMethodImplTest @Autowired constructor(
       code = nextCode(baseTime.format(FORMAT_TO_YYYYMMDD)),
       status = AccidentDraft.Status.Todo,
       happenTime = baseTime,
-      overdue = false
+      overdueDraft = false
     )
     em.persist(onlyReportRecord)
 

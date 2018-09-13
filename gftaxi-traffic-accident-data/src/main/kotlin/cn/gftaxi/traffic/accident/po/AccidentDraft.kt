@@ -39,8 +39,8 @@ data class AccidentDraft(
   val driverName: String,
   /** 事发时间 */
   val happenTime: OffsetDateTime,
-  /** 接案时间 */
-  val reportTime: OffsetDateTime,
+  /** 报案时间 */
+  val draftTime: OffsetDateTime,
   /** 事发地点 */
   @Column(length = 100)
   val location: String,
@@ -51,7 +51,7 @@ data class AccidentDraft(
   @Column(length = 50)
   val hitType: String? = null,
   /** 是否逾期报案 */
-  val overdue: Boolean,
+  val overdueDraft: Boolean,
   /** 报案来源：BC-BC系统Web端、MAIL-邮件、WEIXIN-微信、SMS-短信、{appId}-应用ID */
   @Column(length = 10)
   val source: String,

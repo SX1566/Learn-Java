@@ -1,13 +1,15 @@
 package cn.gftaxi.traffic.accident.dto
 
 import java.math.BigDecimal
+import javax.persistence.Entity
 
 /**
  * 更新事故当事车辆信息用 DTO。
  *
  * @author RJ
  */
-class AccidentCarDto4Update : AccidentRegisterSubListBaseDto() {
+@Entity
+class AccidentCarDto4Form : AccidentCaseSubListDto4FormBaseInfo() {
   var model: String? by data
   var towCount: Short? by data
   var towMoney: BigDecimal? by data

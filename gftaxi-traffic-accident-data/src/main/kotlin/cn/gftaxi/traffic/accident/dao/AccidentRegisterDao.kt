@@ -83,7 +83,7 @@ interface AccidentRegisterDao {
    *
    * 将案件的状态更新为待审核状态，如果是首次提交（[AccidentRegister.registerTime] 为 null 时）：
    * 1. 更新 [AccidentRegister.registerTime] 为当前时间。
-   * 2. 更新 [AccidentRegister.overdue] 的值，确定是否逾期登记，
+   * 2. 更新 [AccidentRegister.overdueRegister] 的值，确定是否逾期登记，
    *    逾期登记的阈值通过系统属性 `app.register-overdue-hours` 设置(默认为 24 小时)。
    *
    * 更新成功返回 Mono.just(true)，否则返回 Mono.just(false)
@@ -128,7 +128,7 @@ interface AccidentRegisterDao {
    * 3. 删除 id=2 的现有数据。
    *
    * @param[id] 案件 ID
-   * @param[data] 要更新的信息，key 为 [AccidentRegisterDto4Update] 属性名，value 为该 DTO 相应的属性值。
+   * @param[data] 要更新的信息，key 为 [AccidentRegisterDto4Form] 属性名，value 为该 DTO 相应的属性值。
    */
   fun update(id: Int, data: Map<String, Any?>): Mono<Boolean>
 }
