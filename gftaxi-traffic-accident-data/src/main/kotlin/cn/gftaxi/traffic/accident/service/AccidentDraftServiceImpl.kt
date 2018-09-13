@@ -48,31 +48,32 @@ class AccidentDraftServiceImpl @Autowired constructor(
   override fun submit(dto: AccidentDraftDto4Submit): Mono<Pair<Int, String>> {
     securityService.verifyHasRole(AccidentDraft.ROLE_SUBMIT)
     return accidentDraftDao
-      .nextCode(dto.happenTime)
+      .nextCode(dto.happenTime!!)
       .flatMap { code ->
-        bcDao.getMotorcadeName(dto.carPlate, dto.happenTime.toLocalDate()).flatMap {
+        bcDao.getMotorcadeName(dto.carPlate!!, dto.happenTime!!.toLocalDate()).flatMap {
+          if (dto.draftTime == null) dto.draftTime = OffsetDateTime.now() // 报案时间为当前时间
           accidentDraftDao.create(AccidentDraft(
             code = code,
             status = Status.Todo,
             motorcadeName = if (it.isEmpty()) null else it,
-            carPlate = dto.carPlate,
-            driverName = dto.driverName,
-            happenTime = dto.happenTime,
-            reportTime = dto.reportTime,
-            location = dto.location,
+            carPlate = dto.carPlate!!,
+            driverName = dto.driverName!!,
+            happenTime = dto.happenTime!!,
+            draftTime = dto.draftTime!!,
+            location = dto.location!!,
             hitForm = dto.hitForm,
             hitType = dto.hitType,
-            overdue = AccidentDraft.isOverdue(dto.happenTime, dto.reportTime, overdueSeconds),
-            source = dto.source,
-            authorName = dto.authorName,
-            authorId = dto.authorId,
+            overdueDraft = AccidentDraft.isOverdue(dto.happenTime!!, dto.draftTime!!, overdueSeconds),
+            source = dto.source!!,
+            authorName = dto.authorName!!,
+            authorId = dto.authorId!!,
             describe = dto.describe
           )).map { Pair(it.id!!, it.code) }
         }
       }
   }
 
-  override fun modify(id: Int, data: Map<String, Any?>): Mono<Void> {
+  override fun update(id: Int, data: Map<String, Any?>): Mono<Void> {
     securityService.verifyHasRole(AccidentDraft.ROLE_MODIFY)
     val carPlate: String? = data["carPlate"] as? String
     val happenTime: OffsetDateTime? = data["happenTime"] as? OffsetDateTime
@@ -86,7 +87,7 @@ class AccidentDraftServiceImpl @Autowired constructor(
             mutableMapOf<String, Any?>("motorcadeName" to if (motorcadeName.isEmpty()) null else motorcadeName)
           // 事发时间更新时，逾期才需要更新
           happenTime?.let {
-            mutableMap.put("overdue", AccidentDraft.isOverdue(happenTime, accidentDraft.reportTime, overdueSeconds))
+            mutableMap.put("overdueDraft", AccidentDraft.isOverdue(happenTime, accidentDraft.draftTime, overdueSeconds))
           }
           mutableMap
         }

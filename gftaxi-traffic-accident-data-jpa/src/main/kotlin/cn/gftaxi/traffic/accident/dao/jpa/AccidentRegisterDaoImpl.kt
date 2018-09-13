@@ -56,8 +56,8 @@ class AccidentRegisterDaoImpl @Autowired constructor(
         count(case when r.status = ${Approved.value()} then 0 else null end) checked,
         count(case when r.status in (${ToCheck.value()}, ${Rejected.value()}) then 0 else null end) checking,
         count(case when d.status = ${Todo.value()} then 0 else null end) drafting,
-        count(case when d.overdue then 0 else null end) overdue_draft,
-        count(case when r.overdue then 0 else null end) overdue_register
+        count(case when d.overdue_draft then 0 else null end) overdue_draft,
+        count(case when r.overdue_register then 0 else null end) overdue_register
       from gf_accident_draft d
       left join gf_accident_register r on r.id = d.id
       where cast(to_char(d.happen_time, :format) as int) >= $from
@@ -158,8 +158,8 @@ class AccidentRegisterDaoImpl @Autowired constructor(
       (case when r.id is null then null else r.driver_type end) driver_type,
       (case when r.id is null then d.location else r.location end) as location,
       (case when r.id is null then d.motorcade_name else r.motorcade_name end) as motorcade_name,
-      d.author_name, d.author_id, d.report_time, d.overdue overdue_report,
-      r.register_time, r.overdue overdue_register,
+      d.author_name, d.author_id, d.draft_time, d.overdue_draft,
+      r.register_time, r.overdue_register,
       (case when d.status = ${Todo.value()} then null else (
         select operate_time
         from gf_accident_operation o
@@ -351,12 +351,12 @@ class AccidentRegisterDaoImpl @Autowired constructor(
         val overdue = isOverdue(happenTime, now, overdueSeconds)
         query = em.createQuery(
           """update AccidentRegister set status = :status,
-               overdue = :overdue,
+               overdueRegister = :overdueRegister,
                registerTime = :registerTime
                where id = :id and status <> :status""".trimIndent()
         ).setParameter("id", id)
           .setParameter("status", ToCheck)
-          .setParameter("overdue", overdue)
+          .setParameter("overdueRegister", overdue)
           .setParameter("registerTime", now)
       } else {                    // 审核不通过后的再次提交
         query = em.createQuery(
@@ -402,8 +402,8 @@ class AccidentRegisterDaoImpl @Autowired constructor(
     } else true
 
     // 2. 更新当事车辆信息
-    val cars = data["cars"] as List<AccidentCarDto4Update>?
-    val carUpdatedSuccess = cars?.let({
+    val cars = data["cars"] as List<AccidentCarDto4Form>?
+    val carUpdatedSuccess = cars?.let {
       updateSubList(id, cars, AccidentCar::class.java, dto2po = BiFunction { dto, register ->
         AccidentCar(
           parent = register,
@@ -421,11 +421,11 @@ class AccidentRegisterDaoImpl @Autowired constructor(
           updatedTime = OffsetDateTime.now()
         )
       })
-    }) ?: true
+    } ?: true
 
     // 3. 更新当事人信息
-    val peoples = data["peoples"] as List<AccidentPeopleDto4Update>?
-    val peopleUpdatedSuccess = peoples?.let({
+    val peoples = data["peoples"] as List<AccidentPeopleDto4Form>?
+    val peopleUpdatedSuccess = peoples?.let {
       updateSubList(id, peoples, AccidentPeople::class.java, dto2po = BiFunction { dto, register ->
         AccidentPeople(
           parent = register,
@@ -444,11 +444,11 @@ class AccidentRegisterDaoImpl @Autowired constructor(
           updatedTime = OffsetDateTime.now()
         )
       })
-    }) ?: true
+    } ?: true
 
     // 4. 更新其他物体信息
-    val others = data["others"] as List<AccidentOtherDto4Update>?
-    val otherUpdatedSuccess = others?.let({
+    val others = data["others"] as List<AccidentOtherDto4Form>?
+    val otherUpdatedSuccess = others?.let {
       updateSubList(id, others, AccidentOther::class.java, dto2po = BiFunction { dto, register ->
         AccidentOther(
           parent = register,
@@ -465,7 +465,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
           updatedTime = OffsetDateTime.now()
         )
       })
-    }) ?: true
+    } ?: true
 
     return Mono.just(mainUpdatedSuccess && carUpdatedSuccess && peopleUpdatedSuccess && otherUpdatedSuccess)
   }
@@ -480,7 +480,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
    * @param[poClazz] 事故当事车辆、当事人、其他物品信息的 PO 对应的类型信息
    * @param[dto2po] DTO 转 PO 函数
    */
-  private fun <DTO : AccidentRegisterSubListBaseDto, PO : IdEntity> updateSubList(
+  private fun <DTO : AccidentCaseSubListDto4FormBaseInfo, PO : IdEntity> updateSubList(
     pid: Int, dtoList: List<DTO>, poClazz: Class<PO>,
     dto2po: BiFunction<DTO, AccidentRegister, PO>): Boolean {
     return if (dtoList.isEmpty()) { // 清空现有数据
@@ -513,7 +513,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
       val updateSuccess = if (toUpdateItems.isNotEmpty()) {
         var success = true
         toUpdateItems.forEach {
-          val itemDate = it.data.filterNot { it.key == "id" || it.key == "updateTime" }
+          val itemDate = it.data.map.filterNot { it.key == "id" || it.key == "updateTime" }
           val ql = """|update ${poClazz.simpleName}
                 |  set ${itemDate.keys.joinToString(",\n|  ") { "$it = :$it" }}
                 |  where id = :id""".trimMargin()

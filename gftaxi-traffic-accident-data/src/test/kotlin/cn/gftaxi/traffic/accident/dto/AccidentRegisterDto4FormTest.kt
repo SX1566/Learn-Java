@@ -10,11 +10,11 @@ import java.time.temporal.ChronoUnit
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-class AccidentRegisterDto4UpdateTest {
+class AccidentRegisterDto4FormTest {
   @Test
   fun `missing field`() {
     val json = "{}"
-    val dto = ObjectMapper().readValue(json, AccidentRegisterDto4Update::class.java)
+    val dto = ObjectMapper().readValue(json, AccidentRegisterDto4Form::class.java)
     assertTrue(dto.data.isEmpty())
     assertNull(dto.carPlate)
   }
@@ -22,7 +22,7 @@ class AccidentRegisterDto4UpdateTest {
   @Test
   fun `explicit set field`() {
     val json = "{\"carPlate\": null, \"carId\": 1, \"motorcadeName\": \"一分一队\"}"
-    val dto = ObjectMapper().readValue(json, AccidentRegisterDto4Update::class.java)
+    val dto = ObjectMapper().readValue(json, AccidentRegisterDto4Form::class.java)
     //println(dto)
     assertEquals(3, dto.data.size)
     assertNull(dto.carPlate)
@@ -36,7 +36,7 @@ class AccidentRegisterDto4UpdateTest {
     val json = "{\"happenTime\": \"2018-10-01 15:30\"}"
     val dto = ObjectMapper()
       .findAndRegisterModules()
-      .readValue(json, AccidentRegisterDto4Update::class.java)
+      .readValue(json, AccidentRegisterDto4Form::class.java)
     //println(dto)
     assertEquals(1, dto.data.size)
     assertNull(dto.carPlate)

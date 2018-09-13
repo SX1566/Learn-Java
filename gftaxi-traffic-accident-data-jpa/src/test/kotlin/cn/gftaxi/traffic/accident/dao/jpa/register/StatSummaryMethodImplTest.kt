@@ -169,7 +169,7 @@ class StatSummaryMethodImplTest @Autowired constructor(
           i % 3 == 1 -> ymTime.withDayOfMonth(15) // 月中
           else -> ymTime.plusMonths(1).withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS).minusSeconds(1) // 月尾（方便检测 SQL 的边界条件）
         },
-        overdue = (i % 3 == 0)
+        overdueDraft = (i % 3 == 0)
       ))
     }
 
@@ -183,14 +183,14 @@ class StatSummaryMethodImplTest @Autowired constructor(
         code = nextCode(ymd),
         status = AccidentDraft.Status.Todo,
         happenTime = ymTime.plusMinutes(i.toLong()),
-        overdue = (i % 2 == 0)
+        overdueDraft = (i % 2 == 0)
       )
       em.persist(accidentDraft)
       em.persist(randomAccidentRegister(
         draft = accidentDraft,
         status = AccidentRegister.Status.Draft,
         driverType = AccidentRegister.DriverType.Official,
-        overdue = null
+        overdueRegister = null
       ))
     }
 
@@ -276,7 +276,7 @@ class StatSummaryMethodImplTest @Autowired constructor(
         index % 4 == 2 -> baseTime.withDayOfMonth(25) // 月中+10d
         else -> baseTime.plusMonths(1).withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS).minusSeconds(1) // 月尾（方便检测 SQL 的边界条件）
       },
-      overdue = when {
+      overdueDraft = when {
         index % 4 == 0 -> false
         index % 4 == 1 -> false
         index % 4 == 2 -> true
@@ -288,7 +288,7 @@ class StatSummaryMethodImplTest @Autowired constructor(
       draft = accidentDraft,
       status = status,
       driverType = AccidentRegister.DriverType.Official,
-      overdue = when {
+      overdueRegister = when {
         index % 4 == 0 -> false
         index % 4 == 1 -> true
         index % 4 == 2 -> false

@@ -1,7 +1,5 @@
 package cn.gftaxi.traffic.accident.dto
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
 import java.time.OffsetDateTime
 
 /**
@@ -11,9 +9,7 @@ import java.time.OffsetDateTime
  *
  * @author RJ
  */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonIgnoreProperties(ignoreUnknown = true)
-class AccidentDraftDto4Modify : DynamicDto() {
+open class AccidentDraftDto4Update : DynamicDto() {
   var carPlate: String? by data
   var driverName: String? by data
   var happenTime: OffsetDateTime? by data
@@ -21,5 +17,4 @@ class AccidentDraftDto4Modify : DynamicDto() {
   var hitForm: String? by data
   var hitType: String? by data
   var describe: String? by data
-
 }

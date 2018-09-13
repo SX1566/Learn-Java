@@ -24,7 +24,7 @@ import tech.simter.exception.PermissionDeniedException
  *
  * @author RJ
  */
-@Component
+@Component("cn.gftaxi.traffic.accident.rest.webflux.handler.register.FindLastCheckedHandler")
 class FindLastCheckedHandler @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService
 ) : HandlerFunction<ServerResponse> {
@@ -36,12 +36,12 @@ class FindLastCheckedHandler @Autowired constructor(
     val search = request.queryParam("search").orElse(null)
 
     return accidentRegisterService.findLastChecked(pageNo, pageSize, status, search)
-      .map {
+      .map { page ->
         mapOf(
-          "count" to it.count(),
-          "pageNo" to it.pageable.pageNumber,
-          "pageSize" to it.pageable.pageSize,
-          "rows" to it.content.map {
+          "count" to page.count(),
+          "pageNo" to page.pageable.pageNumber,
+          "pageSize" to page.pageable.pageSize,
+          "rows" to page.content.map {
             mapOf(
               "id" to it.id,
               "code" to it.code,
@@ -63,12 +63,12 @@ class FindLastCheckedHandler @Autowired constructor(
       // response
       .flatMap { ok().contentType(APPLICATION_JSON_UTF8).syncBody(it) }
       // error mapping
-      .onErrorResume(ForbiddenException::class.java, {
+      .onErrorResume(ForbiddenException::class.java) {
         status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
-      })
-      .onErrorResume(PermissionDeniedException::class.java, {
+      }
+      .onErrorResume(PermissionDeniedException::class.java) {
         status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
-      })
+      }
   }
 
   companion object {

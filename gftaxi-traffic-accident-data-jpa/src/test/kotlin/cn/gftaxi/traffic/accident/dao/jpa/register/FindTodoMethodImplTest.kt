@@ -51,7 +51,7 @@ class FindTodoMethodImplTest @Autowired constructor(
       code = nextCode(baseTime.format(FORMAT_TO_YYYYMMDD)),
       status = AccidentDraft.Status.Todo,
       happenTime = baseTime,
-      overdue = false
+      overdueDraft = false
     )
     em.persist(onlyReportRecord)
 
@@ -151,8 +151,8 @@ class FindTodoMethodImplTest @Autowired constructor(
     assertEquals(expectedDraft.authorName, actualDto.authorName)
     assertEquals(expectedDraft.hitForm, actualDto.hitForm)
     assertEquals(expectedDraft.hitType, actualDto.hitType)
-    assertEquals(expectedDraft.reportTime, actualDto.reportTime)
-    assertEquals(expectedDraft.overdue, actualDto.overdueReport)
+    assertEquals(expectedDraft.draftTime, actualDto.draftTime)
+    assertEquals(expectedDraft.overdueDraft, actualDto.overdueDraft)
 
     // 验证事故登记信息
     if (expectedRegister == null || expectedRegister.status == Status.Draft) {
@@ -165,7 +165,7 @@ class FindTodoMethodImplTest @Autowired constructor(
     } else {
       assertEquals(expectedRegister.driverType, actualDto.driverType)
       assertEquals(expectedRegister.registerTime, actualDto.registerTime)
-      assertEquals(expectedRegister.overdue, actualDto.overdueRegister)
+      assertEquals(expectedRegister.overdueRegister, actualDto.overdueRegister)
       // 验证提交审核信息
       if (expectedLastSubmitOperation != null) {
         assertEquals(expectedLastSubmitOperation.operateTime, actualDto.submitTime)

@@ -57,7 +57,7 @@ class HandlerTest @Autowired constructor(
     response
       .expectStatus().isOk
       .expectBody()
-      .consumeWith { println(String(it.responseBody!!)) }
+      //.consumeWith { println(String(it.responseBody!!)) }
       .jsonPath("$.offsetDateTime").isEqualTo(data.getString("offsetDateTime"))
       .jsonPath("$.name").isEqualTo(data.getString("name"))
       .jsonPath("$.code").doesNotExist()

@@ -48,7 +48,7 @@ class CreateByMethodImplTest @Autowired constructor(
       code = nextCode(happenTime.format(FORMAT_TO_YYYYMMDD)),
       status = AccidentDraft.Status.Todo,
       happenTime = happenTime,
-      overdue = false,
+      overdueDraft = false,
       carPlate = random("粤A."),
       driverName = random("driver")
     )

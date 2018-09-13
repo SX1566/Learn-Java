@@ -22,7 +22,7 @@ import tech.simter.exception.PermissionDeniedException
  *
  * @author RJ
  */
-@Component
+@Component("cn.gftaxi.traffic.accident.rest.webflux.handler.register.CheckedHandler")
 class CheckedHandler @Autowired constructor(
   private val accidentRegisterService: AccidentRegisterService
 ) : HandlerFunction<ServerResponse> {
@@ -35,15 +35,15 @@ class CheckedHandler @Autowired constructor(
       // response
       .then(noContent().build())
       // error mapping
-      .onErrorResume(NotFoundException::class.java, {
+      .onErrorResume(NotFoundException::class.java) {
         status(NOT_FOUND).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
-      })
-      .onErrorResume(ForbiddenException::class.java, {
+      }
+      .onErrorResume(ForbiddenException::class.java) {
         status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
-      })
-      .onErrorResume(PermissionDeniedException::class.java, {
+      }
+      .onErrorResume(PermissionDeniedException::class.java) {
         status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
-      })
+      }
   }
 
   companion object {

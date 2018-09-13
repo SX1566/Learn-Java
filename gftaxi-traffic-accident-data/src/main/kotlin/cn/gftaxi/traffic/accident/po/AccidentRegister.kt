@@ -104,7 +104,7 @@ data class AccidentRegister(
   /** 登记时间，等于首次提交审核的时间 */
   val registerTime: OffsetDateTime? = null,
   /** 是否逾期登记 */
-  val overdue: Boolean? = null,
+  val overdueRegister: Boolean? = null,
 
   // 事发地点
   /** 事发地点的省级 */
