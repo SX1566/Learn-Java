@@ -8,10 +8,12 @@ import cn.gftaxi.traffic.accident.rest.webflux.Utils
 import cn.gftaxi.traffic.accident.service.AccidentDraftService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.*
 import org.springframework.http.MediaType
 import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.*
+import org.springframework.web.reactive.function.server.ServerResponse.*
 import reactor.core.publisher.Mono
 import tech.simter.exception.NonUniqueException
 import tech.simter.exception.NotFoundException
@@ -33,7 +35,7 @@ class AccidentDraftHandler @Autowired constructor(
     val pageSize = request.queryParam("pageSize").orElse("25").toInt()
     val status = AccidentDraft.Status.valueOf(request.queryParam("status").orElse(AccidentDraft.Status.Todo.name))
     val search = request.queryParam("search").orElse(null)
-    return ServerResponse.ok().body(
+    return ok().body(
       accidentDraftService.find(pageNo, pageSize, status, search).map {
         hashMapOf(
           "count" to it.count(),
@@ -66,7 +68,7 @@ class AccidentDraftHandler @Autowired constructor(
 
   fun get(request: ServerRequest): Mono<ServerResponse> {
     return accidentDraftService.get(request.pathVariable("id").toInt()).flatMap {
-      ServerResponse.ok().contentType(APPLICATION_JSON_UTF8).syncBody(
+      ok().contentType(APPLICATION_JSON_UTF8).syncBody(
         mapOf(
           "id" to it.id,
           "code" to it.code,
@@ -107,23 +109,22 @@ class AccidentDraftHandler @Autowired constructor(
             .build().toString()
         }
       }
-      .flatMap { ServerResponse.created(request.uri()).contentType(MediaType.APPLICATION_JSON_UTF8).syncBody(it) }
+      .flatMap { created(request.uri()).contentType(MediaType.APPLICATION_JSON_UTF8).syncBody(it) }
       // 车号+事发时间重复时
-      .onErrorResume(NonUniqueException::class.java, { ServerResponse.badRequest().syncBody(it.message ?: "") })
+      .onErrorResume(NonUniqueException::class.java) { badRequest().syncBody(it.message ?: "") }
   }
 
   fun update(request: ServerRequest): Mono<ServerResponse> {
     return request
       .bodyToMono<AccidentDraftDto4Modify>()
       .flatMap {
-        accidentDraftService.modify(request.pathVariable("id").toInt(), it.data)
+        accidentDraftService.modify(request.pathVariable("id").toInt(), it.data.map)
       }
-      .then(ServerResponse.noContent().build())
-      //找不到id对应的资源
-      .onErrorResume(NotFoundException::class.java, {
-        ServerResponse.status(HttpStatus.NOT_FOUND)
-          .contentType(Utils.TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
-      })
+      .then(noContent().build())
+      // 找不到 id 对应的资源
+      .onErrorResume(NotFoundException::class.java) {
+        status(NOT_FOUND).contentType(Utils.TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
+      }
   }
 
   /** 时间字符串转 OffsetDateTime 类型 */

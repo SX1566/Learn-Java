@@ -1,6 +1,6 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.register
 
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Update
+import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
 import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,18 +29,18 @@ class UpdateHandler @Autowired constructor(
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
     return request
       // 将请求体的 json 转换为 DTO
-      .bodyToMono<AccidentRegisterDto4Update>()
+      .bodyToMono<AccidentRegisterDto4Form>()
       // 执行信息更新
-      .flatMap { accidentRegisterService.update(request.pathVariable("id").toInt(), it.data) }
+      .flatMap { accidentRegisterService.update(request.pathVariable("id").toInt(), it.data.map) }
       // response
       .then(noContent().build())
       // error mapping
-      .onErrorResume(NotFoundException::class.java, {
+      .onErrorResume(NotFoundException::class.java) {
         status(NOT_FOUND).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
-      })
-      .onErrorResume(PermissionDeniedException::class.java, {
+      }
+      .onErrorResume(PermissionDeniedException::class.java) {
         status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
-      })
+      }
   }
 
   companion object {

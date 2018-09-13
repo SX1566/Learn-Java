@@ -2,13 +2,15 @@ package cn.gftaxi.traffic.accident.dto
 
 import cn.gftaxi.traffic.accident.po.AccidentPeople
 import java.math.BigDecimal
+import javax.persistence.Entity
 
 /**
  * 更新事故当事人信息用 DTO。
  *
  * @author RJ
  */
-class AccidentPeopleDto4Update : AccidentRegisterSubListBaseDto() {
+@Entity
+class AccidentPeopleDto4Form : AccidentCaseSubListDto4FormBaseInfo() {
   var sex: AccidentPeople.Sex? by data
   var phone: String? by data
   var transportType: String? by data

@@ -1,8 +1,8 @@
 package cn.gftaxi.traffic.accident
 
-import cn.gftaxi.traffic.accident.dto.AccidentCarDto4Update
-import cn.gftaxi.traffic.accident.dto.AccidentOtherDto4Update
-import cn.gftaxi.traffic.accident.dto.AccidentPeopleDto4Update
+import cn.gftaxi.traffic.accident.dto.AccidentCarDto4Form
+import cn.gftaxi.traffic.accident.dto.AccidentOtherDto4Form
+import cn.gftaxi.traffic.accident.dto.AccidentPeopleDto4Form
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
 import cn.gftaxi.traffic.accident.po.*
 import java.time.LocalDate
@@ -50,88 +50,88 @@ object Utils {
    * 转换 [AccidentRegister] 为 [AccidentRegisterDto4Form]。
    */
   fun convert(register: AccidentRegister, draft: AccidentDraft): AccidentRegisterDto4Form {
-    return AccidentRegisterDto4Form(
-      id = register.id,
+    return AccidentRegisterDto4Form().apply {
+      id = register.id
 
       // 车辆信息
-      carPlate = register.carPlate,
-      carId = register.carId,
-      motorcadeName = register.motorcadeName,
+      carPlate = register.carPlate
+      carId = register.carId
+      motorcadeName = register.motorcadeName
 
       // 车辆冗余信息
-      carModel = register.carModel,
-      carOperateDate = register.carOperateDate,
-      carContractType = register.carContractType,
-      carContractDrivers = register.carContractDrivers,
+      carModel = register.carModel
+      carOperateDate = register.carOperateDate
+      carContractType = register.carContractType
+      carContractDrivers = register.carContractDrivers
 
       // 司机信息
-      driverName = register.driverName,
-      driverId = register.driverId,
-      driverType = register.driverType,
-      driverLinkmanName = register.driverLinkmanName,
-      driverLinkmanPhone = register.driverLinkmanPhone,
+      driverName = register.driverName
+      driverId = register.driverId
+      driverType = register.driverType
+      driverLinkmanName = register.driverLinkmanName
+      driverLinkmanPhone = register.driverLinkmanPhone
 
       // 司机冗余信息
-      driverHiredDate = register.driverHiredDate,
-      driverPhone = register.driverPhone,
-      driverIdentityCode = register.driverIdentityCode,
-      driverServiceCode = register.driverServiceCode,
-      driverOrigin = register.driverOrigin,
-      driverAge = register.driverAge,
-      driverLicenseDate = register.driverLicenseDate,
-      driverDriveYears = register.driverDriveYears,
-      driverPicId = register.driverPicId,
+      driverHiredDate = register.driverHiredDate
+      driverPhone = register.driverPhone
+      driverIdentityCode = register.driverIdentityCode
+      driverServiceCode = register.driverServiceCode
+      driverOrigin = register.driverOrigin
+      driverAge = register.driverAge
+      driverLicenseDate = register.driverLicenseDate
+      driverDriveYears = register.driverDriveYears
+      driverPicId = register.driverPicId
 
       // 事故信息
-      code = draft.code,
-      status = register.status,
-      draftTime = draft.reportTime,
-      happenTime = register.happenTime,
-      locationLevel1 = register.locationLevel1,
-      locationLevel2 = register.locationLevel2,
-      locationLevel3 = register.locationLevel3,
-      location = register.location,
-      gpsSpeed = register.gpsSpeed,
-      describe = register.describe,
-      dealDepartment = register.dealDepartment,
-      dealWay = register.dealWay,
-      insuranceCompany = register.insuranceCompany,
-      insuranceCode = register.insuranceCode,
+      code = draft.code
+      status = register.status
+      createTime = draft.reportTime
+      happenTime = register.happenTime
+      locationLevel1 = register.locationLevel1
+      locationLevel2 = register.locationLevel2
+      locationLevel3 = register.locationLevel3
+      location = register.location
+      gpsSpeed = register.gpsSpeed
+      describe = register.describe
+      dealDepartment = register.dealDepartment
+      dealWay = register.dealWay
+      insuranceCompany = register.insuranceCompany
+      insuranceCode = register.insuranceCode
 
       // 分类标准
-      loadState = register.loadState,
-      level = register.level,
-      hitForm = register.hitForm,
-      hitType = register.hitType,
-      weather = register.weather,
-      drivingDirection = register.drivingDirection,
-      light = register.light,
-      roadType = register.roadType,
-      roadStructure = register.roadStructure,
-      roadState = register.roadState,
+      loadState = register.loadState
+      level = register.level
+      hitForm = register.hitForm
+      hitType = register.hitType
+      weather = register.weather
+      drivingDirection = register.drivingDirection
+      light = register.light
+      roadType = register.roadType
+      roadStructure = register.roadStructure
+      roadState = register.roadState
 
       // 历史统计
-      historyAccidentCount = register.historyAccidentCount,
-      historyTrafficOffenceCount = register.historyTrafficOffenceCount,
-      historyServiceOffenceCount = register.historyServiceOffenceCount,
-      historyComplainCount = register.historyComplainCount,
+      historyAccidentCount = register.historyAccidentCount
+      historyTrafficOffenceCount = register.historyTrafficOffenceCount
+      historyServiceOffenceCount = register.historyServiceOffenceCount
+      historyComplainCount = register.historyComplainCount
 
       // 当事车辆列表
-      cars = register.cars?.map { convert(it) },
+      cars = register.cars?.map { convert(it) }
 
       // 当事人列表
-      peoples = register.peoples?.map { convert(it) },
+      peoples = register.peoples?.map { convert(it) }
 
       // 其他物体列表
       others = register.others?.map { convert(it) }
-    )
+    }
   }
 
   /**
-   * 转换 [AccidentCar] 为 [AccidentCarDto4Update]。
+   * 转换 [AccidentCar] 为 [AccidentCarDto4Form]。
    */
-  fun convert(po: AccidentCar): AccidentCarDto4Update {
-    val dto = AccidentCarDto4Update()
+  fun convert(po: AccidentCar): AccidentCarDto4Form {
+    val dto = AccidentCarDto4Form()
     dto.id = po.id
     dto.sn = po.sn
     dto.name = po.name
@@ -149,10 +149,10 @@ object Utils {
   }
 
   /**
-   * 转换 [AccidentPeople] 为 [AccidentPeopleDto4Update]。
+   * 转换 [AccidentPeople] 为 [AccidentPeopleDto4Form]。
    */
-  fun convert(po: AccidentPeople): AccidentPeopleDto4Update {
-    val dto = AccidentPeopleDto4Update()
+  fun convert(po: AccidentPeople): AccidentPeopleDto4Form {
+    val dto = AccidentPeopleDto4Form()
     dto.id = po.id
     dto.sn = po.sn
     dto.name = po.name
@@ -171,10 +171,10 @@ object Utils {
   }
 
   /**
-   * 转换 [AccidentOther] 为 [AccidentOtherDto4Update]。
+   * 转换 [AccidentOther] 为 [AccidentOtherDto4Form]。
    */
-  fun convert(po: AccidentOther): AccidentOtherDto4Update {
-    val dto = AccidentOtherDto4Update()
+  fun convert(po: AccidentOther): AccidentOtherDto4Form {
+    val dto = AccidentOtherDto4Form()
     dto.id = po.id
     dto.sn = po.sn
     dto.name = po.name

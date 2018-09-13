@@ -402,7 +402,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
     } else true
 
     // 2. 更新当事车辆信息
-    val cars = data["cars"] as List<AccidentCarDto4Update>?
+    val cars = data["cars"] as List<AccidentCarDto4Form>?
     val carUpdatedSuccess = cars?.let({
       updateSubList(id, cars, AccidentCar::class.java, dto2po = BiFunction { dto, register ->
         AccidentCar(
@@ -424,7 +424,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
     }) ?: true
 
     // 3. 更新当事人信息
-    val peoples = data["peoples"] as List<AccidentPeopleDto4Update>?
+    val peoples = data["peoples"] as List<AccidentPeopleDto4Form>?
     val peopleUpdatedSuccess = peoples?.let({
       updateSubList(id, peoples, AccidentPeople::class.java, dto2po = BiFunction { dto, register ->
         AccidentPeople(
@@ -447,7 +447,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
     }) ?: true
 
     // 4. 更新其他物体信息
-    val others = data["others"] as List<AccidentOtherDto4Update>?
+    val others = data["others"] as List<AccidentOtherDto4Form>?
     val otherUpdatedSuccess = others?.let({
       updateSubList(id, others, AccidentOther::class.java, dto2po = BiFunction { dto, register ->
         AccidentOther(
@@ -480,7 +480,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
    * @param[poClazz] 事故当事车辆、当事人、其他物品信息的 PO 对应的类型信息
    * @param[dto2po] DTO 转 PO 函数
    */
-  private fun <DTO : AccidentRegisterSubListBaseDto, PO : IdEntity> updateSubList(
+  private fun <DTO : AccidentCaseSubListDto4FormBaseInfo, PO : IdEntity> updateSubList(
     pid: Int, dtoList: List<DTO>, poClazz: Class<PO>,
     dto2po: BiFunction<DTO, AccidentRegister, PO>): Boolean {
     return if (dtoList.isEmpty()) { // 清空现有数据
@@ -513,7 +513,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
       val updateSuccess = if (toUpdateItems.isNotEmpty()) {
         var success = true
         toUpdateItems.forEach {
-          val itemDate = it.data.filterNot { it.key == "id" || it.key == "updateTime" }
+          val itemDate = it.data.map.filterNot { it.key == "id" || it.key == "updateTime" }
           val ql = """|update ${poClazz.simpleName}
                 |  set ${itemDate.keys.joinToString(",\n|  ") { "$it = :$it" }}
                 |  where id = :id""".trimMargin()

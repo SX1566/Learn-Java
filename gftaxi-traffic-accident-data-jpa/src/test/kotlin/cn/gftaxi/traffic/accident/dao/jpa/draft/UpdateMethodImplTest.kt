@@ -50,7 +50,7 @@ class UpdateMethodImplTest @Autowired constructor(
     val dto = randomModifyDto()
 
     // invoke and verify
-    StepVerifier.create(dao.update(1, dto.data)).expectNext(false).verifyComplete()
+    StepVerifier.create(dao.update(1, dto.data.map)).expectNext(false).verifyComplete()
   }
 
   @Test
@@ -135,7 +135,7 @@ class UpdateMethodImplTest @Autowired constructor(
     val modifyDto = randomModifyDto(nullDescribe = true)
 
     // invoke and verify
-    StepVerifier.create(dao.update(po.id!!, modifyDto.data))
+    StepVerifier.create(dao.update(po.id!!, modifyDto.data.map))
       .expectNext(true).verifyComplete()
     em.run {
       flush()
@@ -145,7 +145,7 @@ class UpdateMethodImplTest @Autowired constructor(
     // verify: po 的相关属性应该更新了
     val updatedPo = em.find(AccidentDraft::class.java, po.id)
     assertNotNull(updatedPo)
-    modifyDto.data.forEach { key, value ->
+    modifyDto.data.map.forEach { key, value ->
       assertEquals(value, AccidentDraft::class.memberProperties.first { it.name == key }.get(updatedPo))
     }
   }

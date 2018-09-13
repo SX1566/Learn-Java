@@ -128,7 +128,7 @@ interface AccidentRegisterDao {
    * 3. 删除 id=2 的现有数据。
    *
    * @param[id] 案件 ID
-   * @param[data] 要更新的信息，key 为 [AccidentRegisterDto4Update] 属性名，value 为该 DTO 相应的属性值。
+   * @param[data] 要更新的信息，key 为 [AccidentRegisterDto4Form] 属性名，value 为该 DTO 相应的属性值。
    */
   fun update(id: Int, data: Map<String, Any?>): Mono<Boolean>
 }

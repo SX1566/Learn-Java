@@ -48,17 +48,17 @@ class GetHandlerTest @Autowired constructor(
 
   private fun randomDto(id: Int): AccidentRegisterDto4Form {
     val now = OffsetDateTime.now()
-    return AccidentRegisterDto4Form(
-      id = id,
-      code = "20180101_01",
-      status = Draft,
-      carPlate = "粤A.00001",
-      driverName = "driver1",
-      driverType = Official,
-      draftTime = OffsetDateTime.of(2018, 1, 1, 10, 0, 0, 0, now.offset),
-      happenTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset),
+    return AccidentRegisterDto4Form().apply {
+      this.id = id
+      code = "20180101_01"
+      status = Draft
+      carPlate = "粤A.00001"
+      driverName = "driver1"
+      driverType = Official
+      createTime = OffsetDateTime.of(2018, 1, 1, 10, 0, 0, 0, now.offset)
+      happenTime = OffsetDateTime.of(2018, 1, 1, 10, 30, 0, 0, now.offset)
       location = "芳村上市路"
-    )
+    }
   }
 
   @Test
@@ -83,7 +83,7 @@ class GetHandlerTest @Autowired constructor(
       .jsonPath("$.carPlate").isEqualTo(dto.carPlate!!)
       .jsonPath("$.driverName").isEqualTo(dto.driverName!!)
       .jsonPath("$.driverType").isEqualTo(dto.driverType!!.name)
-      .jsonPath("$.draftTime").isEqualTo(dto.draftTime!!.format(Utils.FORMAT_DATE_TIME_TO_MINUTE))
+      .jsonPath("$.createTime").isEqualTo(dto.createTime!!.format(Utils.FORMAT_DATE_TIME_TO_MINUTE))
       .jsonPath("$.happenTime").isEqualTo(dto.happenTime!!.format(Utils.FORMAT_DATE_TIME_TO_MINUTE))
       .jsonPath("$.location").isEqualTo(dto.location!!)
     verify(accidentRegisterService).get(id)
