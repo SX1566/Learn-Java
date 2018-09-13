@@ -6,7 +6,7 @@ with p(id) as ( -- 交通事故父目录
   select id from p
   union select id from bc_identity_resource
     where name in ('事故报案', '事故登记', '事故报告', '统计报表') and belong in (select id from p)
-  union select id from bc_identity_resource where name in ('事故登记汇总统计')
+  union select id from bc_identity_resource where name in ('事故登记汇总统计', '事故报告汇总统计')
     and belong in (select id from bc_identity_resource where name = '统计报表' and belong in (select id from p))
 ) -- select * from resource
 , delete_role_resource(id) as ( -- 删除资源与角色的关联
@@ -106,7 +106,7 @@ with p(id) as (select id from bc_identity_resource where name = '事故(新版)'
 , cfg(type, sn, name, url, iconclass) as (
          select 2, '072001', '事故报案':: text, '/static/accident/accident-draft/view.html', 'i0707'
   union select 2, '072002', '事故登记', '/static/accident/accident-register/view.html', 'i0001'
-  union select 2, '072002', '事故报告', '/static/accident/accident-report/view.html', 'i0903'
+  union select 2, '072003', '事故报告', '/static/accident/accident-report/view.html', 'i0903'
   union select 1, '073001', '统计报表', null, 'i0100'
 )
 insert into bc_identity_resource (status_, inner_, type_, order_, name, url, iconclass, belong, id)
@@ -120,6 +120,7 @@ with p(id) as (
   where name = '统计报表' and belong = (select id from bc_identity_resource where name = '事故(新版)')
 ), cfg(type, sn, name, url, iconclass) as (
   select 2, '073101', '事故登记汇总统计':: text, 'static/accident/report/register-stat-summary/view.html', 'i0002'
+  select 2, '073201', '事故报告汇总统计':: text, 'static/accident/report/report-stat-summary/view.html', 'i0002'
 )
 insert into bc_identity_resource (status_, inner_, type_, order_, name, url, iconclass, belong, id)
   select 0, false, c.type, c.sn, c.name, c.url, c.iconclass, (select id from p), nextval('core_sequence')
@@ -140,10 +141,10 @@ with cfg(sn, name, code) as (
   union select '4024', '事故登记-修改', 'ACCIDENT_REGISTER_MODIFY'
 
   -- 事故报告
-  union select '4021', '事故报告-查询', 'ACCIDENT_REPORT_READ'
-  union select '4022', '事故报告-提交', 'ACCIDENT_REPORT_SUBMIT'
-  union select '4023', '事故报告-审核', 'ACCIDENT_REPORT_CHECK'
-  union select '4024', '事故报告-修改', 'ACCIDENT_REPORT_MODIFY'
+  union select '4031', '事故报告-查询', 'ACCIDENT_REPORT_READ'
+  union select '4032', '事故报告-提交', 'ACCIDENT_REPORT_SUBMIT'
+  union select '4033', '事故报告-审核', 'ACCIDENT_REPORT_CHECK'
+  union select '4034', '事故报告-修改', 'ACCIDENT_REPORT_MODIFY'
 )
 insert into bc_identity_role (status_, inner_, type_, order_, code, name, id)
   select 0, false, 0, c.sn, c.code, c.name, nextval('core_sequence')
@@ -160,6 +161,7 @@ with p(id) as (
   union select '事故登记', array_agg(code) from bc_identity_role where code like 'ACCIDENT_REGISTER_%'
   union select '事故报告', array_agg(code) from bc_identity_role where code like 'ACCIDENT_REPORT_%'
   union select '事故登记汇总统计', array_agg(code) from bc_identity_role where code like 'ACCIDENT_REGISTER_%'
+  union select '事故报告汇总统计', array_agg(code) from bc_identity_role where code like 'ACCIDENT_REPORT_%'
 )
 insert into bc_identity_role_resource (rid, sid)
   select r.id, s.id
