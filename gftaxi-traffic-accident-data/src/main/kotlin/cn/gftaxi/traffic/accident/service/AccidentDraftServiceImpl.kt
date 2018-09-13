@@ -73,7 +73,7 @@ class AccidentDraftServiceImpl @Autowired constructor(
       }
   }
 
-  override fun modify(id: Int, data: Map<String, Any?>): Mono<Void> {
+  override fun update(id: Int, data: Map<String, Any?>): Mono<Void> {
     securityService.verifyHasRole(AccidentDraft.ROLE_MODIFY)
     val carPlate: String? = data["carPlate"] as? String
     val happenTime: OffsetDateTime? = data["happenTime"] as? OffsetDateTime

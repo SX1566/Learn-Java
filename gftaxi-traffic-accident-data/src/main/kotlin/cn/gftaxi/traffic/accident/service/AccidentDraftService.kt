@@ -60,5 +60,5 @@ interface AccidentDraftService {
    * @throws [SecurityException] 无 [AccidentDraft.ROLE_MODIFY] 修改报案信息权限
    * @throws [NotFoundException] 指定的案件编号不存在
    */
-  fun modify(id: Int, data: Map<String, Any?>): Mono<Void>
+  fun update(id: Int, data: Map<String, Any?>): Mono<Void>
 }

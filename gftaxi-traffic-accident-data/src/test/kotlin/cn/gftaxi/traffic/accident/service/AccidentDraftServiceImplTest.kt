@@ -186,7 +186,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     `when`(accidentDraftDao.update(any(), any())).thenReturn(Mono.just(true))
 
     // invoke
-    val actual = accidentDraftService.modify(id, data)
+    val actual = accidentDraftService.update(id, data)
 
     // verify
     StepVerifier.create(actual).expectNext().verifyComplete()
@@ -212,7 +212,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     `when`(accidentDraftDao.update(any(), any())).thenReturn(Mono.just(true))
 
     // invoke
-    val actual = accidentDraftService.modify(id, data)
+    val actual = accidentDraftService.update(id, data)
 
     // verify
     StepVerifier.create(actual).expectNext().verifyComplete()
@@ -230,7 +230,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     doThrow(SecurityException()).`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
 
     // invoke and verify
-    assertThrows(SecurityException::class.java) { accidentDraftService.modify(id, data).subscribe() }
+    assertThrows(SecurityException::class.java) { accidentDraftService.update(id, data).subscribe() }
   }
 
   @Test
@@ -243,7 +243,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     `when`(accidentDraftDao.get(id)).thenReturn(Mono.empty())
 
     // invoke
-    val actual = accidentDraftService.modify(id, data)
+    val actual = accidentDraftService.update(id, data)
 
     // verify
     StepVerifier.create(actual).verifyError(NotFoundException::class)
@@ -261,7 +261,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     `when`(accidentDraftDao.update(any(), any())).thenReturn(Mono.just(false))
 
     // invoke
-    val actual = accidentDraftService.modify(id, data)
+    val actual = accidentDraftService.update(id, data)
 
     // verify
     StepVerifier.create(actual).verifyError(NotFoundException::class)

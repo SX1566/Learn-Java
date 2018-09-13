@@ -108,7 +108,7 @@ class AccidentDraftHandler @Autowired constructor(
     return request
       .bodyToMono<AccidentDraftDto4Update>()
       .flatMap {
-        accidentDraftService.modify(request.pathVariable("id").toInt(), it.data.map)
+        accidentDraftService.update(request.pathVariable("id").toInt(), it.data.map)
       }
       .then(noContent().build())
       // 找不到 id 对应的资源

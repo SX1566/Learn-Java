@@ -171,7 +171,7 @@ class AccidentDraftHandlerTest @Autowired constructor(
     // mock
     val id = 1
     val data = Json.createObjectBuilder().add("carPlate", "粤A.N3402").add("driverName", "driver")
-    `when`(accidentDraftService.modify(any(), any())).thenReturn(Mono.empty())
+    `when`(accidentDraftService.update(any(), any())).thenReturn(Mono.empty())
 
     // invoke
     val response = client.patch().uri("/accident-draft/$id")
@@ -181,7 +181,7 @@ class AccidentDraftHandlerTest @Autowired constructor(
 
     // verify
     response.expectStatus().isNoContent.expectBody().isEmpty
-    verify(accidentDraftService).modify(any(), any())
+    verify(accidentDraftService).update(any(), any())
   }
 
   @Test
@@ -189,7 +189,7 @@ class AccidentDraftHandlerTest @Autowired constructor(
     // mock
     val id = 1
     val data = Json.createObjectBuilder().add("carPlate", "粤A.N3402").add("driverName", "driver")
-    `when`(accidentDraftService.modify(any(), any())).thenReturn(Mono.error(NotFoundException("指定的案件不存在")))
+    `when`(accidentDraftService.update(any(), any())).thenReturn(Mono.error(NotFoundException("指定的案件不存在")))
 
     // invoke
     val response = client.patch().uri("/accident-draft/$id")
@@ -199,6 +199,6 @@ class AccidentDraftHandlerTest @Autowired constructor(
 
     // verify
     response.expectStatus().isNotFound.expectHeader().contentType(Utils.TEXT_PLAIN_UTF8)
-    verify(accidentDraftService).modify(any(), any())
+    verify(accidentDraftService).update(any(), any())
   }
 }
