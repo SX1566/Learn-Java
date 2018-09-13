@@ -4,7 +4,8 @@ with p(id) as ( -- 交通事故父目录
 )
 , resource(id) as (
   select id from p
-  union select id from bc_identity_resource where name in ('事故报案', '事故登记', '统计报表') and belong in (select id from p)
+  union select id from bc_identity_resource
+    where name in ('事故报案', '事故登记', '事故报告', '统计报表') and belong in (select id from p)
   union select id from bc_identity_resource where name in ('事故登记汇总统计')
     and belong in (select id from bc_identity_resource where name = '统计报表' and belong in (select id from p))
 ) -- select * from resource
@@ -105,6 +106,7 @@ with p(id) as (select id from bc_identity_resource where name = '事故(新版)'
 , cfg(type, sn, name, url, iconclass) as (
          select 2, '072001', '事故报案':: text, '/static/accident/accident-draft/view.html', 'i0707'
   union select 2, '072002', '事故登记', '/static/accident/accident-register/view.html', 'i0001'
+  union select 2, '072002', '事故报告', '/static/accident/accident-report/view.html', 'i0903'
   union select 1, '073001', '统计报表', null, 'i0100'
 )
 insert into bc_identity_resource (status_, inner_, type_, order_, name, url, iconclass, belong, id)
@@ -136,6 +138,12 @@ with cfg(sn, name, code) as (
   union select '4022', '事故登记-提交', 'ACCIDENT_REGISTER_SUBMIT'
   union select '4023', '事故登记-审核', 'ACCIDENT_REGISTER_CHECK'
   union select '4024', '事故登记-修改', 'ACCIDENT_REGISTER_MODIFY'
+
+  -- 事故报告
+  union select '4021', '事故报告-查询', 'ACCIDENT_REPORT_READ'
+  union select '4022', '事故报告-提交', 'ACCIDENT_REPORT_SUBMIT'
+  union select '4023', '事故报告-审核', 'ACCIDENT_REPORT_CHECK'
+  union select '4024', '事故报告-修改', 'ACCIDENT_REPORT_MODIFY'
 )
 insert into bc_identity_role (status_, inner_, type_, order_, code, name, id)
   select 0, false, 0, c.sn, c.code, c.name, nextval('core_sequence')
@@ -150,6 +158,7 @@ with p(id) as (
 ), cfg(resource_name, role_codes) as (
   select '事故报案':: text, array_agg(code) from bc_identity_role where code like 'ACCIDENT_DRAFT_%'
   union select '事故登记', array_agg(code) from bc_identity_role where code like 'ACCIDENT_REGISTER_%'
+  union select '事故报告', array_agg(code) from bc_identity_role where code like 'ACCIDENT_REPORT_%'
   union select '事故登记汇总统计', array_agg(code) from bc_identity_role where code like 'ACCIDENT_REGISTER_%'
 )
 insert into bc_identity_role_resource (rid, sid)
@@ -176,6 +185,16 @@ with cfg(role_code, user_codes) as (
   union select 'ACCIDENT_REGISTER_CHECK', array ['anquanguanlizu']
   -- 事故登记-修改
   union select 'ACCIDENT_REGISTER_MODIFY', array ['anquanguanlizu']
+
+  -- 事故报告-查询
+  union select 'ACCIDENT_REPORT_READ', array ['baochengzongbu']
+  -- 事故报告-提交
+  union select 'ACCIDENT_REPORT_SUBMIT',
+    array ['fenGongSi1AQY', 'fenGongSi2AQY', 'fenGongSi1Manager', 'fenGongSi2Manager', 'fenGongSi1CDZ', 'fenGongSi2CDZ']
+  -- 事故报告-审核
+  union select 'ACCIDENT_REPORT_CHECK', array ['anquanguanlizu']
+  -- 事故报告-修改
+  union select 'ACCIDENT_REPORT_MODIFY', array ['anquanguanlizu']
 )
 insert into bc_identity_role_actor (rid, aid)
   select r.id, a.id
