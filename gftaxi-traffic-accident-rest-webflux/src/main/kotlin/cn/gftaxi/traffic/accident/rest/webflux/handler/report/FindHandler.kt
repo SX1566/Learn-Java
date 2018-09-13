@@ -28,9 +28,9 @@ class FindHandler constructor(
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
     val pageNo = request.queryParam("pageNo").map { it.toInt() }.orElse(1)
     val pageSize = request.queryParam("pageSize").map { it.toInt() }.orElse(25)
-    val status = request.queryParam("status")
+    val statuses = request.queryParam("status")
       .map { str -> str.split(",").map { Status.valueOf(it) } }.orElse(null)
-    return service.find(pageNo = pageNo, pageSize = pageSize, statuses = status)
+    return service.find(pageNo = pageNo, pageSize = pageSize, statuses = statuses)
       .map {
         mapOf(
           "count" to it.count(),
@@ -40,9 +40,9 @@ class FindHandler constructor(
         )
       }
       .flatMap { ok().contentType(APPLICATION_JSON_UTF8).syncBody(it) }
-      .onErrorResume(PermissionDeniedException::class.java, {
+      .onErrorResume(PermissionDeniedException::class.java) {
         status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
-      })
+      }
   }
 
   companion object {
