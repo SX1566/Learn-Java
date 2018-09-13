@@ -8,8 +8,6 @@ import cn.gftaxi.traffic.accident.service.AccidentReportService
 import cn.gftaxi.traffic.accident.service.AccidentReportServiceImpl
 import com.nhaarman.mockito_kotlin.verify
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -37,7 +35,7 @@ internal class AccidentReportServiceImplTest @Autowired constructor(
 ) {
   private fun randomDto(id: Int): AccidentReportDto4View {
     return AccidentReportDto4View(id = id, code = randString(), driverType = AccidentRegister.DriverType.Official,
-      happenTime = OffsetDateTime.now(), overdueCreate = true)
+      happenTime = OffsetDateTime.now(), overdueDraft = true)
   }
 
   private fun randString(): String {

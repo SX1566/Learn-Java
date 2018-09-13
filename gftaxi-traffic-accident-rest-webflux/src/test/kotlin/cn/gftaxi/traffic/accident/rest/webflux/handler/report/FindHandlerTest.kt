@@ -50,7 +50,7 @@ internal class FindHandlerTest @Autowired constructor(
 
   private fun randomDto(id: Int, status: Status? = null): AccidentReportDto4View {
     return AccidentReportDto4View(id = id, code = randString(), driverType = DriverType.Official,
-      happenTime = OffsetDateTime.now(), overdueCreate = true, status = status)
+      happenTime = OffsetDateTime.now(), overdueDraft = true, status = status)
   }
 
   private fun randString(): String {
@@ -81,12 +81,12 @@ internal class FindHandlerTest @Autowired constructor(
       .jsonPath("$.rows[0].code").isEqualTo(dao1.code!!)
       .jsonPath("$.rows[0].driverType").isEqualTo(dao1.driverType.toString())
       .jsonPath("$.rows[0].happenTime").isEqualTo(dao1.happenTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
-      .jsonPath("$.rows[0].overdueCreate").isEqualTo(dao1.overdueCreate!!)
+      .jsonPath("$.rows[0].overdueDraft").isEqualTo(dao1.overdueDraft!!)
       .jsonPath("$.rows[1].id").isEqualTo(dao2.id!!)
       .jsonPath("$.rows[1].code").isEqualTo(dao2.code!!)
       .jsonPath("$.rows[1].driverType").isEqualTo(dao2.driverType.toString())
       .jsonPath("$.rows[1].happenTime").isEqualTo(dao2.happenTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
-      .jsonPath("$.rows[1].overdueCreate").isEqualTo(dao2.overdueCreate!!)
+      .jsonPath("$.rows[1].overdueDraft").isEqualTo(dao2.overdueDraft!!)
 
     // verify
     verify(service).find(anyInt(), anyInt(), any(), any())
@@ -116,12 +116,12 @@ internal class FindHandlerTest @Autowired constructor(
       .jsonPath("$.rows[0].code").isEqualTo(dao1.code!!)
       .jsonPath("$.rows[0].driverType").isEqualTo(dao1.driverType.toString())
       .jsonPath("$.rows[0].happenTime").isEqualTo(dao1.happenTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
-      .jsonPath("$.rows[0].overdueCreate").isEqualTo(dao1.overdueCreate!!)
+      .jsonPath("$.rows[0].overdueDraft").isEqualTo(dao1.overdueDraft!!)
       .jsonPath("$.rows[1].id").isEqualTo(dao2.id!!)
       .jsonPath("$.rows[1].code").isEqualTo(dao2.code!!)
       .jsonPath("$.rows[1].driverType").isEqualTo(dao2.driverType.toString())
       .jsonPath("$.rows[1].happenTime").isEqualTo(dao2.happenTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
-      .jsonPath("$.rows[1].overdueCreate").isEqualTo(dao2.overdueCreate!!)
+      .jsonPath("$.rows[1].overdueDraft").isEqualTo(dao2.overdueDraft!!)
 
     // verify
     verify(service).find(anyInt(), anyInt(), any(), any())
@@ -151,12 +151,12 @@ internal class FindHandlerTest @Autowired constructor(
       .jsonPath("$.rows[0].code").isEqualTo(dao1.code!!)
       .jsonPath("$.rows[0].driverType").isEqualTo(dao1.driverType.toString())
       .jsonPath("$.rows[0].happenTime").isEqualTo(dao1.happenTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
-      .jsonPath("$.rows[0].overdueCreate").isEqualTo(dao1.overdueCreate!!)
+      .jsonPath("$.rows[0].overdueDraft").isEqualTo(dao1.overdueDraft!!)
       .jsonPath("$.rows[1].id").isEqualTo(dao2.id!!)
       .jsonPath("$.rows[1].code").isEqualTo(dao2.code!!)
       .jsonPath("$.rows[1].driverType").isEqualTo(dao2.driverType.toString())
       .jsonPath("$.rows[1].happenTime").isEqualTo(dao2.happenTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
-      .jsonPath("$.rows[1].overdueCreate").isEqualTo(dao2.overdueCreate!!)
+      .jsonPath("$.rows[1].overdueDraft").isEqualTo(dao2.overdueDraft!!)
 
     // verify
     verify(service).find(anyInt(), anyInt(), any(), any())
