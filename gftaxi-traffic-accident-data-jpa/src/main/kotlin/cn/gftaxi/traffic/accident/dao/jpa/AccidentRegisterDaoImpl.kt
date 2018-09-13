@@ -57,7 +57,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
         count(case when r.status in (${ToCheck.value()}, ${Rejected.value()}) then 0 else null end) checking,
         count(case when d.status = ${Todo.value()} then 0 else null end) drafting,
         count(case when d.overdue then 0 else null end) overdue_draft,
-        count(case when r.overdue then 0 else null end) overdue_register
+        count(case when r.overdue_register then 0 else null end) overdue_register
       from gf_accident_draft d
       left join gf_accident_register r on r.id = d.id
       where cast(to_char(d.happen_time, :format) as int) >= $from
@@ -159,7 +159,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
       (case when r.id is null then d.location else r.location end) as location,
       (case when r.id is null then d.motorcade_name else r.motorcade_name end) as motorcade_name,
       d.author_name, d.author_id, d.report_time, d.overdue overdue_report,
-      r.register_time, r.overdue overdue_register,
+      r.register_time, r.overdue_register,
       (case when d.status = ${Todo.value()} then null else (
         select operate_time
         from gf_accident_operation o
@@ -351,12 +351,12 @@ class AccidentRegisterDaoImpl @Autowired constructor(
         val overdue = isOverdue(happenTime, now, overdueSeconds)
         query = em.createQuery(
           """update AccidentRegister set status = :status,
-               overdue = :overdue,
+               overdueRegister = :overdueRegister,
                registerTime = :registerTime
                where id = :id and status <> :status""".trimIndent()
         ).setParameter("id", id)
           .setParameter("status", ToCheck)
-          .setParameter("overdue", overdue)
+          .setParameter("overdueRegister", overdue)
           .setParameter("registerTime", now)
       } else {                    // 审核不通过后的再次提交
         query = em.createQuery(

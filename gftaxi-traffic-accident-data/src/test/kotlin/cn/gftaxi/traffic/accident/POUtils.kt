@@ -102,7 +102,7 @@ object POUtils {
       happenTime = draft.happenTime,
       location = draft.location,
       gpsSpeed = 30,
-      overdue = overdue,
+      overdueRegister = overdue,
       // 超过 24 小时为逾期登记
       registerTime = when {
         overdue == null -> null

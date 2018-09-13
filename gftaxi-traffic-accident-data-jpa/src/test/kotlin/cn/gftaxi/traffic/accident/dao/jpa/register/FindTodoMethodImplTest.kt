@@ -165,7 +165,7 @@ class FindTodoMethodImplTest @Autowired constructor(
     } else {
       assertEquals(expectedRegister.driverType, actualDto.driverType)
       assertEquals(expectedRegister.registerTime, actualDto.registerTime)
-      assertEquals(expectedRegister.overdue, actualDto.overdueRegister)
+      assertEquals(expectedRegister.overdueRegister, actualDto.overdueRegister)
       // 验证提交审核信息
       if (expectedLastSubmitOperation != null) {
         assertEquals(expectedLastSubmitOperation.operateTime, actualDto.submitTime)

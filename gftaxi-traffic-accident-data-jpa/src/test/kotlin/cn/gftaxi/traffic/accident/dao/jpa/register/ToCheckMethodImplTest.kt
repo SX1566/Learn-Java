@@ -87,12 +87,12 @@ class ToCheckMethodImplTest @Autowired constructor(
     assertNotEquals(po.status, updatedPo.status)
     assertEquals(ToCheck, updatedPo.status)
 
-    // 验证 registerTime、overdue 的更新情况
-    if (!fireSubmit) {  // 非首次提交: 应只更新了 status 没有更新 registerTime、overdue
-      assertEquals(po.overdue, updatedPo.overdue)
+    // 验证 registerTime、overdueRegister 的更新情况
+    if (!fireSubmit) {  // 非首次提交: 应只更新了 status 没有更新 registerTime、overdueRegister
+      assertEquals(po.overdueRegister, updatedPo.overdueRegister)
       assertEquals(po.registerTime, updatedPo.registerTime)
-    } else {            // 首次提交: 应同时更新了 status、registerTime、overdue
-      assertFalse(updatedPo.overdue!!)
+    } else {            // 首次提交: 应同时更新了 status、registerTime、overdueRegister
+      assertFalse(updatedPo.overdueRegister!!)
       assertTrue(updatedPo.registerTime!!.isAfter(now))
     }
   }
@@ -126,7 +126,7 @@ class ToCheckMethodImplTest @Autowired constructor(
     assertEquals(po.id, updatedPo.id)
     assertEquals(po.status, updatedPo.status)
     assertEquals(po.registerTime, updatedPo.registerTime)
-    assertEquals(po.overdue, updatedPo.overdue)
+    assertEquals(po.overdueRegister, updatedPo.overdueRegister)
   }
 
   @Test

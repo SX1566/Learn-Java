@@ -17,7 +17,7 @@ class Dto4UpdateTest {
   fun test() {
     val poProperties = AccidentRegisterDto4Form::class.memberProperties
     val dtoProperties = AccidentRegisterDto4Form::class.memberProperties
-    val notInDtoProperties = listOf("id", "registerTime", "overdue")
+    val notInDtoProperties = listOf("id", "registerTime", "overdueRegister")
     val nestedPropertyKeys = listOf("cars", "peoples", "others")
 
     // po 中可更新的属性应该在 dto 中都有定义
