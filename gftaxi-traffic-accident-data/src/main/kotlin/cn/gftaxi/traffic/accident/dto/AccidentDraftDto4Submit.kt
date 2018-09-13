@@ -11,5 +11,5 @@ class AccidentDraftDto4Submit : AccidentDraftDto4Update() {
   var source: String? by data
   var authorName: String? by data
   var authorId: String? by data
-  var reportTime: OffsetDateTime? by data
+  var createTime: OffsetDateTime? by data
 }

@@ -51,6 +51,7 @@ class AccidentDraftServiceImpl @Autowired constructor(
       .nextCode(dto.happenTime!!)
       .flatMap { code ->
         bcDao.getMotorcadeName(dto.carPlate!!, dto.happenTime!!.toLocalDate()).flatMap {
+          if (dto.createTime == null) dto.createTime = OffsetDateTime.now() // 报案时间为当前时间
           accidentDraftDao.create(AccidentDraft(
             code = code,
             status = Status.Todo,
@@ -58,11 +59,11 @@ class AccidentDraftServiceImpl @Autowired constructor(
             carPlate = dto.carPlate!!,
             driverName = dto.driverName!!,
             happenTime = dto.happenTime!!,
-            reportTime = dto.reportTime!!,
+            createTime = dto.createTime!!,
             location = dto.location!!,
             hitForm = dto.hitForm,
             hitType = dto.hitType,
-            overdue = AccidentDraft.isOverdue(dto.happenTime!!, dto.reportTime!!, overdueSeconds),
+            overdueCreate = AccidentDraft.isOverdue(dto.happenTime!!, dto.createTime!!, overdueSeconds),
             source = dto.source!!,
             authorName = dto.authorName!!,
             authorId = dto.authorId!!,
@@ -86,7 +87,7 @@ class AccidentDraftServiceImpl @Autowired constructor(
             mutableMapOf<String, Any?>("motorcadeName" to if (motorcadeName.isEmpty()) null else motorcadeName)
           // 事发时间更新时，逾期才需要更新
           happenTime?.let {
-            mutableMap.put("overdue", AccidentDraft.isOverdue(happenTime, accidentDraft.reportTime, overdueSeconds))
+            mutableMap.put("overdueCreate", AccidentDraft.isOverdue(happenTime, accidentDraft.createTime, overdueSeconds))
           }
           mutableMap
         }

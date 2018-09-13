@@ -63,12 +63,12 @@ object POUtils {
       code = code,
       status = status,
       happenTime = happenTime,
-      overdue = overdue,
+      overdueCreate = overdue,
       carPlate = random("粤A."),
       driverName = random("driver"),
       location = random("location"),
       // 超过 12 小时为逾期报案
-      reportTime = when {
+      createTime = when {
         overdue -> happenTime.plusHours(12 + 2)
         else -> happenTime.plusMinutes(1)
       },
@@ -163,7 +163,7 @@ object POUtils {
 
     // 事故登记：创建类记录
     val creation = randomAccidentOperation(
-      operateTime = accidentDraft.reportTime,
+      operateTime = accidentDraft.createTime,
       operationType = Creation,
       targetId = accidentRegister.id!!,
       targetType = TargetType.Register

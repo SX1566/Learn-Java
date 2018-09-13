@@ -47,11 +47,11 @@ class AccidentDraftHandler @Autowired constructor(
               "carPlate" to it.carPlate,
               "driverName" to it.driverName,
               "happenTime" to it.happenTime.format(FORMAT_DATE_TIME_TO_MINUTE),
-              "reportTime" to it.reportTime.format(FORMAT_DATE_TIME_TO_MINUTE),
+              "createTime" to it.createTime.format(FORMAT_DATE_TIME_TO_MINUTE),
               "location" to it.location,
               "hitForm" to it.hitForm,
               "hitType" to it.hitType,
-              "overdue" to it.overdue,
+              "overdueCreate" to it.overdueCreate,
               "source" to it.source,
               "authorName" to it.authorName,
               "authorId" to it.authorId,
@@ -74,11 +74,11 @@ class AccidentDraftHandler @Autowired constructor(
           "carPlate" to it.carPlate,
           "driverName" to it.driverName,
           "happenTime" to it.happenTime.format(FORMAT_DATE_TIME_TO_MINUTE),
-          "reportTime" to it.reportTime.format(FORMAT_DATE_TIME_TO_MINUTE),
+          "createTime" to it.createTime.format(FORMAT_DATE_TIME_TO_MINUTE),
           "location" to it.location,
           "hitForm" to it.hitForm,
           "hitType" to it.hitType,
-          "overdue" to it.overdue,
+          "overdueCreate" to it.overdueCreate,
           "source" to it.source,
           "authorName" to it.authorName,
           "authorId" to it.authorId,
@@ -95,7 +95,7 @@ class AccidentDraftHandler @Autowired constructor(
           Json.createObjectBuilder()
             .add("id", it.first)
             .add("code", it.second)
-            .add("reportTime", dto.reportTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
+            .add("createTime", dto.createTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
             .build().toString()
         }
       }

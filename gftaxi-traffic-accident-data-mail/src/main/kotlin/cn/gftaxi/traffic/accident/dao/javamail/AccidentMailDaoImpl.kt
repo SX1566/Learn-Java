@@ -149,7 +149,7 @@ class AccidentMailDaoImpl @Autowired constructor(
       source = "MAIL"              // 邮件报案
       authorName = sender.personal ?: "" // 发送人昵称
       authorId = sender.address    // 发送人邮箱
-      reportTime = OffsetDateTime.ofInstant(message.sentDate!!.toInstant(), ZoneOffset.systemDefault()) // 发送时间
+      createTime = OffsetDateTime.ofInstant(message.sentDate!!.toInstant(), ZoneOffset.systemDefault()) // 发送时间
 
       describe = content // 邮件内容
 

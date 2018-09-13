@@ -56,7 +56,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
         count(case when r.status = ${Approved.value()} then 0 else null end) checked,
         count(case when r.status in (${ToCheck.value()}, ${Rejected.value()}) then 0 else null end) checking,
         count(case when d.status = ${Todo.value()} then 0 else null end) drafting,
-        count(case when d.overdue then 0 else null end) overdue_draft,
+        count(case when d.overdue_create then 0 else null end) overdue_create,
         count(case when r.overdue_register then 0 else null end) overdue_register
       from gf_accident_draft d
       left join gf_accident_register r on r.id = d.id
@@ -135,7 +135,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
       isFirst = false
     }
     sql = """
-      with stat_summary(scope, total, checked, checking, drafting, overdue_draft, overdue_register) as ($sql)
+      with stat_summary(scope, total, checked, checking, drafting, overdue_create, overdue_register) as ($sql)
       select * from stat_summary order by scope desc
     """
     return Flux.fromIterable(
@@ -158,7 +158,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
       (case when r.id is null then null else r.driver_type end) driver_type,
       (case when r.id is null then d.location else r.location end) as location,
       (case when r.id is null then d.motorcade_name else r.motorcade_name end) as motorcade_name,
-      d.author_name, d.author_id, d.report_time, d.overdue overdue_report,
+      d.author_name, d.author_id, d.create_time, d.overdue_create,
       r.register_time, r.overdue_register,
       (case when d.status = ${Todo.value()} then null else (
         select operate_time
@@ -403,7 +403,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
 
     // 2. 更新当事车辆信息
     val cars = data["cars"] as List<AccidentCarDto4Form>?
-    val carUpdatedSuccess = cars?.let({
+    val carUpdatedSuccess = cars?.let {
       updateSubList(id, cars, AccidentCar::class.java, dto2po = BiFunction { dto, register ->
         AccidentCar(
           parent = register,
@@ -421,11 +421,11 @@ class AccidentRegisterDaoImpl @Autowired constructor(
           updatedTime = OffsetDateTime.now()
         )
       })
-    }) ?: true
+    } ?: true
 
     // 3. 更新当事人信息
     val peoples = data["peoples"] as List<AccidentPeopleDto4Form>?
-    val peopleUpdatedSuccess = peoples?.let({
+    val peopleUpdatedSuccess = peoples?.let {
       updateSubList(id, peoples, AccidentPeople::class.java, dto2po = BiFunction { dto, register ->
         AccidentPeople(
           parent = register,
@@ -444,11 +444,11 @@ class AccidentRegisterDaoImpl @Autowired constructor(
           updatedTime = OffsetDateTime.now()
         )
       })
-    }) ?: true
+    } ?: true
 
     // 4. 更新其他物体信息
     val others = data["others"] as List<AccidentOtherDto4Form>?
-    val otherUpdatedSuccess = others?.let({
+    val otherUpdatedSuccess = others?.let {
       updateSubList(id, others, AccidentOther::class.java, dto2po = BiFunction { dto, register ->
         AccidentOther(
           parent = register,
@@ -465,7 +465,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
           updatedTime = OffsetDateTime.now()
         )
       })
-    }) ?: true
+    } ?: true
 
     return Mono.just(mainUpdatedSuccess && carUpdatedSuccess && peopleUpdatedSuccess && otherUpdatedSuccess)
   }

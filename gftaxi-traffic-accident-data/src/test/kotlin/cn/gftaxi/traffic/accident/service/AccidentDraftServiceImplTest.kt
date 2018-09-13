@@ -63,7 +63,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     doThrow(SecurityException()).`when`(securityService).verifyHasRole(AccidentDraft.ROLE_READ)
 
     // invoke and verify
-    assertThrows(SecurityException::class.java, { accidentDraftService.find(1, 25, Status.Todo, "").subscribe() })
+    assertThrows(SecurityException::class.java) { accidentDraftService.find(1, 25, Status.Todo, "").subscribe() }
   }
 
   @Test
@@ -104,19 +104,19 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     // mock
     val expected = Pair(1, "code")
     val po = randomAccidentDraft(id = expected.first, code = expected.second, status = Status.Done, overdue = true)
-    val dto = AccidentDraftDto4Submit(
-      carPlate = po.carPlate,
-      driverName = po.driverName,
-      happenTime = po.happenTime,
-      location = po.location,
-      hitForm = po.hitForm,
-      hitType = po.hitType,
-      source = "BC",
-      authorName = random("authorName"),
+    val dto = AccidentDraftDto4Submit().apply {
+      carPlate = po.carPlate
+      driverName = po.driverName
+      happenTime = po.happenTime
+      location = po.location
+      hitForm = po.hitForm
+      hitType = po.hitType
+      source = "BC"
+      authorName = random("authorName")
       authorId = random("authorId")
-    )
+    }
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
-    `when`(accidentDraftDao.nextCode(dto.happenTime)).thenReturn(Mono.just(expected.second))
+    `when`(accidentDraftDao.nextCode(dto.happenTime!!)).thenReturn(Mono.just(expected.second))
     `when`(accidentDraftDao.create(any())).thenReturn(Mono.just(po))
     `when`(bcDao.getMotorcadeName(any(), any())).thenReturn(Mono.just("test"))
 
@@ -126,7 +126,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     // verify
     StepVerifier.create(actual).expectNext(expected).verifyComplete()
     verify(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
-    verify(accidentDraftDao).nextCode(dto.happenTime)
+    verify(accidentDraftDao).nextCode(dto.happenTime!!)
     verify(accidentDraftDao).create(any())
     verify(bcDao).getMotorcadeName(any(), any())
   }
@@ -134,19 +134,19 @@ class AccidentDraftServiceImplTest @Autowired constructor(
   @Test
   fun submitWithoutRole() {
     // mock
-    val dto = AccidentDraftDto4Submit(
-      carPlate = "plate",
-      driverName = "driver",
-      happenTime = OffsetDateTime.now(),
-      location = "location",
-      source = "BC",
-      authorName = random("authorName"),
+    val dto = AccidentDraftDto4Submit().apply {
+      carPlate = "plate"
+      driverName = "driver"
+      happenTime = OffsetDateTime.now()
+      location = "location"
+      source = "BC"
+      authorName = random("authorName")
       authorId = random("authorId")
-    )
+    }
     doThrow(SecurityException()).`when`(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
 
     // invoke and verify
-    assertThrows(SecurityException::class.java, { accidentDraftService.submit(dto).subscribe() })
+    assertThrows(SecurityException::class.java) { accidentDraftService.submit(dto).subscribe() }
   }
 
   @Test
@@ -154,25 +154,25 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     // mock
     val code = "code"
     val po = randomAccidentDraft(id = 1, code = code, status = Status.Done, overdue = true)
-    val dto = AccidentDraftDto4Submit(
-      carPlate = po.carPlate,
-      driverName = po.driverName,
-      happenTime = po.happenTime,
-      location = po.location,
-      hitForm = po.hitForm,
-      hitType = po.hitType,
-      source = "BC",
-      authorName = random("authorName"),
+    val dto = AccidentDraftDto4Submit().apply {
+      carPlate = po.carPlate
+      driverName = po.driverName
+      happenTime = po.happenTime
+      location = po.location
+      hitForm = po.hitForm
+      hitType = po.hitType
+      source = "BC"
+      authorName = random("authorName")
       authorId = random("authorId")
-    )
+    }
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
-    `when`(accidentDraftDao.nextCode(dto.happenTime)).thenReturn(Mono.just(code))
+    `when`(accidentDraftDao.nextCode(dto.happenTime!!)).thenReturn(Mono.just(code))
     `when`(accidentDraftDao.create(any())).thenReturn(Mono.error(NonUniqueException()))
     `when`(bcDao.getMotorcadeName(any(), any())).thenReturn(Mono.just("test"))
 
     // invoke and verify
     StepVerifier.create(accidentDraftService.submit(dto)).verifyError(NonUniqueException::class)
-    verify(accidentDraftDao).nextCode(dto.happenTime)
+    verify(accidentDraftDao).nextCode(dto.happenTime!!)
     verify(bcDao).getMotorcadeName(any(), any())
     verify(accidentDraftDao).create(any())
   }
@@ -201,11 +201,11 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     val now = OffsetDateTime.now()
     val motorcadeName = "第一大队"
     val data = mutableMapOf<String, Any?>().withDefault { null }
-    data.put("carPlate", "a")
-    data.put("happenTime", now)
+    data["carPlate"] = "a"
+    data["happenTime"] = now
     val accidentDraft = AccidentDraft(id = 1, code = "code1", status = AccidentDraft.Status.Todo, carPlate = "plate001"
-      , driverName = "driver001", happenTime = now, reportTime = now.minusHours(12), location = "广州"
-      , overdue = true, source = "BC", authorName = "Admin", authorId = "021")
+      , driverName = "driver001", happenTime = now, createTime = now.minusHours(12), location = "广州"
+      , overdueCreate = true, source = "BC", authorName = "Admin", authorId = "021")
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
     `when`(accidentDraftDao.get(id)).thenReturn(Mono.just(accidentDraft))
     `when`(bcDao.getMotorcadeName(any(), any())).thenReturn(Mono.just(motorcadeName))
@@ -230,15 +230,15 @@ class AccidentDraftServiceImplTest @Autowired constructor(
     doThrow(SecurityException()).`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
 
     // invoke and verify
-    assertThrows(SecurityException::class.java, { accidentDraftService.modify(id, data).subscribe() })
+    assertThrows(SecurityException::class.java) { accidentDraftService.modify(id, data).subscribe() }
   }
 
   @Test
   fun modifyWithNotFoundByGet() {
     // mock
     val id = 1
-    var data = mutableMapOf<String, Any?>().withDefault { null }
-    data.put("carPlate", "粤A.12345")
+    val data = mutableMapOf<String, Any?>().withDefault { null }
+    data["carPlate"] = "粤A.12345"
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
     `when`(accidentDraftDao.get(id)).thenReturn(Mono.empty())
 
@@ -255,7 +255,7 @@ class AccidentDraftServiceImplTest @Autowired constructor(
   fun modifyWithNotFoundByUpdate() {
     // mock
     val id = 1
-    var data = mutableMapOf<String, Any?>().withDefault { null }
+    val data = mutableMapOf<String, Any?>().withDefault { null }
     doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
     `when`(accidentDraftDao.get(id)).thenReturn(Mono.empty())
     `when`(accidentDraftDao.update(any(), any())).thenReturn(Mono.just(false))

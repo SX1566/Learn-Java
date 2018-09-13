@@ -85,7 +85,7 @@ object Utils {
       // 事故信息
       code = draft.code
       status = register.status
-      createTime = draft.reportTime
+      createTime = draft.createTime
       happenTime = register.happenTime
       locationLevel1 = register.locationLevel1
       locationLevel2 = register.locationLevel2

@@ -3,6 +3,7 @@ package cn.gftaxi.traffic.accident.rest.webflux.handler
 import cn.gftaxi.traffic.accident.Utils.FORMAT_DATE_TIME_TO_MINUTE
 import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
 import cn.gftaxi.traffic.accident.po.AccidentDraft
+import cn.gftaxi.traffic.accident.rest.webflux.UnitTestConfiguration
 import cn.gftaxi.traffic.accident.rest.webflux.Utils
 import cn.gftaxi.traffic.accident.rest.webflux.handler.AccidentDraftHandler.Companion.FIND_REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.rest.webflux.handler.AccidentDraftHandler.Companion.GET_REQUEST_PREDICATE
@@ -14,15 +15,20 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.MediaType
 import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
-import org.springframework.test.web.reactive.server.WebTestClient.bindToRouterFunction
+import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.reactive.function.server.HandlerFunction
-import org.springframework.web.reactive.function.server.RouterFunctions
+import org.springframework.web.reactive.function.server.RouterFunction
+import org.springframework.web.reactive.function.server.RouterFunctions.route
+import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
 import tech.simter.exception.NotFoundException
 import java.time.OffsetDateTime
@@ -33,26 +39,37 @@ import javax.json.Json
  * 测试事故报案 Rest 接口的 [HandlerFunction]。
  *
  * @author cjw
+ * @author RJ
  */
-@SpringJUnitConfig(AccidentDraftHandler::class)
+@SpringJUnitConfig(UnitTestConfiguration::class, AccidentDraftHandler::class)
 @MockBean(AccidentDraftService::class)
+@WebFluxTest
 class AccidentDraftHandlerTest @Autowired constructor(
-  private val accidentDraftService: AccidentDraftService,
-  private val handler: AccidentDraftHandler
+  private val client: WebTestClient,
+  private val accidentDraftService: AccidentDraftService
 ) {
+  @Configuration
+  class Cfg {
+    @Bean
+    fun theGetRoute(handler: AccidentDraftHandler): RouterFunction<ServerResponse> =
+      route(FIND_REQUEST_PREDICATE, HandlerFunction { handler.find(it) })
+        .andRoute(GET_REQUEST_PREDICATE, HandlerFunction { handler.get(it) })
+        .andRoute(SUBMIT_REQUEST_PREDICATE, HandlerFunction { handler.submit(it) })
+        .andRoute(UPDATE_REQUEST_PREDICATE, HandlerFunction { handler.update(it) })
+  }
+
   private fun randomAccidentDraft(id: Int? = null, code: String): AccidentDraft {
     return AccidentDraft(
       id = id,
       code = code, status = AccidentDraft.Status.Todo, carPlate = "car", driverName = "driver",
-      happenTime = OffsetDateTime.now(), reportTime = OffsetDateTime.now(), location = "location",
-      hitForm = "hitForm", hitType = "hitType", overdue = false,
+      happenTime = OffsetDateTime.now(), createTime = OffsetDateTime.now(), location = "location",
+      hitForm = "hitForm", hitType = "hitType", overdueCreate = false,
       source = "source", authorName = "authorName", authorId = "authorId"
     )
   }
 
   @Test
   fun find() {
-    val client = bindToRouterFunction(RouterFunctions.route(FIND_REQUEST_PREDICATE, HandlerFunction(handler::find))).build()
     // mock
     val pageNo = 1
     val pageSize = 25
@@ -81,7 +98,6 @@ class AccidentDraftHandlerTest @Autowired constructor(
 
   @Test
   fun get() {
-    val client = bindToRouterFunction(RouterFunctions.route(GET_REQUEST_PREDICATE, HandlerFunction(handler::get))).build()
     // mock
     val id = 1
     val code = "20180709_01"
@@ -103,16 +119,25 @@ class AccidentDraftHandlerTest @Autowired constructor(
 
   @Test
   fun submit() {
-    val client = bindToRouterFunction(RouterFunctions.route(SUBMIT_REQUEST_PREDICATE, HandlerFunction(handler::submit))).build()
     // mock
     val now = OffsetDateTime.now()
-    val dto = AccidentDraftDto4Submit("粤A.23J5", "林河", now, "荔湾区福利路",
-      "车辆间事故", "追尾碰撞", "撞车", "BC", "韩智勇",
-      "hzy", now)
+    val dto = AccidentDraftDto4Submit().apply {
+      carPlate = "粤A.23J5"
+      driverName = "林河"
+      happenTime = now
+      location = "荔湾区福利路"
+      hitForm = "车辆间事故"
+      hitType = "追尾碰撞"
+      describe = "撞车"
+      source = "BC"
+      authorName = "韩智勇"
+      authorId = "hzy"
+      createTime = now
+    }
     val data = Json.createObjectBuilder()
     `data`.add("carPlate", dto.carPlate)
     `data`.add("driverName", dto.driverName)
-    `data`.add("happenTime", dto.happenTime.format(FORMAT_DATE_TIME_TO_MINUTE))
+    `data`.add("happenTime", dto.happenTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
     `data`.add("location", dto.location)
     `data`.add("hitForm", dto.hitForm)
     `data`.add("hitType", dto.hitType)
@@ -120,7 +145,7 @@ class AccidentDraftHandlerTest @Autowired constructor(
     `data`.add("source", dto.source)
     `data`.add("authorName", dto.authorName)
     `data`.add("authorId", dto.authorId)
-    `data`.add("reportTime", dto.reportTime.format(FORMAT_DATE_TIME_TO_MINUTE))
+    `data`.add("createTime", dto.createTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
 
     val id = 1
     val code = "20180909_01"
@@ -143,7 +168,6 @@ class AccidentDraftHandlerTest @Autowired constructor(
 
   @Test
   fun updateBySuccess() {
-    val client = bindToRouterFunction(RouterFunctions.route(UPDATE_REQUEST_PREDICATE, HandlerFunction(handler::update))).build()
     // mock
     val id = 1
     val data = Json.createObjectBuilder().add("carPlate", "粤A.N3402").add("driverName", "driver")
@@ -162,7 +186,6 @@ class AccidentDraftHandlerTest @Autowired constructor(
 
   @Test
   fun updateByNotFound() {
-    val client = bindToRouterFunction(RouterFunctions.route(UPDATE_REQUEST_PREDICATE, HandlerFunction(handler::update))).build()
     // mock
     val id = 1
     val data = Json.createObjectBuilder().add("carPlate", "粤A.N3402").add("driverName", "driver")

@@ -81,7 +81,7 @@ class UpdateMethodImplTest @Autowired constructor(
       draft = accidentDraft,
       status = status,
       driverType = DriverType.Official,
-      overdue = overdue,
+      overdueRegister = overdue,
       registerTime = registerTime,
       cars = cars,
       peoples = peoples,

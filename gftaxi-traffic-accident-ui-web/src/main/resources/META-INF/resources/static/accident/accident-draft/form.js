@@ -52,7 +52,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
           return this.ui.statuses[this.e.status] || this.e.status;
         },
         overdueLabel: function () {
-          if (this.e.code) return this.e.overdue ? "是" : "否";
+          if (this.e.code) return this.e.overdueCreate ? "是" : "否";
           else {
             let happenTime = this.e.happenTime ? new Date(this.e.happenTime) : null;
             if (happenTime) return accident.calcInervalHour(happenTime, new Date()) > 12 ? "是" : "否";
@@ -113,7 +113,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
               accident.save(resourceKey, this.e.id, data).then(result => {
                 Vue.set(this.e, "id", result.id);
                 Vue.set(this.e, "code", result.code);
-                Vue.set(this.e, "reportTime", result.reportTime);
+                Vue.set(this.e, "createTime", result.createTime);
                 bc.msg.slide("上报成功！");
                 $page.data("status", "saved");
                 $page.dialog("close");      // 上报案件后关闭表单

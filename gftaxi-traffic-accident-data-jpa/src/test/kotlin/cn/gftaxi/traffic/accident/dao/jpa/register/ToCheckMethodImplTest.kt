@@ -48,7 +48,7 @@ class ToCheckMethodImplTest @Autowired constructor(
       draft = accidentDraft,
       status = status,
       driverType = Official,
-      overdue = overdue,
+      overdueRegister = overdue,
       registerTime = registerTime
     )
     em.persist(accidentRegister)

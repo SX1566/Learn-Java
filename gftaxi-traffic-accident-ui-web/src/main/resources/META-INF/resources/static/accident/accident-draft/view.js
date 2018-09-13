@@ -22,9 +22,9 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
     {id: "hitForm", label: "事故形态", width: "7em"},
     {id: "hitType", label: "碰撞类型", width: "5em"},
     {id: "authorName", label: "接案人", width: "5em"},
-    {id: "reportTime", label: "报案时间", width: "10em"},
+    {id: "createTime", label: "报案时间", width: "10em"},
     {
-      id: "overdue", label: "逾期报案", width: "5em",
+      id: "overdueCreate", label: "逾期报案", width: "5em",
       filter: function (value) {
         return value ? "是" : "否";
       }
