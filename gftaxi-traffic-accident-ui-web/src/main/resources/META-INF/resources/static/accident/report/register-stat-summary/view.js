@@ -2,6 +2,9 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
   "use strict";
 
   let currentYear = new Date().getFullYear();
+  function zero2empty(v) {
+    return v === 0 ? "" : v
+  }
 
   return function Page($page) {
     new Vue({
@@ -35,12 +38,12 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
           let scopeWidths = {Monthly: "7.5em", Quarterly: "9em", Yearly: "5em"};
           return [
             {id: "scope", label: "统计范围", width: scopeWidths[this.scopeType]},
-            {id: "total", label: "事故总数", width: "6em", rowCellStyle: "text-align: center"},
-            {id: "checked", label: "已登已审", width: "6em", rowCellStyle: "text-align: center"},
-            {id: "checking", label: "已登在审", width: "6em", rowCellStyle: "text-align: center"},
-            {id: "drafting", label: "尚未登记", width: "6em", rowCellStyle: "text-align: center"},
-            {id: "overdueDraft", label: "逾期报案", width: "6em", rowCellStyle: "text-align: center"},
-            {id: "overdueRegister", label: "逾期登记", width: "6em", rowCellStyle: "text-align: center"}
+            {id: "total", label: "事故总数", width: "6em", rowCellStyle: "text-align: center", filter: zero2empty},
+            {id: "checked", label: "已登已审", width: "6em", rowCellStyle: "text-align: center", filter: zero2empty},
+            {id: "checking", label: "已登在审", width: "6em", rowCellStyle: "text-align: center", filter: zero2empty},
+            {id: "drafting", label: "尚未登记", width: "6em", rowCellStyle: "text-align: center", filter: zero2empty},
+            {id: "overdueDraft", label: "逾期报案", width: "6em", rowCellStyle: "text-align: center", filter: zero2empty},
+            {id: "overdueRegister", label: "逾期登记", width: "6em", rowCellStyle: "text-align: center", filter: zero2empty}
           ];
         },
         condition: function () {
