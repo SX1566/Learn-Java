@@ -164,7 +164,7 @@ insert into st_category (pid, status, name, sn)
 insert into st_category (pid, status, name, sn)
   select (select id from st_category where pid = 2 and name = '事故处理部门'), 2, name, (row_number() over())::text as sn
   from (select unnest(array['快赔中心', '保险公司', '公司内部', '交警大队/白云一', '交警大队/白云二',
-    '交警大队/天河', '交警大队/荔湾', '交警大队/越秀', '交警大队/海珠', '交警大队/其他', '无']) as name) t;
+    '交警大队/天河', '交警大队/荔湾', '交警大队/越秀', '交警大队/海珠', '无']) as name) t;
 
 -- 交通事故分类标准/事故处理方式/*
 insert into st_category (pid, status, name, sn)
