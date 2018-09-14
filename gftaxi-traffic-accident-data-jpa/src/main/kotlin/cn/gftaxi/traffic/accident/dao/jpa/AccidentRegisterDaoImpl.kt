@@ -412,11 +412,12 @@ class AccidentRegisterDaoImpl @Autowired constructor(
           type = dto.type!!,
           model = dto.model,
           towCount = dto.towCount,
-          towMoney = dto.towMoney,
           repairType = dto.repairType,
-          repairMoney = dto.repairMoney,
+          guessTowMoney = dto.guessTowMoney,
+          guessRepairMoney = dto.guessRepairMoney,
+          actualTowMoney = dto.actualTowMoney,
+          actualRepairMoney = dto.actualRepairMoney,
           damageState = dto.damageState,
-          damageMoney = dto.damageMoney,
           followType = dto.followType,
           updatedTime = OffsetDateTime.now()
         )
@@ -437,9 +438,10 @@ class AccidentRegisterDaoImpl @Autowired constructor(
           transportType = dto.transportType,
           duty = dto.duty,
           damageState = dto.damageState,
-          damageMoney = dto.damageMoney,
-          treatmentMoney = dto.treatmentMoney,
-          compensateMoney = dto.compensateMoney,
+          guessTreatmentMoney = dto.guessTreatmentMoney,
+          guessCompensateMoney = dto.guessCompensateMoney,
+          actualTreatmentMoney = dto.actualTreatmentMoney,
+          actualCompensateMoney = dto.actualCompensateMoney,
           followType = dto.followType,
           updatedTime = OffsetDateTime.now()
         )
@@ -459,7 +461,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
           linkmanName = dto.linkmanName,
           linkmanPhone = dto.linkmanPhone,
           damageState = dto.damageState,
-          damageMoney = dto.damageMoney,
+          guessMoney = dto.guessMoney,
           actualMoney = dto.actualMoney,
           followType = dto.followType,
           updatedTime = OffsetDateTime.now()

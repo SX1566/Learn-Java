@@ -45,7 +45,7 @@ data class AccidentOther constructor(
   val damageState: String? = null,
   /** 损失预估（元） */
   @Column(precision = 10, scale = 2)
-  val damageMoney: BigDecimal? = null,
+  val guessMoney: BigDecimal? = null,
   /** 实际损失（元） */
   @Column(precision = 10, scale = 2)
   val actualMoney: BigDecimal? = null,

@@ -14,6 +14,6 @@ class AccidentOtherDto4Form : AccidentCaseSubListDto4FormBaseInfo() {
   var linkmanName: String? by data
   var linkmanPhone: String? by data
   var damageState: String? by data
-  var damageMoney: BigDecimal? by data
+  var guessMoney: BigDecimal? by data
   var actualMoney: BigDecimal? by data
 }

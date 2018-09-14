@@ -42,7 +42,7 @@ define(["bc", "vue", "context", "static/accident/api", "static/accident/simter-f
     {
       id: "overdueDraft", label: "逾期报案", width: "5em",
       filter: function (value, row) {
-        return !value ? "否" : accident.calcInervalDayAndHour(new Date(row.happenTime), new Date(row.draftTime));
+        return value ? accident.calcInervalDayAndHour(new Date(row.happenTime), new Date(row.draftTime)) : '';
       }
     }
   ];
@@ -103,7 +103,7 @@ define(["bc", "vue", "context", "static/accident/api", "static/accident/simter-f
         {
           id: "overdueRegister", label: "逾期登记", width: "5em",
           filter: function (value, row) {
-            return !value ? "否" : accident.calcInervalDayAndHour(new Date(row.happenTime), new Date(row.registerTime));
+            return value ? accident.calcInervalDayAndHour(new Date(row.happenTime), new Date(row.registerTime)) : '';
           }
         }
       ]);
