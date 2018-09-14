@@ -510,6 +510,10 @@
   <widgets xsi:type="model:Panel" id="886" x="4" y="4" width="16" height="16" measuredWidth="16" measuredHeight="16" alpha="0" border="none"/>
   <widgets xsi:type="model:Panel" id="887" x="9" y="1808" width="16" height="16" measuredWidth="16" measuredHeight="16" alpha="0" border="none"/>
   <widgets xsi:type="model:Panel" id="888" x="966" y="19" width="16" height="16" measuredWidth="16" measuredHeight="16" alpha="0" border="none"/>
+  <widgets xsi:type="model:Label" id="889" x="200" y="506" text="可选择也可自行输入" measuredWidth="114" measuredHeight="25" foreground="#f00">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Arrow" id="890" x="169" y="519" width="31" height="25" measuredWidth="31" measuredHeight="25" foreground="#f00" lineStyle="dashed" left="false" right="true" direction="bottom"/>
   <hRuler/>
   <vRuler/>
   <font size="12px"/>
