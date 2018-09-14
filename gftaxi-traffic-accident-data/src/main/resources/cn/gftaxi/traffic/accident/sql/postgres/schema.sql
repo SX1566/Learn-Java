@@ -46,11 +46,11 @@ create table gf_accident_draft (
   car_plate      varchar(10)  not null,
   driver_name    varchar(10)  not null,
   happen_time    timestamptz   not null,
-  report_time    timestamptz   not null,
+  draft_time     timestamptz   not null,
   location       varchar(100) not null,
   hit_form       varchar(50)  not null,
   hit_type       varchar(50)  not null,
-  overdue        boolean       not null,
+  overdue_draft  boolean       not null,
   source         varchar(10)  not null,
   author_name    varchar(50)  not null,
   author_id      varchar(50)  not null,
@@ -64,11 +64,11 @@ comment on column gf_accident_draft.motorcade_name is '事发车队名称';
 comment on column gf_accident_draft.car_plate      is '车号，如 "粤A123456"';
 comment on column gf_accident_draft.driver_name    is '当事司机姓名';
 comment on column gf_accident_draft.happen_time    is '事发时间';
-comment on column gf_accident_draft.report_time    is '报案时间';
+comment on column gf_accident_draft.draft_time     is '报案时间';
 comment on column gf_accident_draft.location       is '事发地点';
 comment on column gf_accident_draft.hit_form       is '事故形态';
 comment on column gf_accident_draft.hit_type       is '碰撞类型';
-comment on column gf_accident_draft.overdue        is '是否逾期报案';
+comment on column gf_accident_draft.overdue_draft  is '是否逾期报案';
 comment on column gf_accident_draft.source         is '报案来源：BC-BC系统Web端、EMAIL-邮件、WEIXIN-微信、SMS-短信、{appId}-应用ID';
 comment on column gf_accident_draft.author_name    is '接案人姓名';
 comment on column gf_accident_draft.author_id      is '接案人标识：邮件报案为邮箱、短信报案为手机号、其余为对应的登陆账号';
@@ -91,7 +91,7 @@ create table gf_accident_register (
   happen_time                   timestamptz  not null,
   describe                      text,
   register_time                 timestamptz,
-  overdue                       boolean,
+  overdue_register              boolean,
   -- 事发地点
   location_level1               varchar(50),
   location_level2               varchar(50),
@@ -167,7 +167,7 @@ comment on column gf_accident_register.driver_pic_id        is '司机/图片 ID
 comment on column gf_accident_register.happen_time          is '事发时间';
 comment on column gf_accident_register.describe             is '事发经过';
 comment on column gf_accident_register.register_time        is '登记时间，等于首次提交审核的时间';
-comment on column gf_accident_register.overdue              is '是否逾期登记';
+comment on column gf_accident_register.overdue_register     is '是否逾期登记';
 -- 事发地点
 --     广东省/广州市/荔湾区/芳村上市路
 --     北京市/市辖区/东城区/东华门街道
