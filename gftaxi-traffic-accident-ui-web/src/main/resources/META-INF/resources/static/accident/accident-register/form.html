@@ -724,7 +724,7 @@
         <td class="ui-widget-content" style="padding: 0 0.25em;text-align: left">{{other.linkmanName}}</td>
         <td class="ui-widget-content" style="padding: 0 0.25em;text-align: left">{{other.linkmanPhone}}</td>
         <td class="ui-widget-content" style="padding: 0 0.25em;text-align: left">{{other.damageState}}</td>
-        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{other.guessTotalMoney}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{other.guessMoney}}</td>
         <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{other.actualMoney}}</td>
         <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{other.followType}}</td>
         <td :class="{'ui-widget-content':true, 'ui-state-disabled':!isReadOnly}"
@@ -759,10 +759,12 @@
           <input type="text" class="ui-widget-content" data-validate="required" v-model="other.damageState"/>
         </td>
         <td class="ui-widget-content">
-          <input type="text" class="ui-widget-content" data-validate="required" v-model="other.guessTotalMoney"/>
+          <input type="number" class="ui-widget-content" data-validate="required" v-model="other.guessMoney"
+                 style="width: 100%;border: 0;text-align: right"/>
         </td>
         <td class="ui-widget-content">
-          <input type="text" class="ui-widget-content" data-validate="required" v-model="other.actualMoney"/>
+          <input type="number" class="ui-widget-content" v-model="other.actualMoney"
+                 style="width: 100%;border: 0;text-align: right"/>
         </td>
         <td class="ui-widget-content">
           <select class="ui-widget-content" v-model="other.followType" data-validate="required">

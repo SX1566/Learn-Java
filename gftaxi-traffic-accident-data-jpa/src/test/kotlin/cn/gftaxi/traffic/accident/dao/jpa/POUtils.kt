@@ -390,7 +390,7 @@ object POUtils {
       linkmanName = random("linkmanName"),
       linkmanPhone = random("linkmanPhone"),
       damageState = random("damageState"),
-      damageMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      guessMoney = BigDecimal("${randomInt(1, 100)}.00"),
       actualMoney = BigDecimal("${randomInt(1, 100)}.00"),
       followType = random("followType"),
       updatedTime = OffsetDateTime.now()

@@ -198,7 +198,7 @@ object Utils {
     dto.linkmanName = po.linkmanName
     dto.linkmanPhone = po.linkmanPhone
     dto.damageState = po.damageState
-    dto.damageMoney = po.damageMoney
+    dto.guessMoney = po.guessMoney
     dto.actualMoney = po.actualMoney
     dto.followType = po.followType
     dto.updatedTime = po.updatedTime

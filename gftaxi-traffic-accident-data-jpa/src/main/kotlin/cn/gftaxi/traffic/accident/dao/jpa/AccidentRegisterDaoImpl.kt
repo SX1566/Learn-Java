@@ -461,7 +461,7 @@ class AccidentRegisterDaoImpl @Autowired constructor(
           linkmanName = dto.linkmanName,
           linkmanPhone = dto.linkmanPhone,
           damageState = dto.damageState,
-          damageMoney = dto.damageMoney,
+          guessMoney = dto.guessMoney,
           actualMoney = dto.actualMoney,
           followType = dto.followType,
           updatedTime = OffsetDateTime.now()

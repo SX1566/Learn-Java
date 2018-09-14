@@ -484,7 +484,7 @@ class UpdateMethodImplTest @Autowired constructor(
     val otherDto = AccidentOtherDto4Form().apply {
       id = otherPo.id
       name = random("name")
-      damageMoney = BigDecimal("${randomInt(200, 300)}.00")
+      guessMoney = BigDecimal("${randomInt(200, 300)}.00")
     }
     val registerDto = AccidentRegisterDto4Form().apply { others = listOf(otherDto) }
 
@@ -499,15 +499,15 @@ class UpdateMethodImplTest @Autowired constructor(
 
     // 如下属性应该更新为新的值：
     assertNotEquals(otherPo.name, updatedOtherPo.name)
-    assertNotEquals(otherPo.damageMoney, updatedOtherPo.damageMoney)
+    assertNotEquals(otherPo.guessMoney, updatedOtherPo.guessMoney)
 
     assertEquals(otherDto.name, updatedOtherPo.name)
-    assertEquals(otherDto.damageMoney, updatedOtherPo.damageMoney)
+    assertEquals(otherDto.guessMoney, updatedOtherPo.guessMoney)
     assertTrue(updatedOtherPo.updatedTime!!.isAfter(now))
 
     // 其他属性应保持原值没有更新
     AccidentOther::class.memberProperties
-      .filterNot { listOf("id", "parent", "updatedTime", "name", "damageMoney").contains(it.name) }
+      .filterNot { listOf("id", "parent", "updatedTime", "name", "guessMoney").contains(it.name) }
       .forEach { assertEquals(it.get(otherPo), it.get(updatedOtherPo)) }
   }
 

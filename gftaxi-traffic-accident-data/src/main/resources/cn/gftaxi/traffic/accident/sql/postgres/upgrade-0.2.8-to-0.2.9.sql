@@ -31,3 +31,6 @@ comment on column gf_accident_people.actual_treatment_money is '实际医疗费�
 alter table gf_accident_people add column actual_compensate_money decimal(10, 2);
 comment on column gf_accident_people.actual_compensate_money is '实际赔偿损失（元）';
 alter table gf_accident_people drop damage_money;
+
+-- 其他物体
+alter table gf_accident_other rename column damage_money to guess_money;

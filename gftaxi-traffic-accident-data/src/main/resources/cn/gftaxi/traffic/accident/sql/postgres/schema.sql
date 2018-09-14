@@ -280,7 +280,7 @@ create table gf_accident_other (
   linkman_name  varchar(50),
   linkman_phone varchar(50),
   damage_state  varchar(50),
-  damage_money  decimal(10, 2),
+  guess_money   decimal(10, 2),
   actual_money  decimal(10, 2),
   follow_type   varchar(50),
   updated_time  timestamptz not null,
@@ -295,7 +295,7 @@ comment on column gf_accident_other.belong        is '归属';
 comment on column gf_accident_other.linkman_name  is '联系人';
 comment on column gf_accident_other.linkman_phone is '联系电话';
 comment on column gf_accident_other.damage_state  is '受损情况';
-comment on column gf_accident_other.damage_money  is '损失预估（元）';
+comment on column gf_accident_other.guess_money   is '损失预估（元）';
 comment on column gf_accident_other.actual_money  is '实际损失（元）';
 comment on column gf_accident_other.follow_type   is '跟进形式';
 comment on column gf_accident_other.updated_time  is '更新时间';
