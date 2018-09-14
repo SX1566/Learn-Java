@@ -577,20 +577,23 @@
     <table class="simple" :style="{minWidth: ui.fixedWidth, width: '100%'}">
       <colgroup is="accident-people-column-definitions"></colgroup>
       <tr>
-        <td class="ui-widget-content" style="text-align: center">序号</td>
-        <td class="ui-widget-content" style="text-align: center">分类</td>
-        <td class="ui-widget-content" style="text-align: center">姓名</td>
-        <td class="ui-widget-content" style="text-align: center">性别</td>
-        <td class="ui-widget-content" style="text-align: center">联系电话</td>
-        <td class="ui-widget-content" style="text-align: center">交通方式</td>
-        <td class="ui-widget-content" style="text-align: center">事故责任</td>
-        <td class="ui-widget-content" style="text-align: center">伤亡</td>
-        <td class="ui-widget-content" style="text-align: center">损失预估(元)</td>
-        <td class="ui-widget-content" style="text-align: center">医疗费用(元)</td>
-        <td class="ui-widget-content" style="text-align: center">赔偿损失(元)</td>
-        <td class="ui-widget-content" style="text-align: center">跟进形式</td>
-        <td class="ui-widget-content" style="text-align: center">更新时间</td>
-        <td class="ui-widget-content"></td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">序号</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">分类</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">姓名</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">性别</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">联系电话</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">交通方式</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">事故责任</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">伤亡</td>
+        <td colspan="3" class="ui-widget-content" style="text-align: center">损失预估(元)</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">跟进形式</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">更新时间</td>
+        <td rowspan="2" class="ui-widget-content"></td>
+      </tr>
+      <tr>
+        <td class="ui-widget-content" style="text-align: center">医疗费</td>
+        <td class="ui-widget-content" style="text-align: center">赔偿损失</td>
+        <td class="ui-widget-content" style="text-align: center">合计</td>
       </tr>
       <tbody v-if="isReadOnly">
       <tr v-for="(index, people) in e.peoples"
@@ -605,9 +608,9 @@
         <td class="ui-widget-content" style="padding: 0 0.25em;text-align: left">{{people.transportType}}</td>
         <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{people.duty}}</td>
         <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{people.damageState}}</td>
-        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{people.damageMoney}}</td>
-        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{people.treatmentMoney}}</td>
-        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{people.compensateMoney}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{people.guessTreatmentMoney}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{people.guessCompensateMoney}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{sumMonies(people.guessTreatmentMoney, people.guessCompensateMoney)}}</td>
         <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{people.followType}}</td>
         <td :class="{'ui-widget-content':true, 'ui-state-disabled':!isReadOnly}"
             style="padding: 0 0.25em;text-align: center">{{people.updatedTime}}
@@ -652,13 +655,16 @@
           </select>
         </td>
         <td class="ui-widget-content">
-          <input type="text" class="ui-widget-content" data-validate="required" v-model="people.damageMoney"/>
+          <input type="number" class="ui-widget-content" data-validate="required" v-model="people.guessTreatmentMoney"
+                 style="width: 100%;border: 0;text-align: right"/>
         </td>
         <td class="ui-widget-content">
-          <input type="text" class="ui-widget-content" data-validate="required" v-model="people.treatmentMoney"/>
+          <input type="number" class="ui-widget-content" data-validate="required" v-model="people.guessCompensateMoney"
+                 style="width: 100%;border: 0;text-align: right"/>
         </td>
         <td class="ui-widget-content">
-          <input type="text" class="ui-widget-content" data-validate="required" v-model="people.compensateMoney"/>
+          <input type="number" class="ui-widget-content" :value="sumMonies(people.guessTreatmentMoney, people.guessCompensateMoney)"
+                 style="width: 100%;border: 0;text-align: right" readonly/>
         </td>
         <td class="ui-widget-content">
           <select class="ui-widget-content" v-model="people.followType" data-validate="required">

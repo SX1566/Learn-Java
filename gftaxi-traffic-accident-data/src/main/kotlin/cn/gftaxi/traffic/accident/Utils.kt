@@ -176,9 +176,10 @@ object Utils {
     dto.transportType = po.transportType
     dto.duty = po.duty
     dto.damageState = po.damageState
-    dto.damageMoney = po.damageMoney
-    dto.treatmentMoney = po.treatmentMoney
-    dto.compensateMoney = po.compensateMoney
+    dto.guessTreatmentMoney = po.guessTreatmentMoney
+    dto.guessCompensateMoney = po.guessCompensateMoney
+    dto.actualTreatmentMoney = po.actualTreatmentMoney
+    dto.actualCompensateMoney = po.actualCompensateMoney
     dto.followType = po.followType
     dto.updatedTime = po.updatedTime
     return dto

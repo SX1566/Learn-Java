@@ -365,9 +365,10 @@ object POUtils {
       transportType = random("transportType"),
       duty = random("duty"),
       damageState = random("damageState"),
-      damageMoney = BigDecimal("${randomInt(1, 100)}.00"),
-      treatmentMoney = BigDecimal("${randomInt(1, 100)}.00"),
-      compensateMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      guessTreatmentMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      guessCompensateMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      actualTreatmentMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      actualCompensateMoney = BigDecimal("${randomInt(1, 100)}.00"),
       followType = random("followType"),
       updatedTime = OffsetDateTime.now()
     )

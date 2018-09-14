@@ -234,38 +234,41 @@ comment on column gf_accident_car.follow_type         is '跟进形式';
 comment on column gf_accident_car.updated_time        is '更新时间';
 
 create table gf_accident_people (
-  id               serial primary key,
-  pid              int references gf_accident_register on delete cascade,
-  sn               smallint    not null,
-  name             varchar(50) not null,
-  type             varchar(50),
-  sex              smallint    not null,
-  phone            varchar(50),
-  transport_type   varchar(50),
-  duty             varchar(50),
-  damage_state     varchar(50),
-  damage_money     decimal(10, 2),
-  treatment_money  decimal(10, 2),
-  compensate_money decimal(10, 2),
-  follow_type      varchar(50),
-  updated_time     timestamptz not null,
+  id                      serial primary key,
+  pid                     int references gf_accident_register on delete cascade,
+  sn                      smallint    not null,
+  name                    varchar(50) not null,
+  type                    varchar(50),
+  sex                     smallint    not null,
+  phone                   varchar(50),
+  transport_type          varchar(50),
+  duty                    varchar(50),
+  damage_state            varchar(50),
+  guess_treatment_money   decimal(10, 2),
+  guess_compensate_money  decimal(10, 2),
+  actual_treatment_money  decimal(10, 2),
+  actual_compensate_money decimal(10, 2),
+  follow_type             varchar(50),
+  updated_time            timestamptz not null,
   constraint gf_accident_people_pid_name_ukey unique (pid, name)
 );
-comment on table gf_accident_people                   is '事故当事人';
-comment on column gf_accident_people.pid              is '所属事故ID';
-comment on column gf_accident_people.sn               is '同一事故内的序号';
-comment on column gf_accident_people.name             is '姓名';
-comment on column gf_accident_people.type             is '分类：自车、三者';
-comment on column gf_accident_people.sex              is '性别：0-未设置,1-男,2-女';
-comment on column gf_accident_people.phone            is '联系电话';
-comment on column gf_accident_people.transport_type   is '交通方式';
-comment on column gf_accident_people.duty             is '事故责任';
-comment on column gf_accident_people.damage_state     is '伤亡情况';
-comment on column gf_accident_people.damage_money     is '损失预估（元）';
-comment on column gf_accident_people.treatment_money  is '医疗费用（元）';
-comment on column gf_accident_people.compensate_money is '赔偿损失（元）';
-comment on column gf_accident_people.follow_type      is '跟进形式';
-comment on column gf_accident_people.updated_time     is '更新时间';
+comment on table gf_accident_people                          is '事故当事人';
+comment on column gf_accident_people.pid                     is '所属事故ID';
+comment on column gf_accident_people.sn                      is '同一事故内的序号';
+comment on column gf_accident_people.name                    is '姓名';
+comment on column gf_accident_people.type                    is '分类：自车、三者';
+comment on column gf_accident_people.sex                     is '性别：0-未设置,1-男,2-女';
+comment on column gf_accident_people.phone                   is '联系电话';
+comment on column gf_accident_people.transport_type          is '交通方式';
+comment on column gf_accident_people.duty                    is '事故责任';
+comment on column gf_accident_people.damage_state            is '伤亡情况';
+comment on column gf_accident_people.damage_money            is '损失预估（元）';
+comment on column gf_accident_people.guess_treatment_money   is '预估医疗费（元）';
+comment on column gf_accident_people.guess_compensate_money  is '预估赔偿损失（元）';
+comment on column gf_accident_people.actual_treatment_money  is '实际医疗费（元）';
+comment on column gf_accident_people.actual_compensate_money is '实际赔偿损失（元）';
+comment on column gf_accident_people.follow_type             is '跟进形式';
+comment on column gf_accident_people.updated_time            is '更新时间';
 
 create table gf_accident_other (
   id            serial primary key,

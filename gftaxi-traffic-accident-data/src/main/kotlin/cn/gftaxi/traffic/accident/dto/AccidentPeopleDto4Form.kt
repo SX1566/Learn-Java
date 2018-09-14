@@ -16,7 +16,8 @@ class AccidentPeopleDto4Form : AccidentCaseSubListDto4FormBaseInfo() {
   var transportType: String? by data
   var duty: String? by data
   var damageState: String? by data
-  var damageMoney: BigDecimal? by data
-  var treatmentMoney: BigDecimal? by data
-  var compensateMoney: BigDecimal? by data
+  var guessTreatmentMoney: BigDecimal? by data
+  var guessCompensateMoney: BigDecimal? by data
+  var actualTreatmentMoney: BigDecimal? by data
+  var actualCompensateMoney: BigDecimal? by data
 }

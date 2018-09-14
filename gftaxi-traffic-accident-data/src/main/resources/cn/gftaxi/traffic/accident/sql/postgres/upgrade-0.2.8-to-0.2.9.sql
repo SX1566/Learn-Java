@@ -20,3 +20,14 @@ comment on column gf_accident_car.actual_tow_money is '实际拖车费（元）'
 alter table gf_accident_car add column actual_repair_money decimal(10, 2);
 comment on column gf_accident_car.actual_repair_money is '实际维修费（元）';
 alter table gf_accident_car drop damage_money;
+
+-- 当事人
+alter table gf_accident_people rename column treatment_money to guess_treatment_money;
+comment on column gf_accident_people.guess_treatment_money is '预估医疗费（元）';
+alter table gf_accident_people rename column compensate_money to guess_compensate_money;
+comment on column gf_accident_people.guess_compensate_money is '预估赔偿损失（元）';
+alter table gf_accident_people add column actual_treatment_money decimal(10, 2);
+comment on column gf_accident_people.actual_treatment_money is '实际医疗费（元）';
+alter table gf_accident_people add column actual_compensate_money decimal(10, 2);
+comment on column gf_accident_people.actual_compensate_money is '实际赔偿损失（元）';
+alter table gf_accident_people drop damage_money;

@@ -45,15 +45,18 @@ data class AccidentPeople constructor(
   /** 伤亡情况 */
   @Column(length = 50)
   val damageState: String? = null,
-  /** 损失预估（元） */
+  /** 预估医疗费（元） */
   @Column(precision = 10, scale = 2)
-  val damageMoney: BigDecimal? = null,
-  /** 医疗费用（元） */
+  val guessTreatmentMoney: BigDecimal? = null,
+  /** 预估赔偿损失（元） */
   @Column(precision = 10, scale = 2)
-  val treatmentMoney: BigDecimal? = null,
-  /** 赔偿损失（元） */
+  val guessCompensateMoney: BigDecimal? = null,
+  /** 实际医疗费（元） */
   @Column(precision = 10, scale = 2)
-  val compensateMoney: BigDecimal? = null,
+  val actualTreatmentMoney: BigDecimal? = null,
+  /** 实际赔偿损失（元） */
+  @Column(precision = 10, scale = 2)
+  val actualCompensateMoney: BigDecimal? = null,
   /** 跟进形式 */
   @Column(length = 50)
   val followType: String? = null,

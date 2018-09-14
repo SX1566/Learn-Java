@@ -438,9 +438,10 @@ class AccidentRegisterDaoImpl @Autowired constructor(
           transportType = dto.transportType,
           duty = dto.duty,
           damageState = dto.damageState,
-          damageMoney = dto.damageMoney,
-          treatmentMoney = dto.treatmentMoney,
-          compensateMoney = dto.compensateMoney,
+          guessTreatmentMoney = dto.guessTreatmentMoney,
+          guessCompensateMoney = dto.guessCompensateMoney,
+          actualTreatmentMoney = dto.actualTreatmentMoney,
+          actualCompensateMoney = dto.actualCompensateMoney,
           followType = dto.followType,
           updatedTime = OffsetDateTime.now()
         )
