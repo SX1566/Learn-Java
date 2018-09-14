@@ -3,9 +3,6 @@
   <widgets xsi:type="model:Shape" id="2" x="8" y="8" width="969" height="36" text="事故附件" measuredWidth="969" measuredHeight="36" background="#ccc" textAlignment="Left" shapeType="rectangle">
     <font/>
   </widgets>
-  <widgets xsi:type="model:Label" id="3" x="840" y="13" text=" {download}  {arrow-up}  {arrow-down}  {delete}" measuredWidth="98" measuredHeight="25" textAlignment="Right">
-    <font/>
-  </widgets>
   <widgets xsi:type="model:Table" id="4" x="8" y="42" width="969" height="242" text="=(w:30). 序号,=(w:200). 名称,=(w:20). 类型,=(w:70). 大小,=(w:160). 更新时间, &lt;. 操作&#xD;&#xA;1, &lt;. 事故责任认定书/协议书, &lt;. ,,, &lt;. [上传]&#xD;&#xA;2, &lt;. 车辆维修照片, &lt;. {closed} [文件夹], >. 100 KB, 2018-07-10 12:00 黄小明, &lt;. [打开]&#xD;&#xA;{check}, &lt;. 法院判决书、调解书.docx, &lt;. {word} 文档, >. 1.2 MB, 2018-07-10 12:10 黄小明, &lt;. [下载] [查看] [打印] [重新上传]&#xD;&#xA;4, &lt;. 医疗发票.pdf, &lt;. {pdf} 文档, >. 10 KB, 2018-07-10 12:10 张小贤, &lt;. [下载] [查看] [打印] [重新上传]&#xD;&#xA;5, &lt;. 定损单.png, &lt;. {image} 图片, >. 10 KB, 2018-07-10 12:10 张小贤, &lt;. [下载] [查看] [打印] [重新上传]&#xD;&#xA;6, &lt;. 现场照片.zip, &lt;. {list} 压缩包, >. 10 MB, 2018-07-10 12:10 张小贤, &lt;. [下载] [重新上传]&#xD;&#xA;{upload}," measuredWidth="969" measuredHeight="242" rowHeight="30" horizontalLines="true" alternative="#eee">
     <font/>
     <items x="537" y="36" width="24" height="17" text="上传"/>

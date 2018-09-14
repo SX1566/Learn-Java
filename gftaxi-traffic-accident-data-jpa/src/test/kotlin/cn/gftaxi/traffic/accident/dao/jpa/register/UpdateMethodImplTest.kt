@@ -229,7 +229,8 @@ class UpdateMethodImplTest @Autowired constructor(
       id = carPo.id
       model = "出租车"
       towCount = randomInt(20, 30).toShort()
-      damageMoney = BigDecimal("${randomInt(200, 300)}.00")
+      guessTowMoney = BigDecimal("${randomInt(200, 300)}.00")
+      guessRepairMoney = BigDecimal("${randomInt(200, 300)}.00")
     }
     val registerDto = AccidentRegisterDto4Form().apply { cars = listOf(carDto) }
 
@@ -245,17 +246,20 @@ class UpdateMethodImplTest @Autowired constructor(
     // 如下属性应该更新为新的值：
     assertNotEquals(carPo.model, updatedCarPo.model)
     assertNotEquals(carPo.towCount, updatedCarPo.towCount)
-    assertNotEquals(carPo.damageMoney, updatedCarPo.damageMoney)
+    assertNotEquals(carPo.guessTowMoney, updatedCarPo.guessTowMoney)
+    assertNotEquals(carPo.guessRepairMoney, updatedCarPo.guessRepairMoney)
 
     assertEquals(carDto.model, updatedCarPo.model)
     assertEquals(carDto.towCount, updatedCarPo.towCount)
-    assertEquals(carDto.damageMoney, updatedCarPo.damageMoney)
+    assertEquals(carDto.guessTowMoney, updatedCarPo.guessTowMoney)
+    assertEquals(carDto.guessRepairMoney, updatedCarPo.guessRepairMoney)
     assertTrue(updatedCarPo.updatedTime!!.isAfter(now))
 
     // 其他属性应保持原值没有更新
     AccidentCar::class.memberProperties
-      .filterNot { listOf("id", "parent", "updatedTime", "model", "towCount", "damageMoney").contains(it.name) }
-      .forEach { assertEquals(it.get(carPo), it.get(updatedCarPo)) }
+      .filterNot {
+        listOf("id", "parent", "updatedTime", "model", "towCount", "guessTowMoney", "guessRepairMoney").contains(it.name)
+      }.forEach { assertEquals(it.get(carPo), it.get(updatedCarPo)) }
   }
 
   @Test
@@ -355,7 +359,7 @@ class UpdateMethodImplTest @Autowired constructor(
       id = peoplePo.id
       name = random("driver")
       sex = Female
-      damageMoney = BigDecimal("${randomInt(200, 300)}.00")
+      guessTreatmentMoney = BigDecimal("${randomInt(200, 300)}.00")
     }
     val registerDto = AccidentRegisterDto4Form().apply { peoples = listOf(peopleDto) }
 
@@ -371,16 +375,16 @@ class UpdateMethodImplTest @Autowired constructor(
     // 如下属性应该更新为新的值：
     assertNotEquals(peoplePo.name, updatedPeoplePo.name)
     assertNotEquals(peoplePo.sex, updatedPeoplePo.sex)
-    assertNotEquals(peoplePo.damageMoney, updatedPeoplePo.damageMoney)
+    assertNotEquals(peoplePo.guessTreatmentMoney, updatedPeoplePo.guessTreatmentMoney)
 
     assertEquals(peopleDto.name, updatedPeoplePo.name)
     assertEquals(peopleDto.sex, updatedPeoplePo.sex)
-    assertEquals(peopleDto.damageMoney, updatedPeoplePo.damageMoney)
+    assertEquals(peopleDto.guessTreatmentMoney, updatedPeoplePo.guessTreatmentMoney)
     assertTrue(updatedPeoplePo.updatedTime!!.isAfter(now))
 
     // 其他属性应保持原值没有更新
     AccidentPeople::class.memberProperties
-      .filterNot { listOf("id", "parent", "updatedTime", "name", "sex", "damageMoney").contains(it.name) }
+      .filterNot { listOf("id", "parent", "updatedTime", "name", "sex", "guessTreatmentMoney").contains(it.name) }
       .forEach { assertEquals(it.get(peoplePo), it.get(updatedPeoplePo)) }
   }
 
@@ -480,7 +484,7 @@ class UpdateMethodImplTest @Autowired constructor(
     val otherDto = AccidentOtherDto4Form().apply {
       id = otherPo.id
       name = random("name")
-      damageMoney = BigDecimal("${randomInt(200, 300)}.00")
+      guessMoney = BigDecimal("${randomInt(200, 300)}.00")
     }
     val registerDto = AccidentRegisterDto4Form().apply { others = listOf(otherDto) }
 
@@ -495,15 +499,15 @@ class UpdateMethodImplTest @Autowired constructor(
 
     // 如下属性应该更新为新的值：
     assertNotEquals(otherPo.name, updatedOtherPo.name)
-    assertNotEquals(otherPo.damageMoney, updatedOtherPo.damageMoney)
+    assertNotEquals(otherPo.guessMoney, updatedOtherPo.guessMoney)
 
     assertEquals(otherDto.name, updatedOtherPo.name)
-    assertEquals(otherDto.damageMoney, updatedOtherPo.damageMoney)
+    assertEquals(otherDto.guessMoney, updatedOtherPo.guessMoney)
     assertTrue(updatedOtherPo.updatedTime!!.isAfter(now))
 
     // 其他属性应保持原值没有更新
     AccidentOther::class.memberProperties
-      .filterNot { listOf("id", "parent", "updatedTime", "name", "damageMoney").contains(it.name) }
+      .filterNot { listOf("id", "parent", "updatedTime", "name", "guessMoney").contains(it.name) }
       .forEach { assertEquals(it.get(otherPo), it.get(updatedOtherPo)) }
   }
 

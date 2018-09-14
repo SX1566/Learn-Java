@@ -336,11 +336,12 @@ object POUtils {
       type = type,
       model = model,
       towCount = randomInt(1, 10).toShort(),
-      towMoney = BigDecimal("${randomInt(1, 100)}.00"),
       repairType = random("repairType"),
-      repairMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      guessTowMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      guessRepairMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      actualTowMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      actualRepairMoney = BigDecimal("${randomInt(1, 100)}.00"),
       damageState = random("damageState"),
-      damageMoney = BigDecimal("${randomInt(1, 100)}.00"),
       followType = random("followType"),
       updatedTime = OffsetDateTime.now()
     )
@@ -364,9 +365,10 @@ object POUtils {
       transportType = random("transportType"),
       duty = random("duty"),
       damageState = random("damageState"),
-      damageMoney = BigDecimal("${randomInt(1, 100)}.00"),
-      treatmentMoney = BigDecimal("${randomInt(1, 100)}.00"),
-      compensateMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      guessTreatmentMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      guessCompensateMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      actualTreatmentMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      actualCompensateMoney = BigDecimal("${randomInt(1, 100)}.00"),
       followType = random("followType"),
       updatedTime = OffsetDateTime.now()
     )
@@ -388,7 +390,7 @@ object POUtils {
       linkmanName = random("linkmanName"),
       linkmanPhone = random("linkmanPhone"),
       damageState = random("damageState"),
-      damageMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      guessMoney = BigDecimal("${randomInt(1, 100)}.00"),
       actualMoney = BigDecimal("${randomInt(1, 100)}.00"),
       followType = random("followType"),
       updatedTime = OffsetDateTime.now()

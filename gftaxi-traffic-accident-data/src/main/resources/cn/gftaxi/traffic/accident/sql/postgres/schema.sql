@@ -46,11 +46,11 @@ create table gf_accident_draft (
   car_plate      varchar(10)  not null,
   driver_name    varchar(10)  not null,
   happen_time    timestamptz   not null,
-  report_time    timestamptz   not null,
+  draft_time     timestamptz   not null,
   location       varchar(100) not null,
   hit_form       varchar(50)  not null,
   hit_type       varchar(50)  not null,
-  overdue        boolean       not null,
+  overdue_draft  boolean       not null,
   source         varchar(10)  not null,
   author_name    varchar(50)  not null,
   author_id      varchar(50)  not null,
@@ -64,11 +64,11 @@ comment on column gf_accident_draft.motorcade_name is '事发车队名称';
 comment on column gf_accident_draft.car_plate      is '车号，如 "粤A123456"';
 comment on column gf_accident_draft.driver_name    is '当事司机姓名';
 comment on column gf_accident_draft.happen_time    is '事发时间';
-comment on column gf_accident_draft.report_time    is '报案时间';
+comment on column gf_accident_draft.draft_time     is '报案时间';
 comment on column gf_accident_draft.location       is '事发地点';
 comment on column gf_accident_draft.hit_form       is '事故形态';
 comment on column gf_accident_draft.hit_type       is '碰撞类型';
-comment on column gf_accident_draft.overdue        is '是否逾期报案';
+comment on column gf_accident_draft.overdue_draft  is '是否逾期报案';
 comment on column gf_accident_draft.source         is '报案来源：BC-BC系统Web端、EMAIL-邮件、WEIXIN-微信、SMS-短信、{appId}-应用ID';
 comment on column gf_accident_draft.author_name    is '接案人姓名';
 comment on column gf_accident_draft.author_id      is '接案人标识：邮件报案为邮箱、短信报案为手机号、其余为对应的登陆账号';
@@ -91,7 +91,7 @@ create table gf_accident_register (
   happen_time                   timestamptz  not null,
   describe                      text,
   register_time                 timestamptz,
-  overdue                       boolean,
+  overdue_register              boolean,
   -- 事发地点
   location_level1               varchar(50),
   location_level2               varchar(50),
@@ -167,7 +167,7 @@ comment on column gf_accident_register.driver_pic_id        is '司机/图片 ID
 comment on column gf_accident_register.happen_time          is '事发时间';
 comment on column gf_accident_register.describe             is '事发经过';
 comment on column gf_accident_register.register_time        is '登记时间，等于首次提交审核的时间';
-comment on column gf_accident_register.overdue              is '是否逾期登记';
+comment on column gf_accident_register.overdue_register     is '是否逾期登记';
 -- 事发地点
 --     广东省/广州市/荔湾区/芳村上市路
 --     北京市/市辖区/东城区/东华门街道
@@ -200,70 +200,75 @@ comment on column gf_accident_register.history_service_offence_count is '历史�
 comment on column gf_accident_register.history_complain_count        is '历史服务投诉次数，从事发日向前推一年期间当事司机的统计';
 
 create table gf_accident_car (
-  id           serial primary key,
-  pid          int references gf_accident_register on delete cascade,
-  sn           smallint    not null,
-  name         varchar(10) not null,
-  type         varchar(50),
-  model        varchar(50),
-  tow_count    smallint,
-  tow_money    decimal(10, 2),
-  repair_type  varchar(50),
-  repair_money decimal(10, 2),
-  damage_state varchar(50),
-  damage_money decimal(10, 2),
-  follow_type  varchar(50),
-  updated_time  timestamptz not null,
+  id                  serial primary key,
+  pid                 int references gf_accident_register on delete cascade,
+  sn                  smallint    not null,
+  name                varchar(10) not null,
+  type                varchar(50),
+  model               varchar(50),
+  tow_count           smallint,
+  repair_type         varchar(50),
+  guess_tow_money     decimal(10, 2),
+  guess_repair_money  decimal(10, 2),
+  actual_tow_money    decimal(10, 2),
+  actual_repair_money decimal(10, 2),
+  damage_state        varchar(50),
+  follow_type         varchar(50),
+  updated_time        timestamptz not null,
   constraint gf_accident_car_plate_happen_time_ukey unique (pid, name)
 );
-comment on table gf_accident_car               is '事故当事车辆';
-comment on column gf_accident_car.pid          is '所属事故ID';
-comment on column gf_accident_car.sn           is '同一事故内的序号';
-comment on column gf_accident_car.name         is '车号，如 粤A123456';
-comment on column gf_accident_car.type         is '分类：自车、三者';
-comment on column gf_accident_car.model        is '车型：出租车、小轿车、...';
-comment on column gf_accident_car.tow_count    is '拖车次数';
-comment on column gf_accident_car.tow_money    is '拖车费（元）';
-comment on column gf_accident_car.repair_type  is '维修分类：厂修、外修';
-comment on column gf_accident_car.repair_money is '维修费（元）';
-comment on column gf_accident_car.damage_state is '受损情况';
-comment on column gf_accident_car.damage_money is '损失预估（元）';
-comment on column gf_accident_car.follow_type  is '跟进形式';
-comment on column gf_accident_car.updated_time is '更新时间';
+comment on table gf_accident_car                      is '事故当事车辆';
+comment on column gf_accident_car.pid                 is '所属事故ID';
+comment on column gf_accident_car.sn                  is '同一事故内的序号';
+comment on column gf_accident_car.name                is '车号，如 粤A123456';
+comment on column gf_accident_car.type                is '分类：自车、三者';
+comment on column gf_accident_car.model               is '车型：出租车、小轿车、...';
+comment on column gf_accident_car.tow_count           is '拖车次数';
+comment on column gf_accident_car.repair_type         is '维修分类：厂修、外修';
+comment on column gf_accident_car.guess_tow_money     is '预估拖车费（元）';
+comment on column gf_accident_car.guess_repair_money  is '预估维修费（元）';
+comment on column gf_accident_car.actual_tow_money    is '实际拖车费（元）';
+comment on column gf_accident_car.actual_repair_money is '实际维修费（元）';
+comment on column gf_accident_car.damage_state        is '受损情况';
+comment on column gf_accident_car.follow_type         is '跟进形式';
+comment on column gf_accident_car.updated_time        is '更新时间';
 
 create table gf_accident_people (
-  id               serial primary key,
-  pid              int references gf_accident_register on delete cascade,
-  sn               smallint    not null,
-  name             varchar(50) not null,
-  type             varchar(50),
-  sex              smallint    not null,
-  phone            varchar(50),
-  transport_type   varchar(50),
-  duty             varchar(50),
-  damage_state     varchar(50),
-  damage_money     decimal(10, 2),
-  treatment_money  decimal(10, 2),
-  compensate_money decimal(10, 2),
-  follow_type      varchar(50),
-  updated_time     timestamptz not null,
+  id                      serial primary key,
+  pid                     int references gf_accident_register on delete cascade,
+  sn                      smallint    not null,
+  name                    varchar(50) not null,
+  type                    varchar(50),
+  sex                     smallint    not null,
+  phone                   varchar(50),
+  transport_type          varchar(50),
+  duty                    varchar(50),
+  damage_state            varchar(50),
+  guess_treatment_money   decimal(10, 2),
+  guess_compensate_money  decimal(10, 2),
+  actual_treatment_money  decimal(10, 2),
+  actual_compensate_money decimal(10, 2),
+  follow_type             varchar(50),
+  updated_time            timestamptz not null,
   constraint gf_accident_people_pid_name_ukey unique (pid, name)
 );
-comment on table gf_accident_people                   is '事故当事人';
-comment on column gf_accident_people.pid              is '所属事故ID';
-comment on column gf_accident_people.sn               is '同一事故内的序号';
-comment on column gf_accident_people.name             is '姓名';
-comment on column gf_accident_people.type             is '分类：自车、三者';
-comment on column gf_accident_people.sex              is '性别：0-未设置,1-男,2-女';
-comment on column gf_accident_people.phone            is '联系电话';
-comment on column gf_accident_people.transport_type   is '交通方式';
-comment on column gf_accident_people.duty             is '事故责任';
-comment on column gf_accident_people.damage_state     is '伤亡情况';
-comment on column gf_accident_people.damage_money     is '损失预估（元）';
-comment on column gf_accident_people.treatment_money  is '医疗费用（元）';
-comment on column gf_accident_people.compensate_money is '赔偿损失（元）';
-comment on column gf_accident_people.follow_type      is '跟进形式';
-comment on column gf_accident_people.updated_time     is '更新时间';
+comment on table gf_accident_people                          is '事故当事人';
+comment on column gf_accident_people.pid                     is '所属事故ID';
+comment on column gf_accident_people.sn                      is '同一事故内的序号';
+comment on column gf_accident_people.name                    is '姓名';
+comment on column gf_accident_people.type                    is '分类：自车、三者';
+comment on column gf_accident_people.sex                     is '性别：0-未设置,1-男,2-女';
+comment on column gf_accident_people.phone                   is '联系电话';
+comment on column gf_accident_people.transport_type          is '交通方式';
+comment on column gf_accident_people.duty                    is '事故责任';
+comment on column gf_accident_people.damage_state            is '伤亡情况';
+comment on column gf_accident_people.damage_money            is '损失预估（元）';
+comment on column gf_accident_people.guess_treatment_money   is '预估医疗费（元）';
+comment on column gf_accident_people.guess_compensate_money  is '预估赔偿损失（元）';
+comment on column gf_accident_people.actual_treatment_money  is '实际医疗费（元）';
+comment on column gf_accident_people.actual_compensate_money is '实际赔偿损失（元）';
+comment on column gf_accident_people.follow_type             is '跟进形式';
+comment on column gf_accident_people.updated_time            is '更新时间';
 
 create table gf_accident_other (
   id            serial primary key,
@@ -275,7 +280,7 @@ create table gf_accident_other (
   linkman_name  varchar(50),
   linkman_phone varchar(50),
   damage_state  varchar(50),
-  damage_money  decimal(10, 2),
+  guess_money   decimal(10, 2),
   actual_money  decimal(10, 2),
   follow_type   varchar(50),
   updated_time  timestamptz not null,
@@ -290,7 +295,7 @@ comment on column gf_accident_other.belong        is '归属';
 comment on column gf_accident_other.linkman_name  is '联系人';
 comment on column gf_accident_other.linkman_phone is '联系电话';
 comment on column gf_accident_other.damage_state  is '受损情况';
-comment on column gf_accident_other.damage_money  is '损失预估（元）';
+comment on column gf_accident_other.guess_money   is '损失预估（元）';
 comment on column gf_accident_other.actual_money  is '实际损失（元）';
 comment on column gf_accident_other.follow_type   is '跟进形式';
 comment on column gf_accident_other.updated_time  is '更新时间';

@@ -26,7 +26,7 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
     {
       id: "overdueDraft", label: "逾期报案", width: "5em",
       filter: function (value) {
-        return value ? "是" : "否";
+        return value ? "是" : "";
       }
     },
     {id: "source", label: "报案来源", width: "5em"},

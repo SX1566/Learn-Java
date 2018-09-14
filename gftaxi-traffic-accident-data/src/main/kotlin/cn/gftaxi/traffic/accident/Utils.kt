@@ -5,6 +5,7 @@ import cn.gftaxi.traffic.accident.dto.AccidentOtherDto4Form
 import cn.gftaxi.traffic.accident.dto.AccidentPeopleDto4Form
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
 import cn.gftaxi.traffic.accident.po.*
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
@@ -38,6 +39,18 @@ object Utils {
     else {
       if (end.withYear(start.year) >= start) end.year - start.year
       else end.year - start.year - 1
+    }
+  }
+
+  /** 合并求和 */
+  fun sum(vararg decimals: BigDecimal?): BigDecimal? {
+    return if (decimals.isEmpty()) null
+    else decimals.reduce { accumulator, otherItem ->
+      when {
+        accumulator == null -> otherItem
+        otherItem == null -> null
+        else -> accumulator.add(otherItem)
+      }
     }
   }
 
@@ -131,21 +144,22 @@ object Utils {
    * 转换 [AccidentCar] 为 [AccidentCarDto4Form]。
    */
   fun convert(po: AccidentCar): AccidentCarDto4Form {
-    val dto = AccidentCarDto4Form()
-    dto.id = po.id
-    dto.sn = po.sn
-    dto.name = po.name
-    dto.type = po.type
-    dto.model = po.model
-    dto.towCount = po.towCount
-    dto.towMoney = po.towMoney
-    dto.repairType = po.repairType
-    dto.repairMoney = po.repairMoney
-    dto.damageState = po.damageState
-    dto.damageMoney = po.damageMoney
-    dto.followType = po.followType
-    dto.updatedTime = po.updatedTime
-    return dto
+    return AccidentCarDto4Form().apply {
+      id = po.id
+      sn = po.sn
+      name = po.name
+      type = po.type
+      model = po.model
+      towCount = po.towCount
+      repairType = po.repairType
+      guessTowMoney = po.guessTowMoney
+      guessRepairMoney = po.guessRepairMoney
+      actualTowMoney = po.actualTowMoney
+      actualRepairMoney = po.actualRepairMoney
+      damageState = po.damageState
+      followType = po.followType
+      updatedTime = po.updatedTime
+    }
   }
 
   /**
@@ -162,9 +176,10 @@ object Utils {
     dto.transportType = po.transportType
     dto.duty = po.duty
     dto.damageState = po.damageState
-    dto.damageMoney = po.damageMoney
-    dto.treatmentMoney = po.treatmentMoney
-    dto.compensateMoney = po.compensateMoney
+    dto.guessTreatmentMoney = po.guessTreatmentMoney
+    dto.guessCompensateMoney = po.guessCompensateMoney
+    dto.actualTreatmentMoney = po.actualTreatmentMoney
+    dto.actualCompensateMoney = po.actualCompensateMoney
     dto.followType = po.followType
     dto.updatedTime = po.updatedTime
     return dto
@@ -183,7 +198,7 @@ object Utils {
     dto.linkmanName = po.linkmanName
     dto.linkmanPhone = po.linkmanPhone
     dto.damageState = po.damageState
-    dto.damageMoney = po.damageMoney
+    dto.guessMoney = po.guessMoney
     dto.actualMoney = po.actualMoney
     dto.followType = po.followType
     dto.updatedTime = po.updatedTime
