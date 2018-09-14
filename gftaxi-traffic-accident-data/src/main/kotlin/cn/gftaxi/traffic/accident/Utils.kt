@@ -5,6 +5,7 @@ import cn.gftaxi.traffic.accident.dto.AccidentOtherDto4Form
 import cn.gftaxi.traffic.accident.dto.AccidentPeopleDto4Form
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
 import cn.gftaxi.traffic.accident.po.*
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
@@ -38,6 +39,18 @@ object Utils {
     else {
       if (end.withYear(start.year) >= start) end.year - start.year
       else end.year - start.year - 1
+    }
+  }
+
+  /** 合并求和 */
+  fun sum(vararg decimals: BigDecimal?): BigDecimal? {
+    return if (decimals.isEmpty()) null
+    else decimals.reduce { accumulator, otherItem ->
+      when {
+        accumulator == null -> otherItem
+        otherItem == null -> null
+        else -> accumulator.add(otherItem)
+      }
     }
   }
 
