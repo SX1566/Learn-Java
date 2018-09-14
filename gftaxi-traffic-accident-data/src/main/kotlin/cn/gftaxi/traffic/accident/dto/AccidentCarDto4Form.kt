@@ -12,9 +12,10 @@ import javax.persistence.Entity
 class AccidentCarDto4Form : AccidentCaseSubListDto4FormBaseInfo() {
   var model: String? by data
   var towCount: Short? by data
-  var towMoney: BigDecimal? by data
   var repairType: String? by data
-  var repairMoney: BigDecimal? by data
   var damageState: String? by data
-  var damageMoney: BigDecimal? by data
+  var guessTowMoney: BigDecimal? by data
+  var guessRepairMoney: BigDecimal? by data
+  var actualTowMoney: BigDecimal? by data
+  var actualRepairMoney: BigDecimal? by data
 }

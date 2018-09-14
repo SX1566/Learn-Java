@@ -200,36 +200,38 @@ comment on column gf_accident_register.history_service_offence_count is '历史�
 comment on column gf_accident_register.history_complain_count        is '历史服务投诉次数，从事发日向前推一年期间当事司机的统计';
 
 create table gf_accident_car (
-  id           serial primary key,
-  pid          int references gf_accident_register on delete cascade,
-  sn           smallint    not null,
-  name         varchar(10) not null,
-  type         varchar(50),
-  model        varchar(50),
-  tow_count    smallint,
-  tow_money    decimal(10, 2),
-  repair_type  varchar(50),
-  repair_money decimal(10, 2),
-  damage_state varchar(50),
-  damage_money decimal(10, 2),
-  follow_type  varchar(50),
-  updated_time  timestamptz not null,
+  id                  serial primary key,
+  pid                 int references gf_accident_register on delete cascade,
+  sn                  smallint    not null,
+  name                varchar(10) not null,
+  type                varchar(50),
+  model               varchar(50),
+  tow_count           smallint,
+  repair_type         varchar(50),
+  guess_tow_money     decimal(10, 2),
+  guess_repair_money  decimal(10, 2),
+  actual_tow_money    decimal(10, 2),
+  actual_repair_money decimal(10, 2),
+  damage_state        varchar(50),
+  follow_type         varchar(50),
+  updated_time        timestamptz not null,
   constraint gf_accident_car_plate_happen_time_ukey unique (pid, name)
 );
-comment on table gf_accident_car               is '事故当事车辆';
-comment on column gf_accident_car.pid          is '所属事故ID';
-comment on column gf_accident_car.sn           is '同一事故内的序号';
-comment on column gf_accident_car.name         is '车号，如 粤A123456';
-comment on column gf_accident_car.type         is '分类：自车、三者';
-comment on column gf_accident_car.model        is '车型：出租车、小轿车、...';
-comment on column gf_accident_car.tow_count    is '拖车次数';
-comment on column gf_accident_car.tow_money    is '拖车费（元）';
-comment on column gf_accident_car.repair_type  is '维修分类：厂修、外修';
-comment on column gf_accident_car.repair_money is '维修费（元）';
-comment on column gf_accident_car.damage_state is '受损情况';
-comment on column gf_accident_car.damage_money is '损失预估（元）';
-comment on column gf_accident_car.follow_type  is '跟进形式';
-comment on column gf_accident_car.updated_time is '更新时间';
+comment on table gf_accident_car                      is '事故当事车辆';
+comment on column gf_accident_car.pid                 is '所属事故ID';
+comment on column gf_accident_car.sn                  is '同一事故内的序号';
+comment on column gf_accident_car.name                is '车号，如 粤A123456';
+comment on column gf_accident_car.type                is '分类：自车、三者';
+comment on column gf_accident_car.model               is '车型：出租车、小轿车、...';
+comment on column gf_accident_car.tow_count           is '拖车次数';
+comment on column gf_accident_car.repair_type         is '维修分类：厂修、外修';
+comment on column gf_accident_car.guess_tow_money     is '预估拖车费（元）';
+comment on column gf_accident_car.guess_repair_money  is '预估维修费（元）';
+comment on column gf_accident_car.actual_tow_money    is '实际拖车费（元）';
+comment on column gf_accident_car.actual_repair_money is '实际维修费（元）';
+comment on column gf_accident_car.damage_state        is '受损情况';
+comment on column gf_accident_car.follow_type         is '跟进形式';
+comment on column gf_accident_car.updated_time        is '更新时间';
 
 create table gf_accident_people (
   id               serial primary key,

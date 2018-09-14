@@ -336,11 +336,12 @@ object POUtils {
       type = type,
       model = model,
       towCount = randomInt(1, 10).toShort(),
-      towMoney = BigDecimal("${randomInt(1, 100)}.00"),
       repairType = random("repairType"),
-      repairMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      guessTowMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      guessRepairMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      actualTowMoney = BigDecimal("${randomInt(1, 100)}.00"),
+      actualRepairMoney = BigDecimal("${randomInt(1, 100)}.00"),
       damageState = random("damageState"),
-      damageMoney = BigDecimal("${randomInt(1, 100)}.00"),
       followType = random("followType"),
       updatedTime = OffsetDateTime.now()
     )

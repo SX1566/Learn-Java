@@ -86,6 +86,12 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
         "accident-other-column-definitions": {template: $page.find("script[name=accident-other-column-definitions]").html()}
       },
       methods: {
+        /** 金额合计 */
+        sumMonies: function (m1, m2) {
+          let s = ((m1 || 0) * 1 + (m2 || 0) * 1);
+          console.log("----" + s)
+          return s == 0 ? '' : s
+        },
         /** 初始化表单附件信息 */
         initAttachments: function () {
           this.loadAccidentAttachments();

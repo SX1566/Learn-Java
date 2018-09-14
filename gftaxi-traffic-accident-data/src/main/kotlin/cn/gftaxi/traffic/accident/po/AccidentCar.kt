@@ -36,21 +36,24 @@ data class AccidentCar constructor(
   val model: String? = null,
   /** 拖车次数 */
   val towCount: Short? = null,
-  /** 拖车费（元） */
-  @Column(precision = 10, scale = 2)
-  val towMoney: BigDecimal? = null,
   /** 维修分类：厂修、外修 */
   @Column(length = 50)
   val repairType: String? = null,
-  /** 维修费（元） */
+  /** 预估拖车费（元） */
   @Column(precision = 10, scale = 2)
-  val repairMoney: BigDecimal? = null,
+  val guessTowMoney: BigDecimal? = null,
+  /** 预估维修费（元） */
+  @Column(precision = 10, scale = 2)
+  val guessRepairMoney: BigDecimal? = null,
+  /** 实际拖车费（元） */
+  @Column(precision = 10, scale = 2)
+  val actualTowMoney: BigDecimal? = null,
+  /** 实际维修费（元） */
+  @Column(precision = 10, scale = 2)
+  val actualRepairMoney: BigDecimal? = null,
   /** 受损情况 */
   @Column(length = 50)
   val damageState: String? = null,
-  /** 损失预估（元） */
-  @Column(precision = 10, scale = 2)
-  val damageMoney: BigDecimal? = null,
   /** 跟进形式 */
   @Column(length = 50)
   val followType: String? = null,

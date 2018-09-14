@@ -459,19 +459,22 @@
     <table class="simple" :style="{minWidth: ui.fixedWidth, width: '100%'}">
       <colgroup is="accident-cars-column-definitions"></colgroup>
       <tr>
-        <td class="ui-widget-content" style="text-align: center">序号</td>
-        <td class="ui-widget-content" style="text-align: center">分类</td>
-        <td class="ui-widget-content" style="text-align: center">车号</td>
-        <td class="ui-widget-content" style="text-align: center">车型</td>
-        <td class="ui-widget-content" style="text-align: center">拖车次数</td>
-        <td class="ui-widget-content" style="text-align: center">维修分类</td>
-        <td class="ui-widget-content" style="text-align: center">受损情况</td>
-        <td class="ui-widget-content" style="text-align: center">损失预估(元)</td>
-        <td class="ui-widget-content" style="text-align: center">维修费(元)</td>
-        <td class="ui-widget-content" style="text-align: center">拖车费(元)</td>
-        <td class="ui-widget-content" style="text-align: center">跟进形式</td>
-        <td class="ui-widget-content" style="text-align: center">更新时间</td>
-        <td class="ui-widget-content"></td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">序号</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">分类</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">车号</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">车型</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">拖车次数</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">维修分类</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">受损情况</td>
+        <td colspan="3" class="ui-widget-content" style="text-align: center">损失预估(元)</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">跟进形式</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">更新时间</td>
+        <td rowspan="2" class="ui-widget-content"></td>
+      </tr>
+      <tr>
+        <td class="ui-widget-content" style="text-align: center">维修费</td>
+        <td class="ui-widget-content" style="text-align: center">拖车费</td>
+        <td class="ui-widget-content" style="text-align: center">合计</td>
       </tr>
       <tbody v-if="isReadOnly">
       <tr v-for="(index, car) in e.cars"
@@ -483,9 +486,9 @@
         <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{car.towCount}}</td>
         <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{car.repairType}}</td>
         <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{car.damageState}}</td>
-        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{car.damageMoney}}</td>
-        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{car.repairMoney}}</td>
-        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{car.towMoney}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{car.guessRepairMoney}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{car.guessTowMoney}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{sumMonies(car.guessRepairMoney, car.guessTowMoney)}}</td>
         <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{car.followType}}</td>
         <td :class="{'ui-widget-content':true, 'ui-state-disabled':!isReadOnly}"
             style="padding: 0 0.25em;text-align: center">{{car.updatedTime}}
@@ -515,7 +518,7 @@
         </td>
         <td class="ui-widget-content">
           <input type="number" class="ui-widget-content" data-validate="required"
-                 style="width: 100%;border: 0" v-model="car.towCount"/>
+                 style="width: 100%;border: 0;text-align: right" v-model="car.towCount"/>
         </td>
         <td class="ui-widget-content">
           <select class="ui-widget-content" v-model="car.repairType" data-validate="required">
@@ -528,13 +531,16 @@
           </select>
         </td>
         <td class="ui-widget-content">
-          <input type="text" class="ui-widget-content" data-validate="required" v-model="car.damageMoney"/>
+          <input type="number" class="ui-widget-content" data-validate="required" v-model="car.guessRepairMoney"
+                 style="width: 100%;border: 0;text-align: right"/>
         </td>
         <td class="ui-widget-content">
-          <input type="text" class="ui-widget-content" data-validate="required" v-model="car.repairMoney"/>
+          <input type="number" class="ui-widget-content" data-validate="required" v-model="car.guessTowMoney"
+                 style="width: 100%;border: 0;text-align: right"/>
         </td>
         <td class="ui-widget-content">
-          <input type="text" class="ui-widget-content" data-validate="required" v-model="car.towMoney"/>
+          <input type="number" class="ui-widget-content" :value="sumMonies(car.guessRepairMoney, car.guessTowMoney)"
+                 style="width: 100%;border: 0;text-align: right" readonly/>
         </td>
         <td class="ui-widget-content">
           <select class="ui-widget-content" v-model="car.followType" data-validate="required">
@@ -712,7 +718,7 @@
         <td class="ui-widget-content" style="padding: 0 0.25em;text-align: left">{{other.linkmanName}}</td>
         <td class="ui-widget-content" style="padding: 0 0.25em;text-align: left">{{other.linkmanPhone}}</td>
         <td class="ui-widget-content" style="padding: 0 0.25em;text-align: left">{{other.damageState}}</td>
-        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{other.damageMoney}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{other.guessTotalMoney}}</td>
         <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{other.actualMoney}}</td>
         <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{other.followType}}</td>
         <td :class="{'ui-widget-content':true, 'ui-state-disabled':!isReadOnly}"
@@ -747,7 +753,7 @@
           <input type="text" class="ui-widget-content" data-validate="required" v-model="other.damageState"/>
         </td>
         <td class="ui-widget-content">
-          <input type="text" class="ui-widget-content" data-validate="required" v-model="other.damageMoney"/>
+          <input type="text" class="ui-widget-content" data-validate="required" v-model="other.guessTotalMoney"/>
         </td>
         <td class="ui-widget-content">
           <input type="text" class="ui-widget-content" data-validate="required" v-model="other.actualMoney"/>

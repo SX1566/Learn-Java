@@ -144,21 +144,22 @@ object Utils {
    * 转换 [AccidentCar] 为 [AccidentCarDto4Form]。
    */
   fun convert(po: AccidentCar): AccidentCarDto4Form {
-    val dto = AccidentCarDto4Form()
-    dto.id = po.id
-    dto.sn = po.sn
-    dto.name = po.name
-    dto.type = po.type
-    dto.model = po.model
-    dto.towCount = po.towCount
-    dto.towMoney = po.towMoney
-    dto.repairType = po.repairType
-    dto.repairMoney = po.repairMoney
-    dto.damageState = po.damageState
-    dto.damageMoney = po.damageMoney
-    dto.followType = po.followType
-    dto.updatedTime = po.updatedTime
-    return dto
+    return AccidentCarDto4Form().apply {
+      id = po.id
+      sn = po.sn
+      name = po.name
+      type = po.type
+      model = po.model
+      towCount = po.towCount
+      repairType = po.repairType
+      guessTowMoney = po.guessTowMoney
+      guessRepairMoney = po.guessRepairMoney
+      actualTowMoney = po.actualTowMoney
+      actualRepairMoney = po.actualRepairMoney
+      damageState = po.damageState
+      followType = po.followType
+      updatedTime = po.updatedTime
+    }
   }
 
   /**
