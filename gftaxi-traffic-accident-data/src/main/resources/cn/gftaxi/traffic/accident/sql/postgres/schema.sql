@@ -1,4 +1,4 @@
--- 交通事故数据库构建脚本
+﻿-- 交通事故数据库构建脚本
 
 -- create extension
 create extension if not exists dblink;
@@ -300,11 +300,12 @@ comment on column gf_accident_other.guess_money   is '损失预估（元）';
 comment on column gf_accident_other.actual_money  is '实际损失（元）';
 comment on column gf_accident_other.follow_type   is '跟进形式';
 comment on column gf_accident_other.updated_time  is '更新时间';
+
 create table gf_accident_report (
   id                            integer primary key references gf_accident_register on delete no action,
   status                        smallint  not null,
   report_time                   timestamptz,
-  overdue                       boolean,
+  overdue_report                boolean,
   -- 工作计划
   appoint_driver_return_time    timestamptz,
   actual_driver_return_time     timestamptz,
@@ -322,9 +323,9 @@ create table gf_accident_report (
   case_reason                   varchar(255),
   safety_comment                varchar(255),
   evaluate_details              varchar(255),
-  evaluate_affection	          varchar(255),
+  evaluate_affection            varchar(255),
   take_further                  Boolean,
-  --整改措施
+  -- 整改措施
   corrective_action             varchar(255),
   driver_attitude               varchar(255),
   -- 报告提交
@@ -348,7 +349,7 @@ comment on table gf_accident_report                               is '事故报�
 comment on column gf_accident_report.id                           is '所属事故ID';
 comment on column gf_accident_report.status                       is '状态：1-待报告、2-待审核、4-审核不通过、8-审核通过';
 comment on column gf_accident_report.report_time                  is '报告时间';
-comment on column gf_accident_report.overdue                      is '是否逾期报告';
+comment on column gf_accident_report.overdue_report               is '是否逾期报告';
 -- 工作计划
 comment on column gf_accident_report.appoint_driver_return_time   is '约定司机回队时间';
 comment on column gf_accident_report.actual_driver_return_time    is '司机实际回队时间';
@@ -368,7 +369,7 @@ comment on column gf_accident_report.safety_comment               is '处理意�
 comment on column gf_accident_report.evaluate_details             is '事故经过描述评价';
 comment on column gf_accident_report.evaluate_affection           is '事故认识情度评价';
 comment on column gf_accident_report.take_further                 is '是否采取进一步处理措施';
--- 整改措施
+--整改措施
 comment on column gf_accident_report.corrective_action            is '整改措施';
 comment on column gf_accident_report.driver_attitude              is '司机态度';
 -- 报告提交

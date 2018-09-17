@@ -26,6 +26,10 @@
       <artifactId>simter-category-data</artifactId>
     </dependency>
     <dependency>
+      <groupId>tech.simter</groupId>
+      <artifactId>simter-operation-data</artifactId>
+    </dependency>
+    <dependency>
       <groupId>tech.simter.reactive</groupId>
       <artifactId>simter-reactive-security</artifactId>
     </dependency>
