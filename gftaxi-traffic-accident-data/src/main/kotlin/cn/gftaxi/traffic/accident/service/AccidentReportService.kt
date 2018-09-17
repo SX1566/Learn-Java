@@ -1,9 +1,6 @@
 package cn.gftaxi.traffic.accident.service
 
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
-import cn.gftaxi.traffic.accident.dto.AccidentReportDto4Form
-import cn.gftaxi.traffic.accident.dto.AccidentReportDto4View
-import cn.gftaxi.traffic.accident.dto.CheckedInfo
+import cn.gftaxi.traffic.accident.dto.*
 import cn.gftaxi.traffic.accident.po.AccidentReport.Companion.READ_ROLES
 import cn.gftaxi.traffic.accident.po.AccidentReport.Companion.ROLE_CHECK
 import cn.gftaxi.traffic.accident.po.AccidentReport.Companion.ROLE_MODIFY
@@ -11,10 +8,13 @@ import cn.gftaxi.traffic.accident.po.AccidentReport.Companion.ROLE_SUBMIT
 import cn.gftaxi.traffic.accident.po.AccidentReport.Status
 import cn.gftaxi.traffic.accident.po.AccidentReport.Status.*
 import org.springframework.data.domain.Page
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import tech.simter.exception.ForbiddenException
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
+import java.time.Year
+import java.time.YearMonth
 
 /**
  * 事故报告 Service。
@@ -93,4 +93,53 @@ interface AccidentReportService {
    * @return 审核完毕的 [Mono] 信号
    */
   fun checked(id: Int, checkedInfo: CheckedInfo): Mono<Void>
+
+  /**
+   * 事故报告按月汇总统计。
+   *
+   * 返回结果按时间逆序排序。
+   *
+   * 如果无 [READ_ROLES] 中的任一角色之一，则返回 [PermissionDeniedException] 类型的 [Mono.error]。
+   *
+   * 如果统计范围的开始点和结束点跨度大于两年或统计范围开始点大于结束点，
+   * 则返回 [IllegalArgumentException] 类型的 [Mono.error]。
+   *
+   * @param[from] 统计的开始年月，默认为当年的 1 月
+   * @param[to]   统计的结束年月，默认为当年的 12 月
+   */
+  fun statSummaryByMonthly(from: YearMonth? = YearMonth.of(Year.now().value, 1),
+                           to: YearMonth? = YearMonth.of(Year.now().value, 12))
+    : Flux<AccidentReportDto4StatSummary>
+
+  /**
+   * 事故报告按年汇总统计。
+   *
+   * 返回结果按年份逆序排序。
+   *
+   * 如果无 [READ_ROLES] 中的任一角色之一，则返回 [PermissionDeniedException] 类型的 [Mono.error]。
+   *
+   * 如果统计范围的开始点和结束点跨度大于两年或统计范围开始点大于结束点，
+   * 则返回 [IllegalArgumentException] 类型的 [Mono.error]。
+   *
+   * @param[from] 统计的开始年份，默认为上年
+   * @param[to]   统计的结束年份，默认为当年
+   */
+  fun statSummaryByYearly(from: Year? = Year.now().minusYears(1),
+                          to: Year? = Year.now())
+    : Flux<AccidentReportDto4StatSummary>
+
+  /**
+   * 事故报告按季度汇总统计。
+   *
+   * 返回结果按年份逆序排序。
+   *
+   * 如果无 [READ_ROLES] 中的任一角色之一，则返回 [PermissionDeniedException] 类型的 [Mono.error]。
+   *
+   * 如果统计范围的开始点和结束点跨度大于两年或统计范围开始点大于结束点，
+   * 则返回 [IllegalArgumentException] 类型的 [Mono.error]。
+   *
+   * @param[from] 统计的开始年份，默认为当年
+   * @param[to]   统计的结束年份，默认为当年
+   */
+  fun statSummaryByQuarterly(from: Year? = Year.now(), to: Year? = Year.now()): Flux<AccidentReportDto4StatSummary>
 }
