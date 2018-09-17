@@ -120,7 +120,7 @@ with p(id) as (
   where name = '统计报表' and belong = (select id from bc_identity_resource where name = '事故(新版)')
 ), cfg(type, sn, name, url, iconclass) as (
   select 2, '073101', '事故登记汇总统计':: text, 'static/accident/report/register-stat-summary/view.html', 'i0002'
-  select 2, '073201', '事故报告汇总统计':: text, 'static/accident/report/report-stat-summary/view.html', 'i0002'
+  union select 2, '073201', '事故报告汇总统计':: text, 'static/accident/report/report-stat-summary/view.html', 'i0002'
 )
 insert into bc_identity_resource (status_, inner_, type_, order_, name, url, iconclass, belong, id)
   select 0, false, c.type, c.sn, c.name, c.url, c.iconclass, (select id from p), nextval('core_sequence')
