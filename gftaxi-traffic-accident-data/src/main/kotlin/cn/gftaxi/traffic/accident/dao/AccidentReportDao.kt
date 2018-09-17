@@ -1,13 +1,17 @@
 package cn.gftaxi.traffic.accident.dao
 
 import cn.gftaxi.traffic.accident.dto.AccidentReportDto4Form
+import cn.gftaxi.traffic.accident.dto.AccidentReportDto4StatSummary
 import cn.gftaxi.traffic.accident.dto.AccidentReportDto4View
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentReport
 import cn.gftaxi.traffic.accident.po.AccidentReport.Status
 import cn.gftaxi.traffic.accident.po.AccidentReport.Status.*
 import org.springframework.data.domain.Page
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.Year
+import java.time.YearMonth
 
 /**
  * 事故报告 Dao。
@@ -85,4 +89,34 @@ interface AccidentReportDao {
    * @param[data] 要更新的信息，key 为 [AccidentReportDto4Form] 属性名，value 为该 DTO 相应的属性值。
    */
   fun update(id: Int, data: Map<String, Any?>): Mono<Boolean>
+
+  /**
+   * 事故报告按月汇总统计。
+   *
+   * 返回结果按时间逆序排序。
+   *
+   * @param[from] 统计的开始年月
+   * @param[to]   统计的结束年月
+   */
+  fun statSummaryByMonthly(from: YearMonth, to: YearMonth): Flux<AccidentReportDto4StatSummary>
+
+  /**
+   * 事故报告按年汇总统计。
+   *
+   * 返回结果按年份逆序排序。
+   *
+   * @param[from] 统计的开始年份
+   * @param[to]   统计的结束年份
+   */
+  fun statSummaryByYearly(from: Year, to: Year): Flux<AccidentReportDto4StatSummary>
+
+  /**
+   * 事故报告按季度汇总统计。
+   *
+   * 返回结果按年份逆序排序。
+   *
+   * @param[from] 统计的开始年份
+   * @param[to]   统计的结束年份
+   */
+  fun statSummaryByQuarterly(from: Year, to: Year): Flux<AccidentReportDto4StatSummary>
 }
