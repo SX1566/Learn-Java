@@ -102,7 +102,7 @@ define(["bc", "bs", "bs/carMan.js", "vue2", "context", 'static/accident/api'], f
           if (!bc.validator.validate($page)) return;
           let isNew = !this.e.id;
           let saveKeys = ["carPlate", "driverName", "happenTime", "location", "hitForm", "hitType", "describe"];
-          if (isNew) saveKeys = saveKeys.concat(["source", "authorName", "authorId"]);
+
           // 获取有效数据
           let data = {};
           Object.keys(this.e).forEach(key => {
