@@ -151,6 +151,11 @@ define(["bc", "bs", "bs/carMan.js", "vue2", "context", 'static/accident/api'], f
     });
   }
 
+  // 选择事发时间后更新 vue 实例的 e.happenTime 值
+  Page.prototype.afterSelectHappenTime = function (value) {
+    Vue.set(this.vm.e, "happenTime", value);
+  };
+
   // 自定义窗口的 data-option 配置
   Page.option = {width: 500, minWidth: 500};
   Page.option.buttons = [
