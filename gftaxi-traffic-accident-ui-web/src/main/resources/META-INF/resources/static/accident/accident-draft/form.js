@@ -1,4 +1,4 @@
-define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], function (bc, bs, carMan, Vue, context, accident) {
+define(["bc", "bs", "bs/carMan.js", "vue2", "context", 'static/accident/api'], function (bc, bs, carMan, Vue, context, accident) {
   "use strict";
   let resourceKey = "accident-draft";
   let isSubmitter = context.is("ACCIDENT_DRAFT_SUBMIT");
@@ -7,7 +7,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
 
   function Page($page) {
     this["vm"] = new Vue({
-      el: $page[0],
+      el: $page[0].firstElementChild,
       data: {
         ui: {
           statuses: {"Todo": "待登记", "Done": "已登记"},
@@ -17,7 +17,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
         },
         e: {status: "Todo", source: "BC"}
       },
-      ready: function () {
+      mounted: function () {
         let id = $page.data("data");
         if (id) {
           Vue.set(this.e, "id", id);
