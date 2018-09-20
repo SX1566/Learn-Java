@@ -1,4 +1,4 @@
-define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], function (bc, bs, carMan, Vue, context, accident) {
+define(["bc", "bs", "bs/carMan.js", "vue2", "context", 'static/accident/api'], function (bc, bs, carMan, Vue, context, accident) {
   "use strict";
   let resourceKey = "accident-draft";
   let isSubmitter = context.is("ACCIDENT_DRAFT_SUBMIT");
@@ -7,7 +7,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
 
   function Page($page) {
     this["vm"] = new Vue({
-      el: $page[0],
+      el: $page[0].firstElementChild,
       data: {
         ui: {
           statuses: {"Todo": "待登记", "Done": "已登记"},
@@ -17,7 +17,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
         },
         e: {status: "Todo", source: "BC"}
       },
-      ready: function () {
+      mounted: function () {
         let id = $page.data("data");
         if (id) {
           Vue.set(this.e, "id", id);
@@ -150,6 +150,11 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api'], fu
       }
     });
   }
+
+  // 选择事发时间后更新 vue 实例的 e.happenTime 值
+  Page.prototype.afterSelectHappenTime = function (value) {
+    Vue.set(this.vm.e, "happenTime", value);
+  };
 
   // 自定义窗口的 data-option 配置
   Page.option = {width: 500, minWidth: 500};

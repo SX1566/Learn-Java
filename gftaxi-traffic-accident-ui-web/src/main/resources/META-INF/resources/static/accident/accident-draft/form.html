@@ -15,10 +15,10 @@
             <td class="label">*事发时间：</td>
             <td class="value relative">
               <template v-if="!readOnly">
-                <input type="text" name="e.happenTime" v-model="e.happenTime" class="bc-datetime ui-widget-content"
-                       data-validate="required">
+                <input type="text" v-model="e.happenTime" class="bc-datetime ui-widget-content"
+                       data-validate="required" data-cfg="{'onSelect': 'afterSelectHappenTime'}">
                 <ul class="inputIcons">
-                  <li class="selectCalendar inputIcon ui-icon ui-icon-calendar" data-cfg="e.happenTime"></li>
+                  <li class="selectCalendar inputIcon ui-icon ui-icon-calendar"></li>
                 </ul>
               </template>
               <input v-else type="text" v-model="e.happenTime" class="ui-widget-content" readonly>
