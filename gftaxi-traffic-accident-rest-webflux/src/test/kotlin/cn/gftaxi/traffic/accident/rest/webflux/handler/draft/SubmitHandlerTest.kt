@@ -21,7 +21,10 @@ import org.springframework.web.reactive.function.server.RouterFunction
 import org.springframework.web.reactive.function.server.RouterFunctions.route
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
+import tech.simter.reactive.context.SystemContext
+import tech.simter.reactive.security.ReactiveSecurityService
 import java.time.OffsetDateTime
+import java.util.*
 import javax.json.Json
 
 /**
@@ -31,11 +34,12 @@ import javax.json.Json
  * @author RJ
  */
 @SpringJUnitConfig(UnitTestConfiguration::class, SubmitHandler::class)
-@MockBean(AccidentDraftService::class)
+@MockBean(AccidentDraftService::class, ReactiveSecurityService::class)
 @WebFluxTest
 class SubmitHandlerTest @Autowired constructor(
   private val client: WebTestClient,
-  private val accidentDraftService: AccidentDraftService
+  private val accidentDraftService: AccidentDraftService,
+  private val securityService: ReactiveSecurityService
 ) {
   @Configuration
   class Cfg {
@@ -76,6 +80,9 @@ class SubmitHandlerTest @Autowired constructor(
     val id = 1
     val code = "20180909_01"
     `when`(accidentDraftService.submit(any())).thenReturn(Mono.just(Pair(id, code)))
+    `when`(securityService.getAuthenticatedUser()).thenReturn(Mono.just(Optional.of(
+      SystemContext.User(id = 1, account = dto.authorId!!, name = dto.authorName!!)
+    )))
 
     // invoke
     client.post().uri("/accident-draft")
