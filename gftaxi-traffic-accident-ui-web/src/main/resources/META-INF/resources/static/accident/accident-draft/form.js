@@ -15,7 +15,8 @@ define(["bc", "bs", "bs/carMan.js", "vue2", "context", 'static/accident/api'], f
           hitTypes: [""],
           driverNames: []
         },
-        e: {status: "Todo", source: "BC"}
+        e: {status: "Todo", source: "BC"},
+        origin: {}
       },
       mounted: function () {
         let id = $page.data("data");
@@ -23,6 +24,7 @@ define(["bc", "bs", "bs/carMan.js", "vue2", "context", 'static/accident/api'], f
           Vue.set(this.e, "id", id);
           accident.getByModule(resourceKey, id).then(json => {
             Object.keys(json).forEach(key => Vue.set(this.e, key, json[key]));
+            this.origin = JSON.parse(JSON.stringify(json)); // 记录原值
             this.ui.hitForms.push(this.e.hitForm);
             this.ui.hitTypes.push(this.e.hitType);
 
@@ -100,15 +102,20 @@ define(["bc", "bs", "bs/carMan.js", "vue2", "context", 'static/accident/api'], f
           if (!bc.validator.validate($page)) return;
           let isNew = !this.e.id;
           let saveKeys = ["carPlate", "driverName", "happenTime", "location", "hitForm", "hitType", "describe"];
-          if (isNew) saveKeys = saveKeys.concat(["source", "authorName", "authorId"]);
+
+          // 获取有效数据
           let data = {};
           Object.keys(this.e).forEach(key => {
-            if (saveKeys.indexOf(key) > -1) {
+            if (saveKeys.indexOf(key) > -1 && this.e[key] !== this.origin[key]) { // 与原值对比仅获取更新的数据
               data[key] = this.e[key];
             }
           });
-          // 上报操作
-          if (isNew) {
+          if (Object.keys(data).length === 0){
+            bc.msg.info("您没有更改任何数据，无需保存！");
+            return;
+          }
+
+          if (isNew) { // 上报操作
             bc.msg.confirm("确定上报案件吗？", () =>
               accident.save(resourceKey, this.e.id, data).then(result => {
                 Vue.set(this.e, "id", result.id);
@@ -118,8 +125,9 @@ define(["bc", "bs", "bs/carMan.js", "vue2", "context", 'static/accident/api'], f
                 $page.data("status", "saved");
                 $page.dialog("close");      // 上报案件后关闭表单
               }));
-          } else {// 保存操作
+          } else {     // 更新操作
             accident.save(resourceKey, this.e.id, data).then(() => {
+              this.origin = JSON.parse(JSON.stringify(this.e));  // 更新原值为新的值
               $page.data("status", "saved");
               bc.msg.slide("保存成功！");
             });

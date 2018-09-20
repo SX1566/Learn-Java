@@ -13,6 +13,9 @@ import org.springframework.web.reactive.function.server.ServerResponse.badReques
 import org.springframework.web.reactive.function.server.ServerResponse.created
 import reactor.core.publisher.Mono
 import tech.simter.exception.NonUniqueException
+import tech.simter.reactive.context.SystemContext
+import tech.simter.reactive.security.ReactiveSecurityService
+import java.util.*
 import javax.json.Json
 
 /**
@@ -22,10 +25,23 @@ import javax.json.Json
  */
 @Component("cn.gftaxi.traffic.accident.rest.webflux.handler.draft.SubmitHandler")
 class SubmitHandler @Autowired constructor(
-  private val accidentDraftService: AccidentDraftService
+  private val accidentDraftService: AccidentDraftService,
+  private val securityService: ReactiveSecurityService
 ) : HandlerFunction<ServerResponse> {
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
     return request.bodyToMono<AccidentDraftDto4Submit>()
+      .flatMap { dto ->
+        // 自动设置当前用户信息
+        securityService.getAuthenticatedUser()
+          .map(Optional<SystemContext.User>::get)
+          .map { user ->
+            dto.apply {
+              authorId = user.account
+              authorName = user.name
+              source = source ?: "BC"
+            }
+          }
+      }
       .flatMap { dto ->
         accidentDraftService.submit(dto).map {
           Json.createObjectBuilder()
