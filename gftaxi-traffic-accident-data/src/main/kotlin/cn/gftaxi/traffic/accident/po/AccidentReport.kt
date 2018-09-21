@@ -29,6 +29,8 @@ data class AccidentReport(
   val reportTime: OffsetDateTime? = null,
   /** 是否逾期报告 */
   val overdueReport: Boolean? = null,
+  /** 诉讼信息 */
+  val lawsuit: String? = null,
 
   //== 工作计划 ==
   /** 约定司机回队时间 */

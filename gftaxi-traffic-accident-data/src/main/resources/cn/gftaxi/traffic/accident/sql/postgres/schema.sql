@@ -263,7 +263,6 @@ comment on column gf_accident_people.phone                   is '联系电话';
 comment on column gf_accident_people.transport_type          is '交通方式';
 comment on column gf_accident_people.duty                    is '事故责任';
 comment on column gf_accident_people.damage_state            is '伤亡情况';
-comment on column gf_accident_people.damage_money            is '损失预估（元）';
 comment on column gf_accident_people.guess_treatment_money   is '预估医疗费（元）';
 comment on column gf_accident_people.guess_compensate_money  is '预估赔偿损失（元）';
 comment on column gf_accident_people.actual_treatment_money  is '实际医疗费（元）';
@@ -306,6 +305,7 @@ create table gf_accident_report (
   status                        smallint  not null,
   report_time                   timestamptz,
   overdue_report                boolean,
+  lawsuit                       text,
   -- 工作计划
   appoint_driver_return_time    timestamptz,
   actual_driver_return_time     timestamptz,
@@ -334,6 +334,7 @@ comment on column gf_accident_report.id                           is '所属事�
 comment on column gf_accident_report.status                       is '状态：1-待报告、2-待审核、4-审核不通过、8-审核通过';
 comment on column gf_accident_report.report_time                  is '报告时间';
 comment on column gf_accident_report.overdue_report               is '是否逾期报告';
+comment on column gf_accident_report.lawsuit                      is '诉讼信息';
 -- 工作计划
 comment on column gf_accident_report.appoint_driver_return_time   is '约定司机回队时间';
 comment on column gf_accident_report.actual_driver_return_time    is '司机实际回队时间';

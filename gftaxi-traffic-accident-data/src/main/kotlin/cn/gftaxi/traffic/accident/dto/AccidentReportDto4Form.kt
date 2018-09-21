@@ -27,6 +27,8 @@ class AccidentReportDto4Form : AccidentCaseDto4FormBaseInfo() {
   var reportTime: OffsetDateTime? by data
   /** 是否逾期报告 */
   var overdueReport: Boolean? by data
+  /** 诉讼信息 */
+  var lawsuit: String? by data
 
   // 历史统计
   var historyAccidentCount: Short? by data
