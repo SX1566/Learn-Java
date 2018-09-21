@@ -13,6 +13,7 @@ import javax.persistence.Table
  * 事故报告 PO。
  *
  * @author RJ
+ * @author zh
  */
 @Entity
 @Table(name = "gf_accident_report")
@@ -28,6 +29,8 @@ data class AccidentReport(
   val reportTime: OffsetDateTime? = null,
   /** 是否逾期报告 */
   val overdueReport: Boolean? = null,
+  /** 诉讼信息 */
+  val lawsuit: String? = null,
 
   //== 工作计划 ==
   /** 约定司机回队时间 */
@@ -37,7 +40,7 @@ data class AccidentReport(
   /** 司机回队主办人姓名 */
   val driverReturnSponsorName: String? = null,
   /** 司机回队协办人姓名 */
-  val driverReturnSupporter: String? = null,
+  val driverReturnSupporterName: String? = null,
   /** 安全教育开始时间 */
   val safetyStartTime: OffsetDateTime? = null,
   /** 安全教育结束时间 */
@@ -71,31 +74,7 @@ data class AccidentReport(
   /** 整改措施 */
   val correctiveAction: String? = null,
   /** 司机态度 */
-  val driverAttitude: String? = null,
-
-  //== 报告提交 ==
-  /** 司机签名 */
-  val signDriverName: String? = null,
-  /** 司机签名时间 */
-  val driverSignTime: OffsetDateTime? = null,
-  /** 经办签名 */
-  val handlerName: String? = null,
-  /** 经办签名时间 */
-  val handlerSignTime: OffsetDateTime? = null,
-  /** 报告开始时间 */
-  val reportStartTime: OffsetDateTime? = null,
-  /** 报告结束时间 */
-  val reportEndTime: OffsetDateTime? = null,
-
-  //== 混杂的勾选框 ==
-  val checkbox4Plan: Boolean? = null,
-  val checkbox4Standard: Boolean? = null,
-  val checkbox4Attachment: Boolean? = null,
-  val checkbox4Car: Boolean? = null,
-  val checkbox4People: Boolean? = null,
-  val checkbox4Other: Boolean? = null,
-  val checkbox4Safety: Boolean? = null,
-  val checkbox4Action: Boolean? = null
+  val driverAttitude: String? = null
 ) {
   companion object {
     /** 查询角色 */

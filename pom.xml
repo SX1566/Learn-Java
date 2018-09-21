@@ -20,6 +20,7 @@
     <simter.version>0.6.0</simter.version>
     <simter-kv.version>0.3.1</simter-kv.version>
     <simter-category.version>0.2.1</simter-category.version>
+    <simter-operation.version>0.1-SNAPSHOT</simter-operation.version>
     <kotlin.compiler.incremental>false</kotlin.compiler.incremental>
   </properties>
   <modules>

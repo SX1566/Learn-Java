@@ -51,6 +51,11 @@ object POUtils {
     return "$prefix${strMap[prefix]}"
   }
 
+  fun randomBoolean(): Boolean {
+    return Random().nextBoolean()
+  }
+
+
   /** 构建新的事故报案 */
   fun randomAccidentDraft(
     code: String,
@@ -122,6 +127,38 @@ object POUtils {
     accidentRegister.peoples = peoples
     accidentRegister.others = others
     return accidentRegister
+  }
+
+  /** 构建新的事故报告 */
+  fun randomAccidentReport(
+    register: AccidentRegister,
+    status: AccidentReport.Status
+  ): AccidentReport {
+    return AccidentReport(
+      id = register.id,
+      status = status,
+      reportTime = OffsetDateTime.now(),
+      overdueReport = randomBoolean(),
+      appointDriverReturnTime = OffsetDateTime.now(),
+      actualDriverReturnTime = OffsetDateTime.now(),
+      driverReturnSponsorName = nextCode("DRSponsor"),
+      driverReturnSupporterName = nextCode("DRSupporter"),
+      safetyStartTime = OffsetDateTime.now(),
+      safetyEndTime = OffsetDateTime.now(),
+      safetySponsorName = nextCode("SSponsor"),
+      safetySupporterName = nextCode("SSupporter"),
+      talkStartTime = OffsetDateTime.now(),
+      talkEndTime = OffsetDateTime.now(),
+      talkSponsorName = nextCode("TSponsor"),
+      talkSupporterName = nextCode("TSupporter"),
+      caseReason = nextCode("caseReason"),
+      safetyComment = nextCode("safetyComment"),
+      evaluateDetails = nextCode("evaluateDetails"),
+      evaluateAffection = nextCode("evaluateAffection"),
+      takeFurther = randomBoolean(),
+      correctiveAction = nextCode("correctiveAction"),
+      driverAttitude = nextCode("driverAttitude")
+    )
   }
 
   /** 构建新的事故操作记录 */

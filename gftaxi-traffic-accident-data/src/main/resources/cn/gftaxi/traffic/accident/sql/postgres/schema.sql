@@ -1,9 +1,10 @@
--- 交通事故数据库构建脚本
+﻿-- 交通事故数据库构建脚本
 
 -- create extension
 create extension if not exists dblink;
 
 -- drop tables/sequences
+drop table if exists gf_accident_report;
 drop table if exists gf_accident_operation;
 drop table if exists gf_accident_car;
 drop table if exists gf_accident_people;
@@ -262,7 +263,6 @@ comment on column gf_accident_people.phone                   is '联系电话';
 comment on column gf_accident_people.transport_type          is '交通方式';
 comment on column gf_accident_people.duty                    is '事故责任';
 comment on column gf_accident_people.damage_state            is '伤亡情况';
-comment on column gf_accident_people.damage_money            is '损失预估（元）';
 comment on column gf_accident_people.guess_treatment_money   is '预估医疗费（元）';
 comment on column gf_accident_people.guess_compensate_money  is '预估赔偿损失（元）';
 comment on column gf_accident_people.actual_treatment_money  is '实际医疗费（元）';
@@ -299,6 +299,64 @@ comment on column gf_accident_other.guess_money   is '损失预估（元）';
 comment on column gf_accident_other.actual_money  is '实际损失（元）';
 comment on column gf_accident_other.follow_type   is '跟进形式';
 comment on column gf_accident_other.updated_time  is '更新时间';
+
+create table gf_accident_report (
+  id                            integer primary key references gf_accident_register on delete no action,
+  status                        smallint  not null,
+  report_time                   timestamptz,
+  overdue_report                boolean,
+  lawsuit                       text,
+  -- 工作计划
+  appoint_driver_return_time    timestamptz,
+  actual_driver_return_time     timestamptz,
+  driver_return_sponsor_name    varchar(50),
+  driver_return_supporter_name  varchar(50),
+  safety_start_time             timestamptz,
+  safety_end_time               timestamptz,
+  safety_sponsor_name           varchar(50),
+  safety_supporter_name         varchar(50),
+  talk_start_time               timestamptz,
+  talk_end_time                 timestamptz,
+  talk_sponsor_name             varchar(50),
+  talk_supporter_name           varchar(50),
+  -- 安全教育
+  case_reason                   varchar(255),
+  safety_comment                varchar(255),
+  evaluate_details              varchar(255),
+  evaluate_affection            varchar(255),
+  take_further                  Boolean,
+  -- 整改措施
+  corrective_action             varchar(255),
+  driver_attitude               varchar(255)
+);
+comment on table gf_accident_report                               is '事故报告';
+comment on column gf_accident_report.id                           is '所属事故ID';
+comment on column gf_accident_report.status                       is '状态：1-待报告、2-待审核、4-审核不通过、8-审核通过';
+comment on column gf_accident_report.report_time                  is '报告时间';
+comment on column gf_accident_report.overdue_report               is '是否逾期报告';
+comment on column gf_accident_report.lawsuit                      is '诉讼信息';
+-- 工作计划
+comment on column gf_accident_report.appoint_driver_return_time   is '约定司机回队时间';
+comment on column gf_accident_report.actual_driver_return_time    is '司机实际回队时间';
+comment on column gf_accident_report.driver_return_sponsor_name   is '司机回队主办人姓名';
+comment on column gf_accident_report.driver_return_supporter_name is '司机回队协办人姓名';
+comment on column gf_accident_report.safety_start_time            is '安全教育开始时间';
+comment on column gf_accident_report.safety_end_time              is '安全教育结束时间';
+comment on column gf_accident_report.safety_sponsor_name          is '安全教育主办人姓名';
+comment on column gf_accident_report.safety_supporter_name        is '安全教育协办人姓名';
+comment on column gf_accident_report.talk_start_time              is '诫勉谈话开始时间';
+comment on column gf_accident_report.talk_end_time                is '诫勉谈话结束时间';
+comment on column gf_accident_report.talk_sponsor_name            is '诫勉谈话主办人姓名';
+comment on column gf_accident_report.talk_supporter_name          is '诫勉谈话协办人姓名';
+-- 安全教育
+comment on column gf_accident_report.case_reason                  is '事故原因';
+comment on column gf_accident_report.safety_comment               is '处理意见';
+comment on column gf_accident_report.evaluate_details             is '事故经过描述评价';
+comment on column gf_accident_report.evaluate_affection           is '事故认识情度评价';
+comment on column gf_accident_report.take_further                 is '是否采取进一步处理措施';
+--整改措施
+comment on column gf_accident_report.corrective_action            is '整改措施';
+comment on column gf_accident_report.driver_attitude              is '司机态度';
 
 -- 获取汉字拼音首字母的大写 select cn_first_char('事故性质') > SGXZ
 -- 来源：http://blog.qdac.cc/?p=1281

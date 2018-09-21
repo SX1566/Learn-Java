@@ -12,13 +12,14 @@ import javax.persistence.Converter
  * @author RJ
  */
 @Converter(autoApply = true)
-class AccidentReportStatusConverter : AttributeConverter<Status, Short> {
-  override fun convertToDatabaseColumn(attribute: Status): Short {
-    return attribute.value()
+class AccidentReportStatusConverter : AttributeConverter<Status?, Short?> {
+  override fun convertToDatabaseColumn(attribute: Status?): Short? {
+    return attribute?.value()
   }
 
-  override fun convertToEntityAttribute(dbData: Short): Status {
+  override fun convertToEntityAttribute(dbData: Short?): Status? {
     return when (dbData) {
+      null -> null
       Status.Draft.value() -> Status.Draft
       Status.ToCheck.value() -> Status.ToCheck
       Status.Rejected.value() -> Status.Rejected
