@@ -13,6 +13,7 @@ import javax.persistence.Table
  * 事故报告 PO。
  *
  * @author RJ
+ * @author zh
  */
 @Entity
 @Table(name = "gf_accident_report")
@@ -37,7 +38,7 @@ data class AccidentReport(
   /** 司机回队主办人姓名 */
   val driverReturnSponsorName: String? = null,
   /** 司机回队协办人姓名 */
-  val driverReturnSupporter: String? = null,
+  val driverReturnSupporterName: String? = null,
   /** 安全教育开始时间 */
   val safetyStartTime: OffsetDateTime? = null,
   /** 安全教育结束时间 */
