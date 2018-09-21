@@ -327,23 +327,7 @@ create table gf_accident_report (
   take_further                  Boolean,
   -- 整改措施
   corrective_action             varchar(255),
-  driver_attitude               varchar(255),
-  -- 报告提交
-  sign_driver_name              varchar(50),
-  driver_sign_time              timestamptz,
-  handler_name                  varchar(50),
-  handler_sign_time             timestamptz,
-  report_start_time             timestamptz,
-  report_end_time               timestamptz,
-  -- 混杂的勾选框
-  checkbox4plan                boolean,
-  checkbox4standard            boolean,
-  checkbox4attachment          boolean,
-  checkbox4car                 boolean,
-  checkbox4people              boolean,
-  checkbox4other               boolean,
-  checkbox4safety              boolean,
-  checkbox4action              boolean
+  driver_attitude               varchar(255)
 );
 comment on table gf_accident_report                               is '事故报告';
 comment on column gf_accident_report.id                           is '所属事故ID';
@@ -372,22 +356,6 @@ comment on column gf_accident_report.take_further                 is '是否采�
 --整改措施
 comment on column gf_accident_report.corrective_action            is '整改措施';
 comment on column gf_accident_report.driver_attitude              is '司机态度';
--- 报告提交
-comment on column gf_accident_report.sign_driver_name             is '司机签名';
-comment on column gf_accident_report.driver_sign_time             is '司机签名时间';
-comment on column gf_accident_report.handler_name                 is '经办签名';
-comment on column gf_accident_report.handler_sign_time            is '经办签名时间';
-comment on column gf_accident_report.report_start_time            is '报告开始时间';
-comment on column gf_accident_report.report_end_time              is '报告结束时间';
--- 混杂的勾选框
-comment on column gf_accident_report.checkbox4plan                is '是否勾选工作计划';
-comment on column gf_accident_report.checkbox4standard            is '是否勾选标准';
-comment on column gf_accident_report.checkbox4attachment          is '是否勾选附件';
-comment on column gf_accident_report.checkbox4car                 is '是否勾选当事车辆';
-comment on column gf_accident_report.checkbox4people              is '是否勾选当事人';
-comment on column gf_accident_report.checkbox4other               is '是否勾选其他物体';
-comment on column gf_accident_report.checkbox4safety              is '是否勾选安全教育';
-comment on column gf_accident_report.checkbox4action              is '是否勾选整改措施';
 
 -- 获取汉字拼音首字母的大写 select cn_first_char('事故性质') > SGXZ
 -- 来源：http://blog.qdac.cc/?p=1281

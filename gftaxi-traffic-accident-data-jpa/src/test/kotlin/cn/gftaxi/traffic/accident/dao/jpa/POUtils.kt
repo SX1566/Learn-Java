@@ -157,21 +157,7 @@ object POUtils {
       evaluateAffection = nextCode("evaluateAffection"),
       takeFurther = randomBoolean(),
       correctiveAction = nextCode("correctiveAction"),
-      driverAttitude = nextCode("driverAttitude"),
-      signDriverName = nextCode("signDriver"),
-      driverSignTime = OffsetDateTime.now(),
-      handlerName = nextCode("handler"),
-      handlerSignTime = OffsetDateTime.now(),
-      reportStartTime = OffsetDateTime.now(),
-      reportEndTime = OffsetDateTime.now(),
-      checkbox4Plan = randomBoolean(),
-      checkbox4Standard = randomBoolean(),
-      checkbox4Attachment = randomBoolean(),
-      checkbox4Car = randomBoolean(),
-      checkbox4People = randomBoolean(),
-      checkbox4Other = randomBoolean(),
-      checkbox4Safety = randomBoolean(),
-      checkbox4Action = randomBoolean()
+      driverAttitude = nextCode("driverAttitude")
     )
   }
 

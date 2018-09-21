@@ -72,31 +72,7 @@ data class AccidentReport(
   /** 整改措施 */
   val correctiveAction: String? = null,
   /** 司机态度 */
-  val driverAttitude: String? = null,
-
-  //== 报告提交 ==
-  /** 司机签名 */
-  val signDriverName: String? = null,
-  /** 司机签名时间 */
-  val driverSignTime: OffsetDateTime? = null,
-  /** 经办签名 */
-  val handlerName: String? = null,
-  /** 经办签名时间 */
-  val handlerSignTime: OffsetDateTime? = null,
-  /** 报告开始时间 */
-  val reportStartTime: OffsetDateTime? = null,
-  /** 报告结束时间 */
-  val reportEndTime: OffsetDateTime? = null,
-
-  //== 混杂的勾选框 ==
-  val checkbox4Plan: Boolean? = null,
-  val checkbox4Standard: Boolean? = null,
-  val checkbox4Attachment: Boolean? = null,
-  val checkbox4Car: Boolean? = null,
-  val checkbox4People: Boolean? = null,
-  val checkbox4Other: Boolean? = null,
-  val checkbox4Safety: Boolean? = null,
-  val checkbox4Action: Boolean? = null
+  val driverAttitude: String? = null
 ) {
   companion object {
     /** 查询角色 */
