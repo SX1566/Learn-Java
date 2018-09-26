@@ -47,7 +47,10 @@ spring:
     name: @project.artifactId@-@project.version@
   jpa:
     open-in-view: false
-    hibernate.ddl-auto: ${db.ddl-auto:none}  # none | create | create-drop | update | validate
+    hibernate:
+      ddl-auto: ${db.ddl-auto:none}  # none | create | create-drop | update | validate
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
   datasource:
     continue-on-error: false
     sql-script-encoding: UTF-8
