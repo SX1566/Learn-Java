@@ -18,6 +18,7 @@ class CombineSqlFileTest {
     val paths = listOf(
       "tech/simter/kv/sql/$dbPlatform",
       "tech/simter/category/sql/$dbPlatform",
+      "tech/simter/operation/sql/$dbPlatform",
       "cn/gftaxi/traffic/accident/sql/$dbPlatform"
     )
     val classLoader = javaClass.classLoader

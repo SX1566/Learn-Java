@@ -60,6 +60,14 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <!-- simter-operation -->
+      <dependency>
+        <groupId>tech.simter</groupId>
+        <artifactId>simter-operation-dependencies</artifactId>
+        <version>${simter-operation.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <!-- spring -->
       <dependency>
         <groupId>org.springframework</groupId>
