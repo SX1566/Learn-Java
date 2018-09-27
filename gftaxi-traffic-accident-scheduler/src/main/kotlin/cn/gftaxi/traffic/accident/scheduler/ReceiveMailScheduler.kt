@@ -1,9 +1,7 @@
 package cn.gftaxi.traffic.accident.scheduler
 
-import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
 import cn.gftaxi.traffic.accident.dao.AccidentMailDao
-import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
-import cn.gftaxi.traffic.accident.po.AccidentDraft
+import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Form
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -47,7 +45,7 @@ class ReceiveMailScheduler @Autowired constructor(
     }
   }
 
-  private fun dto2Po(code: String, dto: AccidentDraftDto4Submit): AccidentDraft {
+  private fun dto2Po(code: String, dto: AccidentDraftDto4Form): AccidentDraft {
     return AccidentDraft(
       status = AccidentDraft.Status.Todo,
       code = code,
