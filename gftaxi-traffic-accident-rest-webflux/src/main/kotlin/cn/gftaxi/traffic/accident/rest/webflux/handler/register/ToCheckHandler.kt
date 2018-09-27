@@ -1,6 +1,5 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.register
 
-import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus.FORBIDDEN
@@ -17,6 +16,7 @@ import reactor.core.publisher.Mono
 import tech.simter.exception.ForbiddenException
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
+import tech.simter.reactive.web.Utils.TEXT_PLAIN_UTF8
 
 /**
  * 提交事故登记信息的 [ToCheckHandler]。

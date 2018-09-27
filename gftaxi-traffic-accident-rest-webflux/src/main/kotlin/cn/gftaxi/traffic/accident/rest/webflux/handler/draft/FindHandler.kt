@@ -1,14 +1,21 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.draft
 
-import cn.gftaxi.traffic.accident.Utils
-import cn.gftaxi.traffic.accident.po.AccidentDraft.Status
+import cn.gftaxi.traffic.accident.common.DraftStatus
+import cn.gftaxi.traffic.accident.common.convert
 import cn.gftaxi.traffic.accident.service.AccidentDraftService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus.FORBIDDEN
+import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.server.*
+import org.springframework.web.reactive.function.server.HandlerFunction
+import org.springframework.web.reactive.function.server.RequestPredicate
 import org.springframework.web.reactive.function.server.RequestPredicates.GET
-import org.springframework.web.reactive.function.server.ServerResponse.ok
+import org.springframework.web.reactive.function.server.ServerRequest
+import org.springframework.web.reactive.function.server.ServerResponse
+import org.springframework.web.reactive.function.server.ServerResponse.*
 import reactor.core.publisher.Mono
+import tech.simter.exception.PermissionDeniedException
+import tech.simter.reactive.web.Utils.TEXT_PLAIN_UTF8
 
 /**
  * 获取事故报案视图信息的 [HandlerFunction]。
@@ -22,37 +29,18 @@ class FindHandler @Autowired constructor(
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
     val pageNo = request.queryParam("pageNo").orElse("1").toInt()
     val pageSize = request.queryParam("pageSize").orElse("25").toInt()
-    val status = Status.valueOf(request.queryParam("status").orElse(Status.Todo.name))
+    val draftStatuses = request.queryParam("status")
+      .map { v -> v.split(",").map { DraftStatus.valueOf(it) } }
+      .orElse(null)
     val search = request.queryParam("search").orElse(null)
-    return ok().body(
-      accidentDraftService.find(pageNo, pageSize, status, search).map { page ->
-        hashMapOf(
-          "count" to page.count(),
-          "pageNo" to page.pageable.pageNumber,
-          "pageSize" to page.pageable.pageSize,
-          "rows" to page.content.map {
-            mapOf(
-              "id" to it.id,
-              "code" to it.code,
-              "status" to it.status.name,
-              "motorcadeName" to it.motorcadeName,
-              "carPlate" to it.carPlate,
-              "driverName" to it.driverName,
-              "happenTime" to it.happenTime.format(Utils.FORMAT_DATE_TIME_TO_MINUTE),
-              "draftTime" to it.draftTime.format(Utils.FORMAT_DATE_TIME_TO_MINUTE),
-              "location" to it.location,
-              "hitForm" to it.hitForm,
-              "hitType" to it.hitType,
-              "overdueDraft" to it.overdueDraft,
-              "source" to it.source,
-              "authorName" to it.authorName,
-              "authorId" to it.authorId,
-              "describe" to it.describe
-            )
-          }.toList()
-        )
+    return accidentDraftService.find(pageNo, pageSize, draftStatuses, search)
+      .map { it.convert() }
+      // response
+      .flatMap { ok().contentType(APPLICATION_JSON_UTF8).syncBody(it) }
+      // error mapping
+      .onErrorResume(PermissionDeniedException::class.java) {
+        status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
       }
-    )
   }
 
   companion object {

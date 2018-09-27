@@ -1,9 +1,10 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.draft
 
-import cn.gftaxi.traffic.accident.Utils.FORMAT_DATE_TIME_TO_MINUTE
-import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
+import cn.gftaxi.traffic.accident.common.Utils.FORMAT_DATE_TIME_TO_MINUTE
+import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Form
 import cn.gftaxi.traffic.accident.service.AccidentDraftService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus.FORBIDDEN
 import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.*
@@ -13,8 +14,10 @@ import org.springframework.web.reactive.function.server.ServerResponse.badReques
 import org.springframework.web.reactive.function.server.ServerResponse.created
 import reactor.core.publisher.Mono
 import tech.simter.exception.NonUniqueException
+import tech.simter.exception.PermissionDeniedException
 import tech.simter.reactive.context.SystemContext
 import tech.simter.reactive.security.ReactiveSecurityService
+import tech.simter.reactive.web.Utils.TEXT_PLAIN_UTF8
 import java.util.*
 import javax.json.Json
 
@@ -29,7 +32,7 @@ class SubmitHandler @Autowired constructor(
   private val securityService: ReactiveSecurityService
 ) : HandlerFunction<ServerResponse> {
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
-    return request.bodyToMono<AccidentDraftDto4Submit>()
+    return request.bodyToMono<AccidentDraftDto4Form>()
       .flatMap { dto ->
         // 自动设置当前用户信息
         securityService.getAuthenticatedUser()
@@ -45,14 +48,19 @@ class SubmitHandler @Autowired constructor(
       .flatMap { dto ->
         accidentDraftService.submit(dto).map {
           Json.createObjectBuilder()
-            .add("id", it.first)
-            .add("code", it.second)
-            .add("draftTime", dto.draftTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
+            .add("id", it.first.id!!)
+            .add("code", it.first.code)
+            .add("draftTime", it.second.draftTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
+            .add("overdueDraft", it.second.overdueDraft!!)
             .build().toString()
         }
       }
       .flatMap { created(request.uri()).contentType(APPLICATION_JSON_UTF8).syncBody(it) }
-      // 车号+事发时间重复时
+      // error mapping
+      .onErrorResume(PermissionDeniedException::class.java) {
+        ServerResponse.status(FORBIDDEN).contentType(TEXT_PLAIN_UTF8).syncBody(it.message ?: "")
+      }
+      // 指定车号和事发时间的案件已经存在
       .onErrorResume(NonUniqueException::class.java) { badRequest().syncBody(it.message ?: "") }
   }
 

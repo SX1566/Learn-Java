@@ -1,9 +1,11 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.draft
 
-import cn.gftaxi.traffic.accident.rest.webflux.TestUtils.randomAccidentDraft
+import cn.gftaxi.traffic.accident.common.Utils.FORMAT_DATE_TIME_TO_MINUTE
 import cn.gftaxi.traffic.accident.rest.webflux.UnitTestConfiguration
 import cn.gftaxi.traffic.accident.rest.webflux.handler.draft.GetHandler.Companion.REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.service.AccidentDraftService
+import cn.gftaxi.traffic.accident.test.TestUtils.randomAccidentDraftDto4Form
+import cn.gftaxi.traffic.accident.test.TestUtils.randomInt
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
@@ -19,6 +21,8 @@ import org.springframework.web.reactive.function.server.RouterFunction
 import org.springframework.web.reactive.function.server.RouterFunctions.route
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
+import tech.simter.exception.PermissionDeniedException
+import tech.simter.reactive.web.Utils.TEXT_PLAIN_UTF8
 
 /**
  * Test [GetHandler]。
@@ -39,24 +43,54 @@ class GetHandlerTest @Autowired constructor(
     fun theRoute(handler: GetHandler): RouterFunction<ServerResponse> = route(REQUEST_PREDICATE, handler)
   }
 
-  @Test
-  fun get() {
-    // mock
-    val id = 1
-    val code = "20180709_01"
-    `when`(accidentDraftService.get(id))
-      .thenReturn(Mono.just(randomAccidentDraft(id = id, code = code)))
+  private val id = randomInt()
+  private val url = "/accident-draft/$id"
 
-    // invoke
-    client.get().uri("/accident-draft/$id")
+  @Test
+  fun `Success get`() {
+    // mock
+    val dto = randomAccidentDraftDto4Form(id = id)
+    `when`(accidentDraftService.get(id)).thenReturn(Mono.just(dto))
+
+    // invoke and verify
+    client.get().uri(url)
       .exchange()
       .expectStatus().isOk
       .expectHeader().contentType(APPLICATION_JSON_UTF8)
       .expectBody()
       .jsonPath("$.id").isEqualTo(id)
-      .jsonPath("$.code").isEqualTo(code)
+      .jsonPath("$.code").isEqualTo(dto.code!!)
+      .jsonPath("$.draftStatus").isEqualTo(dto.draftStatus!!.name)
+      .jsonPath("$.draftTime").isEqualTo(dto.draftTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
+      .jsonPath("$.overdueDraft").isEqualTo(dto.overdueDraft!!)
+      .jsonPath("$.carPlate").isEqualTo(dto.carPlate!!)
+      .jsonPath("$.driverName").isEqualTo(dto.driverName!!)
+      .jsonPath("$.driverType").isEqualTo(dto.driverType!!.name)
+      .jsonPath("$.happenTime").isEqualTo(dto.happenTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
+      .jsonPath("$.location").isEqualTo(dto.location!!)
+    verify(accidentDraftService).get(id)
+  }
 
-    // verify
+  @Test
+  fun `Failed by NotFound`() {
+    // mock
+    `when`(accidentDraftService.get(id)).thenReturn(Mono.empty())
+
+    // invoke and verify
+    client.get().uri(url).exchange()
+      .expectStatus().isNotFound.expectHeader().contentType(TEXT_PLAIN_UTF8)
+    verify(accidentDraftService).get(id)
+  }
+
+  @Test
+  fun `Failed by PermissionDenied`() {
+    // mock
+    `when`(accidentDraftService.get(id)).thenReturn(Mono.error(PermissionDeniedException()))
+
+    // invoke and verify
+    client.get().uri(url).exchange()
+      .expectStatus().isForbidden
+      .expectHeader().contentType(TEXT_PLAIN_UTF8)
     verify(accidentDraftService).get(id)
   }
 }
