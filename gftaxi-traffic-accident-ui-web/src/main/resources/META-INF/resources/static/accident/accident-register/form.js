@@ -22,7 +22,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           accidentAttachments: []
         },
         categories: {},
-        e: {status: "Draft"}
+        e: {registerStatus: "ToSubmit"}
       },
       ready: function () {
         let id = $page.data("data");
@@ -51,9 +51,9 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
       computed: {
         isReadOnly: function () {
           if (!isRecorder && !isEditor) return true; // 无登记和修改权限
-          else if (this.e.status === "Draft" && !isRecorder) return true; // 待登记状态但不是登记角色
+          else if (this.e.registerStatus === "ToSubmit" && !isRecorder) return true; // 待登记状态但不是登记角色
           // 已登记但不是修改角色
-          else if (["ToCheck", "Rejected", "Approved"].indexOf(this.e.status) > -1 && !isEditor) return true;
+          else if (["ToCheck", "Rejected", "Approved"].indexOf(this.e.registerStatus) > -1 && !isEditor) return true;
           else return false;
         },
         driverTypeLabel: function () {
@@ -96,7 +96,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
         initAttachments: function () {
           this.loadAccidentAttachments();
           this.loadAccidentPicAttachments();
-          if (["Rejected", "Approved"].indexOf(this.e.status) > -1) this.loadCheckedAttachments()
+          if (["Rejected", "Approved"].indexOf(this.e.registerStatus) > -1) this.loadCheckedAttachments()
         },
         /** 加载事故附件信息 */
         loadAccidentAttachments: function () {
@@ -124,7 +124,7 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
           if (!bc.validator.validate($page)) return;
           let isNew = !this.e.id;
           let data = {};
-          let ignoreKeys = ["status", "code", "draftTime", "historyAccidentCount", "historyTrafficOffenceCount",
+          let ignoreKeys = ["registerStatus", "code", "draftTime", "historyAccidentCount", "historyTrafficOffenceCount",
             "historyServiceOffenceCount", "historyComplainCount", "result", "comment", "attachmentId", "attachmentName"];
           Object.keys(this.e).forEach(key => {
             if (ignoreKeys.indexOf(key) > -1) return;
@@ -419,10 +419,10 @@ define(["bc", "bs", "bs/carMan.js", "vue", "context", 'static/accident/api','sta
         // 初始化表单按钮
         showHideButtons: function () {
           if (!isManager) return;
-          if ((this.e.status === "Draft" && isRecorder) || (this.e.status !== "Draft" && isEditor))
+          if ((this.e.registerStatus === "ToSubmit" && isRecorder) || (this.e.registerStatus !== "ToSubmit" && isEditor))
             $page.parent().find("button#save").show();
-          if (["Draft", "Rejected"].indexOf(this.e.status) > -1 && isRecorder) $page.parent().find("button#submit").show();
-          if (this.e.status === "ToCheck" && isChecker) $page.parent().find("button#check").show();
+          if (["ToSubmit", "Rejected"].indexOf(this.e.registerStatus) > -1 && isRecorder) $page.parent().find("button#submit").show();
+          if (this.e.registerStatus === "ToCheck" && isChecker) $page.parent().find("button#check").show();
         },
         /**
          * 触发上传组件点击事件
