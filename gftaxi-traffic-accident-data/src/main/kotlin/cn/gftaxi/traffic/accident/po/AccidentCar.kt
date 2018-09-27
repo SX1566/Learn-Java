@@ -1,62 +1,40 @@
 package cn.gftaxi.traffic.accident.po
 
+import cn.gftaxi.traffic.accident.po.base.AccidentSubListBaseInfoWithParent
 import java.math.BigDecimal
-import java.time.OffsetDateTime
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Table
 
 /**
  * 事故当事车辆 PO。
  *
- * @author JF
  * @author RJ
  */
 @Entity
-@Table(
-  name = "gf_accident_car",
-  uniqueConstraints = [UniqueConstraint(columnNames = ["pid", "name"])]
-)
-data class AccidentCar constructor(
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  override val id: Int? = null,
-  /** 所属事故 */
-  @ManyToOne(optional = false)
-  @JoinColumn(name = "pid", nullable = false)
-  val parent: AccidentRegister,
-  /** 同一事故内的序号 */
-  val sn: Short,
-  /** 车号，如 粤A.123456 */
-  @Column(length = 10)
-  val name: String,
-  /** 分类 */
-  @Column(length = 50)
-  val type: String,
+@Table(name = "gf_accident_car")
+class AccidentCar : AccidentSubListBaseInfoWithParent() {
   /** 车型：出租车、小轿车、... */
-  @Column(length = 50)
-  val model: String? = null,
+  @get:Column(length = 50)
+  var model: String? by holder
   /** 拖车次数 */
-  val towCount: Short? = null,
+  var towCount: Short? by holder
   /** 维修分类：厂修、外修 */
-  @Column(length = 50)
-  val repairType: String? = null,
-  /** 预估拖车费（元） */
-  @Column(precision = 10, scale = 2)
-  val guessTowMoney: BigDecimal? = null,
-  /** 预估维修费（元） */
-  @Column(precision = 10, scale = 2)
-  val guessRepairMoney: BigDecimal? = null,
-  /** 实际拖车费（元） */
-  @Column(precision = 10, scale = 2)
-  val actualTowMoney: BigDecimal? = null,
-  /** 实际维修费（元） */
-  @Column(precision = 10, scale = 2)
-  val actualRepairMoney: BigDecimal? = null,
+  @get:Column(length = 50)
+  var repairType: String? by holder
   /** 受损情况 */
-  @Column(length = 50)
-  val damageState: String? = null,
-  /** 跟进形式 */
-  @Column(length = 50)
-  val followType: String? = null,
-  /** 更新时间 */
-  val updatedTime: OffsetDateTime? = null
-) : IdEntity
+  @get:Column(length = 50)
+  var damageState: String? by holder
+  /** 预估拖车费（元） */
+  @get:Column(precision = 10, scale = 2)
+  var guessTowMoney: BigDecimal? by holder
+  /** 预估维修费（元） */
+  @get:Column(precision = 10, scale = 2)
+  var guessRepairMoney: BigDecimal? by holder
+  /** 实际拖车费（元） */
+  @get:Column(precision = 10, scale = 2)
+  var actualTowMoney: BigDecimal? by holder
+  /** 实际维修费（元） */
+  @get:Column(precision = 10, scale = 2)
+  var actualRepairMoney: BigDecimal? by holder
+}

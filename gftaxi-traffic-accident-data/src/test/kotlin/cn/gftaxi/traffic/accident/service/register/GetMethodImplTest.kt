@@ -1,23 +1,19 @@
 package cn.gftaxi.traffic.accident.service.register
 
-import cn.gftaxi.traffic.accident.POUtils
-import cn.gftaxi.traffic.accident.POUtils.randomAccidentDraft
-import cn.gftaxi.traffic.accident.Utils.convert
-import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
-import cn.gftaxi.traffic.accident.dao.AccidentOperationDao
-import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.READ_ROLES
+import cn.gftaxi.traffic.accident.common.AccidentRole.ROLES_REGISTER_READ
+import cn.gftaxi.traffic.accident.dao.AccidentDao
+import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import cn.gftaxi.traffic.accident.service.AccidentRegisterServiceImpl
-import com.nhaarman.mockito_kotlin.any
+import cn.gftaxi.traffic.accident.test.TestUtils.randomCase
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
-import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
 import tech.simter.reactive.security.ReactiveSecurityService
 
@@ -27,91 +23,52 @@ import tech.simter.reactive.security.ReactiveSecurityService
  * @author RJ
  */
 @SpringJUnitConfig(AccidentRegisterServiceImpl::class)
-@MockBean(
-  AccidentRegisterDao::class, AccidentDraftDao::class, AccidentOperationDao::class,
-  ReactiveSecurityService::class
-)
+@MockBean(AccidentDao::class, ReactiveSecurityService::class)
 class GetMethodImplTest @Autowired constructor(
-  private val accidentRegisterService: AccidentRegisterService,
-  private val accidentRegisterDao: AccidentRegisterDao,
-  private val accidentDraftDao: AccidentDraftDao,
-  private val securityService: ReactiveSecurityService
+  private val securityService: ReactiveSecurityService,
+  private val accidentDao: AccidentDao,
+  private val accidentRegisterService: AccidentRegisterService
 ) {
   @Test
-  fun draftNotExists() {
+  fun `Case not exists`() {
     // mock
     val id = 1
-    `when`(securityService.verifyHasAnyRole(*READ_ROLES)).thenReturn(Mono.empty())
-    `when`(accidentRegisterDao.get(id)).thenReturn(Mono.empty())
-    `when`(accidentDraftDao.get(id)).thenReturn(Mono.empty())
+    `when`(securityService.verifyHasAnyRole(*ROLES_REGISTER_READ)).thenReturn(Mono.empty())
+    `when`(accidentDao.getRegister(id)).thenReturn(Mono.empty())
 
     // invoke
     val actual = accidentRegisterService.get(id)
 
     // verify
-    StepVerifier.create(actual)
-      .expectError(NotFoundException::class.java)
-      .verify()
-    verify(securityService).verifyHasAnyRole(*READ_ROLES)
-    verify(accidentRegisterDao).get(id)
-    verify(accidentDraftDao).get(id)
-    verify(accidentRegisterDao, times(0)).createBy(any())
+    StepVerifier.create(actual).verifyComplete()
+    verify(securityService).verifyHasAnyRole(*ROLES_REGISTER_READ)
+    verify(accidentDao).getRegister(id)
   }
 
   @Test
-  fun draftExistsButNoRegister() {
+  fun `Case exists`() {
     // mock
     val id = 1
-    `when`(securityService.verifyHasAnyRole(*READ_ROLES)).thenReturn(Mono.empty())
-    val draft = randomAccidentDraft(id = id)
-    val registerPo = POUtils.randomAccidentRegister(draft)
-    `when`(accidentRegisterDao.get(id)).thenReturn(Mono.empty())
-    `when`(accidentDraftDao.get(id)).thenReturn(Mono.just(draft))
-    `when`(accidentRegisterDao.createBy(draft)).thenReturn(Mono.just(registerPo))
+    `when`(securityService.verifyHasAnyRole(*ROLES_REGISTER_READ)).thenReturn(Mono.empty())
+    val dto = AccidentRegisterDto4Form.from(randomCase(id = id))
+    `when`(accidentDao.getRegister(id)).thenReturn(Mono.just(dto))
 
     // invoke
     val actual = accidentRegisterService.get(id)
 
     // verify
     StepVerifier.create(actual)
-      .expectNext(convert(registerPo, draft))
+      .expectNext(dto)
       .verifyComplete()
-    verify(securityService).verifyHasAnyRole(*READ_ROLES)
-    verify(accidentRegisterDao).get(id)
-    verify(accidentDraftDao).get(id)
-    verify(accidentRegisterDao).createBy(draft)
+    verify(securityService).verifyHasAnyRole(*ROLES_REGISTER_READ)
+    verify(accidentDao).getRegister(id)
   }
 
   @Test
-  fun registerExists() {
+  fun `Failed by PermissionDenied`() {
     // mock
     val id = 1
-    `when`(securityService.verifyHasAnyRole(*READ_ROLES)).thenReturn(Mono.empty())
-    val draft = randomAccidentDraft(id = id)
-    val registerPo = POUtils.randomAccidentRegister(draft = draft)
-    `when`(accidentRegisterDao.get(id)).thenReturn(Mono.just(registerPo))
-    `when`(accidentDraftDao.get(id)).thenReturn(Mono.just(draft))
-
-    // invoke
-    val actual = accidentRegisterService.get(id)
-
-    // verify
-    StepVerifier.create(actual)
-      .expectNext(convert(registerPo, draft))
-      .verifyComplete()
-    verify(securityService).verifyHasAnyRole(*READ_ROLES)
-    verify(accidentRegisterDao).get(id)
-    verify(accidentDraftDao).get(id)
-    verify(accidentRegisterDao, times(0)).createBy(any())
-  }
-
-  @Test
-  fun failedByPermissionDenied() {
-    // mock
-    val id = 1
-    `when`(securityService.verifyHasAnyRole(*READ_ROLES)).thenReturn(Mono.error(PermissionDeniedException()))
-    `when`(accidentRegisterDao.get(id)).thenReturn(Mono.empty())
-    `when`(accidentDraftDao.get(id)).thenReturn(Mono.empty())
+    `when`(securityService.verifyHasAnyRole(*ROLES_REGISTER_READ)).thenReturn(Mono.error(PermissionDeniedException()))
 
     // invoke
     val actual = accidentRegisterService.get(id)
@@ -120,9 +77,6 @@ class GetMethodImplTest @Autowired constructor(
     StepVerifier.create(actual)
       .expectError(PermissionDeniedException::class.java)
       .verify()
-    verify(securityService).verifyHasAnyRole(*READ_ROLES)
-    verify(accidentRegisterDao, times(0)).get(id)
-    verify(accidentDraftDao, times(0)).get(id)
-    verify(accidentRegisterDao, times(0)).createBy(any())
+    verify(securityService).verifyHasAnyRole(*ROLES_REGISTER_READ)
   }
 }
