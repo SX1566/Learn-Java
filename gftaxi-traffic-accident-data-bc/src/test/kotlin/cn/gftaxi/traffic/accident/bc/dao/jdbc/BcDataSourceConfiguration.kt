@@ -1,5 +1,6 @@
-package cn.gftaxi.traffic.accident.dao.jdbc.bc
+package cn.gftaxi.traffic.accident.bc.dao.jdbc
 
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.jdbc.DataSourceBuilder
@@ -20,6 +21,16 @@ class BcDataSourceConfiguration @Autowired constructor(
   @Value("\${bc.db.username:test}") private val username: String,
   @Value("\${bc.db.password:password}") private val password: String
 ) {
+  private val logger = LoggerFactory.getLogger(BcDataSourceConfiguration::class.java)
+
+  init {
+    logger.info("host=$host")
+    logger.info("port=$port")
+    logger.info("name=$name")
+    logger.info("username=$username")
+    logger.info("password=$password")
+  }
+
   @Bean
   fun bcDataSource(): DataSource {
     return DataSourceBuilder.create()

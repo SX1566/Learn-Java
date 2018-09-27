@@ -1,10 +1,10 @@
-package cn.gftaxi.traffic.accident.dao.jdbc
+package cn.gftaxi.traffic.accident.bc.dao.jdbc
 
-import cn.gftaxi.traffic.accident.Utils.polishCarPlate
-import cn.gftaxi.traffic.accident.dao.BcDao
-import cn.gftaxi.traffic.accident.dto.CaseRelatedInfoDto
-import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType
-import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType.*
+import cn.gftaxi.traffic.accident.bc.dao.BcDao
+import cn.gftaxi.traffic.accident.bc.dto.CaseRelatedInfoDto
+import cn.gftaxi.traffic.accident.common.DriverType
+import cn.gftaxi.traffic.accident.common.DriverType.*
+import cn.gftaxi.traffic.accident.common.Utils.polishCarPlate
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -136,7 +136,7 @@ class BcDaoImpl @Autowired constructor(
     logger.debug("maker={}, relatedDriver={}", maker, relatedDriver)
 
     // 4. 根据迁移记录获取司机的营运班次和车队信息
-    val mm: Map<String, Any?>? = car?.let {
+    val mm: Map<String, Any?>? = car?.let { _ ->
       maker?.let {
         try {
           // 司机对指定车辆在指定日的迁移记录状态

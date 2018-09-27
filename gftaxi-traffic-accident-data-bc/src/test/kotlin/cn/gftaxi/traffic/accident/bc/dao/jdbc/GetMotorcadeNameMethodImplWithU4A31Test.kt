@@ -1,11 +1,11 @@
-package cn.gftaxi.traffic.accident.dao.jdbc.bc
+package cn.gftaxi.traffic.accident.bc.dao.jdbc
 
-import cn.gftaxi.traffic.accident.dao.BcDao
-import cn.gftaxi.traffic.accident.dao.jdbc.BcDaoImpl
-import cn.gftaxi.traffic.accident.dao.jpa.ModuleConfiguration
+import cn.gftaxi.traffic.accident.bc.dao.BcDao
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import reactor.test.StepVerifier
 import java.time.LocalDate
@@ -24,8 +24,9 @@ import java.time.LocalDate
  *
  * @author RJ
  */
-@SpringJUnitConfig(ModuleConfiguration::class, BcDataSourceConfiguration::class)
-@DataJpaTest
+@SpringJUnitConfig(ModuleConfiguration::class)
+@JdbcTest
+@AutoConfigureTestDatabase(replace = NONE)
 class GetMotorcadeNameMethodImplWithU4A31Test @Autowired constructor(
   private val bcDao: BcDao
 ) {

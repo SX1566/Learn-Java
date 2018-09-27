@@ -63,6 +63,10 @@
     </dependency>
     <dependency>
       <groupId>cn.gftaxi.traffic.accident</groupId>
+      <artifactId>gftaxi-traffic-accident-data-bc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>cn.gftaxi.traffic.accident</groupId>
       <artifactId>gftaxi-traffic-accident-data-mail</artifactId>
     </dependency>
     <dependency>
