@@ -47,5 +47,5 @@ data class AccidentRegisterDto4View constructor(
   val checkedComment: String? = null,
   /** 最后一次审核的审核附件 */
   @Convert(converter = AttachmentsConverter::class)
-  val attachments: List<Attachment>? = null
+  val checkedAttachments: List<Attachment>? = null
 )
