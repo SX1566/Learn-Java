@@ -1,6 +1,6 @@
 package cn.gftaxi.traffic.accident.dao
 
-import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
+import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Form
 import reactor.core.publisher.Flux
 
 /**
@@ -14,5 +14,5 @@ interface AccidentMailDao {
    *
    * @return 从邮件解析生成的待提交报案信息
    */
-  fun receiveMail(): Flux<AccidentDraftDto4Submit>
+  fun receiveMail(): Flux<AccidentDraftDto4Form>
 }

@@ -10,12 +10,11 @@ define(["bc", "bs", "bs/carMan.js", "vue2", "context", 'static/accident/api'], f
       el: $page[0].firstElementChild,
       data: {
         ui: {
-          statuses: {"Todo": "待登记", "Done": "已登记"},
           hitForms: [""],
           hitTypes: [""],
           driverNames: []
         },
-        e: {status: "Todo", source: "BC"},
+        e: {draftStatus: "ToSubmit", source: "BC"},
         origin: {}
       },
       mounted: function () {
@@ -51,7 +50,7 @@ define(["bc", "bs", "bs/carMan.js", "vue2", "context", 'static/accident/api'], f
       },
       computed: {
         statusLabel: function () {
-          return this.ui.statuses[this.e.status] || this.e.status;
+          return accident.DRAFT_STATUS_MAP[this.e.draftStatus] || "";
         },
         overdueLabel: function () {
           if (this.e.code) return this.e.overdueDraft ? "是" : "否";

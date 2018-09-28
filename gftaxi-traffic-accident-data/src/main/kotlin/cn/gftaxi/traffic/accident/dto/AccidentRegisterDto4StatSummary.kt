@@ -1,6 +1,5 @@
 package cn.gftaxi.traffic.accident.dto
 
-import java.io.Serializable
 import javax.persistence.Entity
 import javax.persistence.Id
 
@@ -11,7 +10,7 @@ import javax.persistence.Id
  */
 @Entity
 data class AccidentRegisterDto4StatSummary constructor(
-  /** 范围，按月统计时格式为"yyyy年MM月"，按季度或按年时格式为"yyyy年"*/
+  /** 统计范围，按月统计时格式为"yyyyMM"，按年时格式为"yyyy"，按季度时格式为"yyyyQn"*/
   @Id val scope: String,
   /** 事故报案总数 */
   val total: Int,
@@ -25,26 +24,4 @@ data class AccidentRegisterDto4StatSummary constructor(
   val overdueDraft: Int,
   /** 逾期登记案件数 */
   val overdueRegister: Int
-) : Serializable
-
-/**
- * 统计范围。
- */
-enum class ScopeType(private val value: Short) {
-  /**
-   * 按月。
-   */
-  Monthly(1),
-  /**
-   * 按季度。
-   */
-  Quarterly(2),
-  /**
-   * 按年。
-   */
-  Yearly(4);
-
-  fun value(): Short {
-    return value
-  }
-}
+)

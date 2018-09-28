@@ -67,6 +67,22 @@ define(["bc", "context"], function (bc, context) {
   }
 
   let categories = cors(`${accidentDataServer}/category/group/`, "GET").then(r => {return r});
+  const DRAFT_STATUSES = Object.freeze([
+    {value: 1, id: 'ToSubmit', label: '待上报'},
+    {value: 2, id: 'Drafting', label: '待登记'},
+    {value: 4, id: 'Drafted', label: '已登记'}
+  ]);
+  const AUDIT_STATUSES = Object.freeze([
+    {value: 1, id: 'ToSubmit', label: '待提交'},
+    {value: 2, id: 'ToCheck', label: '待审核'},
+    {value: 4, id: 'Rejected', label: '审核不通过'},
+    {value: 8, id: 'Approved', label: '审核通过'}
+  ]);
+  const DRIVER_TYPES = Object.freeze([
+    {id: 'Official', label: '正班'},
+    {id: 'Shift', label: '替班'},
+    {id: 'Outside', label: '非编'}
+  ]);
 
   //==== 一些常数定义 ====
   const api = {
@@ -76,6 +92,15 @@ define(["bc", "context"], function (bc, context) {
     staticServer: accidentStaticServer,
     /** 交通事故分类信息 */
     categories: categories,
+    /** 事故报案状态 */
+    DRAFT_STATUSES: DRAFT_STATUSES,
+    DRAFT_STATUS_MAP: Object.freeze(DRAFT_STATUSES.reduce((m, s) => m[s.id] = s.label, {})),
+    /** 案件审查状态（事故登记状态、事故报告状态） */
+    AUDIT_STATUSES: AUDIT_STATUSES,
+    AUDIT_STATUS_MAP: Object.freeze(AUDIT_STATUSES.reduce((m, s) => m[s.id] = s.label, {})),
+    /** 司机驾驶状态 */
+    DRIVER_TYPES: DRIVER_TYPES,
+    DRIVER_TYPE_MAP: Object.freeze(DRIVER_TYPES.reduce((m, s) => m[s.id] = s.label, {})),
 
     /**
      * 打开模块的表单窗口。

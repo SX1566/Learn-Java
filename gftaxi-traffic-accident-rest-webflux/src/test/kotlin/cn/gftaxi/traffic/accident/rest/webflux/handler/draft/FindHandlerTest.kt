@@ -1,11 +1,11 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.draft
 
-import cn.gftaxi.traffic.accident.po.AccidentDraft
-import cn.gftaxi.traffic.accident.po.AccidentDraft.Status
-import cn.gftaxi.traffic.accident.rest.webflux.TestUtils.randomAccidentDraft
+import cn.gftaxi.traffic.accident.common.DraftStatus
+import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4View
 import cn.gftaxi.traffic.accident.rest.webflux.UnitTestConfiguration
 import cn.gftaxi.traffic.accident.rest.webflux.handler.draft.FindHandler.Companion.REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.service.AccidentDraftService
+import cn.gftaxi.traffic.accident.test.TestUtils.randomAccidentDraftDto4View
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
@@ -23,7 +23,8 @@ import org.springframework.web.reactive.function.server.RouterFunction
 import org.springframework.web.reactive.function.server.RouterFunctions.route
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
-import java.util.*
+import tech.simter.exception.PermissionDeniedException
+import tech.simter.reactive.web.Utils.TEXT_PLAIN_UTF8
 
 /**
  * Test [FindHandler]。
@@ -44,31 +45,76 @@ class FindHandlerTest @Autowired constructor(
     fun theRoute(handler: FindHandler): RouterFunction<ServerResponse> = route(REQUEST_PREDICATE, handler)
   }
 
+  private val url = "/accident-draft"
+
   @Test
-  fun find() {
+  fun `Found nothing`() {
     // mock
     val pageNo = 1
     val pageSize = 25
-    val search = "2018"
-    val status = Status.Todo
-    val code = "20180709_01"
-    val list = ArrayList<AccidentDraft>()
-    list.add(randomAccidentDraft(code = code))
-    `when`(accidentDraftService.find(pageNo, pageSize, status, search))
-      .thenReturn(Mono.just(PageImpl(list, PageRequest.of(pageNo, pageSize), list.size.toLong())))
+    val emptyList = listOf<AccidentDraftDto4View>()
+    `when`(accidentDraftService.find())
+      .thenReturn(Mono.just(PageImpl(emptyList, PageRequest.of(pageNo - 1, pageSize), 0)))
 
     // invoke
-    client.get().uri("/accident-draft?pageNo=$pageNo&pageSize=$pageSize&status=$status&search=$search")
+    client.get().uri(url)
       .exchange()
       .expectStatus().isOk
       .expectHeader().contentType(APPLICATION_JSON_UTF8)
       .expectBody()
-      .jsonPath("$.count").isEqualTo(list.size) // verify count
-      .jsonPath("$.pageNo").isEqualTo(pageNo)     // verify pageNo
-      .jsonPath("$.pageSize").isEqualTo(pageSize) // verify pageSize
-      .jsonPath("$.rows[0].code").isEqualTo(code)    // verify AccidentDraft.code
+      //.consumeWith { println(String(it.responseBody!!)) }
+      .jsonPath("$.count").isEqualTo(0)
+      .jsonPath("$.pageNo").isEqualTo(pageNo)
+      .jsonPath("$.pageSize").isEqualTo(pageSize)
+      .jsonPath("$.rows").isEmpty
 
     // verify
-    verify(accidentDraftService).find(pageNo, pageSize, status, search)
+    verify(accidentDraftService).find()
+  }
+
+  @Test
+  fun `Found something`() {
+    findByStatus()
+    findByStatus(listOf(DraftStatus.ToSubmit))
+    findByStatus(DraftStatus.values().toList())
+  }
+
+  private fun findByStatus(statuses: List<DraftStatus>? = null) {
+    // mock
+    val pageNo = 1
+    val pageSize = 25
+    val expected = randomAccidentDraftDto4View()
+    val list = listOf(expected)
+    `when`(accidentDraftService.find(pageNo, pageSize, statuses))
+      .thenReturn(Mono.just(PageImpl(list, PageRequest.of(pageNo - 1, pageSize), list.size.toLong())))
+
+    // invoke
+    val url = "$url?pageNo=$pageNo&pageSize=$pageSize" +
+      (statuses?.run { "&status=${statuses.joinToString(",")}" } ?: "")
+    client.get().uri(url)
+      .exchange()
+      .expectStatus().isOk
+      .expectHeader().contentType(APPLICATION_JSON_UTF8)
+      .expectBody()
+      //.consumeWith { println(String(it.responseBody!!)) }
+      .jsonPath("$.count").isEqualTo(list.size)
+      .jsonPath("$.pageNo").isEqualTo(pageNo)
+      .jsonPath("$.pageSize").isEqualTo(pageSize)
+      .jsonPath("$.rows[0].code").isEqualTo(expected.code!!)
+
+    // verify
+    verify(accidentDraftService).find(pageNo, pageSize, statuses)
+  }
+
+  @Test
+  fun `Failed by PermissionDenied`() {
+    // mock
+    `when`(accidentDraftService.find()).thenReturn(Mono.error(PermissionDeniedException()))
+
+    // invoke and verify
+    client.get().uri(url).exchange()
+      .expectStatus().isForbidden
+      .expectHeader().contentType(TEXT_PLAIN_UTF8)
+    verify(accidentDraftService).find()
   }
 }

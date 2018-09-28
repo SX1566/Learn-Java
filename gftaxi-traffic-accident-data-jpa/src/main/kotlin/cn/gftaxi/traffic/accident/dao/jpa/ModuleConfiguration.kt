@@ -10,11 +10,10 @@ private const val MODULE = "cn.gftaxi.traffic.accident"
 /**
  * All configuration for this module.
  *
- * @author JF
  * @author RJ
  */
 @Configuration("$MODULE.dao.jpa.ModuleConfiguration")
-@ComponentScan("$MODULE.dao.jpa", "$MODULE.dao.jdbc")
+@ComponentScan("$MODULE.dao.jpa")
 @EnableJpaRepositories("$MODULE.dao.jpa")
 @EntityScan("$MODULE.po", "$MODULE.dto")
 class ModuleConfiguration

@@ -17,10 +17,9 @@ import cn.gftaxi.traffic.accident.rest.webflux.handler.draft.GetHandler as Draft
 import cn.gftaxi.traffic.accident.rest.webflux.handler.draft.SubmitHandler as DraftSubmitHandler
 import cn.gftaxi.traffic.accident.rest.webflux.handler.draft.UpdateHandler as DraftUpdateHandler
 import cn.gftaxi.traffic.accident.rest.webflux.handler.register.CheckedHandler as RegisterCheckedHandler
-import cn.gftaxi.traffic.accident.rest.webflux.handler.register.FindLastCheckedHandler as RegisterFindLastCheckedHandler
-import cn.gftaxi.traffic.accident.rest.webflux.handler.register.FindTodoHandler as RegisterFindTodoHandler
+import cn.gftaxi.traffic.accident.rest.webflux.handler.register.FindHandler as RegisterFindHandler
 import cn.gftaxi.traffic.accident.rest.webflux.handler.register.GetHandler as RegisterGetHandler
-import cn.gftaxi.traffic.accident.rest.webflux.handler.register.StatSummaryHandler as RegisterStatSummaryHandler
+import cn.gftaxi.traffic.accident.rest.webflux.handler.register.StatMonthlySummaryHandler as RegisterStatMonthlySummaryHandler
 import cn.gftaxi.traffic.accident.rest.webflux.handler.register.ToCheckHandler as RegisterToCheckHandler
 import cn.gftaxi.traffic.accident.rest.webflux.handler.register.UpdateHandler as RegisterUpdateHandler
 
@@ -45,9 +44,8 @@ class ModuleConfiguration @Autowired constructor(
   private val draftFindHandler: DraftFindHandler,
   private val draftSubmitHandler: DraftSubmitHandler,
   private val draftUpdateHandler: DraftUpdateHandler,
-  private val registerStatSummaryHandler: RegisterStatSummaryHandler,
-  private val registerFindTodoHandler: RegisterFindTodoHandler,
-  private val registerFindLastCheckedHandler: RegisterFindLastCheckedHandler,
+  private val registerStatMonthlySummaryHandler: RegisterStatMonthlySummaryHandler,
+  private val registerFindHandler: RegisterFindHandler,
   private val registerGetHandler: RegisterGetHandler,
   private val registerUpdateHandler: RegisterUpdateHandler,
   private val registerToCheckHandler: RegisterToCheckHandler,
@@ -82,12 +80,10 @@ class ModuleConfiguration @Autowired constructor(
       DraftUpdateHandler.REQUEST_PREDICATE.invoke(draftUpdateHandler::handle)
 
       //==== 事故登记相关 ====
-      // GET /accident-register/stat/summary   获取汇总统计信息
-      RegisterStatSummaryHandler.REQUEST_PREDICATE.invoke(registerStatSummaryHandler::handle)
-      // GET /accident-register/todo           获取待登记、待审核案件信息
-      RegisterFindTodoHandler.REQUEST_PREDICATE.invoke(registerFindTodoHandler::handle)
-      // GET /accident-register/last-checked   获取已审核案件的最后审核信息
-      RegisterFindLastCheckedHandler.REQUEST_PREDICATE.invoke(registerFindLastCheckedHandler::handle)
+      // GET /accident-register/stat-monthly-summary   月度汇总统计信息
+      RegisterStatMonthlySummaryHandler.REQUEST_PREDICATE.invoke(registerStatMonthlySummaryHandler::handle)
+      // GET /accident-register                获取视图信息
+      RegisterFindHandler.REQUEST_PREDICATE.invoke(registerFindHandler::handle)
       // GET /accident-register/{id}           获取案件信息
       RegisterGetHandler.REQUEST_PREDICATE.invoke(registerGetHandler::handle)
       // PATCH /accident-register/{id}         更新案件信息

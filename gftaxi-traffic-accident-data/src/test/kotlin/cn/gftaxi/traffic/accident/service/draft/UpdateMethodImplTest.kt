@@ -1,127 +1,142 @@
 package cn.gftaxi.traffic.accident.service.draft
 
-import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
-import cn.gftaxi.traffic.accident.dao.BcDao
-import cn.gftaxi.traffic.accident.po.AccidentDraft
+import cn.gftaxi.traffic.accident.common.AccidentRole.ROLE_DRAFT_MODIFY
+import cn.gftaxi.traffic.accident.common.AccidentRole.ROLE_DRAFT_SUBMIT
+import cn.gftaxi.traffic.accident.common.DraftStatus
+import cn.gftaxi.traffic.accident.common.Utils.ACCIDENT_DRAFT_TARGET_TYPE
+import cn.gftaxi.traffic.accident.dao.AccidentDao
+import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4FormUpdate
 import cn.gftaxi.traffic.accident.service.AccidentDraftService
 import cn.gftaxi.traffic.accident.service.AccidentDraftServiceImpl
 import com.nhaarman.mockito_kotlin.any
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import reactor.core.publisher.Mono
+import reactor.core.publisher.toMono
 import reactor.test.StepVerifier
-import reactor.test.verifyError
 import tech.simter.exception.NotFoundException
-import tech.simter.security.SecurityService
-import java.time.OffsetDateTime
+import tech.simter.exception.PermissionDeniedException
+import tech.simter.reactive.security.ReactiveSecurityService
 
 /**
  * Test [AccidentDraftServiceImpl.update].
  *
- * @author JF
  * @author RJ
  */
 @SpringJUnitConfig(AccidentDraftServiceImpl::class)
-@MockBean(AccidentDraftDao::class, SecurityService::class, BcDao::class)
+@MockBean(AccidentDao::class, ReactiveSecurityService::class)
 class UpdateMethodImplTest @Autowired constructor(
-  private val accidentDraftService: AccidentDraftService,
-  private val accidentDraftDao: AccidentDraftDao,
-  private val securityService: SecurityService,
-  private val bcDao: BcDao
+  private val securityService: ReactiveSecurityService,
+  private val accidentDao: AccidentDao,
+  private val accidentDraftService: AccidentDraftService
 ) {
-  @Test
-  fun updateWithRole() {
-    // mock
-    val id = 1
-    val data = mutableMapOf<String, Any?>().withDefault { null }
-    doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
-    `when`(accidentDraftDao.update(any(), any())).thenReturn(Mono.just(true))
-
-    // invoke
-    val actual = accidentDraftService.update(id, data)
-
-    // verify
-    StepVerifier.create(actual).expectNext().verifyComplete()
-    verify(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
-    verify(accidentDraftDao).update(id, data)
+  private fun randomAccidentDraftDto4FormUpdate(): AccidentDraftDto4FormUpdate {
+    return AccidentDraftDto4FormUpdate()
   }
 
   @Test
-  fun updateWithRoleChangeCarPlateOrHappenTime() {
+  fun `Success by allow role and status`() {
+    DraftStatus.values().forEach { successByAllowRoleAndStatus(it) }
+  }
+
+  private fun successByAllowRoleAndStatus(status: DraftStatus) {
+    // reset
+    reset(securityService)
+    reset(accidentDao)
+
     // mock
     val id = 1
-    val now = OffsetDateTime.now()
-    val motorcadeName = "第一大队"
-    val data = mutableMapOf<String, Any?>().withDefault { null }
-    data["carPlate"] = "a"
-    data["happenTime"] = now
-    val accidentDraft = AccidentDraft(id = 1, code = "code1", status = AccidentDraft.Status.Todo, carPlate = "plate001"
-      , driverName = "driver001", happenTime = now, draftTime = now.minusHours(12), location = "广州"
-      , overdueDraft = true, source = "BC", authorName = "Admin", authorId = "021")
-    doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
-    `when`(accidentDraftDao.get(id)).thenReturn(Mono.just(accidentDraft))
-    `when`(bcDao.getMotorcadeName(any(), any())).thenReturn(Mono.just(motorcadeName))
-    `when`(accidentDraftDao.update(any(), any())).thenReturn(Mono.just(true))
+    val dataDto = randomAccidentDraftDto4FormUpdate()
+    if (status != DraftStatus.ToSubmit)
+      `when`(securityService.verifyHasAnyRole(ROLE_DRAFT_MODIFY)).thenReturn(Mono.empty())
+    else
+      `when`(securityService.verifyHasAnyRole(ROLE_DRAFT_SUBMIT, ROLE_DRAFT_MODIFY)).thenReturn(Mono.empty())
+    `when`(accidentDao.getDraftStatus(id)).thenReturn(status.toMono())
+    `when`(accidentDao.update(
+      id = id,
+      data = dataDto.data,
+      targetType = ACCIDENT_DRAFT_TARGET_TYPE,
+      generateLog = true
+    )).thenReturn(Mono.empty())
 
     // invoke
-    val actual = accidentDraftService.update(id, data)
+    val actual = accidentDraftService.update(id, dataDto)
 
     // verify
-    StepVerifier.create(actual).expectNext().verifyComplete()
-    verify(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
-    verify(accidentDraftDao).get(id)
-    verify(bcDao).getMotorcadeName(any(), any())
-    verify(accidentDraftDao).update(any(), any())
+    StepVerifier.create(actual).verifyComplete()
+    if (status != DraftStatus.ToSubmit) // 限制为必须有修改权限
+      verify(securityService).verifyHasAnyRole(ROLE_DRAFT_MODIFY)
+    else                                // 上报或修改权限均可
+      verify(securityService).verifyHasAnyRole(ROLE_DRAFT_SUBMIT, ROLE_DRAFT_MODIFY)
+    verify(accidentDao).getDraftStatus(id)
+    verify(accidentDao).update(
+      id = id,
+      data = dataDto.data,
+      targetType = ACCIDENT_DRAFT_TARGET_TYPE,
+      generateLog = true
+    )
   }
 
   @Test
-  fun updateWithoutRole() {
+  fun `Failed by NotFound`() {
     // mock
     val id = 1
-    val data: MutableMap<String, Any?> = mutableMapOf<String, Any?>().withDefault { null }
-    doThrow(SecurityException()).`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
+    `when`(securityService.verifyHasAnyRole(ROLE_DRAFT_SUBMIT, ROLE_DRAFT_MODIFY)).thenReturn(Mono.empty())
+    `when`(securityService.verifyHasAnyRole(ROLE_DRAFT_MODIFY)).thenReturn(Mono.empty())
+    `when`(accidentDao.getDraftStatus(id)).thenReturn(Mono.empty())
 
-    // invoke and verify
-    assertThrows(SecurityException::class.java) { accidentDraftService.update(id, data).subscribe() }
+    // invoke
+    val dataDto = randomAccidentDraftDto4FormUpdate()
+    val actual = accidentDraftService.update(id, dataDto)
+
+    // verify
+    StepVerifier.create(actual)
+      .expectError(NotFoundException::class.java)
+      .verify()
+    verify(accidentDao).getDraftStatus(id)
+    verify(securityService, times(0)).verifyHasAnyRole(ROLE_DRAFT_SUBMIT, ROLE_DRAFT_MODIFY)
+    verify(securityService, times(0)).verifyHasAnyRole(ROLE_DRAFT_MODIFY)
   }
 
   @Test
-  fun updateWithNotFoundByGet() {
-    // mock
-    val id = 1
-    val data = mutableMapOf<String, Any?>().withDefault { null }
-    data["carPlate"] = "粤A.12345"
-    doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
-    `when`(accidentDraftDao.get(id)).thenReturn(Mono.empty())
-
-    // invoke
-    val actual = accidentDraftService.update(id, data)
-
-    // verify
-    StepVerifier.create(actual).verifyError(NotFoundException::class)
-    verify(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
-    verify(accidentDraftDao).get(id)
+  fun `Failed by PermissionDenied`() {
+    DraftStatus.values().forEach { failedByPermissionDenied(it) }
   }
 
-  @Test
-  fun updateWithNotFoundByUpdate() {
+  private fun failedByPermissionDenied(status: DraftStatus) {
+    // reset
+    reset(securityService)
+    reset(accidentDao)
+
     // mock
     val id = 1
-    val data = mutableMapOf<String, Any?>().withDefault { null }
-    doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
-    `when`(accidentDraftDao.get(id)).thenReturn(Mono.empty())
-    `when`(accidentDraftDao.update(any(), any())).thenReturn(Mono.just(false))
+    if (status != DraftStatus.ToSubmit)
+      `when`(securityService.verifyHasAnyRole(ROLE_DRAFT_MODIFY)).thenReturn(Mono.error(PermissionDeniedException()))
+    else
+      `when`(securityService.verifyHasAnyRole(ROLE_DRAFT_SUBMIT, ROLE_DRAFT_MODIFY)).thenReturn(Mono.error(PermissionDeniedException()))
+    `when`(accidentDao.getDraftStatus(id)).thenReturn(status.toMono())
 
     // invoke
-    val actual = accidentDraftService.update(id, data)
+    val dataDto = randomAccidentDraftDto4FormUpdate()
+    val actual = accidentDraftService.update(id, dataDto)
 
     // verify
-    StepVerifier.create(actual).verifyError(NotFoundException::class)
-    verify(securityService).verifyHasRole(AccidentDraft.ROLE_MODIFY)
-    verify(accidentDraftDao).update(id, data)
+    StepVerifier.create(actual)
+      .expectError(PermissionDeniedException::class.java)
+      .verify()
+    if (status != DraftStatus.ToSubmit) // 限制为必须有修改权限
+      verify(securityService).verifyHasAnyRole(ROLE_DRAFT_MODIFY)
+    else                                // 上报或修改权限均可
+      verify(securityService).verifyHasAnyRole(ROLE_DRAFT_SUBMIT, ROLE_DRAFT_MODIFY)
+    verify(accidentDao).getDraftStatus(id)
+    verify(accidentDao, times(0)).update(
+      id = any(),
+      generateLog = any(),
+      data = any(),
+      targetType = any()
+    )
   }
 }

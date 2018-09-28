@@ -12,7 +12,7 @@ interface AccidentCategoryService {
   /**
    * 获取指定一级分类下的二级分类列表。
    *
-   * 返回结果按照一级分类 sn 正序 + 二级分类 status 正序 + 二级分类 sn 正序排序。
+   * 返回结果按照一级分类 sn 正序 + 二级分类 stage 正序 + 二级分类 sn 正序排序。
    *
    * @param[includeDisabledStatus] false 仅返回 `Enabled` 状态， true 包含 `Enabled` 和 `Disabled` 状态
    * @param[primaryCategorySNs] 一级分类编码列表

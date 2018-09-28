@@ -6,16 +6,13 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
   // 表格头
   let columns = [
     {
-      id: "status", label: "状态", width: "4em",
+      id: "draftStatus", label: "状态", width: "4em",
       filter: function (value) {
-        if ("Todo" === value) return "待登记";
-        else if ("Done" === value) return "已登记";
-        else return value;
+        return accident.DRAFT_STATUS_MAP[value] || "";
       }
     },
     {id: "happenTime", label: "事发时间", width: "10em"},
     {id: "motorcadeName", label: "事发车队", width: "5em"},
-    // {id: "code", label: "事故编号", width: "7.5em"},
     {id: "carPlate", label: "事故车号", width: "7em", rowCellClass: "monospace"},
     {id: "driverName", label: "当事司机", width: "5em"},
     {id: "location", label: "事发地点", width: "13em"},
@@ -30,6 +27,7 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
       }
     },
     {id: "source", label: "报案来源", width: "5em"},
+    {id: "code", label: "事故编号", width: "7.5em"}
   ];
 
   return function Page($page) {
@@ -38,8 +36,8 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
       data: {
         url: `${accident.dataServer}/${resourceKey}`,
         columns: columns,
-        status: 'Todo',
-        statuses: [{id: 'Todo', label: '待登记'}, {id: 'Done', label: '已登记'}, {id: '', label: '全部'}],
+        status: 'Drafting',
+        statuses: accident.DRAFT_STATUSES,
         fuzzySearch: '',
         isSubmitter: context.is("ACCIDENT_DRAFT_SUBMIT"),
         isEditor: context.is("ACCIDENT_DRAFT_MODIFY")

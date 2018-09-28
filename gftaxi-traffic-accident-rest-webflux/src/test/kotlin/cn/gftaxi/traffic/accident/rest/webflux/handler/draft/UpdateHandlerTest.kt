@@ -1,9 +1,9 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.draft
 
 import cn.gftaxi.traffic.accident.rest.webflux.UnitTestConfiguration
-import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
 import cn.gftaxi.traffic.accident.rest.webflux.handler.draft.UpdateHandler.Companion.REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.service.AccidentDraftService
+import cn.gftaxi.traffic.accident.test.TestUtils.randomInt
 import com.nhaarman.mockito_kotlin.any
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -21,7 +21,8 @@ import org.springframework.web.reactive.function.server.RouterFunctions.route
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
 import tech.simter.exception.NotFoundException
-import javax.json.Json
+import tech.simter.exception.PermissionDeniedException
+import tech.simter.reactive.web.Utils.TEXT_PLAIN_UTF8
 
 /**
  * Test [UpdateHandler]。
@@ -42,43 +43,52 @@ class UpdateHandlerTest @Autowired constructor(
     fun theRoute(handler: UpdateHandler): RouterFunction<ServerResponse> = route(REQUEST_PREDICATE, handler)
   }
 
+  private val id = randomInt()
+  private val url = "/accident-draft/$id"
+  private val testBodyData = """{"carPlate": "test"}"""
+
   @Test
-  fun updateBySuccess() {
+  fun `Success update`() {
     // mock
-    val id = 1
-    val data = Json.createObjectBuilder()
-      .add("carPlate", "粤A.N3402")
-      .add("driverName", "driver")
     `when`(accidentDraftService.update(any(), any())).thenReturn(Mono.empty())
 
-    // invoke
-    val response = client.patch().uri("/accident-draft/$id")
+    // invoke and verify
+    client.patch().uri(url)
       .contentType(APPLICATION_JSON_UTF8)
-      .syncBody(data.build().toString())
+      .syncBody(testBodyData)
       .exchange()
-
-    // verify
-    response.expectStatus().isNoContent.expectBody().isEmpty
+      .expectStatus().isNoContent
+      .expectBody().isEmpty
     verify(accidentDraftService).update(any(), any())
   }
 
   @Test
-  fun updateByNotFound() {
+  fun `Failed by NotFound`() {
     // mock
-    val id = 1
-    val data = Json.createObjectBuilder()
-      .add("carPlate", "粤A.N3402")
-      .add("driverName", "driver")
-    `when`(accidentDraftService.update(any(), any())).thenReturn(Mono.error(NotFoundException("指定的案件不存在")))
+    `when`(accidentDraftService.update(any(), any())).thenReturn(Mono.error(NotFoundException()))
 
-    // invoke
-    val response = client.patch().uri("/accident-draft/$id")
+    // invoke and verify
+    client.patch().uri(url)
       .contentType(APPLICATION_JSON_UTF8)
-      .syncBody(data.build().toString())
+      .syncBody(testBodyData)
       .exchange()
+      .expectStatus().isNotFound
+      .expectHeader().contentType(TEXT_PLAIN_UTF8)
+    verify(accidentDraftService).update(any(), any())
+  }
 
-    // verify
-    response.expectStatus().isNotFound.expectHeader().contentType(TEXT_PLAIN_UTF8)
+  @Test
+  fun `Failed by PermissionDenied`() {
+    // mock
+    `when`(accidentDraftService.update(any(), any())).thenReturn(Mono.error(PermissionDeniedException()))
+
+    // invoke and verify
+    client.patch().uri(url)
+      .contentType(APPLICATION_JSON_UTF8)
+      .syncBody(testBodyData)
+      .exchange()
+      .expectStatus().isForbidden
+      .expectHeader().contentType(TEXT_PLAIN_UTF8)
     verify(accidentDraftService).update(any(), any())
   }
 }

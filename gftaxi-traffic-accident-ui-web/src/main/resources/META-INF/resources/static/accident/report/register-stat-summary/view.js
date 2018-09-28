@@ -32,7 +32,7 @@ define(["bc", "vue", "context", "static/accident/api", "bc/vue/components"], fun
       },
       computed: {
         url: function () {
-          return `${accident.dataServer}/accident-register/stat/summary/${this.scopeType.toLowerCase()}`;
+          return `${accident.dataServer}/accident-register/stat-${this.scopeType.toLowerCase()}-summary`;
         },
         columns: function () {
           let scopeWidths = {Monthly: "7.5em", Quarterly: "9em", Yearly: "5em"};
