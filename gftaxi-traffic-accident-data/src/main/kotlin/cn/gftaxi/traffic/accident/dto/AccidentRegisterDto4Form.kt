@@ -4,9 +4,11 @@ import cn.gftaxi.traffic.accident.common.AuditStatus
 import cn.gftaxi.traffic.accident.common.CaseStage
 import cn.gftaxi.traffic.accident.common.DraftStatus
 import cn.gftaxi.traffic.accident.po.*
-import cn.gftaxi.traffic.accident.po.converter.DraftStatusConverter
 import cn.gftaxi.traffic.accident.po.converter.AuditStatusConverter
 import cn.gftaxi.traffic.accident.po.converter.CaseStageConverter
+import cn.gftaxi.traffic.accident.po.converter.DraftStatusConverter
+import tech.simter.operation.po.Attachment
+import tech.simter.operation.po.converter.AttachmentsConverter
 import java.time.OffsetDateTime
 import javax.persistence.Column
 import javax.persistence.Convert
@@ -52,13 +54,13 @@ class AccidentRegisterDto4Form : AccidentRegisterDto4FormUpdate() {
   @get:Convert(converter = AuditStatusConverter::class)
   var registerStatus: AuditStatus? by holder
   /** 登记信息的审核次数 */
-  var registerCheckedCount: Int? by holder
+  var checkedCount: Int? by holder
   /** 登记信息最后一次审核的审核意见 */
-  var registerCheckedComment: String? by holder
+  var checkedComment: String? by holder
 
   /** 登记信息最后一次审核的审核附件 */
-  //@get:@Convert(converter = AttachmentsConverter::class)
-  //var registerCheckedAttachments: List<Atachment>? by data
+  @get:Convert(converter = AttachmentsConverter::class)
+  var checkedAttachments: List<Attachment>? by holder
 
   companion object {
     private val dtoProperties = AccidentRegisterDto4Form::class.memberProperties
@@ -89,6 +91,11 @@ class AccidentRegisterDto4Form : AccidentRegisterDto4FormUpdate() {
         AccidentSituation::class.memberProperties.forEach { p ->
           dtoProperties[p.name]?.setter?.call(dto, p.get(situation))
         }
+
+        // 复制不同名的属性值
+        dto.checkedCount = situation.registerCheckedCount
+        dto.checkedComment = situation.registerCheckedComment
+        dto.checkedAttachments = situation.registerCheckedAttachments
       }
     }
 
