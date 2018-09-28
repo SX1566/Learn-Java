@@ -7,8 +7,7 @@ import cn.gftaxi.traffic.accident.rest.webflux.handler.draft.FindHandler.Compani
 import cn.gftaxi.traffic.accident.service.AccidentDraftService
 import cn.gftaxi.traffic.accident.test.TestUtils.randomAccidentDraftDto4View
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -74,13 +73,19 @@ class FindHandlerTest @Autowired constructor(
 
   @Test
   fun `Found something`() {
+    // 没指定状态
     findByStatus()
-    findByStatus(listOf(DraftStatus.ToSubmit))
+
+    // 指定一个状态
+    DraftStatus.values().forEach { findByStatus(listOf(it)) }
+
+    // 指定多个状态
     findByStatus(DraftStatus.values().toList())
   }
 
   private fun findByStatus(statuses: List<DraftStatus>? = null) {
     // mock
+    reset(accidentDraftService)
     val pageNo = 1
     val pageSize = 25
     val expected = randomAccidentDraftDto4View()

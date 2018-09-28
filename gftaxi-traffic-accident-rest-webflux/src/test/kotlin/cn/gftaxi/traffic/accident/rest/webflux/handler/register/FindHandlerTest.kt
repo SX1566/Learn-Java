@@ -7,8 +7,7 @@ import cn.gftaxi.traffic.accident.rest.webflux.handler.register.FindHandler.Comp
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import cn.gftaxi.traffic.accident.test.TestUtils.randomAccidentRegisterDto4View
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -65,7 +64,7 @@ class FindHandlerTest @Autowired constructor(
       .jsonPath("$.count").isEqualTo(0)
       .jsonPath("$.pageNo").isEqualTo(pageNo)
       .jsonPath("$.pageSize").isEqualTo(pageSize)
-      .jsonPath("$.rows").isEmpty()
+      .jsonPath("$.rows").isEmpty
 
     // verify
     verify(accidentRegisterService).find()
@@ -73,13 +72,19 @@ class FindHandlerTest @Autowired constructor(
 
   @Test
   fun `Found something`() {
+    // 没指定状态
     findByStatus()
-    findByStatus(listOf(AuditStatus.ToSubmit))
+
+    // 指定一个状态
+    AuditStatus.values().forEach { findByStatus(listOf(it)) }
+
+    // 指定多个状态
     findByStatus(AuditStatus.values().toList())
   }
 
   private fun findByStatus(statuses: List<AuditStatus>? = null) {
     // mock
+    reset(accidentRegisterService)
     val pageNo = 1
     val pageSize = 25
     val dto = randomAccidentRegisterDto4View()
