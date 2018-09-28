@@ -1,4 +1,4 @@
-package cn.gftaxi.traffic.accident.dao.jpa.register
+package cn.gftaxi.traffic.accident.dao.jpa
 
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -12,7 +12,7 @@ import kotlin.test.assertNotNull
  *
  * @author RJ
  */
-class Dto4UpdateTest {
+class AccidentRegisterDto4FormTest {
   @Test
   fun test() {
     val poProperties = AccidentRegisterDto4Form::class.memberProperties
