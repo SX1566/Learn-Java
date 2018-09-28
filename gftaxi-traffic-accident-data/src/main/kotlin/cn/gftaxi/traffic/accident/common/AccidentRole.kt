@@ -29,4 +29,16 @@ object AccidentRole {
   const val ROLE_REGISTER_CHECK = "ACCIDENT_REGISTER_CHECK"
   /** 事故登记查阅相关角色 */
   val ROLES_REGISTER_READ = arrayOf(ROLE_REGISTER_READ, ROLE_REGISTER_SUBMIT, ROLE_REGISTER_MODIFY, ROLE_REGISTER_CHECK)
+
+  //== 事故报告角色 ==
+  /** 事故报告查询角色 */
+  const val ROLE_REPORT_READ = "ACCIDENT_REPORT_READ"
+  /** 事故报告提交角色 */
+  const val ROLE_REPORT_SUBMIT = "ACCIDENT_REPORT_SUBMIT"
+  /** 事故报告修改角色 */
+  const val ROLE_REPORT_MODIFY = "ACCIDENT_REPORT_MODIFY"
+  /** 事故报告审核角色 */
+  const val ROLE_REPORT_CHECK = "ACCIDENT_REPORT_CHECK"
+  /** 事故报告查阅相关角色 */
+  val ROLES_REPORT_READ = arrayOf(ROLE_REPORT_READ, ROLE_REPORT_SUBMIT, ROLE_REPORT_MODIFY, ROLE_REPORT_CHECK)
 }

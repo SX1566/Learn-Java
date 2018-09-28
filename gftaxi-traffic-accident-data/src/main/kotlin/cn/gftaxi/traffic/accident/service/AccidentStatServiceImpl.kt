@@ -1,8 +1,10 @@
 package cn.gftaxi.traffic.accident.service
 
 import cn.gftaxi.traffic.accident.common.AccidentRole.ROLES_REGISTER_READ
+import cn.gftaxi.traffic.accident.common.AccidentRole.ROLES_REPORT_READ
 import cn.gftaxi.traffic.accident.dao.AccidentStatDao
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
+import cn.gftaxi.traffic.accident.dto.AccidentReportDto4StatSummary
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
@@ -45,5 +47,32 @@ class AccidentStatServiceImpl @Autowired constructor(
       return Flux.error(IllegalArgumentException("统计的开始年份和结束年份之间的跨度不能大于两年！"))
     return securityService.verifyHasAnyRole(*ROLES_REGISTER_READ)
       .thenMany(Flux.defer { accidentStatDao.statRegisterQuarterlySummary(from, to) })
+  }
+
+  override fun statReportMonthlySummary(from: YearMonth, to: YearMonth): Flux<AccidentReportDto4StatSummary> {
+    if (from.isAfter(to))
+      return Flux.error(IllegalArgumentException("统计的开始年月不能大于结束年月！"))
+    if (from.plusYears(2L).isBefore(to))
+      return Flux.error(IllegalArgumentException("统计的开始年月和结束年月之间的跨度不能大于两年！"))
+    return securityService.verifyHasAnyRole(*ROLES_REPORT_READ)
+      .thenMany(Flux.defer { accidentStatDao.statReportMonthlySummary(from, to) })
+  }
+
+  override fun statReportYearlySummary(from: Year, to: Year): Flux<AccidentReportDto4StatSummary> {
+    if (from.isAfter(to))
+      return Flux.error(IllegalArgumentException("统计的开始年份不能大于结束年份！"))
+    if (from.plusYears(2L).isBefore(to))
+      return Flux.error(IllegalArgumentException("统计的开始年份和结束年份之间的跨度不能大于两年！"))
+    return securityService.verifyHasAnyRole(*ROLES_REPORT_READ)
+      .thenMany(Flux.defer { accidentStatDao.statReportYearlySummary(from, to) })
+  }
+
+  override fun statReportQuarterlySummary(from: Year, to: Year): Flux<AccidentReportDto4StatSummary> {
+    if (from.isAfter(to))
+      return Flux.error(IllegalArgumentException("统计的开始年份不能大于结束年份！"))
+    if (from.plusYears(2L).isBefore(to))
+      return Flux.error(IllegalArgumentException("统计的开始年份和结束年份之间的跨度不能大于两年！"))
+    return securityService.verifyHasAnyRole(*ROLES_REPORT_READ)
+      .thenMany(Flux.defer { accidentStatDao.statReportQuarterlySummary(from, to) })
   }
 }

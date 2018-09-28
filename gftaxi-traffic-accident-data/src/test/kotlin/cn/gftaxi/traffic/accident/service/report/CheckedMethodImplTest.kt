@@ -1,13 +1,13 @@
-package cn.gftaxi.traffic.accident.service.register
+package cn.gftaxi.traffic.accident.service.report
 
-import cn.gftaxi.traffic.accident.common.AccidentRole.ROLE_REGISTER_CHECK
+import cn.gftaxi.traffic.accident.common.AccidentRole.ROLE_REPORT_CHECK
 import cn.gftaxi.traffic.accident.common.AuditStatus
 import cn.gftaxi.traffic.accident.common.CaseStage
-import cn.gftaxi.traffic.accident.common.Utils.ACCIDENT_REGISTER_TARGET_TYPE
+import cn.gftaxi.traffic.accident.common.Utils.ACCIDENT_REPORT_TARGET_TYPE
 import cn.gftaxi.traffic.accident.dao.AccidentDao
 import cn.gftaxi.traffic.accident.dto.CheckedInfoDto
-import cn.gftaxi.traffic.accident.service.AccidentRegisterService
-import cn.gftaxi.traffic.accident.service.AccidentRegisterServiceImpl
+import cn.gftaxi.traffic.accident.service.AccidentReportService
+import cn.gftaxi.traffic.accident.service.AccidentReportServiceImpl
 import cn.gftaxi.traffic.accident.test.TestUtils.randomAttachment
 import cn.gftaxi.traffic.accident.test.TestUtils.randomCase
 import org.junit.jupiter.api.Test
@@ -26,16 +26,16 @@ import tech.simter.exception.PermissionDeniedException
 import tech.simter.reactive.security.ReactiveSecurityService
 
 /**
- * Test [AccidentRegisterServiceImpl.checked].
+ * Test [AccidentReportServiceImpl.checked].
  *
  * @author RJ
  */
-@SpringJUnitConfig(AccidentRegisterServiceImpl::class)
+@SpringJUnitConfig(AccidentReportServiceImpl::class)
 @MockBean(AccidentDao::class, ReactiveSecurityService::class)
 class CheckedMethodImplTest @Autowired constructor(
   private val securityService: ReactiveSecurityService,
   private val accidentDao: AccidentDao,
-  private val accidentRegisterService: AccidentRegisterService
+  private val accidentReportService: AccidentReportService
 ) {
   @Test
   fun `Success checked`() {
@@ -50,50 +50,49 @@ class CheckedMethodImplTest @Autowired constructor(
 
     // mock
     val id = 1
-    val situation = randomCase(registerStatus = AuditStatus.ToCheck).second
+    val situation = randomCase(stage = CaseStage.Reporting, reportStatus = AuditStatus.ToCheck).second
     val checkedInfo = CheckedInfoDto(
       passed = passed,
       comment = "test",
       attachment = if (passed) null else randomAttachment()
     )
     val updateData = when (passed) {
-      // 审核通过
+    // 审核通过
       true -> mapOf(
-        "registerStatus" to AuditStatus.Approved,
-        "reportStatus" to AuditStatus.ToSubmit,
+        "reportStatus" to AuditStatus.Approved,
         "stage" to CaseStage.Following,
-        "registerCheckedCount" to (situation.registerCheckedCount ?: 0) + 1,
-        "registerCheckedComment" to null,
-        "registerCheckedAttachments" to null
+        "reportCheckedCount" to (situation.reportCheckedCount ?: 0) + 1,
+        "reportCheckedComment" to null,
+        "reportCheckedAttachments" to null
       )
-      // 审核不通过
+    // 审核不通过
       else -> mapOf(
-        "registerStatus" to AuditStatus.Rejected,
-        "registerCheckedCount" to (situation.registerCheckedCount ?: 0) + 1,
-        "registerCheckedComment" to checkedInfo.comment,
-        "registerCheckedAttachments" to checkedInfo.attachment?.run { listOf(checkedInfo.attachment) }
+        "reportStatus" to AuditStatus.Rejected,
+        "reportCheckedCount" to (situation.reportCheckedCount ?: 0) + 1,
+        "reportCheckedComment" to checkedInfo.comment,
+        "reportCheckedAttachments" to checkedInfo.attachment?.run { listOf(checkedInfo.attachment) }
       )
     }
-    `when`(securityService.verifyHasAnyRole(ROLE_REGISTER_CHECK)).thenReturn(Mono.empty())
+    `when`(securityService.verifyHasAnyRole(ROLE_REPORT_CHECK)).thenReturn(Mono.empty())
     `when`(accidentDao.getSituation(id)).thenReturn(situation.toMono())
     `when`(accidentDao.update(
       id = id,
       data = updateData,
-      targetType = ACCIDENT_REGISTER_TARGET_TYPE,
+      targetType = ACCIDENT_REPORT_TARGET_TYPE,
       generateLog = false
     )).thenReturn(Mono.empty())
 
     // invoke
-    val actual = accidentRegisterService.checked(id, checkedInfo)
+    val actual = accidentReportService.checked(id, checkedInfo)
 
     // verify
     StepVerifier.create(actual).verifyComplete()
-    verify(securityService).verifyHasAnyRole(ROLE_REGISTER_CHECK)
+    verify(securityService).verifyHasAnyRole(ROLE_REPORT_CHECK)
     verify(accidentDao).getSituation(id)
     verify(accidentDao).update(
       id = id,
       data = updateData,
-      targetType = ACCIDENT_REGISTER_TARGET_TYPE,
+      targetType = ACCIDENT_REPORT_TARGET_TYPE,
       generateLog = false
     )
   }
@@ -114,17 +113,17 @@ class CheckedMethodImplTest @Autowired constructor(
     val id = 1
     val situation = randomCase(registerStatus = status).second
     val checkedInfo = CheckedInfoDto(passed = true)
-    `when`(securityService.verifyHasAnyRole(ROLE_REGISTER_CHECK)).thenReturn(Mono.empty())
+    `when`(securityService.verifyHasAnyRole(ROLE_REPORT_CHECK)).thenReturn(Mono.empty())
     `when`(accidentDao.getSituation(id)).thenReturn(situation.toMono())
 
     // invoke
-    val actual = accidentRegisterService.checked(id, checkedInfo)
+    val actual = accidentReportService.checked(id, checkedInfo)
 
     // verify
     StepVerifier.create(actual)
       .expectError(ForbiddenException::class.java)
       .verify()
-    verify(securityService).verifyHasAnyRole(ROLE_REGISTER_CHECK)
+    verify(securityService).verifyHasAnyRole(ROLE_REPORT_CHECK)
     verify(accidentDao).getSituation(id)
   }
 
@@ -133,17 +132,17 @@ class CheckedMethodImplTest @Autowired constructor(
     // mock
     val id = 1
     val checkedInfo = CheckedInfoDto(passed = true)
-    `when`(securityService.verifyHasAnyRole(ROLE_REGISTER_CHECK)).thenReturn(Mono.empty())
+    `when`(securityService.verifyHasAnyRole(ROLE_REPORT_CHECK)).thenReturn(Mono.empty())
     `when`(accidentDao.getSituation(id)).thenReturn(Mono.empty())
 
     // invoke
-    val actual = accidentRegisterService.checked(id, checkedInfo)
+    val actual = accidentReportService.checked(id, checkedInfo)
 
     // verify
     StepVerifier.create(actual)
       .expectError(NotFoundException::class.java)
       .verify()
-    verify(securityService).verifyHasAnyRole(ROLE_REGISTER_CHECK)
+    verify(securityService).verifyHasAnyRole(ROLE_REPORT_CHECK)
     verify(accidentDao).getSituation(id)
   }
 
@@ -152,15 +151,15 @@ class CheckedMethodImplTest @Autowired constructor(
     // mock
     val id = 1
     val dto = CheckedInfoDto(passed = true)
-    `when`(securityService.verifyHasAnyRole(ROLE_REGISTER_CHECK)).thenReturn(Mono.error(PermissionDeniedException()))
+    `when`(securityService.verifyHasAnyRole(ROLE_REPORT_CHECK)).thenReturn(Mono.error(PermissionDeniedException()))
 
     // invoke
-    val actual = accidentRegisterService.checked(id, dto)
+    val actual = accidentReportService.checked(id, dto)
 
     // verify
     StepVerifier.create(actual)
       .expectError(PermissionDeniedException::class.java)
       .verify()
-    verify(securityService).verifyHasAnyRole(ROLE_REGISTER_CHECK)
+    verify(securityService).verifyHasAnyRole(ROLE_REPORT_CHECK)
   }
 }

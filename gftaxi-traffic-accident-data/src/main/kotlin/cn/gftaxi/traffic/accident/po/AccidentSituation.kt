@@ -59,7 +59,18 @@ class AccidentSituation : IdEntity, DynamicBean() {
   var registerCheckedAttachments: List<Attachment>? by holder
 
   //== 报告相关 ==
+  /** 报告时间，等于首次提交审核的时间 */
+  var reportTime: OffsetDateTime? by holder
+  /** 是否逾期报告 */
+  var overdueReport: Boolean? by holder
   /** 报告信息的处理状态 */
   @get:Convert(converter = AuditStatusConverter::class)
   var reportStatus: AuditStatus? by holder
+  /** 报告信息的审核次数 */
+  var reportCheckedCount: Int? by holder
+  /** 报告信息最后一次审核的审核意见 */
+  var reportCheckedComment: String? by holder
+  /** 报告信息最后一次审核的审核附件 */
+  @get:Convert(converter = AttachmentsConverter::class)
+  var reportCheckedAttachments: List<Attachment>? by holder
 }

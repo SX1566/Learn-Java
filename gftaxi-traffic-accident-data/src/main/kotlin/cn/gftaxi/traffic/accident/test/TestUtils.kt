@@ -158,7 +158,9 @@ object TestUtils {
     overdueDraft: Boolean? = null,
     draftStatus: DraftStatus? = null,
     overdueRegister: Boolean? = null,
-    registerStatus: AuditStatus? = null
+    registerStatus: AuditStatus? = null,
+    overdueReport: Boolean? = null,
+    reportStatus: AuditStatus? = null
   ): Pair<AccidentCase, AccidentSituation> {
     return Pair(
       AccidentCase().apply {
@@ -206,6 +208,20 @@ object TestUtils {
           CaseStage.ToSubmit -> null
           CaseStage.Drafting -> null
           CaseStage.Registering -> AuditStatus.ToSubmit
+          else -> AuditStatus.Approved
+        }
+
+        // 报告信息
+        this.overdueReport = overdueReport
+        when (overdueReport) {
+          null -> this.reportTime = null
+          true -> this.reportTime = happenTime.plusHours(48 + 1) // 超过 48 小时为逾期报告
+          else -> this.reportTime = happenTime.plusHours(48 - 1)
+        }
+        this.reportStatus = reportStatus ?: when (stage) {
+          CaseStage.ToSubmit -> null
+          CaseStage.Drafting -> null
+          CaseStage.Reporting -> AuditStatus.ToSubmit
           else -> AuditStatus.Approved
         }
       }

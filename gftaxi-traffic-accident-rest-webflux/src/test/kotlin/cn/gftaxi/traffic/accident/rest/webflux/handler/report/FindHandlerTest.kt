@@ -1,12 +1,11 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.report
 
 
-import cn.gftaxi.traffic.accident.Utils.FORMAT_DATE_TIME_TO_MINUTE
+import cn.gftaxi.traffic.accident.common.DriverType
+import cn.gftaxi.traffic.accident.common.Utils.FORMAT_DATE_TIME_TO_MINUTE
 import cn.gftaxi.traffic.accident.dto.AccidentReportDto4View
-import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType
 import cn.gftaxi.traffic.accident.po.AccidentReport.Status
 import cn.gftaxi.traffic.accident.rest.webflux.UnitTestConfiguration
-import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
 import cn.gftaxi.traffic.accident.rest.webflux.handler.report.FindHandler.Companion.REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.service.AccidentReportService
 import org.junit.jupiter.api.Test
@@ -50,7 +49,7 @@ internal class FindHandlerTest @Autowired constructor(
 
   private fun randomDto(id: Int, status: Status? = null): AccidentReportDto4View {
     return AccidentReportDto4View(id = id, code = randString(), driverType = DriverType.Official,
-      happenTime = OffsetDateTime.now(), overdueDraft = true, status = status)
+      happenTime = OffsetDateTime.now(), overdueDraft = true, reportStatus = status)
   }
 
   private fun randString(): String {

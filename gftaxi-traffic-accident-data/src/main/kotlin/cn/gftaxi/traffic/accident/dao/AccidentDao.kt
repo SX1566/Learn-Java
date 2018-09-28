@@ -152,4 +152,30 @@ interface AccidentDao {
    * 如果案件不存，则返回 [Mono.empty]。
    */
   fun getRegisterStatus(id: Int): Mono<AuditStatus>
+
+  /**
+   * 获取指定条件的事故报告分页信息。
+   *
+   * 1. 模糊搜索 [事故编号][AccidentCase.code]、[事故车号][AccidentCase.carPlate]、[当事司机姓名][AccidentCase.driverName]。
+   * 2. 返回结果按 [事发时间][AccidentCase.happenTime] 逆序排序，
+   *
+   * @param[reportStatuses] -[事故报告状态][AccidentSituation.reportStatus]，为空代表不限定
+   * @param[search] 模糊搜索的条件值，为空则忽略
+   */
+  fun findReport(pageNo: Int = 1, pageSize: Int = 25, reportStatuses: List<AuditStatus>? = null, search: String? = null)
+    : Mono<Page<AccidentReportDto4View>>
+
+  /**
+   * 获取指定 [主键][id] 的事故报告信息。
+   *
+   * 如果案件不存，则返回 [Mono.empty]。
+   */
+  fun getReport(id: Int): Mono<AccidentReportDto4Form>
+
+  /**
+   * 获取指定 [主键][id] 事故的报告状态。
+   *
+   * 如果案件不存，则返回 [Mono.empty]。
+   */
+  fun getReportStatus(id: Int): Mono<AuditStatus>
 }

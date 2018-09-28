@@ -1,6 +1,7 @@
 package cn.gftaxi.traffic.accident.dao
 
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4StatSummary
+import cn.gftaxi.traffic.accident.dto.AccidentReportDto4StatSummary
 import reactor.core.publisher.Flux
 import java.time.Year
 import java.time.YearMonth
@@ -40,4 +41,34 @@ interface AccidentStatDao {
    * @param[to]   统计的结束年份
    */
   fun statRegisterQuarterlySummary(from: Year, to: Year): Flux<AccidentRegisterDto4StatSummary>
+
+  /**
+   * 事故报告按月汇总统计。
+   *
+   * 返回结果按时间逆序排序。
+   *
+   * @param[from] 统计的开始年月
+   * @param[to]   统计的结束年月
+   */
+  fun statReportMonthlySummary(from: YearMonth, to: YearMonth): Flux<AccidentReportDto4StatSummary>
+
+  /**
+   * 事故报告按年汇总统计。
+   *
+   * 返回结果按年份逆序排序。
+   *
+   * @param[from] 统计的开始年份
+   * @param[to]   统计的结束年份
+   */
+  fun statReportYearlySummary(from: Year, to: Year): Flux<AccidentReportDto4StatSummary>
+
+  /**
+   * 事故报告按季度汇总统计。
+   *
+   * 返回结果按年份逆序排序。
+   *
+   * @param[from] 统计的开始年份
+   * @param[to]   统计的结束年份
+   */
+  fun statReportQuarterlySummary(from: Year, to: Year): Flux<AccidentReportDto4StatSummary>
 }

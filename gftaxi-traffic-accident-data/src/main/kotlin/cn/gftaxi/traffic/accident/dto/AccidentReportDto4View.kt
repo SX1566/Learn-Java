@@ -1,8 +1,8 @@
 package cn.gftaxi.traffic.accident.dto
 
-import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType
-import cn.gftaxi.traffic.accident.po.AccidentReport.Status
-import cn.gftaxi.traffic.accident.po.converter.AccidentReportStatusConverter
+import cn.gftaxi.traffic.accident.common.AuditStatus
+import cn.gftaxi.traffic.accident.common.DriverType
+import cn.gftaxi.traffic.accident.po.converter.AuditStatusConverter
 import cn.gftaxi.traffic.accident.po.converter.DriverTypeConverter
 import tech.simter.operation.po.Attachment
 import tech.simter.operation.po.converter.AttachmentsConverter
@@ -21,8 +21,8 @@ import javax.persistence.Id
 data class AccidentReportDto4View constructor(
   @Id val id: Int? = null,
   val code: String? = null,
-  @Convert(converter = AccidentReportStatusConverter::class)
-  val status: Status? = null,
+  @Convert(converter = AuditStatusConverter::class)
+  val reportStatus: AuditStatus? = null,
   val motorcadeName: String? = null,
   val carPlate: String? = null,
   /** 车辆车型，如"现代 BH7183MY" */
@@ -55,6 +55,5 @@ data class AccidentReportDto4View constructor(
   val checkedComment: String? = null,
   /** 最后一次审核的审核附件 */
   @Convert(converter = AttachmentsConverter::class)
-  val attachments: List<Attachment>? = null
-
+  val checkedAttachments: List<Attachment>? = null
 )

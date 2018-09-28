@@ -1,6 +1,5 @@
 package cn.gftaxi.traffic.accident.dao.jpa.report
 
-import cn.gftaxi.traffic.accident.dao.AccidentReportDao
 import cn.gftaxi.traffic.accident.dao.jpa.AccidentReportDaoImpl
 import cn.gftaxi.traffic.accident.dao.jpa.ModuleConfiguration
 import cn.gftaxi.traffic.accident.dao.jpa.POUtils.random
@@ -13,7 +12,6 @@ import cn.gftaxi.traffic.accident.dto.AccidentReportDto4View
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentPeople
 import cn.gftaxi.traffic.accident.po.AccidentRegister
-import cn.gftaxi.traffic.accident.po.AccidentReport
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -242,7 +240,7 @@ internal class FindMethodImplTest @Autowired constructor(
   fun verifyDto(index: Int, dto: AccidentReportDto4View) {
     assertEquals(data[index].first.second.id, dto.id)
     assertEquals(data[index].first.first.code, dto.code)
-    assertEquals(data[index].first.third?.status, dto.status)
+    assertEquals(data[index].first.third?.status, dto.reportStatus)
     assertEquals(data[index].first.second.motorcadeName, dto.motorcadeName)
     assertEquals(data[index].first.second.carPlate, dto.carPlate)
     assertEquals(data[index].first.second.carModel, dto.carModel)
@@ -262,7 +260,7 @@ internal class FindMethodImplTest @Autowired constructor(
     assertEquals(data[index].first.third?.appointDriverReturnTime, dto.appointDriverReturnTime)
     assertEquals(data[index].third.first, dto.checkedCount)
     assertEquals(data[index].third.second?.comment, dto.checkedComment)
-    assertEquals(data[index].third.second?.attachments, dto.attachments)
+    assertEquals(data[index].third.second?.attachments, dto.checkedAttachments)
   }
 
   @Test
