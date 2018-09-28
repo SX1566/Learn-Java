@@ -48,7 +48,7 @@ class FindSecondaryCategoriesHandlerTest @Autowired constructor(
       .expectBody()
       .jsonPath("$.[0].sn").isEqualTo(sn)
       .jsonPath("$.[0].name").isEqualTo(name)
-      .jsonPath("$.[0].status").isEqualTo(status.name)
+      .jsonPath("$.[0].stage").isEqualTo(status.name)
 
     // verify
     verify(accidentCategoryService).findSecondaryCategories(true, belong)
@@ -72,7 +72,7 @@ class FindSecondaryCategoriesHandlerTest @Autowired constructor(
       .expectBody()
       .jsonPath("$.[0].sn").isEqualTo(sn)
       .jsonPath("$.[0].name").isEqualTo(name)
-      .jsonPath("$.[0].status").doesNotExist()
+      .jsonPath("$.[0].stage").doesNotExist()
 
     // verify
     verify(accidentCategoryService).findSecondaryCategories(false, belong)

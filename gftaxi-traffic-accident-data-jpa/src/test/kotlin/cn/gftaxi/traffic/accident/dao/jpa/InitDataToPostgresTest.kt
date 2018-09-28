@@ -1,14 +1,13 @@
 package cn.gftaxi.traffic.accident.dao.jpa
 
-import cn.gftaxi.traffic.accident.Utils.FORMAT_TO_YYYYMMDD
+import cn.gftaxi.traffic.accident.common.AuditStatus
+import cn.gftaxi.traffic.accident.common.CaseStage
+import cn.gftaxi.traffic.accident.common.DraftStatus
 import cn.gftaxi.traffic.accident.dao.jpa.InitDataToPostgresTest.Cfg
-import cn.gftaxi.traffic.accident.dao.jpa.POUtils.nextCode
-import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentDraft
-import cn.gftaxi.traffic.accident.dao.jpa.POUtils.randomAccidentRegisterRecord4EachStatus
-import cn.gftaxi.traffic.accident.po.AccidentDraft
-import cn.gftaxi.traffic.accident.po.AccidentOperation.OperationType
-import cn.gftaxi.traffic.accident.po.AccidentOperation.TargetType
-import cn.gftaxi.traffic.accident.po.AccidentRegister
+import cn.gftaxi.traffic.accident.dao.jpa.repository.AccidentCaseJpaRepository
+import cn.gftaxi.traffic.accident.dao.jpa.repository.AccidentSituationJpaRepository
+import cn.gftaxi.traffic.accident.test.TestUtils.randomCase
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -43,7 +42,9 @@ import javax.sql.DataSource
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Disabled
 class InitDataToPostgresTest @Autowired constructor(
-  @PersistenceContext private val em: EntityManager
+  @PersistenceContext private val em: EntityManager,
+  private val caseRepository: AccidentCaseJpaRepository,
+  private val situationRepository: AccidentSituationJpaRepository
 ) {
   // 配置 postgres 的数据库连接配置
   @Configuration
@@ -65,39 +66,73 @@ class InitDataToPostgresTest @Autowired constructor(
   fun initData() {
     val baseTime = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES)
 
-    // 仅报案案件(未有登记信息) 1 宗
-    em.persist(randomAccidentDraft(
-      code = nextCode(baseTime.format(FORMAT_TO_YYYYMMDD)),
-      status = AccidentDraft.Status.Todo,
-      happenTime = baseTime,
-      overdueDraft = false
-    ))
+    // 已报案待登记 1 宗
+    createDraftStage(baseTime)
 
     // 各个状态的事故登记信息都初始化 1 条数据，共 4 条
-    val records = randomAccidentRegisterRecord4EachStatus(
-      em = em,
-      baseTime = baseTime.plusHours(-1),
-      positive = false
-    )
+    createRegisterStage(baseTime)
+  }
 
-    // 对审核不通过的那条增加多一次的提交和审核不通过记录（连续两次不通过）
-    val register = records[AccidentRegister.Status.Rejected]!!.first
-    var rejection = records[AccidentRegister.Status.Rejected]!!.third[OperationType.Rejection]!!
-    // 1. 再次提交审核
-    val confirmation2 = POUtils.randomAccidentOperation(
-      operateTime = rejection.operateTime.plusHours(1),
-      operationType = OperationType.Confirmation,
-      targetId = register.id!!,
-      targetType = TargetType.Register
+  // 已报案待登记 1 宗
+  private fun createDraftStage(baseTime: OffsetDateTime) {
+    val pair = randomCase(
+      id = null,
+      happenTime = baseTime,
+      stage = CaseStage.Drafting,
+      overdueDraft = false,
+      draftStatus = DraftStatus.Drafting,
+      registerStatus = AuditStatus.ToSubmit
     )
-    em.persist(confirmation2)
-    // 2. 再次审核不通过
-    rejection = POUtils.randomAccidentOperation(
-      operateTime = confirmation2.operateTime.plusHours(1),
-      operationType = OperationType.Rejection,
-      targetId = register.id!!,
-      targetType = TargetType.Register
+    caseRepository.save(pair.first)
+    assertNotNull(pair.first.id)
+    situationRepository.save(pair.second.apply { id = pair.first.id })
+  }
+
+  // 各个状态的事故登记信息都初始化 1 条数据，共 4 条
+  private fun createRegisterStage(baseTime: OffsetDateTime) {
+    var d = 1L
+    // 待审核
+    var pair = randomCase(
+      id = null,
+      happenTime = baseTime.minusDays(++d),
+      stage = CaseStage.Registering,
+      overdueDraft = false,
+      draftStatus = DraftStatus.Drafted,
+      overdueRegister = false,
+      registerStatus = AuditStatus.ToCheck
     )
-    em.persist(rejection)
+    caseRepository.save(pair.first)
+    assertNotNull(pair.first.id)
+    situationRepository.save(pair.second.apply { id = pair.first.id })
+
+    // 审核不通过
+    pair = randomCase(
+      id = null,
+      happenTime = baseTime.minusDays(++d),
+      stage = CaseStage.Registering,
+      overdueDraft = false,
+      draftStatus = DraftStatus.Drafted,
+      overdueRegister = false,
+      registerStatus = AuditStatus.Rejected
+    )
+    caseRepository.save(pair.first)
+    assertNotNull(pair.first.id)
+    situationRepository.save(pair.second.apply { id = pair.first.id })
+
+    // 审核通过
+    pair = randomCase(
+      id = null,
+      happenTime = baseTime.minusDays(++d),
+      stage = CaseStage.Registering,
+      overdueDraft = false,
+      draftStatus = DraftStatus.Drafted,
+      overdueRegister = false,
+      registerStatus = AuditStatus.Approved
+    )
+    caseRepository.save(pair.first)
+    assertNotNull(pair.first.id)
+    situationRepository.save(pair.second.apply { id = pair.first.id })
+
+    // 对审核不通过的那条增加多一次的提交和审核不通过记录（连续两次不通过）TODO
   }
 }

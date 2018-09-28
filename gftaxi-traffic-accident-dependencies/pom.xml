@@ -35,6 +35,11 @@
       </dependency>
       <dependency>
         <groupId>cn.gftaxi.traffic.accident</groupId>
+        <artifactId>gftaxi-traffic-accident-data-bc</artifactId>
+        <version>${traffic-accident.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cn.gftaxi.traffic.accident</groupId>
         <artifactId>gftaxi-traffic-accident-data-mail</artifactId>
         <version>${traffic-accident.version}</version>
       </dependency>

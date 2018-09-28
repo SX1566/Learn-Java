@@ -1,8 +1,8 @@
 package cn.gftaxi.traffic.accident.dao.javamail
 
-import cn.gftaxi.traffic.accident.Utils.FORMAT_DATE_TIME_TO_MINUTE
+import cn.gftaxi.traffic.accident.common.Utils.FORMAT_DATE_TIME_TO_MINUTE
 import cn.gftaxi.traffic.accident.dao.AccidentMailDao
-import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
+import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Form
 import com.sun.mail.imap.IMAPFolder
 import com.sun.mail.imap.IMAPMessage
 import org.jsoup.Jsoup
@@ -58,7 +58,7 @@ class AccidentMailDaoImpl @Autowired constructor(
     logger.warn("storedUIDs.count=${storedUIDs.size}")
   }
 
-  override fun receiveMail(): Flux<AccidentDraftDto4Submit> {
+  override fun receiveMail(): Flux<AccidentDraftDto4Form> {
     return Flux.fromIterable(receiveMail(
       host = mailHost,
       username = mailUsername,
@@ -66,7 +66,7 @@ class AccidentMailDaoImpl @Autowired constructor(
     ))
   }
 
-  fun receiveMail(host: String, username: String, password: String): List<AccidentDraftDto4Submit> {
+  fun receiveMail(host: String, username: String, password: String): List<AccidentDraftDto4Form> {
     // 准备连接服务器的会话信息
     val props = Properties()
     props.setProperty("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory")
@@ -124,7 +124,7 @@ class AccidentMailDaoImpl @Autowired constructor(
     return result
   }
 
-  private fun message2Dto(message: Message): AccidentDraftDto4Submit {
+  private fun message2Dto(message: Message): AccidentDraftDto4Form {
     val sender = message.from[0] as InternetAddress
 
     // 解析邮件内容
@@ -145,7 +145,7 @@ class AccidentMailDaoImpl @Autowired constructor(
     // 修改邮件服务器的邮件状态，把邮件标记为已读
     //message.setFlag(Flags.Flag.SEEN, true)
 
-    return AccidentDraftDto4Submit().apply {
+    return AccidentDraftDto4Form().apply {
       source = "MAIL"              // 邮件报案
       authorName = sender.personal ?: "" // 发送人昵称
       authorId = sender.address    // 发送人邮箱

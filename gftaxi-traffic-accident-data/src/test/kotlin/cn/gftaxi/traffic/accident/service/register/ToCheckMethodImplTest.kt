@@ -1,29 +1,27 @@
 package cn.gftaxi.traffic.accident.service.register
 
-import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
-import cn.gftaxi.traffic.accident.dao.AccidentOperationDao
-import cn.gftaxi.traffic.accident.dao.AccidentRegisterDao
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Companion.ROLE_SUBMIT
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Status
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Draft
-import cn.gftaxi.traffic.accident.po.AccidentRegister.Status.Rejected
+import cn.gftaxi.traffic.accident.common.AccidentRole.ROLE_REGISTER_SUBMIT
+import cn.gftaxi.traffic.accident.common.AuditStatus
+import cn.gftaxi.traffic.accident.common.CaseStage
+import cn.gftaxi.traffic.accident.common.DraftStatus
+import cn.gftaxi.traffic.accident.common.Utils.ACCIDENT_REGISTER_TARGET_TYPE
+import cn.gftaxi.traffic.accident.dao.AccidentDao
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import cn.gftaxi.traffic.accident.service.AccidentRegisterServiceImpl
-import com.nhaarman.mockito_kotlin.any
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import reactor.core.publisher.Mono
+import reactor.core.publisher.toMono
 import reactor.test.StepVerifier
 import tech.simter.exception.ForbiddenException
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
-import tech.simter.reactive.context.SystemContext.User
 import tech.simter.reactive.security.ReactiveSecurityService
-import java.util.*
 
 /**
  * Test [AccidentRegisterServiceImpl.toCheck].
@@ -31,70 +29,75 @@ import java.util.*
  * @author RJ
  */
 @SpringJUnitConfig(AccidentRegisterServiceImpl::class)
-@MockBean(
-  AccidentRegisterDao::class, AccidentDraftDao::class, AccidentOperationDao::class,
-  ReactiveSecurityService::class
-)
+@MockBean(AccidentDao::class, ReactiveSecurityService::class)
 class ToCheckMethodImplTest @Autowired constructor(
-  private val accidentRegisterService: AccidentRegisterService,
-  private val accidentDraftDao: AccidentDraftDao,
-  private val accidentRegisterDao: AccidentRegisterDao,
-  private val accidentOperationDao: AccidentOperationDao,
-  private val securityService: ReactiveSecurityService
+  private val securityService: ReactiveSecurityService,
+  private val accidentDao: AccidentDao,
+  private val accidentRegisterService: AccidentRegisterService
 ) {
   @Test
-  fun successByAllowStatus() {
-    successByAllowStatus(Draft)
-    successByAllowStatus(Rejected)
+  fun `Success by allow status`() {
+    successByAllowStatus(AuditStatus.ToSubmit)
+    successByAllowStatus(AuditStatus.Rejected)
   }
 
-  private fun successByAllowStatus(status: Status) {
+  private fun successByAllowStatus(status: AuditStatus) {
     // reset
     Mockito.reset(securityService)
-    Mockito.reset(accidentOperationDao)
-    Mockito.reset(accidentDraftDao)
-    Mockito.reset(accidentRegisterDao)
+    Mockito.reset(accidentDao)
 
     // mock
     val id = 1
-    val user = Optional.of(User(id = 0, account = "tester", name = "Tester"))
-    `when`(securityService.verifyHasAnyRole(ROLE_SUBMIT)).thenReturn(Mono.empty())
-    `when`(securityService.getAuthenticatedUser()).thenReturn(Mono.just(user))
-    `when`(accidentDraftDao.update(any(), any())).thenReturn(Mono.just(true))
-    `when`(accidentRegisterDao.getStatus(id)).thenReturn(Mono.just(status))
-    `when`(accidentRegisterDao.toCheck(id)).thenReturn(Mono.just(true))
-    `when`(accidentOperationDao.create(any())).thenReturn(Mono.empty())
+    val updateData = when (status) {
+      // 首次提交
+      AuditStatus.ToSubmit -> mapOf(
+        "stage" to CaseStage.Registering,
+        "draftStatus" to DraftStatus.Drafted,
+        "registerStatus" to AuditStatus.ToCheck
+      )
+      // 非首次提交
+      else -> mapOf("registerStatus" to AuditStatus.ToCheck)
+    }
+    `when`(securityService.verifyHasAnyRole(ROLE_REGISTER_SUBMIT)).thenReturn(Mono.empty())
+    `when`(accidentDao.getRegisterStatus(id)).thenReturn(status.toMono())
+    `when`(accidentDao.update(
+      id = id,
+      data = updateData,
+      targetType = ACCIDENT_REGISTER_TARGET_TYPE,
+      generateLog = false
+    )).thenReturn(Mono.empty())
 
     // invoke
     val actual = accidentRegisterService.toCheck(id)
 
     // verify
     StepVerifier.create(actual).verifyComplete()
-    verify(securityService).verifyHasAnyRole(ROLE_SUBMIT)
-    verify(securityService).getAuthenticatedUser()
-    verify(accidentDraftDao).update(any(), any())
-    verify(accidentRegisterDao).getStatus(id)
-    verify(accidentRegisterDao).toCheck(id)
-    verify(accidentOperationDao).create(any())
+    verify(securityService).verifyHasAnyRole(ROLE_REGISTER_SUBMIT)
+    verify(accidentDao).getRegisterStatus(id)
+    verify(accidentDao).update(
+      id = id,
+      data = updateData,
+      targetType = ACCIDENT_REGISTER_TARGET_TYPE,
+      generateLog = false
+    )
   }
 
   @Test
-  fun failedByIllegalStatus() {
-    Status.values()
-      .filter { it != Draft && it != Rejected }
+  fun `Failed by illegal status`() {
+    AuditStatus.values()
+      .filterNot { it == AuditStatus.ToSubmit || it == AuditStatus.Rejected }
       .forEach { failedByIllegalStatus(it) }
   }
 
-  private fun failedByIllegalStatus(status: Status) {
+  private fun failedByIllegalStatus(status: AuditStatus) {
     // reset
     Mockito.reset(securityService)
-    Mockito.reset(accidentOperationDao)
-    Mockito.reset(accidentRegisterDao)
+    Mockito.reset(accidentDao)
 
     // mock
     val id = 1
-    `when`(securityService.verifyHasAnyRole(ROLE_SUBMIT)).thenReturn(Mono.empty())
-    `when`(accidentRegisterDao.getStatus(id)).thenReturn(Mono.just(status))
+    `when`(securityService.verifyHasAnyRole(ROLE_REGISTER_SUBMIT)).thenReturn(Mono.empty())
+    `when`(accidentDao.getRegisterStatus(id)).thenReturn(status.toMono())
 
     // invoke
     val actual = accidentRegisterService.toCheck(id)
@@ -103,18 +106,16 @@ class ToCheckMethodImplTest @Autowired constructor(
     StepVerifier.create(actual)
       .expectError(ForbiddenException::class.java)
       .verify()
-    verify(securityService).verifyHasAnyRole(ROLE_SUBMIT)
-    verify(accidentRegisterDao).getStatus(id)
-    verify(accidentRegisterDao, times(0)).toCheck(id)
-    verify(accidentOperationDao, times(0)).create(any())
+    verify(securityService).verifyHasAnyRole(ROLE_REGISTER_SUBMIT)
+    verify(accidentDao).getRegisterStatus(id)
   }
 
   @Test
-  fun failedByNotFound() {
+  fun `Failed by NotFound`() {
     // mock
     val id = 1
-    `when`(securityService.verifyHasAnyRole(ROLE_SUBMIT)).thenReturn(Mono.empty())
-    `when`(accidentRegisterDao.getStatus(id)).thenReturn(Mono.empty())
+    `when`(securityService.verifyHasAnyRole(ROLE_REGISTER_SUBMIT)).thenReturn(Mono.empty())
+    `when`(accidentDao.getRegisterStatus(id)).thenReturn(Mono.empty())
 
     // invoke
     val actual = accidentRegisterService.toCheck(id)
@@ -123,17 +124,15 @@ class ToCheckMethodImplTest @Autowired constructor(
     StepVerifier.create(actual)
       .expectError(NotFoundException::class.java)
       .verify()
-    verify(securityService).verifyHasAnyRole(ROLE_SUBMIT)
-    verify(accidentRegisterDao).getStatus(id)
-    verify(accidentRegisterDao, times(0)).toCheck(id)
-    verify(accidentOperationDao, times(0)).create(any())
+    verify(securityService).verifyHasAnyRole(ROLE_REGISTER_SUBMIT)
+    verify(accidentDao).getRegisterStatus(id)
   }
 
   @Test
-  fun failedByPermissionDenied() {
+  fun `Failed by PermissionDenied`() {
     // mock
     val id = 1
-    `when`(securityService.verifyHasAnyRole(ROLE_SUBMIT)).thenReturn(Mono.error(PermissionDeniedException()))
+    `when`(securityService.verifyHasAnyRole(ROLE_REGISTER_SUBMIT)).thenReturn(Mono.error(PermissionDeniedException()))
 
     // invoke
     val actual = accidentRegisterService.toCheck(id)
@@ -142,9 +141,6 @@ class ToCheckMethodImplTest @Autowired constructor(
     StepVerifier.create(actual)
       .expectError(PermissionDeniedException::class.java)
       .verify()
-    verify(securityService).verifyHasAnyRole(ROLE_SUBMIT)
-    verify(accidentRegisterDao, times(0)).getStatus(id)
-    verify(accidentRegisterDao, times(0)).toCheck(id)
-    verify(accidentOperationDao, times(0)).create(any())
+    verify(securityService).verifyHasAnyRole(ROLE_REGISTER_SUBMIT)
   }
 }

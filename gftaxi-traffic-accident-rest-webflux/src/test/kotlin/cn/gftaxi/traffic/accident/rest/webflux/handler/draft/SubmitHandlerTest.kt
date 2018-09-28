@@ -1,10 +1,11 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.draft
 
-import cn.gftaxi.traffic.accident.Utils.FORMAT_DATE_TIME_TO_MINUTE
-import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
+import cn.gftaxi.traffic.accident.common.Utils.FORMAT_DATE_TIME_TO_MINUTE
 import cn.gftaxi.traffic.accident.rest.webflux.UnitTestConfiguration
 import cn.gftaxi.traffic.accident.rest.webflux.handler.draft.SubmitHandler.Companion.REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.service.AccidentDraftService
+import cn.gftaxi.traffic.accident.test.TestUtils.randomAuthenticatedUser
+import cn.gftaxi.traffic.accident.test.TestUtils.randomCase
 import com.nhaarman.mockito_kotlin.any
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -21,9 +22,11 @@ import org.springframework.web.reactive.function.server.RouterFunction
 import org.springframework.web.reactive.function.server.RouterFunctions.route
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
+import tech.simter.exception.NonUniqueException
+import tech.simter.exception.PermissionDeniedException
 import tech.simter.reactive.context.SystemContext
 import tech.simter.reactive.security.ReactiveSecurityService
-import java.time.OffsetDateTime
+import tech.simter.reactive.web.Utils.TEXT_PLAIN_UTF8
 import java.util.*
 import javax.json.Json
 
@@ -47,55 +50,70 @@ class SubmitHandlerTest @Autowired constructor(
     fun theRoute(handler: SubmitHandler): RouterFunction<ServerResponse> = route(REQUEST_PREDICATE, handler)
   }
 
-  @Test
-  fun submit() {
-    // mock
-    val now = OffsetDateTime.now()
-    val dto = AccidentDraftDto4Submit().apply {
-      carPlate = "粤A.23J5"
-      driverName = "林河"
-      happenTime = now
-      location = "荔湾区福利路"
-      hitForm = "车辆间事故"
-      hitType = "追尾碰撞"
-      describe = "撞车"
-      source = "BC"
-      authorName = "韩智勇"
-      authorId = "hzy"
-      draftTime = now
-    }
-    val data = Json.createObjectBuilder()
-    `data`.add("carPlate", dto.carPlate)
-    `data`.add("driverName", dto.driverName)
-    `data`.add("happenTime", dto.happenTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
-    `data`.add("location", dto.location)
-    `data`.add("hitForm", dto.hitForm)
-    `data`.add("hitType", dto.hitType)
-    `data`.add("describe", dto.describe)
-    `data`.add("source", dto.source)
-    `data`.add("authorName", dto.authorName)
-    `data`.add("authorId", dto.authorId)
-    `data`.add("draftTime", dto.draftTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
+  private val url = "/accident-draft"
 
-    val id = 1
-    val code = "20180909_01"
-    `when`(accidentDraftService.submit(any())).thenReturn(Mono.just(Pair(id, code)))
+  @Test
+  fun `Success submit`() {
+    // mock
+    val pair = randomCase(overdueDraft = false)
+    val data = Json.createObjectBuilder()
+    `data`.add("carPlate", pair.first.carPlate)
+    `data`.add("driverName", pair.first.driverName)
+    `data`.add("happenTime", pair.first.happenTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
+    `data`.add("location", pair.first.location)
+    `data`.add("hitForm", pair.first.hitForm)
+    `data`.add("hitType", pair.first.hitType)
+    `when`(accidentDraftService.submit(any())).thenReturn(Mono.just(pair))
     `when`(securityService.getAuthenticatedUser()).thenReturn(Mono.just(Optional.of(
-      SystemContext.User(id = 1, account = dto.authorId!!, name = dto.authorName!!)
+      SystemContext.User(id = 1, account = pair.second.authorId!!, name = pair.second.authorName!!)
     )))
 
-    // invoke
-    client.post().uri("/accident-draft")
+    // invoke and verify
+    client.post().uri(url)
       .header("Content-Type", APPLICATION_JSON_UTF8.toString())
       .syncBody(data.build().toString())
       .exchange()
       .expectStatus().isCreated
       .expectHeader().contentType(APPLICATION_JSON_UTF8)
       .expectBody()
-      .jsonPath("$.id").isEqualTo(id)
-      .jsonPath("$.code").isEqualTo(code)
+      .jsonPath("$.id").isEqualTo(pair.first.id!!)
+      .jsonPath("$.code").isEqualTo(pair.first.code!!)
+      .jsonPath("$.draftTime").isEqualTo(pair.second.draftTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
+      .jsonPath("$.overdueDraft").isEqualTo(pair.second.overdueDraft!!)
+    verify(accidentDraftService).submit(any())
+  }
 
-    // verify
+  @Test
+  fun `Failed by NonUniqueException`() {
+    // mock
+    `when`(accidentDraftService.submit(any())).thenReturn(Mono.error(NonUniqueException()))
+    `when`(securityService.getAuthenticatedUser()).thenReturn(Mono.just(Optional.of(randomAuthenticatedUser())))
+
+    // invoke and verify
+    client.post().uri(url)
+      .contentType(APPLICATION_JSON_UTF8)
+      .syncBody("""{"carPlate": "test"}""")
+      .exchange()
+      .expectStatus().isBadRequest
+      .expectHeader().contentType(TEXT_PLAIN_UTF8)
+    verify(securityService).getAuthenticatedUser()
+    verify(accidentDraftService).submit(any())
+  }
+
+  @Test
+  fun `Failed by PermissionDenied`() {
+    // mock
+    `when`(accidentDraftService.submit(any())).thenReturn(Mono.error(PermissionDeniedException()))
+    `when`(securityService.getAuthenticatedUser()).thenReturn(Mono.just(Optional.of(randomAuthenticatedUser())))
+
+    // invoke and verify
+    client.post().uri(url)
+      .contentType(APPLICATION_JSON_UTF8)
+      .syncBody("""{"carPlate": "test"}""")
+      .exchange()
+      .expectStatus().isForbidden
+      .expectHeader().contentType(TEXT_PLAIN_UTF8)
+    verify(securityService).getAuthenticatedUser()
     verify(accidentDraftService).submit(any())
   }
 }

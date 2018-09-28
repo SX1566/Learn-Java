@@ -1,7 +1,6 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.register
 
-import cn.gftaxi.traffic.accident.dto.CheckedInfo
-import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
+import cn.gftaxi.traffic.accident.dto.CheckedInfoDto
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus.FORBIDDEN
@@ -16,6 +15,7 @@ import reactor.core.publisher.Mono
 import tech.simter.exception.ForbiddenException
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
+import tech.simter.reactive.web.Utils.TEXT_PLAIN_UTF8
 
 /**
  * 审核事故登记信息的 [CheckedHandler]。
@@ -29,7 +29,7 @@ class CheckedHandler @Autowired constructor(
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
     return request
       // 将请求体的 json 转换为 DTO
-      .bodyToMono<CheckedInfo>()
+      .bodyToMono<CheckedInfoDto>()
       // 执行审核处理
       .flatMap { accidentRegisterService.checked(request.pathVariable("id").toInt(), it) }
       // response

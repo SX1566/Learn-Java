@@ -8,8 +8,6 @@ define(["bc", "vue", "context", "static/accident/api", "static/accident/simter-f
   let isChecker = context.is("ACCIDENT_REGISTER_CHECK");
   let isAllRoles = isRecorder && isChecker;
 
-  let driverTypeMap = {Official: "正班", Shift: "替班", Outside: "非编"};
-
   // 待登记视图列
   let todoColumns = [
     {
@@ -31,7 +29,7 @@ define(["bc", "vue", "context", "static/accident/api", "static/accident/simter-f
     {
       id: "driverName", label: "当事司机", width: "8em",
       filter: function (value, row) {
-        return row.driverType && row.driverType !== undefined ? `[${driverTypeMap[row.driverType]}] ${value}` : value;
+        return row.driverType && row.driverType !== undefined ? `[${accident.DRIVER_TYPE_MAP[row.driverType]}] ${value}` : value;
       }
     },
     {id: "location", label: "事发地点", width: "13em"},
@@ -67,7 +65,7 @@ define(["bc", "vue", "context", "static/accident/api", "static/accident/simter-f
     {
       id: "driverName", label: "当事司机", width: "8em",
       filter: function (value, row) {
-        return row.driverType && row.driverType !== undefined ? `[${driverTypeMap[row.driverType]}] ${value}` : value;
+        return row.driverType && row.driverType !== undefined ? `[${accident.DRIVER_TYPE_MAP[row.driverType]}] ${value}` : value;
       }
     },
     {id: "location", label: "事发地点", width: "13em"},
@@ -120,7 +118,7 @@ define(["bc", "vue", "context", "static/accident/api", "static/accident/simter-f
           columns: todoColumns,
           title: "",
           status: "",
-          statuses: [{id: "Draft", label: "待登记"}, {id: "ToCheck", label: "已登待审"}]
+          statuses: [{id: "ToSubmit", label: "待登记"}, {id: "ToCheck", label: "已登待审"}]
         },
         checkedView: {
           url: `${accident.dataServer}/${resourceKey}/last-checked`,

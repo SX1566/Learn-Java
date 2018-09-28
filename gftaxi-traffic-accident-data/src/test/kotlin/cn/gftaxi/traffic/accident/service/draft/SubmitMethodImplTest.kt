@@ -1,117 +1,97 @@
 package cn.gftaxi.traffic.accident.service.draft
 
-import cn.gftaxi.traffic.accident.POUtils.random
-import cn.gftaxi.traffic.accident.POUtils.randomAccidentDraft
-import cn.gftaxi.traffic.accident.dao.AccidentDraftDao
-import cn.gftaxi.traffic.accident.dao.BcDao
-import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Submit
-import cn.gftaxi.traffic.accident.po.AccidentDraft
-import cn.gftaxi.traffic.accident.po.AccidentDraft.Status
+import cn.gftaxi.traffic.accident.common.AccidentRole.ROLE_DRAFT_SUBMIT
+import cn.gftaxi.traffic.accident.dao.AccidentDao
+import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Form
 import cn.gftaxi.traffic.accident.service.AccidentDraftService
 import cn.gftaxi.traffic.accident.service.AccidentDraftServiceImpl
-import com.nhaarman.mockito_kotlin.any
-import org.junit.jupiter.api.Assertions.assertThrows
+import cn.gftaxi.traffic.accident.test.TestUtils.randomCase
+import cn.gftaxi.traffic.accident.test.TestUtils.randomString
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import reactor.core.publisher.Mono
+import reactor.core.publisher.toMono
 import reactor.test.StepVerifier
-import reactor.test.verifyError
 import tech.simter.exception.NonUniqueException
-import tech.simter.security.SecurityService
+import tech.simter.exception.PermissionDeniedException
+import tech.simter.reactive.security.ReactiveSecurityService
 import java.time.OffsetDateTime
 
 /**
  * Test [AccidentDraftServiceImpl.submit].
  *
- * @author JF
  * @author RJ
  */
 @SpringJUnitConfig(AccidentDraftServiceImpl::class)
-@MockBean(AccidentDraftDao::class, SecurityService::class, BcDao::class)
+@MockBean(AccidentDao::class, ReactiveSecurityService::class)
 class SubmitMethodImplTest @Autowired constructor(
-  private val accidentDraftService: AccidentDraftService,
-  private val accidentDraftDao: AccidentDraftDao,
-  private val securityService: SecurityService,
-  private val bcDao: BcDao
+  private val securityService: ReactiveSecurityService,
+  private val accidentDao: AccidentDao,
+  private val accidentDraftService: AccidentDraftService
 ) {
   @Test
-  fun submitWithRole() {
+  fun `Success submit`() {
     // mock
-    val expected = Pair(1, "code")
-    val po = randomAccidentDraft(id = expected.first, code = expected.second, status = Status.Done, overdueDraft = true)
-    val dto = AccidentDraftDto4Submit().apply {
-      carPlate = po.carPlate
-      driverName = po.driverName
-      happenTime = po.happenTime
-      location = po.location
-      hitForm = po.hitForm
-      hitType = po.hitType
-      source = "BC"
-      authorName = random("authorName")
-      authorId = random("authorId")
-    }
-    doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
-    `when`(accidentDraftDao.nextCode(dto.happenTime!!)).thenReturn(Mono.just(expected.second))
-    `when`(accidentDraftDao.create(any())).thenReturn(Mono.just(po))
-    `when`(bcDao.getMotorcadeName(any(), any())).thenReturn(Mono.just("test"))
+    `when`(securityService.verifyHasAnyRole(ROLE_DRAFT_SUBMIT)).thenReturn(Mono.empty())
+    val pair = randomCase()
+    val dto = AccidentDraftDto4Form.from(pair)
+    `when`(accidentDao.verifyCaseNotExists(dto.carPlate!!, dto.happenTime!!)).thenReturn(Mono.empty())
+    `when`(accidentDao.createCase(dto)).thenReturn(pair.toMono())
 
     // invoke
     val actual = accidentDraftService.submit(dto)
 
     // verify
-    StepVerifier.create(actual).expectNext(expected).verifyComplete()
-    verify(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
-    verify(accidentDraftDao).nextCode(dto.happenTime!!)
-    verify(accidentDraftDao).create(any())
-    verify(bcDao).getMotorcadeName(any(), any())
+    StepVerifier.create(actual).expectNext(pair).verifyComplete()
+    verify(securityService).verifyHasAnyRole(ROLE_DRAFT_SUBMIT)
+    verify(accidentDao).verifyCaseNotExists(dto.carPlate!!, dto.happenTime!!)
+    verify(accidentDao).createCase(dto)
   }
 
   @Test
-  fun submitWithoutRole() {
+  fun `Failed by PermissionDenied`() {
     // mock
-    val dto = AccidentDraftDto4Submit().apply {
-      carPlate = "plate"
-      driverName = "driver"
+    `when`(securityService.verifyHasAnyRole(ROLE_DRAFT_SUBMIT)).thenReturn(Mono.error(PermissionDeniedException()))
+    val dto = AccidentDraftDto4Form().apply {
+      carPlate = randomString("粤A.")
       happenTime = OffsetDateTime.now()
-      location = "location"
-      source = "BC"
-      authorName = random("authorName")
-      authorId = random("authorId")
     }
-    doThrow(SecurityException()).`when`(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
 
-    // invoke and verify
-    assertThrows(SecurityException::class.java) { accidentDraftService.submit(dto).subscribe() }
+    // invoke
+    val actual = accidentDraftService.submit(dto)
+
+    // verify
+    StepVerifier.create(actual)
+      .expectError(PermissionDeniedException::class.java)
+      .verify()
+    verify(securityService).verifyHasAnyRole(ROLE_DRAFT_SUBMIT)
+    verify(accidentDao, times(0)).verifyCaseNotExists(dto.carPlate!!, dto.happenTime!!)
+    verify(accidentDao, times(0)).createCase(dto)
   }
 
   @Test
-  fun submitButNonUnique() {
+  fun `Failed by NonUnique`() {
     // mock
-    val code = "code"
-    val po = randomAccidentDraft(id = 1, code = code, status = Status.Done, overdueDraft = true)
-    val dto = AccidentDraftDto4Submit().apply {
-      carPlate = po.carPlate
-      driverName = po.driverName
-      happenTime = po.happenTime
-      location = po.location
-      hitForm = po.hitForm
-      hitType = po.hitType
-      source = "BC"
-      authorName = random("authorName")
-      authorId = random("authorId")
+    `when`(securityService.verifyHasAnyRole(ROLE_DRAFT_SUBMIT)).thenReturn(Mono.empty())
+    val dto = AccidentDraftDto4Form().apply {
+      carPlate = randomString("粤A.")
+      happenTime = OffsetDateTime.now()
     }
-    doNothing().`when`(securityService).verifyHasRole(AccidentDraft.ROLE_SUBMIT)
-    `when`(accidentDraftDao.nextCode(dto.happenTime!!)).thenReturn(Mono.just(code))
-    `when`(accidentDraftDao.create(any())).thenReturn(Mono.error(NonUniqueException()))
-    `when`(bcDao.getMotorcadeName(any(), any())).thenReturn(Mono.just("test"))
+    `when`(accidentDao.verifyCaseNotExists(dto.carPlate!!, dto.happenTime!!))
+      .thenReturn(Mono.error(NonUniqueException()))
 
-    // invoke and verify
-    StepVerifier.create(accidentDraftService.submit(dto)).verifyError(NonUniqueException::class)
-    verify(accidentDraftDao).nextCode(dto.happenTime!!)
-    verify(bcDao).getMotorcadeName(any(), any())
-    verify(accidentDraftDao).create(any())
+    // invoke
+    val actual = accidentDraftService.submit(dto)
+
+    // verify
+    StepVerifier.create(actual)
+      .expectError(NonUniqueException::class.java)
+      .verify()
+    verify(securityService).verifyHasAnyRole(ROLE_DRAFT_SUBMIT)
+    verify(accidentDao).verifyCaseNotExists(dto.carPlate!!, dto.happenTime!!)
+    verify(accidentDao, times(0)).createCase(dto)
   }
 }

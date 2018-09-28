@@ -1,6 +1,5 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.draft
 
-import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
 import cn.gftaxi.traffic.accident.service.AccidentDraftService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus.FORBIDDEN
@@ -17,6 +16,7 @@ import org.springframework.web.reactive.function.server.ServerResponse.status
 import reactor.core.publisher.Mono
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
+import tech.simter.reactive.web.Utils.TEXT_PLAIN_UTF8
 
 /**
  * 获取指定 ID 事故报案信息的 [HandlerFunction]。
@@ -28,7 +28,9 @@ class GetHandler @Autowired constructor(
   private val accidentDraftService: AccidentDraftService
 ) : HandlerFunction<ServerResponse> {
   override fun handle(request: ServerRequest): Mono<ServerResponse> {
-    return accidentDraftService.get(request.pathVariable("id").toInt())
+    val id = request.pathVariable("id").toInt()
+    return accidentDraftService.get(id)
+      .switchIfEmpty(Mono.error(NotFoundException("案件不存在！id=$id")))
       // response
       .flatMap { ok().contentType(APPLICATION_JSON_UTF8).syncBody(it) }
       // error mapping

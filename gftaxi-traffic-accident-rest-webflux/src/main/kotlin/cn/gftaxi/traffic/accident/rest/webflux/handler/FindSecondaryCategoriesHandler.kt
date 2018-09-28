@@ -33,7 +33,7 @@ class FindSecondaryCategoriesHandler @Autowired constructor(
               "sn" to it.sn,
               "name" to it.name
             )
-            if (includeDisabledStatus) result["status"] = it.status.name
+            if (includeDisabledStatus) result["stage"] = it.status.name
             result
           }
       )

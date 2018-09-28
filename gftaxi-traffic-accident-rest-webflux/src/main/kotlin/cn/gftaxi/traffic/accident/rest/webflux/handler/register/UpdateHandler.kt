@@ -1,7 +1,6 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.register
 
 import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
-import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus.FORBIDDEN
@@ -16,6 +15,7 @@ import org.springframework.web.reactive.function.server.ServerResponse.status
 import reactor.core.publisher.Mono
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
+import tech.simter.reactive.web.Utils.TEXT_PLAIN_UTF8
 
 /**
  * 更新事故登记信息的 [HandlerFunction]。
@@ -31,7 +31,7 @@ class UpdateHandler @Autowired constructor(
       // 将请求体的 json 转换为 DTO
       .bodyToMono<AccidentRegisterDto4Form>()
       // 执行信息更新
-      .flatMap { accidentRegisterService.update(request.pathVariable("id").toInt(), it.data.map) }
+      .flatMap { accidentRegisterService.update(request.pathVariable("id").toInt(), it) }
       // response
       .then(noContent().build())
       // error mapping

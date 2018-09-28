@@ -1,45 +1,46 @@
 package cn.gftaxi.traffic.accident.dto
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter.ofPattern
 import java.time.temporal.ChronoUnit
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 class AccidentRegisterDto4FormTest {
+  private val objectMapper = ObjectMapper().registerModule(tech.simter.jackson.ext.javatime.JavaTimeModule())
+
   @Test
-  fun `missing field`() {
+  fun `Empty JSON`() {
     val json = "{}"
-    val dto = ObjectMapper().readValue(json, AccidentRegisterDto4Form::class.java)
+    val dto = objectMapper.readValue(json, AccidentRegisterDto4Form::class.java)
     assertTrue(dto.data.isEmpty())
     assertNull(dto.carPlate)
   }
 
   @Test
-  fun `explicit set field`() {
+  fun `Explicit set field`() {
     val json = "{\"carPlate\": null, \"carId\": 1, \"motorcadeName\": \"一分一队\"}"
-    val dto = ObjectMapper().readValue(json, AccidentRegisterDto4Form::class.java)
+    val dto = objectMapper.readValue(json, AccidentRegisterDto4Form::class.java)
     //println(dto)
     assertEquals(3, dto.data.size)
     assertNull(dto.carPlate)
+    assertTrue(dto.data.containsKey("carPlate"))
     assertEquals(1, dto.carId)
     assertEquals("一分一队", dto.motorcadeName)
   }
 
   @Test
-  @Disabled
-  fun `explicit set happenTime`() {
-    val json = "{\"happenTime\": \"2018-10-01 15:30\"}"
-    val dto = ObjectMapper()
-      .findAndRegisterModules()
-      .readValue(json, AccidentRegisterDto4Form::class.java)
-    //println(dto)
+  fun `Explicit set happenTime`() {
+    val happenTime = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES)
+    val json = "{\"happenTime\": \"${happenTime.format(ofPattern("yyyy-MM-dd HH:mm"))}\"}"
+    val dto = objectMapper.readValue(json, AccidentRegisterDto4Form::class.java)
     assertEquals(1, dto.data.size)
     assertNull(dto.carPlate)
+    assertTrue(dto.data.containsKey("happenTime"))
+    assertEquals(happenTime, dto.happenTime)
   }
 
   @Test

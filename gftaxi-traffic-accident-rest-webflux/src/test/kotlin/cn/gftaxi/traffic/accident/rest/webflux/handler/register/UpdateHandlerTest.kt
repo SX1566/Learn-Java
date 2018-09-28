@@ -1,89 +1,92 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.register
 
-import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
+import cn.gftaxi.traffic.accident.rest.webflux.UnitTestConfiguration
 import cn.gftaxi.traffic.accident.rest.webflux.handler.register.UpdateHandler.Companion.REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.service.AccidentRegisterService
+import cn.gftaxi.traffic.accident.test.TestUtils.randomInt
 import com.nhaarman.mockito_kotlin.any
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
-import org.springframework.test.web.reactive.server.WebTestClient.bindToRouterFunction
-import org.springframework.web.reactive.config.EnableWebFlux
+import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.web.reactive.function.server.RouterFunction
 import org.springframework.web.reactive.function.server.RouterFunctions.route
+import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
 import tech.simter.exception.NotFoundException
 import tech.simter.exception.PermissionDeniedException
-import javax.json.Json
+import tech.simter.reactive.web.Utils.TEXT_PLAIN_UTF8
 
 /**
  * Test [UpdateHandler]。
  *
  * @author RJ
  */
-@SpringJUnitConfig(UpdateHandler::class)
-@EnableWebFlux
+@SpringJUnitConfig(UnitTestConfiguration::class, UpdateHandler::class)
 @MockBean(AccidentRegisterService::class)
+@WebFluxTest
 class UpdateHandlerTest @Autowired constructor(
-  handler: UpdateHandler,
+  private val client: WebTestClient,
   private val accidentRegisterService: AccidentRegisterService
 ) {
-  private val client = bindToRouterFunction(route(REQUEST_PREDICATE, handler)).build()
+  @Configuration
+  class Cfg {
+    @Bean
+    fun theRoute(handler: UpdateHandler): RouterFunction<ServerResponse> = route(REQUEST_PREDICATE, handler)
+  }
+
+  private val id = randomInt()
+  private val url = "/accident-register/$id"
+  private val testBodyData = """{"carPlate": "test"}"""
 
   @Test
-  fun success() {
+  fun `Success update`() {
     // mock
-    val id = 1
-    val data = Json.createObjectBuilder().add("carPlate", "test")
     `when`(accidentRegisterService.update(any(), any())).thenReturn(Mono.empty())
 
-    // invoke
-    val response = client.patch().uri("/accident-register/$id")
+    // invoke and verify
+    client.patch().uri(url)
       .contentType(APPLICATION_JSON_UTF8)
-      .syncBody(data.build().toString())
+      .syncBody(testBodyData)
       .exchange()
-
-    // verify
-    response.expectStatus().isNoContent.expectBody().isEmpty
+      .expectStatus().isNoContent
+      .expectBody().isEmpty
     verify(accidentRegisterService).update(any(), any())
   }
 
   @Test
-  fun failedByNotFound() {
+  fun `Failed by NotFound`() {
     // mock
-    val id = 1
-    val data = Json.createObjectBuilder().add("carPlate", "test")
     `when`(accidentRegisterService.update(any(), any())).thenReturn(Mono.error(NotFoundException()))
 
-    // invoke
-    val response = client.patch().uri("/accident-register/$id")
+    // invoke and verify
+    client.patch().uri(url)
       .contentType(APPLICATION_JSON_UTF8)
-      .syncBody(data.build().toString())
+      .syncBody(testBodyData)
       .exchange()
-
-    // verify
-    response.expectStatus().isNotFound.expectHeader().contentType(TEXT_PLAIN_UTF8)
+      .expectStatus().isNotFound.expectHeader().contentType(TEXT_PLAIN_UTF8)
     verify(accidentRegisterService).update(any(), any())
   }
 
   @Test
-  fun failedByPermissionDenied() {
+  fun `Failed by PermissionDenied`() {
     // mock
-    val id = 1
-    val data = Json.createObjectBuilder().add("carPlate", "test")
     `when`(accidentRegisterService.update(any(), any())).thenReturn(Mono.error(PermissionDeniedException()))
 
-    // invoke
-    val response = client.patch().uri("/accident-register/$id")
+    // invoke and verify
+    client.patch().uri(url)
       .contentType(APPLICATION_JSON_UTF8)
-      .syncBody(data.build().toString())
+      .syncBody(testBodyData)
       .exchange()
-
-    // verify
-    response.expectStatus().isForbidden.expectHeader().contentType(TEXT_PLAIN_UTF8)
+      .expectStatus().isForbidden
+      .expectHeader().contentType(TEXT_PLAIN_UTF8)
     verify(accidentRegisterService).update(any(), any())
   }
 }
