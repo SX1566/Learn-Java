@@ -43,6 +43,14 @@
     </dependency>
     <dependency>
       <groupId>tech.simter</groupId>
+      <artifactId>simter-operation-data</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>tech.simter</groupId>
+      <artifactId>simter-operation-rest-webflux</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>tech.simter</groupId>
       <artifactId>simter-kv-rest-webflux</artifactId>
     </dependency>
     <dependency>
@@ -191,6 +199,10 @@
           <artifactId>simter-category-data-jpa</artifactId>
         </dependency>
         <dependency>
+          <groupId>tech.simter</groupId>
+          <artifactId>simter-operation-data-jpa</artifactId>
+        </dependency>
+        <dependency>
           <groupId>cn.gftaxi.traffic.accident</groupId>
           <artifactId>gftaxi-traffic-accident-data-jpa</artifactId>
         </dependency>
@@ -251,6 +263,10 @@
           <artifactId>simter-category-data-jpa</artifactId>
         </dependency>
         <dependency>
+          <groupId>tech.simter</groupId>
+          <artifactId>simter-operation-data-jpa</artifactId>
+        </dependency>
+        <dependency>
           <groupId>cn.gftaxi.traffic.accident</groupId>
           <artifactId>gftaxi-traffic-accident-data-jpa</artifactId>
         </dependency>
@@ -309,6 +325,10 @@
         <dependency>
           <groupId>tech.simter</groupId>
           <artifactId>simter-category-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>tech.simter</groupId>
+          <artifactId>simter-operation-data-jpa</artifactId>
         </dependency>
         <dependency>
           <groupId>cn.gftaxi.traffic.accident</groupId>

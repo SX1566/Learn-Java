@@ -1,4 +1,6 @@
 spring:
+  main:
+    banner-mode: 'OFF'
   jpa:
     properties:
       hibernate.show_sql: false      # true for log to console directly
