@@ -8,9 +8,9 @@ package cn.gftaxi.traffic.accident.test
 import cn.gftaxi.traffic.accident.bc.dto.CaseRelatedInfoDto
 import cn.gftaxi.traffic.accident.common.*
 import cn.gftaxi.traffic.accident.common.Utils.FORMAT_TO_YYYYMMDD
+import cn.gftaxi.traffic.accident.common.Utils.isOverdue
 import cn.gftaxi.traffic.accident.dto.*
 import cn.gftaxi.traffic.accident.po.*
-import org.slf4j.LoggerFactory
 import tech.simter.operation.po.Attachment
 import tech.simter.reactive.context.SystemContext
 import java.math.BigDecimal
@@ -24,8 +24,6 @@ import java.util.*
  * @author RJ
  */
 object TestUtils {
-  private val logger = LoggerFactory.getLogger(TestUtils::class.java)
-
   private var ymdMap = hashMapOf<String, Int>()
   /** 获取下一个事故编号 */
   fun nextCaseCode(happenTime: OffsetDateTime): String {
@@ -81,21 +79,21 @@ object TestUtils {
     type: String = randomString("type"),
     model: String = randomString("model")
   ): AccidentCar {
-    return AccidentCar().apply {
-      this.parent = parent
-      this.sn = sn
-      this.name = name
-      this.type = type
-      this.model = model
-      this.towCount = randomInt(1, 10).toShort()
-      this.repairType = randomString("repairType")
-      this.guessTowMoney = BigDecimal("${randomInt(1, 100)}.00")
-      this.guessRepairMoney = BigDecimal("${randomInt(1, 100)}.00")
-      this.actualTowMoney = BigDecimal("${randomInt(1, 100)}.00")
-      this.actualRepairMoney = BigDecimal("${randomInt(1, 100)}.00")
-      this.damageState = randomString("damageState")
-      this.followType = randomString("followType")
-      this.updatedTime = OffsetDateTime.now()
+    return AccidentCar().also {
+      it.parent = parent
+      it.sn = sn
+      it.name = name
+      it.type = type
+      it.model = model
+      it.towCount = randomInt(1, 10).toShort()
+      it.repairType = randomString("repairType")
+      it.guessTowMoney = BigDecimal("${randomInt(1, 100)}.00")
+      it.guessRepairMoney = BigDecimal("${randomInt(1, 100)}.00")
+      it.actualTowMoney = BigDecimal("${randomInt(1, 100)}.00")
+      it.actualRepairMoney = BigDecimal("${randomInt(1, 100)}.00")
+      it.damageState = randomString("damageState")
+      it.followType = randomString("followType")
+      it.updatedTime = OffsetDateTime.now()
     }
   }
 
@@ -107,22 +105,22 @@ object TestUtils {
     type: String = randomString("type"),
     phone: String = randomString("phone")
   ): AccidentPeople {
-    return AccidentPeople().apply {
-      this.parent = parent
-      this.sn = sn
-      this.name = name
-      this.type = type
-      this.sex = Sex.Male
-      this.phone = phone
-      this.transportType = randomString("transportType")
-      this.duty = randomString("duty")
-      this.damageState = randomString("damageState")
-      this.guessTreatmentMoney = BigDecimal("${randomInt(1, 100)}.00")
-      this.guessCompensateMoney = BigDecimal("${randomInt(1, 100)}.00")
-      this.actualTreatmentMoney = BigDecimal("${randomInt(1, 100)}.00")
-      this.actualCompensateMoney = BigDecimal("${randomInt(1, 100)}.00")
-      this.followType = randomString("followType")
-      this.updatedTime = OffsetDateTime.now()
+    return AccidentPeople().also {
+      it.parent = parent
+      it.sn = sn
+      it.name = name
+      it.type = type
+      it.sex = Sex.Male
+      it.phone = phone
+      it.transportType = randomString("transportType")
+      it.duty = randomString("duty")
+      it.damageState = randomString("damageState")
+      it.guessTreatmentMoney = BigDecimal("${randomInt(1, 100)}.00")
+      it.guessCompensateMoney = BigDecimal("${randomInt(1, 100)}.00")
+      it.actualTreatmentMoney = BigDecimal("${randomInt(1, 100)}.00")
+      it.actualCompensateMoney = BigDecimal("${randomInt(1, 100)}.00")
+      it.followType = randomString("followType")
+      it.updatedTime = OffsetDateTime.now()
     }
   }
 
@@ -133,19 +131,19 @@ object TestUtils {
     name: String = randomString("name"),
     type: String = randomString("type")
   ): AccidentOther {
-    return AccidentOther().apply {
-      this.parent = parent
-      this.sn = sn
-      this.name = name
-      this.type = type
-      this.belong = randomString("belong")
-      this.linkmanName = randomString("linkmanName")
-      this.linkmanPhone = randomString("linkmanPhone")
-      this.damageState = randomString("damageState")
-      this.guessMoney = BigDecimal("${randomInt(1, 100)}.00")
-      this.actualMoney = BigDecimal("${randomInt(1, 100)}.00")
-      this.followType = randomString("followType")
-      this.updatedTime = OffsetDateTime.now()
+    return AccidentOther().also {
+      it.parent = parent
+      it.sn = sn
+      it.name = name
+      it.type = type
+      it.belong = randomString("belong")
+      it.linkmanName = randomString("linkmanName")
+      it.linkmanPhone = randomString("linkmanPhone")
+      it.damageState = randomString("damageState")
+      it.guessMoney = BigDecimal("${randomInt(1, 100)}.00")
+      it.actualMoney = BigDecimal("${randomInt(1, 100)}.00")
+      it.followType = randomString("followType")
+      it.updatedTime = OffsetDateTime.now()
     }
   }
 
@@ -163,48 +161,48 @@ object TestUtils {
     reportStatus: AuditStatus? = null
   ): Pair<AccidentCase, AccidentSituation> {
     return Pair(
-      AccidentCase().apply {
-        this.id = id
-        this.code = code
-        this.happenTime = happenTime
-        this.carPlate = randomString("粤A.")
-        this.driverName = randomString("driver")
-        this.driverType = DriverType.Official
-        this.location = randomString("location")
-        this.motorcadeName = randomString("m")
-        this.level = randomString("level")
-        this.hitForm = randomString("hitForm")
-        this.hitType = randomString("hitType")
-        this.loadState = randomString("loadState")
+      AccidentCase().also {
+        it.id = id
+        it.code = code
+        it.happenTime = happenTime
+        it.carPlate = randomString("粤A.")
+        it.driverName = randomString("driver")
+        it.driverType = DriverType.Official
+        it.location = randomString("location")
+        it.motorcadeName = randomString("m")
+        it.level = randomString("level")
+        it.hitForm = randomString("hitForm")
+        it.hitType = randomString("hitType")
+        it.loadState = randomString("loadState")
       },
-      AccidentSituation().apply {
-        this.id = id
-        this.stage = stage
+      AccidentSituation().also {
+        it.id = id
+        it.stage = stage
 
         // 报案信息
-        this.overdueDraft = overdueDraft
+        it.overdueDraft = overdueDraft
         when (overdueDraft) {
-          null -> this.draftTime = null
-          true -> this.draftTime = happenTime.plusHours(12 + 1) // 超过 12 小时为逾期报案
-          else -> this.draftTime = happenTime.plusHours(12 - 1)
+          null -> it.draftTime = null
+          true -> it.draftTime = happenTime.plusHours(12 + 1) // 超过 12 小时为逾期报案
+          else -> it.draftTime = happenTime.plusHours(12 - 1)
         }
-        this.draftStatus = draftStatus ?: when (stage) {
+        it.draftStatus = draftStatus ?: when (stage) {
           CaseStage.ToSubmit -> DraftStatus.ToSubmit
           CaseStage.Drafting -> DraftStatus.Drafting
           else -> DraftStatus.Drafted
         }
-        this.source = "BC"
-        this.authorName = randomString("authorName")
-        this.authorId = randomString("authorId")
+        it.source = "BC"
+        it.authorName = randomString("authorName")
+        it.authorId = randomString("authorId")
 
         // 登记信息
-        this.overdueRegister = overdueRegister
+        it.overdueRegister = overdueRegister
         when (overdueRegister) {
-          null -> this.registerTime = null
-          true -> this.registerTime = happenTime.plusHours(24 + 1) // 超过 24 小时为逾期登记
-          else -> this.registerTime = happenTime.plusHours(24 - 1)
+          null -> it.registerTime = null
+          true -> it.registerTime = happenTime.plusHours(24 + 1) // 超过 24 小时为逾期登记
+          else -> it.registerTime = happenTime.plusHours(24 - 1)
         }
-        this.registerStatus = registerStatus ?: when (stage) {
+        it.registerStatus = registerStatus ?: when (stage) {
           CaseStage.ToSubmit -> null
           CaseStage.Drafting -> null
           CaseStage.Registering -> AuditStatus.ToSubmit
@@ -212,13 +210,13 @@ object TestUtils {
         }
 
         // 报告信息
-        this.overdueReport = overdueReport
+        it.overdueReport = overdueReport
         when (overdueReport) {
-          null -> this.reportTime = null
-          true -> this.reportTime = happenTime.plusHours(48 + 1) // 超过 48 小时为逾期报告
-          else -> this.reportTime = happenTime.plusHours(48 - 1)
+          null -> it.reportTime = null
+          true -> it.reportTime = happenTime.plusHours(48 + 1) // 超过 48 小时为逾期报告
+          else -> it.reportTime = happenTime.plusHours(48 - 1)
         }
-        this.reportStatus = reportStatus ?: when (stage) {
+        it.reportStatus = reportStatus ?: when (stage) {
           CaseStage.ToSubmit -> null
           CaseStage.Drafting -> null
           CaseStage.Reporting -> AuditStatus.ToSubmit
@@ -233,17 +231,20 @@ object TestUtils {
     id: Int? = nextId("Case"),
     happenTime: OffsetDateTime = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES).minusDays(10),
     code: String = nextCaseCode(happenTime),
-    draftTime: OffsetDateTime = happenTime.plusHours(1),
-    overdueDraft: Boolean = Utils.isOverdue(happenTime, draftTime, 12 * 60 * 60),
+    draftTime: OffsetDateTime = happenTime.plusHours(12 - 1),
+    overdueDraft: Boolean? = isOverdue(happenTime, draftTime, 12 * 60 * 60),
     draftStatus: DraftStatus = DraftStatus.ToSubmit
   ): AccidentDraftDto4View {
     return AccidentDraftDto4View(
       id = id,
       code = code,
       happenTime = happenTime,
-      draftStatus = draftStatus,
-      overdueDraft = overdueDraft,
+
       draftTime = draftTime,
+      overdueDraft = overdueDraft,
+      draftStatus = draftStatus,
+
+      motorcadeName = randomString("m"),
       carPlate = randomString("car"),
       driverName = randomString("driver"),
       location = randomString("location"),
@@ -258,24 +259,27 @@ object TestUtils {
     id: Int? = nextId("Case"),
     happenTime: OffsetDateTime = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES).minusDays(10),
     code: String = nextCaseCode(happenTime),
-    draftTime: OffsetDateTime = happenTime.plusHours(1),
-    overdueDraft: Boolean = Utils.isOverdue(happenTime, draftTime, 12 * 60 * 60),
+    draftTime: OffsetDateTime = happenTime.plusHours(12 - 1),
+    overdueDraft: Boolean? = isOverdue(happenTime, draftTime, 12 * 60 * 60),
     draftStatus: DraftStatus = DraftStatus.ToSubmit
   ): AccidentDraftDto4Form {
-    return AccidentDraftDto4Form().apply {
-      this.id = id
-      this.code = code
-      this.happenTime = happenTime
-      this.draftStatus = draftStatus
-      this.overdueDraft = overdueDraft
-      this.draftTime = draftTime
-      this.carPlate = randomString("car")
-      this.driverName = randomString("driver")
-      this.driverType = DriverType.Official
-      this.location = randomString("location")
-      this.hitForm = randomString("hitForm")
-      this.hitType = randomString("hitType")
-      this.authorName = randomString("authorName")
+    return AccidentDraftDto4Form().also {
+      it.id = id
+      it.code = code
+      it.happenTime = happenTime
+
+      it.draftTime = draftTime
+      it.overdueDraft = overdueDraft
+      it.draftStatus = draftStatus
+
+      it.motorcadeName = randomString("m")
+      it.carPlate = randomString("car")
+      it.driverName = randomString("driver")
+      it.driverType = DriverType.Official
+      it.location = randomString("location")
+      it.hitForm = randomString("hitForm")
+      it.hitType = randomString("hitType")
+      it.authorName = randomString("authorName")
     }
   }
 
@@ -284,19 +288,25 @@ object TestUtils {
     id: Int? = nextId("Case"),
     happenTime: OffsetDateTime = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES).minusDays(10),
     code: String = nextCaseCode(happenTime),
-    registerTime: OffsetDateTime = happenTime.plusHours(13),
-    overdueRegister: Boolean = Utils.isOverdue(happenTime, registerTime, 12 * 60 * 60),
+    draftTime: OffsetDateTime = happenTime.plusHours(12 - 1),
+    overdueDraft: Boolean = isOverdue(happenTime, draftTime, 12 * 60 * 60),
+    registerTime: OffsetDateTime = happenTime.plusHours(24 - 1),
+    overdueRegister: Boolean? = isOverdue(happenTime, registerTime, 24 * 60 * 60),
     registerStatus: AuditStatus = AuditStatus.ToSubmit
   ): AccidentRegisterDto4View {
     return AccidentRegisterDto4View(
       id = id,
       code = code,
       happenTime = happenTime,
-      registerStatus = registerStatus,
-      overdueRegister = overdueRegister,
+
+      draftTime = draftTime,
+      overdueDraft = overdueDraft,
+
       registerTime = registerTime,
-      draftTime = happenTime.plusHours(1),
-      overdueDraft = false,
+      overdueRegister = overdueRegister,
+      registerStatus = registerStatus,
+
+      motorcadeName = randomString("m"),
       carPlate = randomString("car"),
       driverName = randomString("driver"),
       location = randomString("location"),
@@ -311,29 +321,34 @@ object TestUtils {
     id: Int? = nextId("Case"),
     happenTime: OffsetDateTime = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES).minusDays(10),
     code: String = nextCaseCode(happenTime),
-    registerTime: OffsetDateTime = happenTime.plusHours(13),
-    overdueRegister: Boolean = Utils.isOverdue(happenTime, registerTime, 12 * 60 * 60),
+    draftTime: OffsetDateTime = happenTime.plusHours(12 - 1),
+    overdueDraft: Boolean = isOverdue(happenTime, draftTime, 12 * 60 * 60),
+    draftStatus: DraftStatus = DraftStatus.Drafted,
+    registerTime: OffsetDateTime = happenTime.plusHours(24 - 1),
+    overdueRegister: Boolean? = isOverdue(happenTime, registerTime, 24 * 60 * 60),
     registerStatus: AuditStatus = AuditStatus.ToSubmit
   ): AccidentRegisterDto4Form {
-    return AccidentRegisterDto4Form().apply {
-      this.id = id
-      this.code = code
-      this.happenTime = happenTime
-      this.registerStatus = registerStatus
-      this.registerTime = registerTime
-      this.overdueRegister = overdueRegister
-      this.draftStatus = draftStatus
-      this.draftStatus = DraftStatus.Drafted
-      this.overdueDraft = overdueDraft
-      this.draftTime = happenTime.plusHours(1)
-      this.overdueDraft = false
-      this.carPlate = randomString("car")
-      this.driverName = randomString("driver")
-      this.driverType = DriverType.Official
-      this.location = randomString("location")
-      this.hitForm = randomString("hitForm")
-      this.hitType = randomString("hitType")
-      this.authorName = randomString("authorName")
+    return AccidentRegisterDto4Form().also {
+      it.id = id
+      it.code = code
+      it.happenTime = happenTime
+
+      it.draftTime = draftTime
+      it.overdueDraft = overdueDraft
+      it.draftStatus = draftStatus
+
+      it.registerTime = registerTime
+      it.overdueRegister = overdueRegister
+      it.registerStatus = registerStatus
+
+      it.motorcadeName = randomString("m")
+      it.carPlate = randomString("car")
+      it.driverName = randomString("driver")
+      it.driverType = DriverType.Official
+      it.location = randomString("location")
+      it.hitForm = randomString("hitForm")
+      it.hitType = randomString("hitType")
+      it.authorName = randomString("authorName")
     }
   }
 
@@ -353,6 +368,48 @@ object TestUtils {
       total = total,
       overdueDraft = randomInt(0, total),
       overdueRegister = randomInt(0, total)
+    )
+  }
+
+  /** 构建新的报告视图的数据行 */
+  fun randomAccidentReportDto4View(
+    id: Int? = nextId("Case"),
+    happenTime: OffsetDateTime = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES).minusDays(10),
+    code: String = nextCaseCode(happenTime),
+    draftTime: OffsetDateTime = happenTime.plusHours(12 - 1),
+    overdueDraft: Boolean = isOverdue(happenTime, draftTime, 12 * 60 * 60),
+    registerTime: OffsetDateTime = happenTime.plusHours(24 - 1),
+    overdueRegister: Boolean = isOverdue(happenTime, registerTime, 24 * 60 * 60),
+    reportTime: OffsetDateTime? = happenTime.plusHours(48 - 1),
+    overdueReport: Boolean? = isOverdue(happenTime, registerTime, 48 * 60 * 60),
+    reportStatus: AuditStatus = AuditStatus.ToSubmit
+  ): AccidentReportDto4View {
+    return AccidentReportDto4View(
+      id = id,
+      code = code,
+      happenTime = happenTime,
+
+      draftTime = draftTime,
+      overdueDraft = overdueDraft,
+
+      overdueRegister = overdueRegister,
+      registerTime = registerTime,
+
+      reportTime = reportTime,
+      overdueReport = overdueReport,
+      reportStatus = reportStatus,
+
+      motorcadeName = randomString("m"),
+      carPlate = randomString("car"),
+      carModel = randomString("carModel"),
+      driverName = randomString("driver"),
+      driverType = DriverType.Official,
+
+      location = randomString("location"),
+      hitForm = randomString("hitForm"),
+      level = randomString("level"),
+      duty = randomString("duty"),
+      appointDriverReturnTime = happenTime.plusHours(48 - 1)
     )
   }
 
