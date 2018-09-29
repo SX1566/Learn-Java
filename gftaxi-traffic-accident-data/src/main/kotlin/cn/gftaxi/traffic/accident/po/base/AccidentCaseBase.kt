@@ -175,47 +175,47 @@ open class AccidentCaseBase : IdEntity, DynamicBean() {
 
   //== 工作计划 ==
   /** 约定司机回队时间 */
-  val appointDriverReturnTime: OffsetDateTime? by holder
+  var appointDriverReturnTime: OffsetDateTime? by holder
   /** 司机实际回队时间 */
-  val actualDriverReturnTime: OffsetDateTime? by holder
+  var actualDriverReturnTime: OffsetDateTime? by holder
   /** 司机回队主办人姓名 */
-  val driverReturnSponsorName: String? by holder
+  var driverReturnSponsorName: String? by holder
   /** 司机回队协办人姓名 */
-  val driverReturnSupporterName: String? by holder
+  var driverReturnSupporterName: String? by holder
   /** 安全教育开始时间 */
-  val safetyStartTime: OffsetDateTime? by holder
+  var safetyStartTime: OffsetDateTime? by holder
   /** 安全教育结束时间 */
-  val safetyEndTime: OffsetDateTime? by holder
+  var safetyEndTime: OffsetDateTime? by holder
   /** 安全教育主办人姓名 */
-  val safetySponsorName: String? by holder
+  var safetySponsorName: String? by holder
   /** 安全教育协办人姓名 */
-  val safetySupporterName: String? by holder
+  var safetySupporterName: String? by holder
   /** 诫勉谈话开始时间 */
-  val talkStartTime: OffsetDateTime? by holder
+  var talkStartTime: OffsetDateTime? by holder
   /** 诫勉谈话结束时间 */
-  val talkEndTime: OffsetDateTime? by holder
+  var talkEndTime: OffsetDateTime? by holder
   /** 诫勉谈话主办人姓名 */
-  val talkSponsorName: String? by holder
+  var talkSponsorName: String? by holder
   /** 诫勉谈话协办人姓名 */
-  val talkSupporterName: String? by holder
+  var talkSupporterName: String? by holder
 
   //== 安全教育 ==
   /** 事故原因 */
-  val caseReason: String? by holder
+  var caseReason: String? by holder
   /** 处理意见 */
-  val safetyComment: String? by holder
+  var safetyComment: String? by holder
   /** 事故经过描述评价 */
-  val evaluateDetails: String? by holder
+  var evaluateDetails: String? by holder
   /** 事故认识情度评价 */
-  val evaluateAffection: String? by holder
+  var evaluateAffection: String? by holder
   /** 是否采取进一步处理措施 */
-  val takeFurther: Boolean? by holder
+  var takeFurther: Boolean? by holder
 
   //== 整改措施 ==
   /** 整改措施 */
-  val correctiveAction: String? by holder
+  var correctiveAction: String? by holder
   /** 司机态度 */
-  val driverAttitude: String? by holder
+  var driverAttitude: String? by holder
   /** 诉讼信息 */
-  val lawsuit: String? by holder
+  var lawsuit: String? by holder
 }
