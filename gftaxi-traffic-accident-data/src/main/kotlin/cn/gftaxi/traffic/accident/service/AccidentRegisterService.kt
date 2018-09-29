@@ -68,7 +68,7 @@ interface AccidentRegisterService {
    *    或 [审核不通过][AuditStatus.Rejected] 状态，则返回 [ForbiddenException] 类型的 [Mono.error]，
    *    否则设置 [登记信息状态][AccidentSituation.registerStatus] 为 [待审核][AuditStatus.ToCheck] 状态。
    * 4. 如果是首次提交登记信息，即案件的 [登记信息状态][AccidentSituation.registerStatus] = [待提交][AuditStatus.ToSubmit]
-   *    则设置 [案件阶段标记][AccidentSituation.stage] 为 [已登记][CaseStage.Registering] 状态
+   *    则设置 [案件阶段标记][AccidentSituation.stage] 为 [登记处理中][CaseStage.Registering] 状态
    *    和设置 [报案信息状态][AccidentSituation.draftStatus] 为 [已登记][DraftStatus.Registering] 状态。
    * 5. 生成提交日志。
    *

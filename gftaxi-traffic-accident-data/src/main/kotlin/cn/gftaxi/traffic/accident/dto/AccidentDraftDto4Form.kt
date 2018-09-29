@@ -23,6 +23,7 @@ class AccidentDraftDto4Form : AccidentDraftDto4FormUpdate() {
   @get:Id
   var id: Int? by holder
   var code: String? by holder
+  var motorcadeName: String? by holder
   /** 报案状态 */
   @get:Convert(converter = DraftStatusConverter::class)
   var draftStatus: DraftStatus? by holder

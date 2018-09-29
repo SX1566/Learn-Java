@@ -1,12 +1,10 @@
 package cn.gftaxi.traffic.accident.dao.jpa
 
-import cn.gftaxi.traffic.accident.dao.AccidentReportDao
 import cn.gftaxi.traffic.accident.dto.AccidentReportDto4Form
 import cn.gftaxi.traffic.accident.dto.AccidentReportDto4StatSummary
 import cn.gftaxi.traffic.accident.dto.AccidentReportDto4View
 import cn.gftaxi.traffic.accident.po.AccidentDraft
 import cn.gftaxi.traffic.accident.po.AccidentRegister
-import cn.gftaxi.traffic.accident.po.AccidentReport
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl

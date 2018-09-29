@@ -129,7 +129,7 @@ class AccidentRegisterServiceImpl @Autowired constructor(
             )
             // 审核不通过
             else -> mapOf(
-              "registerStatus" to AuditStatus.ToCheck,
+              "registerStatus" to AuditStatus.Rejected,
               "registerCheckedCount" to (it.registerCheckedCount ?: 0) + 1,
               "registerCheckedComment" to checkedInfo.comment,
               "registerCheckedAttachments" to checkedInfo.attachment?.run { listOf(checkedInfo.attachment) }

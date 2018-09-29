@@ -32,6 +32,8 @@ object Utils {
   const val ACCIDENT_DRAFT_TARGET_TYPE: String = "AccidentDraft"
   /** 事故登记信息的操作类型 */
   const val ACCIDENT_REGISTER_TARGET_TYPE: String = "AccidentRegister"
+  /** 事故报告信息的操作类型 */
+  const val ACCIDENT_REPORT_TARGET_TYPE: String = "AccidentReport"
 
   /**
    * 将车号改造为 "粤A123456" 格式。

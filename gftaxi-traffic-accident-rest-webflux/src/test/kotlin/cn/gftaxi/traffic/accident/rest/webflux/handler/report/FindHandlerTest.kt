@@ -1,16 +1,12 @@
 package cn.gftaxi.traffic.accident.rest.webflux.handler.report
 
-
-import cn.gftaxi.traffic.accident.Utils.FORMAT_DATE_TIME_TO_MINUTE
+import cn.gftaxi.traffic.accident.common.AuditStatus
 import cn.gftaxi.traffic.accident.dto.AccidentReportDto4View
-import cn.gftaxi.traffic.accident.po.AccidentRegister.DriverType
-import cn.gftaxi.traffic.accident.po.AccidentReport.Status
 import cn.gftaxi.traffic.accident.rest.webflux.UnitTestConfiguration
-import cn.gftaxi.traffic.accident.rest.webflux.Utils.TEXT_PLAIN_UTF8
 import cn.gftaxi.traffic.accident.rest.webflux.handler.report.FindHandler.Companion.REQUEST_PREDICATE
 import cn.gftaxi.traffic.accident.service.AccidentReportService
+import cn.gftaxi.traffic.accident.test.TestUtils.randomAccidentReportDto4View
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
@@ -27,13 +23,13 @@ import org.springframework.web.reactive.function.server.RouterFunctions.route
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
 import tech.simter.exception.PermissionDeniedException
-import java.time.OffsetDateTime
-import java.util.*
+import tech.simter.reactive.web.Utils.TEXT_PLAIN_UTF8
 
 /**
  * Test [FindHandler]
  *
  * @author zh
+ * @author RJ
  */
 @SpringJUnitConfig(UnitTestConfiguration::class, FindHandler::class)
 @MockBean(AccidentReportService::class)
@@ -48,132 +44,81 @@ internal class FindHandlerTest @Autowired constructor(
     fun theRoute(handler: FindHandler): RouterFunction<ServerResponse> = route(REQUEST_PREDICATE, handler)
   }
 
-  private fun randomDto(id: Int, status: Status? = null): AccidentReportDto4View {
-    return AccidentReportDto4View(id = id, code = randString(), driverType = DriverType.Official,
-      happenTime = OffsetDateTime.now(), overdueDraft = true, status = status)
-  }
-
-  private fun randString(): String {
-    return UUID.randomUUID().toString()
-  }
+  private val url = "/accident-report"
 
   @Test
-  fun successByNoStatus() {
+  fun `Found nothing`() {
     // mock
     val pageNo = 1
     val pageSize = 25
-    val dao1 = randomDto(1)
-    val dao2 = randomDto(2)
-    val list = listOf(dao1, dao2)
-    val page = PageImpl(list, PageRequest.of(pageNo, pageSize), list.size.toLong())
-    `when`(service.find(anyInt(), anyInt(), any(), any())).thenReturn(Mono.just(page))
+    val emptyList = listOf<AccidentReportDto4View>()
+    `when`(service.find())
+      .thenReturn(Mono.just(PageImpl(emptyList, PageRequest.of(pageNo - 1, pageSize), 0)))
 
     // invoke
-    client.get().uri("/accident-report?pageNo=$pageNo&pageSize=$pageSize")
+    client.get().uri(url)
       .exchange()
       .expectStatus().isOk
       .expectHeader().contentType(APPLICATION_JSON_UTF8)
       .expectBody()
-      .jsonPath("$.count").isEqualTo(list.size.toLong())
+      //.consumeWith { println(String(it.responseBody!!)) }
+      .jsonPath("$.count").isEqualTo(0)
       .jsonPath("$.pageNo").isEqualTo(pageNo)
       .jsonPath("$.pageSize").isEqualTo(pageSize)
-      .jsonPath("$.rows[0].id").isEqualTo(dao1.id!!)
-      .jsonPath("$.rows[0].code").isEqualTo(dao1.code!!)
-      .jsonPath("$.rows[0].driverType").isEqualTo(dao1.driverType.toString())
-      .jsonPath("$.rows[0].happenTime").isEqualTo(dao1.happenTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
-      .jsonPath("$.rows[0].overdueDraft").isEqualTo(dao1.overdueDraft!!)
-      .jsonPath("$.rows[1].id").isEqualTo(dao2.id!!)
-      .jsonPath("$.rows[1].code").isEqualTo(dao2.code!!)
-      .jsonPath("$.rows[1].driverType").isEqualTo(dao2.driverType.toString())
-      .jsonPath("$.rows[1].happenTime").isEqualTo(dao2.happenTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
-      .jsonPath("$.rows[1].overdueDraft").isEqualTo(dao2.overdueDraft!!)
+      .jsonPath("$.rows").isEmpty
 
     // verify
-    verify(service).find(anyInt(), anyInt(), any(), any())
+    verify(service).find()
   }
 
   @Test
-  fun successByOneStatus() {
+  fun `Found something`() {
+    // 没指定状态
+    findByStatus()
+
+    // 指定一个状态
+    AuditStatus.values().forEach { findByStatus(listOf(it)) }
+
+    // 指定多个状态
+    findByStatus(AuditStatus.values().toList())
+  }
+
+  private fun findByStatus(statuses: List<AuditStatus>? = null) {
     // mock
+    reset(service)
     val pageNo = 1
     val pageSize = 25
-    val dao1 = randomDto(1, Status.Draft)
-    val dao2 = randomDto(2, Status.Draft)
-    val list = listOf(dao1, dao2)
-    val page = PageImpl(list, PageRequest.of(pageNo, pageSize), list.size.toLong())
-    `when`(service.find(anyInt(), anyInt(), any(), any())).thenReturn(Mono.just(page))
+    val dto = randomAccidentReportDto4View()
+    val list = listOf(dto)
+    `when`(service.find(pageNo, pageSize, statuses))
+      .thenReturn(Mono.just(PageImpl(list, PageRequest.of(pageNo - 1, pageSize), list.size.toLong())))
 
     // invoke
-    client.get().uri("/accident-report?pageNo=$pageNo&pageSize=$pageSize&status=${Status.Draft}")
+    client.get().uri("$url?pageNo=$pageNo&pageSize=$pageSize" +
+      (statuses?.run { "&status=${statuses.joinToString(",")}" } ?: ""))
       .exchange()
       .expectStatus().isOk
       .expectHeader().contentType(APPLICATION_JSON_UTF8)
       .expectBody()
-      .jsonPath("$.count").isEqualTo(list.size.toLong())
+      //.consumeWith { println(String(it.responseBody!!)) }
+      .jsonPath("$.count").isEqualTo(list.size)
       .jsonPath("$.pageNo").isEqualTo(pageNo)
       .jsonPath("$.pageSize").isEqualTo(pageSize)
-      .jsonPath("$.rows[0].id").isEqualTo(dao1.id!!)
-      .jsonPath("$.rows[0].code").isEqualTo(dao1.code!!)
-      .jsonPath("$.rows[0].driverType").isEqualTo(dao1.driverType.toString())
-      .jsonPath("$.rows[0].happenTime").isEqualTo(dao1.happenTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
-      .jsonPath("$.rows[0].overdueDraft").isEqualTo(dao1.overdueDraft!!)
-      .jsonPath("$.rows[1].id").isEqualTo(dao2.id!!)
-      .jsonPath("$.rows[1].code").isEqualTo(dao2.code!!)
-      .jsonPath("$.rows[1].driverType").isEqualTo(dao2.driverType.toString())
-      .jsonPath("$.rows[1].happenTime").isEqualTo(dao2.happenTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
-      .jsonPath("$.rows[1].overdueDraft").isEqualTo(dao2.overdueDraft!!)
+      .jsonPath("$.rows[0].code").isEqualTo(dto.code!!)
 
     // verify
-    verify(service).find(anyInt(), anyInt(), any(), any())
+    verify(service).find(pageNo, pageSize, statuses)
   }
 
   @Test
-  fun successBySomeStatus() {
+  fun `Failed by PermissionDenied`() {
     // mock
-    val pageNo = 1
-    val pageSize = 25
-    val dao1 = randomDto(1, Status.Draft)
-    val dao2 = randomDto(2, Status.Approved)
-    val list = listOf(dao1, dao2)
-    val page = PageImpl(list, PageRequest.of(pageNo, pageSize), list.size.toLong())
-    `when`(service.find(anyInt(), anyInt(), any(), any())).thenReturn(Mono.just(page))
+    `when`(service.find()).thenReturn(Mono.error(PermissionDeniedException()))
 
-    // invoke
-    client.get().uri("/accident-report?pageNo=$pageNo&pageSize=$pageSize&status=${Status.Draft},${Status.Approved}")
-      .exchange()
-      .expectStatus().isOk
-      .expectHeader().contentType(APPLICATION_JSON_UTF8)
-      .expectBody()
-      .jsonPath("$.count").isEqualTo(list.size.toLong())
-      .jsonPath("$.pageNo").isEqualTo(pageNo)
-      .jsonPath("$.pageSize").isEqualTo(pageSize)
-      .jsonPath("$.rows[0].id").isEqualTo(dao1.id!!)
-      .jsonPath("$.rows[0].code").isEqualTo(dao1.code!!)
-      .jsonPath("$.rows[0].driverType").isEqualTo(dao1.driverType.toString())
-      .jsonPath("$.rows[0].happenTime").isEqualTo(dao1.happenTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
-      .jsonPath("$.rows[0].overdueDraft").isEqualTo(dao1.overdueDraft!!)
-      .jsonPath("$.rows[1].id").isEqualTo(dao2.id!!)
-      .jsonPath("$.rows[1].code").isEqualTo(dao2.code!!)
-      .jsonPath("$.rows[1].driverType").isEqualTo(dao2.driverType.toString())
-      .jsonPath("$.rows[1].happenTime").isEqualTo(dao2.happenTime!!.format(FORMAT_DATE_TIME_TO_MINUTE))
-      .jsonPath("$.rows[1].overdueDraft").isEqualTo(dao2.overdueDraft!!)
-
-    // verify
-    verify(service).find(anyInt(), anyInt(), any(), any())
-  }
-
-  @Test
-  fun failedByPermissionDenied() {
-    // mock
-    `when`(service.find(anyInt(), anyInt(), any(), any())).thenReturn(Mono.error(PermissionDeniedException()))
-
-    // invoke
-    client.get().uri("/accident-report")
-      .exchange()
+    // invoke and verify
+    client.get().uri(url).exchange()
       .expectStatus().isForbidden
       .expectHeader().contentType(TEXT_PLAIN_UTF8)
-
-    // verify
-    verify(service).find(anyInt(), anyInt(), any(), any())
+    verify(service).find()
   }
 }
