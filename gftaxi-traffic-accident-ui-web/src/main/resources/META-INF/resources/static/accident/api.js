@@ -94,13 +94,13 @@ define(["bc", "context"], function (bc, context) {
     categories: categories,
     /** 事故报案状态 */
     DRAFT_STATUSES: DRAFT_STATUSES,
-    DRAFT_STATUS_MAP: Object.freeze(DRAFT_STATUSES.reduce((m, s) => m[s.id] = s.label, {})),
+    DRAFT_STATUS_MAP: Object.freeze(DRAFT_STATUSES.reduce((m, s) => { m[s.id] = s.label; return m }, {})),
     /** 案件审查状态（事故登记状态、事故报告状态） */
     AUDIT_STATUSES: AUDIT_STATUSES,
-    AUDIT_STATUS_MAP: Object.freeze(AUDIT_STATUSES.reduce((m, s) => m[s.id] = s.label, {})),
+    AUDIT_STATUS_MAP: Object.freeze(AUDIT_STATUSES.reduce((m, s) => { m[s.id] = s.label; return m }, {})),
     /** 司机驾驶状态 */
     DRIVER_TYPES: DRIVER_TYPES,
-    DRIVER_TYPE_MAP: Object.freeze(DRIVER_TYPES.reduce((m, s) => m[s.id] = s.label, {})),
+    DRIVER_TYPE_MAP: Object.freeze(DRIVER_TYPES.reduce((m, s) => { m[s.id] = s.label; return m }, {})),
 
     /**
      * 打开模块的表单窗口。
