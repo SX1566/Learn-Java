@@ -12,7 +12,6 @@ import tech.simter.operation.po.converter.AttachmentsConverter
 import java.time.OffsetDateTime
 import javax.persistence.Column
 import javax.persistence.Convert
-import javax.persistence.Entity
 import javax.persistence.MappedSuperclass
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.full.memberProperties
@@ -22,7 +21,6 @@ import kotlin.reflect.full.memberProperties
  *
  * @author RJ
  */
-@Entity
 @MappedSuperclass
 open class AccidentRegisterDto4Form : AccidentRegisterDto4FormUpdate() {
   /** 案件主体状态 */

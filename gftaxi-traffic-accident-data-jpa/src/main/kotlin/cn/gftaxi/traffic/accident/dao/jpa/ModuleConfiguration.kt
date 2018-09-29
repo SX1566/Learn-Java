@@ -14,6 +14,6 @@ private const val MODULE = "cn.gftaxi.traffic.accident"
  */
 @Configuration("$MODULE.dao.jpa.ModuleConfiguration")
 @ComponentScan("$MODULE.dao.jpa")
-@EnableJpaRepositories("$MODULE.dao.jpa")
+@EnableJpaRepositories("$MODULE.dao.jpa.repository")
 @EntityScan("$MODULE.po", "$MODULE.dto")
 class ModuleConfiguration

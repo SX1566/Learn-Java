@@ -6,6 +6,7 @@ import cn.gftaxi.traffic.accident.po.converter.AuditStatusConverter
 import java.time.OffsetDateTime
 import javax.persistence.Convert
 import javax.persistence.Entity
+import javax.persistence.MappedSuperclass
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.full.memberProperties
 
@@ -14,7 +15,7 @@ import kotlin.reflect.full.memberProperties
  *
  * @author RJ
  */
-@Entity
+@MappedSuperclass
 class AccidentReportDto4Form : AccidentRegisterDto4Form() {
   //== 报告相关 ==
   /** 报告时间，等于首次将报告信息提交审核的时间 */

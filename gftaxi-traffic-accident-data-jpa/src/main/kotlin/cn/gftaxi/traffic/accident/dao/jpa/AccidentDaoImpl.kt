@@ -6,10 +6,7 @@ import cn.gftaxi.traffic.accident.common.Utils.FORMAT_TO_YYYYMMDD
 import cn.gftaxi.traffic.accident.dao.AccidentDao
 import cn.gftaxi.traffic.accident.dao.jpa.repository.AccidentCaseJpaRepository
 import cn.gftaxi.traffic.accident.dao.jpa.repository.AccidentSituationJpaRepository
-import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4Form
-import cn.gftaxi.traffic.accident.dto.AccidentDraftDto4View
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4Form
-import cn.gftaxi.traffic.accident.dto.AccidentRegisterDto4View
+import cn.gftaxi.traffic.accident.dto.*
 import cn.gftaxi.traffic.accident.po.AccidentCase
 import cn.gftaxi.traffic.accident.po.AccidentSituation
 import org.slf4j.LoggerFactory
@@ -116,5 +113,18 @@ class AccidentDaoImpl @Autowired constructor(
 
   override fun getRegisterStatus(id: Int): Mono<AuditStatus> {
     return situationRepository.getRegisterStatus(id).firstOrNull()?.run { toMono() } ?: Mono.empty()
+  }
+
+  override fun findReport(pageNo: Int, pageSize: Int, reportStatuses: List<AuditStatus>?, search: String?)
+    : Mono<Page<AccidentReportDto4View>> {
+    TODO("not implemented")
+  }
+
+  override fun getReport(id: Int): Mono<AccidentReportDto4Form> {
+    TODO("not implemented")
+  }
+
+  override fun getReportStatus(id: Int): Mono<AuditStatus> {
+    TODO("not implemented")
   }
 }
