@@ -28,6 +28,8 @@ object Utils {
   val FORMAT_TO_YYYYMMDD: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
   /** 格式化年月为 yyyyMM 格式的处理器 */
   val FORMAT_TO_YYYYMM: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMM")
+  /** 事故操作类型的通用分组标记 */
+  const val ACCIDENT_OPERATION_CLUSTER: String = "Accident"
   /** 事故报案信息的操作类型 */
   const val ACCIDENT_DRAFT_TARGET_TYPE: String = "AccidentDraft"
   /** 事故登记信息的操作类型 */
