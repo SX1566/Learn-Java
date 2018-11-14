@@ -23,7 +23,7 @@
 
 
 ## 注意事项
->postgresql连接数据库驱动命名方式为“org.postgresql.Driver”
+>	postgresql连接数据库驱动命名方式为“org.postgresql.Driver”
 >	@Enity和@Table对应的实例对象在数据库对应的表名都会变成小写
 >	且如果类名为长单词会以下划线的形式在数据库表明
 
