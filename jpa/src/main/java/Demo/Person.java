@@ -1,11 +1,12 @@
 package Demo;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 //数据库对应名不一样使用Table
 //@Table(name = "")
 @Entity
-public class Person {
+public class Person  {
   //标注id
   @Id
   private int uid;

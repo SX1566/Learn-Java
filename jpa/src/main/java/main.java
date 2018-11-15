@@ -14,37 +14,74 @@ public class main {
     //获取Manager
     EntityManager manager = factory.createEntityManager();
 
-    //事务
+    //事务开启
     EntityTransaction transaction = manager.getTransaction();
     transaction.begin();
 
 
     //执行sql
-    Person person = new Person(100, "100", 200);
-    manager.persist(person);
+    //增
+//    注意，对于新对象的插入第一次请使用persist()方法
+//    否则对象将无法插入
+    Person ppp = new Person(100,"ppp",12312);
+    manager.persist(ppp);
+
+
+
+//   已经插入过的数据请使用merge()方法
+
+    Person person =  new Person(1,"1",200);
+    Person person1 = new Person(2,"2",200);
+    Person person2 = new Person(3,"3",300);
+    Person person3 = new Person(4,"4",400);
+
+    manager.merge(person);
+    manager.merge(person1);
+    manager.merge(person2);
+    manager.merge(person3);
+
+
+
+
+    //删
+    Person person4 =  manager.find(Person.class,2);
+    manager.remove(person4);
+
+
+    //改
+    Person person5 = manager.find(Person.class,3);
+    person5.setUname("20");
+    System.out.println(person3.toString());
+
+
+
+    //查
+    //将游离对象更新到数据库中
+    Person person6 = manager.find(Person.class,4);
+    manager.clear();
+    person6.setUname("2022");
+    manager.merge(person6);
+
+    //普通查询
+    Person person7 = manager.find(Person.class,100);
+    System.out.println(person7.toString());
+
+
+
+
 
     //事务提交
     transaction.commit();
 
-
-    //执行搜索sql
-    Person person2 = manager.find(Person.class,"100");
-    System.out.println(person2);
-
+    //关闭事务和管理
     manager.close();
     factory.close();
 
 
 
 
-
-
-
-
-
-
-
   }
+
 }
 
 
