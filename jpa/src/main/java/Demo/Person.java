@@ -53,6 +53,17 @@ public class Person  {
     this.age = age;
   }
 
+  public Person(String uname,int age){
+
+    this.uname = uname;
+    this.age = age;
+  }
+
+
+  public String getPersonInfo(){
+    return "uname" + this.uname +","+ "age" + this.age;
+  }
+
   public Person() {
     super();
     // TODO Auto-generated constructor stub
