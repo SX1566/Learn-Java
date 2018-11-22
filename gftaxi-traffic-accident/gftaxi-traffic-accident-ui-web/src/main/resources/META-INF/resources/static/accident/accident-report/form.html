@@ -1,0 +1,1054 @@
+<div title="事故报告" class="bc-page" data-type='form'
+     data-js='["static/accident/accident-report/form.js"]' style="overflow: hidden">
+  <form name="form" class="bc-form" style="font-weight:normal;overflow:auto">
+    <!-- 基本信息 -->
+    <div class="hlayout" :style="{width: ui.fixedWidth}">
+      <div class="unflex" style="min-width: 46em">
+        <!-- 处理进度 -->
+        <table class="formFields" cellspacing="2" cellpadding="0">
+          <colgroup>
+            <col style="width:30em;">
+            <col style="width: auto">
+          </colgroup>
+          <tbody>
+          <tr>
+            <td rowspan="2">
+              <div style="padding: 1em;height: 100%;">
+                <template v-for="(index, stage) in accidentStage">
+                  <div style="text-align: center;display: inline-block;">
+                    <div class="ui-state-default" style="border-radius: 0.8em;width: 1.6em;height: 1.6em;
+                      box-sizing: border-box;text-align: center;font-weight: bolder;font-size: x-large;
+                      display: inline-block;">{{stage.isDone ? "✔" : ''}}
+                    </div>
+                    <div style="margin-top: 0.25em;">{{stage.label}}</div>
+                  </div>
+                  <div v-if="accidentStage.length > index + 1"
+                       style="display: inline-block;position: relative;top:-30%;margin: 0 0.5em 0 0.5em;">
+                    <div style="display: inline-block;border: 2px solid;width: 5px;position: relative;top: -8px;">
+                    </div><div style="border-top: 10px solid transparent; border-bottom: 10px solid transparent;
+                                border-left: 10px solid;display: inline-block;"></div>
+                  </div>
+                </template>
+              </div>
+            </td>
+            <td style="font-weight: bold;font-size: large">状态：{{currentStage}}</td>
+          </tr>
+          <tr>
+            <td style="font-weight: bold;font-size: large">等级：{{accidentLevel}}</td>
+          </tr>
+          </tbody>
+        </table>
+        <!-- 事故经过 -->
+        <div class="ui-state-default" style="line-height: 1.8em; border-width: 1px 0">
+          <div style="display: inline-block;padding-left: 0.5em">事故经过:</div>
+        </div>
+        <table class="formFields" cellspacing="2" cellpadding="0">
+          <colgroup>
+            <col style="width: 6em">
+            <col style="width: 12em">
+            <col style="width: 6em">
+            <col style="width: auto">
+          </colgroup>
+          <tbody>
+          <tr>
+            <td class="label">事发时间:</td>
+            <td class="value ">{{e.happenTime}}</td>
+            <td class="label">报案时间:</td>
+            <td class="value ">{{e.draftTime}}</td>
+          </tr>
+          <tr>
+            <td class="label">事发地点:</td>
+            <td class="value " colspan="3">
+              {{e.locationLevel1}}/{{e.locationLevel2}}/{{e.locationLevel3}}/{{e.location}}
+            </td>
+          </tr>
+          <tr>
+            <td class="label">处理部门:</td>
+            <td class="value ">{{e.dealDepartment}}</td>
+            <td class="label">GPS车速:</td>
+            <td class="value ">{{e.gpsSpeed}} km/h</td>
+          </tr>
+          <tr>
+            <td class="label">处理方式:</td>
+            <td class="value ">{{e.dealWay}}</td>
+            <td class="label">
+              <div class="little">保险报案编号</div>:
+            </td>
+            <td class="value ">{{e.insuranceCode}}</td>
+          </tr>
+          <tr>
+            <td class="label top">事发经过:</td>
+            <td class="value " colspan="3" style="width: 39em">{{e.describe}}</td>
+          </tr>
+          </tbody>
+        </table>
+        <!-- 车辆信息 -->
+        <div class="ui-state-default relative" style="line-height: 1.8em; border-width: 1px 0">
+          <div style="display: inline-block;padding-left: 0.5em">车辆信息:</div>
+          <span
+            :class="{'verticalMiddle' : true,'ui-icon':true, 'ui-icon-carat-1-n':ui.isShowItems.carInfo, 'ui-icon-carat-1-s':!ui.isShowItems.carInfo}"
+            :title="ui.isShowItems.carInfo ? '点击隐藏内容' : '点击展示内容'"
+            @click="ui.isShowItems.carInfo = !ui.isShowItems.carInfo"></span>
+        </div>
+        <table v-if="ui.isShowItems.carInfo" class="formFields" cellspacing="2" cellpadding="0">
+          <colgroup>
+            <col style="width: 6em">
+            <col style="width: 12em">
+            <col style="width: 6em">
+            <col style="width: auto">
+          </colgroup>
+          <tbody>
+          <tr>
+            <td class="label">事故车号:</td>
+            <td class="value ">{{e.carPlate}}</td>
+            <td class="label">车型:</td>
+            <td class="value">{{e.carModel}}</td>
+          </tr>
+          <tr>
+            <td class="label">事发车队:</td>
+            <td class="value">{{e.motorcadeName}}</td>
+            <td class="label">投产日期:</td>
+            <td class="value">{{e.carOperateDate}}</td>
+          </tr>
+          <tr>
+            <td class="label">合同性质:</td>
+            <td class="value">{{e.carContractType}}</td>
+            <td class="label">承包司机:</td>
+            <td class="value">{{e.carContractDrivers}}</td>
+          </tr>
+          </tbody>
+        </table>
+        <!-- 司机信息 -->
+        <div class="ui-state-default relative" style="line-height: 1.8em; border-width: 1px 0">
+          <div style="display: inline-block;padding-left: 0.5em">司机信息:</div>
+          <span
+            :class="{'verticalMiddle' : true,'ui-icon':true, 'ui-icon-carat-1-n':ui.isShowItems.peopleInfo, 'ui-icon-carat-1-s':!ui.isShowItems.peopleInfo}"
+            :title="ui.isShowItems.peopleInfo ? '点击隐藏内容' : '点击展示内容'"
+            @click="ui.isShowItems.peopleInfo = !ui.isShowItems.peopleInfo"></span>
+        </div>
+        <table v-if="ui.isShowItems.peopleInfo" class="formFields" cellspacing="2" cellpadding="0">
+          <colgroup>
+            <col style="width: 6em">
+            <col style="width: 12em">
+            <col style="width: 6em">
+            <col style="width: 12em">
+            <col style="width: 9em">
+          </colgroup>
+          <tbody>
+          <tr>
+            <td class="label">当事司机:</td>
+            <td class="value">{{e.driverName}}</td>
+            <td class="label">身份证号:</td>
+            <td class="value">{{e.driverIdentityCode}}</td>
+            <td rowspan="6" class="ui-widget-content relative">
+              <div
+                style="position:absolute;left:0;top:0;bottom:0;right:0;display:flex;justify-content:center;align-items:center">
+                <img style="max-width:100%;max-height:100%;cursor:pointer" alt="无图" title="点击查看大图" :src="driverPicUrl"
+                     @click="inlineDriverPic">
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="label">驾驶状态:</td>
+            <td class="value">{{driverTypeLabel}}</td>
+            <td class="label">资格证号:</td>
+            <td class="value">{{e.driverServiceCode}}</td>
+          </tr>
+          <tr>
+            <td class="label">入职日期:</td>
+            <td class="value">{{e.driverHiredDate}}</td>
+            <td class="label">籍贯:</td>
+            <td class="value">{{e.driverOrigin}}</td>
+          </tr>
+          <tr>
+            <td class="label">联系电话:</td>
+            <td class="value">{{e.driverPhone}}</td>
+            <td class="label">年龄:</td>
+            <td class="value">{{e.driverAge}}</td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="little">紧急联系人</div>
+              :
+            </td>
+            <td class="value">{{e.driverLinkmanName}}</td>
+            <td class="label">
+              <div class="little">初领驾证日</div>
+              :
+            </td>
+            <td class="value">{{e.driverLicenseDate}}</td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="little">紧急联系电话</div>
+              :
+            </td>
+            <td class="value">{{e.driverLinkmanPhone}}</td>
+            <td class="label">驾龄(年):</td>
+            <td class="value">{{e.driverDriveYears}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="flex vlayout">
+        <div class="ui-state-default relative unflex" style="line-height: 1.8em; border-width: 1px 1px 0 1px">
+          <div style="display: inline-block;padding-left: 0.5em">事故现场分析图:</div>
+        </div>
+        <div class="ui-widget-content flex" style="position: relative;">
+          <div
+            style="display:flex;justify-content:center;align-items:center;position: absolute;top: 0;bottom: 0;left: 0;right: 0">
+            <img id="accidentPic" alt="无图" title="点击查看大图" :src="accidentPicUrl"
+                 @click="inline({id: this.ui.accidentPic.id})"
+                 style="max-height: 100%;max-width: 100%;cursor: pointer;">
+          </div>
+        </div>
+        <div class="ui-state-default unflex" style="line-height: 1.8em; border-width: 0 1px 0 1px">
+          <div style="display: inline-block;padding-left: 0.5em">
+            倒查信息:<span style="font-size: 80%">&nbsp;(从事发日推前一年间当事司机的统计，不含本宗)</span>
+          </div>
+        </div>
+        <div class="ui-widget-content unflex"
+             style="text-align: left; border-bottom: none; padding: 0.25em;">
+          历史事故 {{e.historyAccidentCount}} 宗，交通违法 {{e.historyTrafficOffenceCount}} 次<br/>
+          营运违章 {{e.historyServiceOffenceCount}} 次，服务投诉 {{e.historyComplainCount}} 次
+        </div>
+      </div>
+    </div>
+    <!-- 分类因素 -->
+    <div class="ui-state-default relative" :style="{minWidth: ui.fixedWidth, lineHeight: '1.8em', borderWidth: '1px 0'}">
+      <div style="display: inline-block;padding-left: 0.5em">分类因素:</div>
+      <span
+        :class="{'verticalMiddle' : true,'ui-icon':true, 'ui-icon-carat-1-n':ui.isShowItems.category, 'ui-icon-carat-1-s':!ui.isShowItems.category}"
+        :title="ui.isShowItems.category ? '点击隐藏内容' : '点击展示内容'"
+        @click="ui.isShowItems.category = !ui.isShowItems.category"></span>
+    </div>
+    <table v-if="ui.isShowItems.category" class="formFields" cellspacing="2" cellpadding="0" :style="{minWidth: ui.fixedWidth, width: '100%'}">
+      <colgroup>
+        <col style="width: 6em">
+        <col style="width: 8em">
+        <col style="width: 6em">
+        <col style="width: 8em">
+        <col style="width: 6em">
+        <col style="width: 8em">
+        <template v-if="isShowRoadCategories">
+          <col style="width: 6em">
+          <col style="width: 8em">
+          <col style="width: 6em">
+          <col style="width: 8em">
+        </template>
+        <col style="width: auto">
+      </colgroup>
+      <tbody>
+      <tr>
+        <td class="label">事故等级:</td>
+        <td class="value">{{accidentLevel}}</td>
+        <td class="label">事故形态:</td>
+        <td class="value">{{e.hitForm}}</td>
+        <td class="label">天气:</td>
+        <td class="value">{{e.weather}}</td>
+        <template v-if="isShowRoadCategories">
+          <td class="label">光线条件:</td>
+          <td class="value">{{e.light}}</td>
+          <td class="label">路面状况:</td>
+          <td class="value">{{e.roadStructure}}</td>
+        </template>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="label">载重情况:</td>
+        <td class="value">{{e.loadState}}</td>
+        <td class="label">碰撞类型:</td>
+        <td class="value">{{e.hitType}}</td>
+        <td class="label">行驶方向:</td>
+        <td class="value">{{e.drivingDirection}}</td>
+        <template v-if="isShowRoadCategories">
+          <td class="label">道路类型:</td>
+          <td class="value">{{e.roadType}}</td>
+          <td class="label">路表情况:</td>
+          <td class="value">{{e.roadState}}</td>
+        </template>
+        <td></td>
+      </tr>
+      </tbody>
+    </table>
+    <!-- 保险信息 -->
+    <div class="ui-state-default relative" :style="{minWidth: ui.fixedWidth, lineHeight: '1.8em', borderWidth: '1px 0'}">
+      <div style="display: inline-block;padding-left: 0.5em">保险信息:</div>
+      <span class="ui-icon ui-icon-refresh verticalMiddle" style="left:5em" title="刷新" @click="loadPolicy"></span>
+    </div>
+    <table class="formFields" cellspacing="2" cellpadding="0" :style="{width: ui.fixedWidth}">
+      <colgroup is="accident-cars-policy-column-definitions"></colgroup>
+      <tbody>
+      <tr>
+        <td class="label">商业险号:</td>
+        <td class="value">{{policy.commerialNo}}
+        <td class="label">期限:</td>
+        <td class="value">{{policy.commerialStartDate}} 至 {{policy.commerialEndDate}}
+        <td class="label">险司:</td>
+        <td class="value">{{policy.commerialCompany}}
+        <td></td>
+      </tr>
+      <tr>
+        <td class="label">强制险号:</td>
+        <td class="value">{{policy.greenslipNo}}
+        <td class="label">期限:</td>
+        <td class="value">{{policy.greenslipStartDate}} 至 {{policy.greenslipEndDate}}
+        <td class="label">险司:</td>
+        <td class="value">{{policy.greenslipCompany}}
+        <td></td>
+      </tr>
+      <tr>
+        <td class="label">责任险号:</td>
+        <td class="value" colspan="5">{{policy.liabilityNo}}
+      </tr>
+      <tr>
+        <td class="label top">购买险种:</td>
+        <td class="value" colspan="6">{{policy.buyPlantLabel}}
+      </tr>
+      </tbody>
+    </table>
+    <!-- 当事车辆 -->
+    <div class="ui-state-default relative"
+         :style="{minWidth: ui.fixedWidth, lineHeight: '1.8em', borderWidth: '1px 0 0 0'}">
+      <div style="display: inline-block;padding-left: 0.5em">当事车辆:</div>
+      <ul v-if="!isReadOnly" class="inputIcons" style="position: absolute;right:8px">
+        <template v-if="e.cars.length > 1">
+          <li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移项目" @click="moveUpItem('cars')"></li>
+          <li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移项目" @click="moveDownItem('cars')"></li>
+        </template>
+        <li v-if="isShowItemDeleteButton.cars" class="inputIcon ui-icon ui-icon-circle-close" title="删除项目"
+            @click="removeItem('cars')"></li>
+      </ul>
+    </div>
+    <table class="simple" :style="{minWidth: ui.fixedWidth, width: '100%'}">
+      <colgroup is="accident-cars-column-definitions"></colgroup>
+      <tr>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">序号</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">分类</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">车号</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">车型</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">拖车次数</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">维修分类</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">受损情况</td>
+        <td colspan="3" class="ui-widget-content" style="text-align: center">损失预估(元)</td>
+        <td colspan="3" class="ui-widget-content" style="text-align: center">实际损失(元)</td>
+        <td rowspan="2" class="ui-widget-content"></td>
+        <td rowspan="2" class="ui-widget-content"></td>
+      </tr>
+      <tr>
+        <td class="ui-widget-content" style="text-align: center">维修费</td>
+        <td class="ui-widget-content" style="text-align: center">拖车费</td>
+        <td class="ui-widget-content" style="text-align: center">合计</td>
+        <td class="ui-widget-content" style="text-align: center">维修费</td>
+        <td class="ui-widget-content" style="text-align: center">拖车费</td>
+        <td class="ui-widget-content" style="text-align: center">合计</td>
+      </tr>
+      <tbody v-if="isReadOnly">
+      <tr v-for="(index, car) in e.cars"
+          :class="{'no-bottom-border':true,'details': true, 'no-top-border': index === 0}">
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{index + 1}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{car.type}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: left">{{car.name}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{car.model}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{car.towCount}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{car.repairType}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{car.damageState}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{car.guessRepairMoney}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{car.guessTowMoney}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{sumMonies(car.guessRepairMoney, car.guessTowMoney)}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{car.actualRepairMoney}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{car.actualTowMoney}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{sumMonies(car.actualRepairMoney, car.actualTowMoney)}}</td>
+        <td class="ui-widget-content" style="text-align: center">
+          <a href="#" @click="developingAlert">更多</a>
+        </td>
+        <td class="ui-widget-content"></td>
+      </tr>
+      </tbody>
+      <tbody v-else> <!-- 可编辑 -->
+      <tr v-for="(index, car) in e.cars"
+          :class="{'no-bottom-border':true,'details': true, 'no-top-border': index === 0}">
+        <td class="ui-widget-content" style="text-align: center;vertical-align: middle" @click="selectItem(car)">
+          <span v-if="car.selected" class="ui-icon ui-icon-check" style="margin: auto"></span>
+          <span v-else class="text">{{index + 1}}</span>
+        </td>
+        <td class="ui-widget-content">
+          <select class="ui-widget-content" v-model="car.type" data-validate="required">
+            <option v-for="option in categories.CLFL" :value="option">{{option}}</option>
+          </select>
+        </td>
+        <td class="ui-widget-content">
+          <input type="text" class="ui-widget-content" data-validate="required" v-model="car.name"/>
+        </td>
+        <td class="ui-widget-content">
+          <select class="ui-widget-content" v-model="car.model" data-validate="required">
+            <option v-for="option in categories.CXFL" :value="option">{{option}}</option>
+          </select>
+        </td>
+        <td class="ui-widget-content">
+          <input type="number" class="ui-widget-content" data-validate="required" value="0"
+                 style="width: 100%;border: 0;text-align: right" v-model="car.towCount"/>
+        </td>
+        <td class="ui-widget-content">
+          <select class="ui-widget-content" v-model="car.repairType" data-validate="required">
+            <option v-for="option in categories.WXFL" :value="option">{{option}}</option>
+          </select>
+        </td>
+        <td class="ui-widget-content">
+          <select class="ui-widget-content" v-model="car.damageState" data-validate="required">
+            <option v-for="option in categories.SSQK" :value="option">{{option}}</option>
+          </select>
+        </td>
+        <td class="ui-widget-content">
+          <input type="number" :class="{'ui-widget-content': true, 'ui-state-disabled': car.id}" placeholder="待定"
+                 v-model="car.guessRepairMoney" style="width: 100%;border: 0;text-align: right" :readonly="car.id"/>
+        </td>
+        <td class="ui-widget-content">
+          <input type="number" :class="{'ui-widget-content': true, 'ui-state-disabled': car.id}"
+                 :data-validate="car.towCount > 0 ? 'required' : ''" v-model="car.guessTowMoney"
+                 style="width: 100%;border: 0;text-align: right" :readonly="car.id"/>
+        </td>
+        <td class="ui-widget-content">
+          <input type="text" class="ui-widget-content ui-state-disabled"
+                 :value="sumMonies(car.guessRepairMoney, car.guessTowMoney)"
+                 style="width: 100%;border: 0;text-align: right" readonly/>
+        </td>
+        <td class="ui-widget-content">
+          <input type="number" class="ui-widget-content" v-model="car.actualRepairMoney" placeholder="待定"
+                 style="width: 100%;border: 0;text-align: right"/>
+        </td>
+        <td class="ui-widget-content">
+          <input type="number" class="ui-widget-content" :data-validate="car.towCount > 0 ? 'required' : ''"
+                 v-model="car.actualTowMoney" style="width: 100%;border: 0;text-align: right"/>
+        </td>
+        <td class="ui-widget-content">
+          <input type="number" class="ui-widget-content" :value="sumMonies(car.actualRepairMoney, car.actualTowMoney)"
+                 style="width: 100%;border: 0;text-align: right" readonly/>
+        </td>
+        <td class="ui-widget-content" style="text-align: center">
+          <a href="#" @click="developingAlert">更多</a>
+        </td>
+        <td class="ui-widget-content"></td>
+      </tr>
+      <tr class="no-bottom-border">
+        <td class="ui-widget-content">
+            <span class="inputIcon ui-icon ui-icon-circle-plus" style="margin: auto" title="添加事故车辆"
+                  @click="addItem('cars')"></span>
+        </td>
+        <td class="ui-widget-content" colspan="13"></td>
+      </tr>
+      </tbody>
+    </table>
+    <!-- 当事人 -->
+    <div class="ui-state-default relative"
+         :style="{minWidth: ui.fixedWidth, lineHeight: '1.8em', borderWidth: '1px 0 0 0'}">
+      <div style="display: inline-block;padding-left: 0.5em">当事人:</div>
+      <ul v-if="!isReadOnly" class="inputIcons" style="position: absolute;right:8px">
+        <template v-if="e.peoples.length > 1">
+          <li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移项目" @click="moveUpItem('peoples')"></li>
+          <li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移项目" @click="moveDownItem('peoples')"></li>
+        </template>
+        <li v-if="isShowItemDeleteButton.peoples" class="inputIcon ui-icon ui-icon-circle-close" title="删除项目"
+            @click="removeItem('peoples')"></li>
+      </ul>
+    </div>
+    <table class="simple" :style="{minWidth: ui.fixedWidth, width: '100%'}">
+      <colgroup is="accident-people-column-definitions"></colgroup>
+      <tr>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">序号</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">分类</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">姓名</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">性别</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">联系电话</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">交通方式</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">事故责任</td>
+        <td rowspan="2" class="ui-widget-content" style="text-align: center">伤亡</td>
+        <td colspan="3" class="ui-widget-content" style="text-align: center">损失预估(元)</td>
+        <td colspan="3" class="ui-widget-content" style="text-align: center">实际损失(元)</td>
+        <td rowspan="2" class="ui-widget-content"></td>
+        <td rowspan="2" class="ui-widget-content"></td>
+      </tr>
+      <tr>
+        <td class="ui-widget-content" style="text-align: center">医疗费</td>
+        <td class="ui-widget-content" style="text-align: center">赔偿损失</td>
+        <td class="ui-widget-content" style="text-align: center">合计</td>
+        <td class="ui-widget-content" style="text-align: center">医疗费</td>
+        <td class="ui-widget-content" style="text-align: center">赔偿损失</td>
+        <td class="ui-widget-content" style="text-align: center">合计</td>
+      </tr>
+      <tbody v-if="isReadOnly">
+      <tr v-for="(index, people) in e.peoples"
+          :class="{'no-bottom-border':true,'details': true, 'no-top-border': index === 0}">
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{index + 1}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{people.type}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: left">{{people.name}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{people.sex == 'Male' ? '男' :
+          '女'}}
+        </td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: left">{{people.phone}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: left">{{people.transportType}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{people.duty}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{people.damageState}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{people.guessTreatmentMoney}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{people.guessCompensateMoney}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{sumMonies(people.guessTreatmentMoney, people.guessCompensateMoney)}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{people.actualTreatmentMoney}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{people.actualCompensateMoney}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{sumMonies(people.actualTreatmentMoney, people.actualCompensateMoney)}}</td>
+        <td class="ui-widget-content" style="text-align: center">
+          <a href="#" @click="developingAlert">更多</a>
+        </td>
+        <td class="ui-widget-content"></td>
+      </tr>
+      </tbody>
+      <tbody v-else>
+      <tr v-for="(index, people) in e.peoples"
+          :class="{'no-bottom-border':true,'details': true, 'no-top-border': index === 0}">
+        <td class="ui-widget-content" style="text-align: center;vertical-align: middle" @click="selectItem(people)">
+          <span v-if="people.selected" class="ui-icon ui-icon-check" style="margin: auto"></span>
+          <span v-else class="text">{{index + 1}}</span>
+        </td>
+        <td class="ui-widget-content">
+          <select class="ui-widget-content" v-model="people.type" data-validate="required">
+            <option v-for="option in categories.DSRFL" :value="option">{{option}}</option>
+          </select>
+        </td>
+        <td class="ui-widget-content">
+          <input type="text" class="ui-widget-content" data-validate="required" v-model="people.name"/>
+        </td>
+        <td class="ui-widget-content">
+          <select class="ui-widget-content" v-model="people.sex" data-validate="required">
+            <option value="Male">男</option>
+            <option value="Female">女</option>
+          </select>
+        </td>
+        <td class="ui-widget-content">
+          <input type="text" class="ui-widget-content" data-validate="required" v-model="people.phone"/>
+        </td>
+        <td class="ui-widget-content">
+          <input type="text" class="ui-widget-content" data-validate="required" v-model="people.transportType"/>
+        </td>
+        <td class="ui-widget-content">
+          <select class="ui-widget-content" v-model="people.duty" data-validate="required">
+            <option v-for="option in categories.SGZR" :value="option">{{option}}</option>
+          </select>
+        </td>
+        <td class="ui-widget-content">
+          <select class="ui-widget-content" v-model="people.damageState" data-validate="required">
+            <option v-for="option in categories.SWFL" :value="option">{{option}}</option>
+          </select>
+        </td>
+        <td class="ui-widget-content">
+          <input type="number" :class="{'ui-widget-content': true, 'ui-state-disabled': people.id}"
+                 v-model="people.guessTreatmentMoney" style="width: 100%;border: 0;text-align: right"
+                 :data-validate="!people.id && people.damageState !== '无' ? 'required' : ''" :readonly="people.id"/>
+        </td>
+        <td class="ui-widget-content">
+          <input type="number" :class="{'ui-widget-content': true, 'ui-state-disabled': people.id}"
+                 v-model="people.guessCompensateMoney" style="width: 100%;border: 0;text-align: right"
+                 :data-validate="!people.id && people.damageState !== '无' ? 'required' : ''" :readonly="people.id"/>
+        </td>
+        <td class="ui-widget-content">
+          <input type="text" class="ui-widget-content ui-state-disabled"
+                 :value="sumMonies(people.guessTreatmentMoney, people.guessCompensateMoney)"
+                 style="width: 100%;border: 0;text-align: right" readonly/>
+        </td>
+        <td class="ui-widget-content">
+          <input type="number" class="ui-widget-content" style="width: 100%;border: 0;text-align: right"
+                 v-model="people.actualTreatmentMoney" :data-validate="people.damageState !== '无' ? 'required' : ''"/>
+        </td>
+        <td class="ui-widget-content">
+          <input type="number" class="ui-widget-content" :data-validate="people.damageState !== '无' ? 'required' : ''"
+                 v-model="people.actualCompensateMoney" style="width: 100%;border: 0;text-align: right"/>
+        </td>
+        <td class="ui-widget-content">
+          <input type="number" class="ui-widget-content" :value="sumMonies(people.actualTreatmentMoney, people.actualCompensateMoney)"
+                 style="width: 100%;border: 0;text-align: right" readonly/>
+        </td>
+        <td class="ui-widget-content" style="text-align: center">
+          <a href="#" @click="developingAlert">更多</a>
+        </td>
+        <td class="ui-widget-content"></td>
+      </tr>
+      <tr class="no-bottom-border">
+        <td class="ui-widget-content">
+            <span class="inputIcon ui-icon ui-icon-circle-plus" style="margin: auto" title="添加事故当事人"
+                  @click="addItem('peoples')"></span>
+        </td>
+        <td class="ui-widget-content" colspan="14"></td>
+      </tr>
+      </tbody>
+    </table>
+    <!-- 其他物体 -->
+    <div class="ui-state-default relative"
+         :style="{minWidth: ui.fixedWidth, lineHeight: '1.8em', borderWidth: '1px 0 0 0'}">
+      <div style="display: inline-block;padding-left: 0.5em">其他物体:</div>
+      <ul v-if="!isReadOnly" class="inputIcons" style="position: absolute;right:8px">
+        <template v-if="e.others.length > 1">
+        <li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移项目" @click="moveUpItem('others')"></li>
+        <li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移项目" @click="moveDownItem('others')"></li>
+        </template>
+        <li v-if="isShowItemDeleteButton.others" class="inputIcon ui-icon ui-icon-circle-close" title="删除项目"
+            @click="removeItem('others')"></li>
+      </ul>
+    </div>
+    <table class="simple" :style="{minWidth: ui.fixedWidth, width: '100%'}">
+      <colgroup is="accident-other-column-definitions"></colgroup>
+      <tr>
+        <td class="ui-widget-content" style="text-align: center">序号</td>
+        <td class="ui-widget-content" style="text-align: center">分类</td>
+        <td class="ui-widget-content" style="text-align: center">物品名称</td>
+        <td class="ui-widget-content" style="text-align: center">归属</td>
+        <td class="ui-widget-content" style="text-align: center">联系人</td>
+        <td class="ui-widget-content" style="text-align: center">联系电话</td>
+        <td class="ui-widget-content" style="text-align: center">受损情况</td>
+        <td class="ui-widget-content" style="text-align: center">损失预估(元)</td>
+        <td class="ui-widget-content" style="text-align: center">实际损失(元)</td>
+        <td class="ui-widget-content"></td>
+      </tr>
+      <tbody v-if="isReadOnly">
+      <tr v-for="(index, other) in e.others"
+          :class="{'no-bottom-border':true,'details': true, 'no-top-border': index === 0}">
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{index + 1}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{other.type}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{other.name}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: center">{{other.belong}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: left">{{other.linkmanName}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: left">{{other.linkmanPhone}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: left">{{other.damageState}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{other.guessMoney}}</td>
+        <td class="ui-widget-content" style="padding: 0 0.25em;text-align: right">{{other.actualMoney}}</td>
+        <td class="ui-widget-content"></td>
+      </tr>
+      </tbody>
+      <tbody v-else> <!-- 可编辑 -->
+      <tr v-for="(index, other) in e.others"
+          :class="{'no-bottom-border':true,'details': true, 'no-top-border': index === 0}">
+        <td class="ui-widget-content" style="text-align: center;vertical-align: middle" @click="selectItem(other)">
+          <span v-if="other.selected" class="ui-icon ui-icon-check" style="margin: auto"></span>
+          <span v-else class="text">{{index + 1}}</span>
+        </td>
+        <td class="ui-widget-content">
+          <input type="text" class="ui-widget-content" data-validate="required" v-model="other.type"/>
+        </td>
+        <td class="ui-widget-content">
+          <input type="text" class="ui-widget-content" data-validate="required" v-model="other.name"/>
+        </td>
+        <td class="ui-widget-content">
+          <input type="text" class="ui-widget-content" v-model="other.belong"/>
+        </td>
+        <td class="ui-widget-content">
+          <input type="text" class="ui-widget-content" data-validate="required" v-model="other.linkmanName"/>
+        </td>
+        <td class="ui-widget-content">
+          <input type="text" class="ui-widget-content" data-validate="required" v-model="other.linkmanPhone"/>
+        </td>
+        <td class="ui-widget-content">
+          <input type="text" class="ui-widget-content" data-validate="required" v-model="other.damageState"/>
+        </td>
+        <td class="ui-widget-content">
+          <input type="text" :class="{'ui-widget-content': true, 'ui-state-disabled': other.id}" data-validate="required"
+                 v-model="other.guessMoney" style="width: 100%;border: 0;text-align: right" :readonly="other.id"/>
+        </td>
+        <td class="ui-widget-content">
+          <input type="number" class="ui-widget-content" v-model="other.actualMoney"
+                 style="width: 100%;border: 0;text-align: right"/>
+        </td>
+        <td class="ui-widget-content"></td>
+      </tr>
+      <tr class="no-bottom-border">
+        <td class="ui-widget-content">
+            <span class="inputIcon ui-icon ui-icon-circle-plus" style="margin: auto" title="添加事故物品"
+                  @click="addItem('others')"></span>
+        </td>
+        <td class="ui-widget-content" colspan="9"></td>
+      </tr>
+      </tbody>
+    </table>
+    <!-- 维修信息 -->
+    <div class="ui-state-default relative"
+         :style="{minWidth: ui.fixedWidth, lineHeight: '1.8em', borderWidth: '1px 0 0 0'}">
+      <div style="display: inline-block;padding-left: 0.5em">维修信息:</div>
+      <span
+        :class="{'verticalMiddle' : true,'ui-icon':true, 'ui-icon-carat-1-n':ui.isShowItems.maintain, 'ui-icon-carat-1-s':!ui.isShowItems.maintain}"
+        :title="ui.isShowItems.maintain ? '点击隐藏内容' : '点击展示内容'"
+        @click="ui.isShowItems.maintain = !ui.isShowItems.maintain"></span>
+    </div>
+    <div v-if="ui.isShowItems.maintain" :style="{width: ui.fixedWidth, paddingLeft: '0.25em'}">待定</div>
+    <!-- 安全教育 -->
+    <div class="ui-state-default relative"
+         :style="{minWidth: ui.fixedWidth, lineHeight: '1.8em', borderWidth: '1px 0 0 0'}">
+      <div style="display: inline-block;padding-left: 0.5em">安全教育:</div>
+      <span :class="{'verticalMiddle' : true,'ui-icon':true, 'ui-icon-carat-1-n':ui.isShowItems.educate, 'ui-icon-carat-1-s':!ui.isShowItems.educate}"
+        :title="ui.isShowItems.educate ? '点击隐藏内容' : '点击展示内容'"
+        @click="ui.isShowItems.educate = !ui.isShowItems.educate"></span>
+    </div>
+    <div :style="{width: ui.fixedWidth, display: ui.isShowItems.educate ? 'block': 'none'}">
+      <!-- 事故原因、处理意见 -->
+      <table class="formFields" cellspacing="2" cellpadding="0">
+        <colgroup>
+          <col style="width: 5em">
+          <col style="width: auto">
+        </colgroup>
+        <tbody>
+        <tr>
+          <td class="top" style="padding-left: 0.25em">事故原因:</td>
+          <td class="value">
+            <textarea v-model="e.caseReason" style="width: 100%;padding: 0;" class="ui-widget-content autoHeight"
+                      :readOnly="isReadOnly"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td class="top" style="padding-left: 0.25em">处理意见:</td>
+          <td class="value">
+            <textarea v-model="e.safetyComment" style="width: 100%;padding: 0;" class="ui-widget-content autoHeight"
+                      :readOnly="isReadOnly"></textarea>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <!-- 工作计划 -->
+      <fieldset class="ui-widget-content" style="margin:0.25em;padding:0 0 0.5em 0">
+        <legend style="margin-left:0.5em">工作计划</legend>
+        <table class="formFields" cellspacing="2" cellpadding="0">
+          <colgroup>
+            <col style="width: 6em">
+            <col style="width: 12em">
+            <col style="width: 12em">
+            <col style="width: 12em">
+            <col style="width: 12em">
+            <col style="width: 3em">
+            <col style="width: 8em">
+            <col style="width: 3em">
+            <col style="width: 8em">
+            <col style="width: auto">
+          </colgroup>
+          <tbody>
+          <tr>
+            <td class="label" style="font-weight: bolder">1.约定司机</td>
+            <td class="label">约定司机回队时间:</td>
+            <td class="value relative">
+              <template v-if="!isReadOnly">
+                <input type="text" name="e.appointDriverReturnTime" v-model="e.appointDriverReturnTime"
+                       class="bc-datetime ui-widget-content">
+                <ul class="inputIcons">
+                  <li class="selectCalendar inputIcon ui-icon ui-icon-calendar" data-cfg="e.appointDriverReturnTime"></li>
+                </ul>
+              </template>
+              <input v-else type="text" v-model="e.appointDriverReturnTime" class="ui-widget-content" readonly>
+            </td>
+            <td class="label">司机实际回队时间:</td>
+            <td class="value relative">
+              <template v-if="!isReadOnly">
+                <input type="text" name="e.actualDriverReturnTime" v-model="e.actualDriverReturnTime"
+                       class="bc-datetime ui-widget-content">
+                <ul class="inputIcons">
+                  <li class="selectCalendar inputIcon ui-icon ui-icon-calendar" data-cfg="e.actualDriverReturnTime"></li>
+                </ul>
+              </template>
+              <input v-else type="text" v-model="e.actualDriverReturnTime" class="ui-widget-content" readonly>
+            </td>
+            <td class="label">主办:</td>
+            <td class="value">
+              <input type="text" v-model="e.driverReturnSponsorName" :readOnly="isReadOnly">
+            </td>
+            <td class="label">协办:</td>
+            <td class="value">
+              <input type="text" v-model="e.driverReturnSupporterName" :readOnly="isReadOnly">
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="label" style="font-weight: bolder">2.安全教育</td>
+            <td class="label">安全教育开始时间:</td>
+            <td class="value relative">
+              <template v-if="!isReadOnly">
+                <input type="text" name="e.safetyStartTime" v-model="e.safetyStartTime"
+                       class="bc-datetime ui-widget-content">
+                <ul class="inputIcons">
+                  <li class="selectCalendar inputIcon ui-icon ui-icon-calendar" data-cfg="e.safetyStartTime"></li>
+                </ul>
+              </template>
+              <input v-else type="text" v-model="e.safetyStartTime" class="ui-widget-content" readonly>
+            </td>
+            <td class="label">安全教育完成时间:</td>
+            <td class="value relative">
+              <template v-if="!isReadOnly">
+                <input type="text" name="e.safetyEndTime" v-model="e.safetyEndTime"
+                       class="bc-datetime ui-widget-content">
+                <ul class="inputIcons">
+                  <li class="selectCalendar inputIcon ui-icon ui-icon-calendar" data-cfg="e.safetyEndTime"></li>
+                </ul>
+              </template>
+              <input v-else type="text" v-model="e.safetyEndTime" class="ui-widget-content" readonly>
+            </td>
+            <td class="label">主办:</td>
+            <td class="value">
+              <input type="text" v-model="e.safetySponsorName" :readOnly="isReadOnly">
+            </td>
+            <td class="label">协办:</td>
+            <td class="value">
+              <input type="text" v-model="e.safetySupporterName" :readOnly="isReadOnly">
+            </td>
+            <td></td>
+          </tr>
+          <tr v-if="e.takeFurther">
+            <td class="label" style="font-weight: bolder">3.诫勉谈话</td>
+            <td class="label">诫勉谈话开始时间:</td>
+            <td class="value relative">
+              <template v-if="!isReadOnly">
+                <input type="text" name="e.talkStartTime" v-model="e.talkStartTime"
+                       class="bc-datetime ui-widget-content">
+                <ul class="inputIcons">
+                  <li class="selectCalendar inputIcon ui-icon ui-icon-calendar" data-cfg="e.talkStartTime"></li>
+                </ul>
+              </template>
+              <input v-else type="text" v-model="e.talkStartTime" class="ui-widget-content" readonly>
+            </td>
+            <td class="label">诫勉谈话完成时间:</td>
+            <td class="value relative">
+              <template v-if="!isReadOnly">
+                <input type="text" name="e.talkEndTime" v-model="e.talkEndTime"
+                       class="bc-datetime ui-widget-content">
+                <ul class="inputIcons">
+                  <li class="selectCalendar inputIcon ui-icon ui-icon-calendar" data-cfg="e.talkEndTime"></li>
+                </ul>
+              </template>
+              <input v-else type="text" v-model="e.talkEndTime" class="ui-widget-content" readonly>
+            </td>
+            <td class="label">主办:</td>
+            <td class="value">
+              <input type="text" v-model="e.talkSponsorName" :readOnly="isReadOnly">
+            </td>
+            <td class="label">协办:</td>
+            <td class="value">
+              <input type="text" v-model="e.talkSupporterName" :readOnly="isReadOnly">
+            </td>
+            <td></td>
+          </tr>
+          </tbody>
+        </table>
+      </fieldset>
+      <!-- 进一步处理 -->
+      <span style="margin-left: 0.25em;line-height: 1.8em">是否采取进一步整改措施:</span>
+      <select v-if="!isReadOnly" class="ui-widget-content" style="width: 2.5em;" v-model="e.takeFurther">
+        <option :value="true">是</option>
+        <option :value="false">否</option>
+      </select>
+      <span v-else>{{e.takeFurther ? "是" : "否"}}</span>
+      <!-- 整改措施 -->
+      <fieldset v-if="e.takeFurther" class="ui-widget-content" style="margin:0.25em;padding:0 0 0.5em 0">
+        <legend style="margin-left:0.5em">整改措施</legend>
+        <div class="hlayout" style="margin: 0.25em">
+          <span class="unflex top" style="margin-right: 0.25em">整改措施:</span>
+          <textarea v-model="e.correctiveAction" style="width: 100%;padding: 0;"
+                    class="ui-widget-content autoHeight flex" :readOnly="isReadOnly"></textarea>
+        </div>
+        <div class="hlayout" style="margin: 0.25em">
+          <span class="unflex top" style="margin-right: 0.25em">司机态度:</span>
+          <textarea v-model="e.driverAttitude" style="width: 100%;padding: 0;"
+                    class="ui-widget-content autoHeight flex" :readOnly="isReadOnly"></textarea>
+        </div>
+      </fieldset>
+    </div>
+    <!-- 流程信息 -->
+    <div class="ui-state-default relative"
+         :style="{minWidth: ui.fixedWidth, lineHeight: '1.8em', borderWidth: '1px 0 0 0'}">
+      <div style="display: inline-block;padding-left: 0.5em">流程信息:</div>
+      <span :class="{'verticalMiddle' : true,'ui-icon':true, 'ui-icon-carat-1-n':ui.isShowItems.workflow, 'ui-icon-carat-1-s':!ui.isShowItems.workflow}"
+        :title="ui.isShowItems.workflow ? '点击隐藏内容' : '点击展示内容'"
+        @click="ui.isShowItems.workflow = !ui.isShowItems.workflow"></span>
+    </div>
+    <div v-if="ui.isShowItems.workflow" :style="{width: ui.fixedWidth, paddingLeft: '0.25em'}">待定</div>
+    <!-- 诉讼信息 -->
+    <div class="ui-state-default relative"
+         :style="{minWidth: ui.fixedWidth, lineHeight: '1.8em', borderWidth: '1px 0 0 0'}">
+      <div style="display: inline-block;padding-left: 0.5em">诉讼信息:</div>
+      <span
+        :class="{'verticalMiddle' : true,'ui-icon':true, 'ui-icon-carat-1-n':ui.isShowItems.lawsuit, 'ui-icon-carat-1-s':!ui.isShowItems.lawsuit}"
+        :title="ui.isShowItems.lawsuit ? '点击隐藏内容' : '点击展示内容'"
+        @click="ui.isShowItems.lawsuit = !ui.isShowItems.lawsuit"></span>
+    </div>
+    <div v-if="ui.isShowItems.lawsuit" :style="{width: ui.fixedWidth}">
+      <textarea v-model="e.lawsuit" style="width: 100%;padding: 0;" class="ui-widget-content autoHeight"
+                :readOnly="isReadOnly" placeholder="【填写诉讼的描述信息】"></textarea>
+    </div>
+    <!-- 财务信息 -->
+    <div class="ui-state-default relative"
+         :style="{minWidth: ui.fixedWidth, lineHeight: '1.8em', borderWidth: '1px 0 0 0'}">
+      <div style="display: inline-block;padding-left: 0.5em">财务信息:</div>
+      <span
+        :class="{'verticalMiddle' : true,'ui-icon':true, 'ui-icon-carat-1-n':ui.isShowItems.financial, 'ui-icon-carat-1-s':!ui.isShowItems.financial}"
+        :title="ui.isShowItems.financial ? '点击隐藏内容' : '点击展示内容'"
+        @click="ui.isShowItems.financial = !ui.isShowItems.financial"></span>
+    </div>
+    <div v-if="ui.isShowItems.financial" :style="{width: ui.fixedWidth, paddingLeft: '0.25em'}">待定</div>
+    <!-- 理赔信息 -->
+    <div class="ui-state-default relative"
+         :style="{minWidth: ui.fixedWidth, lineHeight: '1.8em', borderWidth: '1px 0 0 0'}">
+      <div style="display: inline-block;padding-left: 0.5em">理赔信息:</div>
+      <span
+        :class="{'verticalMiddle' : true,'ui-icon':true, 'ui-icon-carat-1-n':ui.isShowItems.compensation, 'ui-icon-carat-1-s':!ui.isShowItems.compensation}"
+        :title="ui.isShowItems.compensation ? '点击隐藏内容' : '点击展示内容'"
+        @click="ui.isShowItems.compensation = !ui.isShowItems.compensation"></span>
+    </div>
+    <div v-if="ui.isShowItems.compensation" :style="{width: ui.fixedWidth, paddingLeft: '0.25em'}">待定</div>
+    <!-- 事故附件 -->
+    <div class="ui-state-default relative"
+         :style="{minWidth: ui.fixedWidth, lineHeight: '1.8em', borderWidth: '1px 0 0 0'}">
+      <div style="display: inline-block;padding-left: 0.5em">事故附件:</div>
+      <span
+        :class="{'verticalMiddle' : true,'ui-icon':true, 'ui-icon-carat-1-n':ui.isShowItems.attachment, 'ui-icon-carat-1-s':!ui.isShowItems.attachment}"
+        :title="ui.isShowItems.attachment ? '点击隐藏内容' : '点击展示内容'"
+        @click="ui.isShowItems.attachment = !ui.isShowItems.attachment"></span>
+    </div>
+    <div v-if="ui.isShowItems.attachment" :style="{width: ui.fixedWidth, paddingLeft: '0.25em'}">待定</div>
+    <!-- 审核信息 -->
+    <template v-if="ui.isChecker && this.e.reportStatus === 'ToCheck'">
+      <div class="ui-state-default relative" style="line-height: 1.8em; border-width: 1px 0">
+        <div style="display: inline-block;padding-left: 0.5em">审核信息:</div>
+      </div>
+      <table class="formFields" cellspacing="2" cellpadding="0">
+        <colgroup>
+          <col style="width: 4em;">
+          <col style="width: 8em">
+          <col style="width: 9em">
+          <col style="width: auto;">
+        </colgroup>
+        <tbody>
+        <tr>
+          <td class="label">审核结果:</td>
+          <td class="value">
+            <label style="vertical-align:middle">
+              <input type="radio" name="checkedResult" value="true" v-model="e.passed" class="ui-widget-content"
+                     style="width:auto;vertical-align:middle;margin-top:-1px">通过
+            </label>
+            <label style="vertical-align:middle">
+              <input type="radio" name="checkedResult" value="false" v-model="e.passed" class="ui-widget-content"
+                     style="width:auto;vertical-align:middle;margin-top:-1px">不通过
+            </label>
+          </td>
+          <td class="label">
+            <div style="cursor: pointer" @click="triggerUploadButton('uploadCheckedAttachment')">
+              <span class="ui-icon ui-icon-arrowthickstop-1-n" title="上传审核附件"
+                    style="vertical-align: middle;display: inline-block;margin-right: -0.5em"></span>
+              <span style="display: inline-block;text-decoration: underline">上传审核附件</span>:
+              <input hidden type="file" name="uploadCheckedAttachment"
+                     @change="uploadCheckedAttachment($event.target.files)"/>
+            </div>
+          </td>
+          <td class="value">
+            <span v-if="this.ui.checkedAttachment!==null&&this.ui.checkedAttachment!==undefined"
+                  style="cursor: pointer;margin-left: 0.25em;" @click="inline({id: this.ui.checkedAttachment.id})">
+              <span class="ui-icon ui-icon-document" style="display: inline-block;vertical-align: middle;margin-right: -0.5em"></span>
+              <span style="border-bottom: 1px solid">{{`${this.ui.checkedAttachment.name}.${this.ui.checkedAttachment.ext}`}}</span>
+            </span>
+            <span v-else style="margin-left: 0.25em;">未上传</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">审核意见:</td>
+          <td class="value" colspan="3">
+            <input type="text" v-model="e.comment" style="width: 100%"
+                   :data-validate="this.e.passed || this.e.passed == null ? '' : 'required'">
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </template>
+  </form>
+
+  <!-- 当事车辆保险信息表格列宽模板 -->
+  <script type="x-template" name="accident-cars-policy-column-definitions">
+    <colgroup>
+      <col style="width: 6em">
+      <col style="width: 8em">
+      <col style="width: 6em">
+      <col style="width: 13em">
+      <col style="width: 6em">
+      <col style="width: 8em">
+      <col style="width: auto">
+    </colgroup>
+  </script>
+  <!-- 当事车辆表格列宽模板 -->
+  <script type="x-template" name="accident-cars-column-definitions">
+    <colgroup>
+      <col style="width: 3em">
+      <col style="width: 4em">
+      <col style="width: 7.3em">
+      <col style="width: 7.9em">
+      <col style="width: 6em">
+      <col style="width: 6em">
+      <col style="width: 6em">
+      <col style="width: 6.5em">
+      <col style="width: 6.5em">
+      <col style="width: 6.5em">
+      <col style="width: 6.5em">
+      <col style="width: 6.5em">
+      <col style="width: 6.5em">
+      <col style="width: 3em">
+      <col style="width: auto">
+    </colgroup>
+  </script>
+  <!-- 当事人表格列宽模板 -->
+  <script type="x-template" name="accident-people-column-definitions">
+    <colgroup>
+      <col style="width: 3em">
+      <col style="width: 4em">
+      <col style="width: 7.3em">
+      <col style="width: 3em">
+      <col style="width: 7em">
+      <col style="width: 7em">
+      <col style="width: 6em">
+      <col style="width: 3em">
+      <col style="width: 6.5em">
+      <col style="width: 6.5em">
+      <col style="width: 6.5em">
+      <col style="width: 6.5em">
+      <col style="width: 6.5em">
+      <col style="width: 6.5em">
+      <col style="width: 3em">
+      <col style="width: auto">
+    </colgroup>
+  </script>
+  <!-- 其他物品表格列宽模板 -->
+  <script type="x-template" name="accident-other-column-definitions">
+    <colgroup>
+      <col style="width: 3em">
+      <col style="width: 4em">
+      <col style="width: 25em">
+      <col style="width: 10em">
+      <col style="width: 8em">
+      <col style="width: 9em">
+      <col style="width: 8.9em">
+      <col style="width: 7em">
+      <col style="width: 7em">
+      <col style="width: auto">
+    </colgroup>
+  </script>
+  <!-- 事故流程表格列宽模板 -->
+  <script type="x-template" name="accident-workflow-column-definitions">
+    <colgroup>
+      <col style="width: 3em">
+      <col style="width: 10em">
+      <col style="width: 7em">
+      <col style="width: 7em">
+      <col style="width: 7em">
+      <col style="width: 10em">
+      <col style="width: 10em">
+      <col style="width: auto">
+    </colgroup>
+  </script>
+  <!-- 事故附件表格列宽模板 -->
+  <script type="x-template" name="accident-attachment-column-definitions">
+    <colgroup>
+      <col style="width: 3em">
+      <col style="width: 15em">
+      <col style="width: 5em">
+      <col style="width: 5em">
+      <col style="width: 10em">
+      <col style="width: 43.7em">
+      <col style="width: auto">
+    </colgroup>
+  </script>
+</div>

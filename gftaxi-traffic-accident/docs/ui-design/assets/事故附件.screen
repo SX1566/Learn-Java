@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:Accordion" id="23" x="8" y="8" width="969" height="349" text="事故附件   {add} [新建分类]  {add} [添加财产案常用附件]  {add} [添加人伤案常用附件]  {download2} [下载]  {print-preview} [查看]  {delete} [删除]" measuredWidth="969" measuredHeight="349" selection="0">
+    <items x="0" y="2" width="969" height="27" text="事故附件   {add} [新建分类]  {add} [添加财产案常用附件]  {add} [添加人伤案常用附件]  {download2} [下载]  {print-preview} [查看]  {delete} [删除]"/>
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Table" id="20" x="8" y="35" width="465" height="32" text="&lt;(w:40). {unchecked}, =(w:200). 名称,=(w:70). 大小,=(w:160). 更新时间" measuredWidth="465" measuredHeight="32" selection="0" rowHeight="30" horizontalLines="true" header="false">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Table" id="25" x="8" y="65" width="465" height="91" text="&lt;(w:40). {unchecked}, &lt;(w:200). {line-arrow-down} 现场照片,=(w:70). 大小,=(w:160). 更新时间&#xD;&#xA;{unchecked} 1, &lt;.      {image} 现场照片1.png, >. 10 KB, 2018-07-10 12:10 张小贤&#xD;&#xA;{checked} 2, &lt;.      {image} 现场照片2.png, >. 1 MB, 2018-07-10 12:10 张小贤" measuredWidth="465" measuredHeight="91" selection="0" rowHeight="30" horizontalLines="true" header="false">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Panel" id="26" x="200" y="67" width="225" height="28" measuredWidth="225" measuredHeight="28" background="#ccc" border="none"/>
+  <widgets xsi:type="model:Label" id="35" x="206" y="69" text="{edit} {upload}" measuredWidth="42" measuredHeight="25">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Table" id="30" x="8" y="154" width="465" height="119" text="&lt;(w:40). {unchecked}, &lt;(w:200). {line-arrow-down} 维修类,=(w:70). 大小,=(w:160). 更新时间&#xD;&#xA;{unchecked} 1, &lt;.      {image} 车辆维修照片1.png, >. 10 KB, 2018-07-10 12:10 张小贤&#xD;&#xA;{unchecked} 2, &lt;.      {image} 车辆维修照片2.png, >. 1 MB, 2018-07-10 12:10 张小贤&#xD;&#xA;{unchecked} 3, &lt;.      {word} 定损单.docx, >. , " measuredWidth="465" measuredHeight="119" selection="0" rowHeight="30" horizontalLines="true" header="false">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Panel" id="31" x="200" y="156" width="225" height="28" measuredWidth="225" measuredHeight="28" background="#ccc" border="none"/>
+  <widgets xsi:type="model:Label" id="38" x="206" y="157" text="{edit} {upload}" measuredWidth="42" measuredHeight="25">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:TextField" id="71" x="89" y="217" width="156" text="车辆维修照片2" measuredWidth="156" measuredHeight="25" borderColor="#e69138">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Label" id="72" x="206" y="189" text="{edit} {upload}" measuredWidth="42" measuredHeight="25">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Label" id="73" x="226" y="218" text="{check}" measuredWidth="22" measuredHeight="24">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Label" id="81" x="206" y="248" text="{edit} {upload}" measuredWidth="42" measuredHeight="25">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Table" id="40" x="8" y="271" width="465" height="30" text="&lt;(w:40). {unchecked}, &lt;(w:200). {submenu} 教育类,=(w:70). 大小,=(w:160). 更新时间" measuredWidth="465" measuredHeight="30" selection="0" rowHeight="30" horizontalLines="true" header="false">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Panel" id="41" x="239" y="273" width="186" height="26" measuredWidth="186" measuredHeight="26" background="#ccc" border="none"/>
+  <widgets xsi:type="model:Label" id="42" x="206" y="273" text="{edit} {upload}" measuredWidth="42" measuredHeight="25">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Table" id="44" x="8" y="327" width="465" height="30" text="&lt;(w:40). {unchecked}, &lt;(w:200). {submenu} 诉讼类,=(w:70). 大小,=(w:160). 更新时间" measuredWidth="465" measuredHeight="30" selection="0" rowHeight="30" horizontalLines="true" header="false">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Panel" id="45" x="239" y="329" width="186" height="26" measuredWidth="186" measuredHeight="26" background="#ccc" border="none"/>
+  <widgets xsi:type="model:Label" id="46" x="206" y="329" text="{edit} {upload}" measuredWidth="42" measuredHeight="25">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Table" id="83" x="8" y="299" width="465" height="30" text="&lt;(w:40). {unchecked}, &lt;(w:200). {submenu} 理赔类,=(w:70). 大小,=(w:160). 更新时间" measuredWidth="465" measuredHeight="30" selection="0" rowHeight="30" horizontalLines="true" header="false">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Panel" id="84" x="239" y="301" width="186" height="26" measuredWidth="186" measuredHeight="26" background="#ccc" border="none"/>
+  <widgets xsi:type="model:Label" id="85" x="206" y="301" text="{edit} {upload}" measuredWidth="42" measuredHeight="25">
+    <font/>
+  </widgets>
+  <hRuler/>
+  <vRuler/>
+  <font size="12px"/>
+</model:Screen>

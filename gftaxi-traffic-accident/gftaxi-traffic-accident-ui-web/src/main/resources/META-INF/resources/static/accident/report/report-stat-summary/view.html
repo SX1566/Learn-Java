@@ -1,0 +1,26 @@
+<div title="事故报告汇总统计" class="bc-page" data-type='list'
+     data-js='["static/accident/report/report-stat-summary/view.js"]'
+     data-option='{"width":700, "minWidth":599, "maxWidth":700, "height":407, "minHeight":407, "minimizable":true, "maximizable":true}'>
+  <bc-grid v-ref:grid :columns="columns" :url="url" :query.sync="condition" :single-choice="true">
+    <bc-toolbar slot="top">
+      <bc-button-set :value.sync="scopeType" :items="scopeTypes"></bc-button-set>
+      <span>统计范围：</span>
+      <template v-if="scopeType == 'Monthly'">
+        <input type="month" v-model="from" style="width: 9.5em;" class="ui-widget-content">～
+        <input type="month" v-model="to" style="width: 9.5em;" class="ui-widget-content">
+      </template>
+      <template v-if="scopeType != 'Monthly'">
+        <input type="number" v-model="from" style="width: 3.7em;" min="1900" max="2099" class="ui-widget-content">年～
+        <input type="number" v-model="to" style="width: 3.7em;" min="1900" max="2099" class="ui-widget-content">年
+      </template>
+      <!-- 车队 -->
+      <span>车队：</span>
+      <select v-model="motorcadeKey" class="ui-widget-content" style="width: 9em;padding-left: 0.25em">
+        <option></option>
+        <option v-for="m in motorcadeList" :value="m.key" :style="{fontWeight: m.key.indexOf('b.')<0?'normal':'bold'}">
+          {{m.key.indexOf("b.")<0 ? `&nbsp;&nbsp;${m.value}` : m.value}}
+        </option>
+      </select>
+    </bc-toolbar>
+  </bc-grid>
+</div>

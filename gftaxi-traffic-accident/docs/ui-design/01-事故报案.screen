@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:WidgetGroup" id="223" x="8" y="8" measuredWidth="1072" measuredHeight="290">
+    <widgets xsi:type="model:Window" id="6" width="1072" height="290" text="事故报案 - 视图" measuredWidth="1072" measuredHeight="290" minimizeButton="true" maximizeButton="true"/>
+    <widgets xsi:type="model:WidgetGroup" id="8" x="914" y="25" measuredWidth="153" measuredHeight="25">
+      <widgets xsi:type="model:SearchField" id="9" width="153" measuredWidth="153" measuredHeight="25">
+        <font/>
+      </widgets>
+    </widgets>
+    <widgets xsi:type="model:ButtonBar" id="10" x="5" y="24" width="180" height="28" text="查看,新建,编辑" measuredWidth="180" measuredHeight="28">
+      <font/>
+      <items x="0" y="0" width="59" height="28" text="查看"/>
+      <items x="59" y="0" width="58" height="28" text="新建"/>
+      <items x="117" y="0" width="63" height="28" text="编辑"/>
+    </widgets>
+    <widgets xsi:type="model:ButtonBar" id="11" x="188" y="24" width="165" height="28" text="待登记,已登记,全部" measuredWidth="165" measuredHeight="28" selection="0">
+      <font/>
+      <items x="0" y="0" width="58" height="28" text="待登记"/>
+      <items x="58" y="0" width="57" height="28" text="已登记"/>
+      <items x="115" y="0" width="50" height="28" text="全部"/>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="15" x="5" y="265" measuredWidth="164" measuredHeight="25">
+      <widgets xsi:type="model:Icon" id="16" y="4" width="16" height="16" measuredWidth="16" measuredHeight="16" icon="refresh (small)"/>
+      <widgets xsi:type="model:WidgetGroup" id="17" x="22" measuredWidth="122" measuredHeight="25">
+        <widgets xsi:type="model:Icon" id="18" y="4" measuredWidth="16" measuredHeight="16" icon="previous (small)"/>
+        <widgets xsi:type="model:Icon" id="19" x="18" y="4" width="16" height="16" measuredWidth="16" measuredHeight="16" icon="rewind (small)"/>
+        <widgets xsi:type="model:Label" id="20" x="40" text="1/2(30)" measuredWidth="47" measuredHeight="25">
+          <font/>
+        </widgets>
+        <widgets xsi:type="model:Icon" id="21" x="88" y="4" width="16" height="16" measuredWidth="16" measuredHeight="16" icon="fast-forward (small)"/>
+        <widgets xsi:type="model:Icon" id="22" x="106" y="4" measuredWidth="16" measuredHeight="16" icon="skip (small)"/>
+      </widgets>
+      <widgets xsi:type="model:Icon" id="23" x="148" y="3" measuredWidth="16" measuredHeight="16" icon="download2 (small)"/>
+    </widgets>
+    <widgets xsi:type="model:Table" id="7" y="55" width="1057" text="(w:30). ,(w:20).状态,(w:20).事故编号,(w:20).事故车号,(w:20).当事司机,(w:20).事发时间,(w:20).事发地点,(w:20).事故形态,(w:20).碰撞类型,(w:20).接案人,(w:20).报案时间,(w:20).逾期报案,(w:20).所属车队,报案来源&#xD;&#xA;1,待登记,20180709_01,粤A.0F7J0,林河,2018-07-09 07:50,荔湾区南岸路荔港南湾路口,车辆间事故,追尾碰撞,韩智勇,2018-07-09 20:00,否,一分二队,BC&#xD;&#xA;2,待登记,20180709_02,粤A.24R55,戴晴川,2018-07-09 08:16,越秀区区庄广东工大公交站,车辆间事故,环岛碰撞,韩智勇,2018-07-09 19:15,否,一分一队,BC&#xD;&#xA;3,待登记,20180709_03,粤A.R3ST7,何田明,2018-07-09 09:05,越秀区环市中路肇庆大厦,车辆与人事故,其他,韩智勇,2018-07-09 19:00,否,二分二队,BC&#xD;&#xA;4,待登记,20180709_04,粤A.4RG57,陈桂铭,2018-07-09 09:27,天河区体育东路正佳广场路口,车辆与人事故,变道碰撞,韩智勇,2018-07-09 18:25,否,一分一队,EMAIL&#xD;&#xA;5,待登记,20180709_05,粤A.N35N7,黄英苏,2018-07-09 16:44,天河区广州大道中1305号,单车事故,变道碰撞,韩智勇,2018-07-09 18:19,是,一分一队,BC&#xD;&#xA;6,待登记,20180509_06,粤A.0O1L3,苏佑铭,2018-07-09 06:30,越秀区东风中路305号,车辆间事故,追尾碰撞,韩智勇,2018-07-09 18:09,否,二分二队,EMAIL&#xD;&#xA;7,待登记,20180509_07,粤A.01L3E,权智勋,2018-07-09 10:24,海珠区宝岗大道277号,车辆间事故,追尾碰撞,韩智勇,2018-07-09 17:50,否,二分二队,EMAIL&#xD;&#xA;8,待登记,20180509_08,粤A.3R256,何志龙,2018-07-09 09:20,荔湾区花地大道中238号,车辆与人事故,正面碰撞,韩智勇,2018-07-09 16:30,否,一分二队,BC" measuredWidth="1057" measuredHeight="211" alternative="#eeeeee">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:VScrollbar" id="25" x="1055" y="55" height="211" measuredWidth="17" measuredHeight="211"/>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="222" x="8" y="304" measuredWidth="405" measuredHeight="277">
+    <widgets xsi:type="model:Window" id="175" width="405" height="277" text="事故报案 - 表单" measuredWidth="405" measuredHeight="277" minimizeButton="true" maximizeButton="true"/>
+    <widgets xsi:type="model:Button" id="176" x="349" y="244" width="51" height="28" text="保存" measuredWidth="51" measuredHeight="28">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:HLine" id="177" y="237" width="405" measuredWidth="405" measuredHeight="6"/>
+    <widgets xsi:type="model:TextField" id="179" x="72" y="50" width="130" text="粤A.0F7J0" measuredWidth="130" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="180" x="8" y="50" width="72" text="*事故车号：" measuredWidth="72" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Icon" id="181" x="183" y="55" width="15" height="15" measuredWidth="15" measuredHeight="15" icon="circled-plus (large)"/>
+    <widgets xsi:type="model:Label" id="183" x="8" y="77" width="72" text="*当事司机：" measuredWidth="72" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="184" x="72" y="77" width="130" text="林河" measuredWidth="130" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="186" x="8" y="104" width="72" text="*事故形态：" measuredWidth="72" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Combo" id="187" x="72" y="104" width="130" text="车辆间事故" measuredWidth="130" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="189" x="8" y="131" width="72" text="*碰撞类型：" measuredWidth="72" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Combo" id="190" x="72" y="131" width="130" text="追尾碰撞" measuredWidth="130" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="192" x="9" y="23" text="*事发时间：" measuredWidth="71" measuredHeight="25" textAlignment="Right">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="193" x="72" y="23" measuredWidth="130" measuredHeight="25">
+      <widgets xsi:type="model:TextField" id="194" width="130" text="2018-07-09 07:50" measuredWidth="130" measuredHeight="25">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Icon" id="195" x="109" y="5" width="15" height="15" measuredWidth="15" measuredHeight="15" icon="calendar2 (large)"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="197" x="16" y="158" width="64" text="*事发地点：" measuredWidth="64" measuredHeight="25" textAlignment="Right">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="199" x="72" y="158" width="329" text="荔湾区南岸路荔港南湾路口" measuredWidth="329" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="202" x="213" y="23" text="事故编号：" measuredWidth="66" measuredHeight="25" textAlignment="Right">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="203" x="271" y="23" width="130" text="20180709_01" measuredWidth="130" measuredHeight="25" state="disabled">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="205" x="16" y="185" width="64" text="简要描述：" measuredWidth="64" measuredHeight="25" textAlignment="Right">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:TextArea" id="206" x="72" y="185" width="329" text="车辆行驶在南岸路向珠江桥脚方向时发生追尾碰撞。" measuredWidth="329" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="208" x="271" y="50" width="130" text="一分二队" measuredWidth="130" measuredHeight="25" state="disabled">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="209" x="207" y="50" width="72" text="所属车队：" measuredWidth="72" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="211" x="213" y="104" text="报案时间：" measuredWidth="66" measuredHeight="25" textAlignment="Right">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="212" x="271" y="104" width="130" text="2018-07-09 20:00" measuredWidth="130" measuredHeight="25" state="disabled">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="214" x="207" y="77" width="72" text="接案人：" measuredWidth="72" measuredHeight="25" textAlignment="Right">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:TextField" id="215" x="271" y="77" width="130" text="韩智勇" measuredWidth="130" measuredHeight="25" state="disabled">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="216" x="214" y="131" text="逾期报案：否" measuredWidth="78" measuredHeight="25">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:HLine" id="218" y="210" width="405" measuredWidth="405" measuredHeight="6"/>
+    <widgets xsi:type="model:Text" id="219" x="238" y="218" text="状态：待登记，报案来源：BC" measuredWidth="161" measuredHeight="17" textAlignment="Right" foreground="#666666">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Button" id="221" x="294" y="244" width="51" height="28" text="上报" measuredWidth="51" measuredHeight="28">
+      <font/>
+    </widgets>
+  </widgets>
+  <widgets xsi:type="model:Arrow" id="232" x="382" y="575" width="8" height="47" measuredWidth="8" measuredHeight="47" foreground="#ff00ff" lineStyle="dashed" left="false"/>
+  <widgets xsi:type="model:Arrow" id="233" x="359" y="621" width="23" height="8" measuredWidth="23" measuredHeight="8" foreground="#ff00ff" lineStyle="dashed" direction="bottom"/>
+  <widgets xsi:type="model:Label" id="234" x="120" y="612" text="上报案件后如要修改需要修改报案信息权限" measuredWidth="234" measuredHeight="25" foreground="#0000ff">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Arrow" id="236" x="326" y="575" width="8" height="30" measuredWidth="8" measuredHeight="30" foreground="#ff00ff" lineStyle="dashed" left="false"/>
+  <widgets xsi:type="model:Arrow" id="237" x="303" y="604" width="23" height="8" measuredWidth="23" measuredHeight="8" foreground="#ff00ff" lineStyle="dashed" direction="bottom"/>
+  <widgets xsi:type="model:Label" id="238" x="37" y="593" text="需上报案件信息权限，确认上报后自动关闭表单" measuredWidth="258" measuredHeight="25" foreground="#0000ff">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:Arrow" id="239" x="305" y="448" width="128" height="8" measuredWidth="128" measuredHeight="8" foreground="#ff00ff" lineStyle="dashed" left="false" right="true"/>
+  <widgets xsi:type="model:Label" id="240" x="437" y="437" text="上报案件后如果事发时间距离报案时间超过12小时则为逾期" measuredWidth="320" measuredHeight="25" foreground="#0000ff">
+    <font/>
+  </widgets>
+  <widgets xsi:type="model:CurlyBrace" id="241" x="409" y="338" width="141" height="87" text="上报案件后系统自动生成" measuredWidth="141" measuredHeight="87" foreground="#0000ff">
+    <font/>
+  </widgets>
+  <hRuler/>
+  <vRuler/>
+  <font size="12px"/>
+</model:Screen>

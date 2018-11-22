@@ -1,0 +1,20 @@
+<div title="事故登记汇总统计" class="bc-page" data-type='list'
+     data-js='["static/accident/report/register-stat-summary/view.js"]'
+     data-option='{"width":700, "minWidth":599, "maxWidth":700, "height":407, "minHeight":407, "minimizable":true, "maximizable":true}'>
+  <bc-grid v-ref:grid :columns="columns" :url="url" :query.sync="condition" :refreshable="false" :single-choice="true">
+    <bc-toolbar slot="top">
+      <bc-button-set :value.sync="scopeType" :items="scopeTypes"></bc-button-set>
+      <span>统计范围：</span>
+      <template v-if="scopeType == 'Monthly'">
+        <input type="month" v-model="from" style="width: 9.5em;" class="ui-widget-content">～
+        <input type="month" v-model="to" style="width: 9.5em;" class="ui-widget-content">
+      </template>
+      <template v-if="scopeType != 'Monthly'">
+        <input type="number" v-model="from" style="width: 3.7em;" min="1900" max="2099" class="ui-widget-content">年～
+        <input type="number" v-model="to" style="width: 3.7em;" min="1900" max="2099" class="ui-widget-content">年
+      </template>
+      <!--刷新-->
+      <span class="ui-icon ui-icon-refresh verticalMiddle" style="float: right;" @click="reload"></span>
+    </bc-toolbar>
+  </bc-grid>
+</div>

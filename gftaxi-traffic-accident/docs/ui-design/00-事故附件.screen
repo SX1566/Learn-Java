@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:Label" id="885" x="6" y="3" text="事故附件-统一处理界面-v2.0" measuredWidth="266" measuredHeight="35">
+    <font size="20px" bold="true"/>
+  </widgets>
+  <widgets xsi:type="model:Panel" id="1119" y="368" width="16" height="16" measuredWidth="16" measuredHeight="16" alpha="0" border="none"/>
+  <widgets xsi:type="model:Panel" id="1196" x="961" y="375" width="16" height="16" measuredWidth="16" measuredHeight="16" alpha="0" border="none"/>
+  <widgets xsi:type="model:Master" id="1210" x="4" y="37" measuredWidth="969" measuredHeight="349">
+    <screen xsi:type="model:Screen" href="assets/事故附件.screen#/"/>
+  </widgets>
+  <widgets xsi:type="model:WidgetGroup" id="1240" x="29" y="61" measuredWidth="863" measuredHeight="323">
+    <widgets xsi:type="model:Arrow" id="1211" x="215" y="50" width="57" height="8" measuredWidth="57" measuredHeight="8" foreground="#f00" lineStyle="dashed"/>
+    <widgets xsi:type="model:Label" id="1212" x="271" y="38" text="批量上传到此分类" measuredWidth="102" measuredHeight="25" foreground="#f00">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Label" id="1213" x="473" y="58" text="打包下载选择的附件，如果没有选择则让用户确认后打包下载全部附件。" measuredWidth="390" measuredHeight="25" foreground="#f00">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="1214" x="519" y="1" width="8" height="34" measuredWidth="8" measuredHeight="34" foreground="#f00" lineStyle="dashed"/>
+    <widgets xsi:type="model:Arrow" id="1215" x="519" y="33" width="24" height="8" measuredWidth="24" measuredHeight="8" foreground="#f00" lineStyle="dashed" left="false" direction="bottom"/>
+    <widgets xsi:type="model:Arrow" id="1216" x="417" y="1" width="55" height="65" measuredWidth="55" measuredHeight="65" foreground="#f00" lineStyle="dashed"/>
+    <widgets xsi:type="model:Arrow" id="1217" x="473" y="1" width="8" height="52" measuredWidth="8" measuredHeight="52" foreground="#f00" lineStyle="dashed"/>
+    <widgets xsi:type="model:Label" id="1218" x="498" y="40" text="在线查看选择的附件，也可以双击附件。" measuredWidth="222" measuredHeight="25" foreground="#f00">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="1219" x="473" y="52" width="24" height="8" measuredWidth="24" measuredHeight="8" foreground="#f00" lineStyle="dashed" left="false" direction="bottom"/>
+    <widgets xsi:type="model:Arrow" id="1220" x="346" width="149" height="106" measuredWidth="149" measuredHeight="106" foreground="#f00" lineStyle="dashed"/>
+    <widgets xsi:type="model:WidgetGroup" id="1221" x="494" y="83" measuredWidth="153" measuredHeight="194">
+      <widgets xsi:type="model:Shape" id="1222" width="153" height="194" measuredWidth="153" measuredHeight="194" foreground="#f00" lineStyle="dashed" shapeType="rectangle">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Text" id="1223" x="6" y="4" text="现场照片&#xA;    ...&#xA;维修类&#xA;    ...&#xA;理赔类&#xA;    法院判决书、调解书&#xA;    诊断证明/病情简介&#xA;    病历&#xA;    医疗发票&#xA;    用药清单&#xA;    伤者身份证" measuredWidth="125" measuredHeight="187" foreground="#f00">
+        <font/>
+      </widgets>
+    </widgets>
+    <widgets xsi:type="model:WidgetGroup" id="1224" x="666" y="83" measuredWidth="153" measuredHeight="195">
+      <widgets xsi:type="model:Shape" id="1225" width="153" height="195" measuredWidth="153" measuredHeight="195" foreground="#f00" lineStyle="dashed" shapeType="rectangle">
+        <font/>
+      </widgets>
+      <widgets xsi:type="model:Text" id="1226" x="6" y="4" text="现场照片&#xA;    ...&#xA;维修类&#xA;    ...&#xA;理赔类&#xA;    事故责任认定书/协议书&#xA;    勘查报告&#xA;    定损单&#xA;    交通事故处理情况表&#xA;    证件" measuredWidth="142" measuredHeight="170" foreground="#f00">
+        <font/>
+      </widgets>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="1227" x="219" width="448" height="207" measuredWidth="448" measuredHeight="207" foreground="#f00" lineStyle="dashed"/>
+    <widgets xsi:type="model:Arrow" id="1228" x="208" y="138" width="41" height="24" measuredWidth="41" measuredHeight="24" foreground="#f00" lineStyle="dashed" direction="bottom"/>
+    <widgets xsi:type="model:Label" id="1229" x="251" y="122" text="上传或重新上传此附件" measuredWidth="126" measuredHeight="25" foreground="#f00">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="1230" x="206" y="206" width="20" height="23" measuredWidth="20" measuredHeight="23" foreground="#f00" lineStyle="dashed"/>
+    <widgets xsi:type="model:Label" id="1231" x="229" y="220" text="点此或按回车键确认修改，或按 Esc 键取消修改" measuredWidth="261" measuredHeight="25" foreground="#f00">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Text" id="1232" x="545" y="5" text="删除选择的附件或分类，如果选择的是分类，&#xD;&#xA;让用户确定是删除分组还是仅清空分组内的附件。" measuredWidth="265" measuredHeight="34" foreground="#f00">
+      <font/>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="1233" x="151" y="138" width="31" height="24" measuredWidth="31" measuredHeight="24" foreground="#f00" lineStyle="dashed" left="false" right="true"/>
+    <widgets xsi:type="model:Label" id="1234" x="100" y="122" text="修改名称" measuredWidth="54" measuredHeight="25" textAlignment="Right" foreground="#f00">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="1235" y="19" width="28" height="28" measuredWidth="28" measuredHeight="28" foreground="#f00" lineStyle="dashed" direction="bottom"/>
+    <widgets xsi:type="model:Label" id="1236" x="30" y="5" text="点击选择" measuredWidth="54" measuredHeight="25" foreground="#f00">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Arrow" id="1237" x="33" y="261" width="55" height="43" measuredWidth="55" measuredHeight="43" foreground="#f00" lineStyle="dashed"/>
+    <widgets xsi:type="model:Label" id="1238" x="91" y="294" text="点击折叠/展开" measuredWidth="83" measuredHeight="25" foreground="#f00">
+      <font bold="false"/>
+    </widgets>
+    <widgets xsi:type="model:Text" id="1239" x="448" y="272" text="注：&#xD;&#xA;1. 默认自动创建 &quot;现场照片、维修类、教育类、理赔类&quot; 这 4 个分类。&#xD;&#xA;2. 选择或反选分类时，自动全选或反选该分类下的所有附件。" measuredWidth="372" measuredHeight="51" foreground="#f00">
+      <font/>
+    </widgets>
+  </widgets>
+  <hRuler/>
+  <vRuler/>
+  <font size="12px"/>
+</model:Screen>

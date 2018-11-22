@@ -1,0 +1,110 @@
+<div class="bc-page"
+     data-type='list'
+     data-js='["static/accident/accident-operation/view.js"]'
+     data-option='{"width":500, "height":600, "minHeight":400, "minWidth":450, "minimizable":true, "maximizable":true}'>
+  <!-- 1 操作栏开始 -->
+  <bc-toolbar slot="top" style="border:0">
+    <bc-button-set :value="sortInitStatus" @change="changeSort" :items="sortStatuses"></bc-button-set>
+    <bc-button-set :value="spreadNum" @change="changeSpreadStatus" :items="spreadStatuses"></bc-button-set>
+  </bc-toolbar>
+  <!-- 1 操作栏结束 -->
+  <!-- 2 抽屉栏开始 -->
+  <div style="overflow-y: auto;overflow-x:hidden;height: calc(100% - 2.8em)">
+    <div v-for="(index, operation) in operations">
+      <!-- 2.1 标题栏开始 -->
+      <!-- 2.1.1 无收纳块的标题栏 -->
+      <div class="ui-state-default relative"
+           style="line-height: 1.8em; border-width: 1px 0;"
+           v-if="drawers[index].isEmpty">
+        <!-- 2.1.1.1 标题 -->
+        <div class="title-left" style="display: inline-block;font-weight:bold;padding-left: 0.5em">
+          <span class="ui-icon ui-icon-flag" style="display: inline-block;vertical-align: sub;"></span>
+          <span>{{operation.title}}</span>
+        </div>
+        <!-- 2.1.1.2 操作者和操作时间 -->
+        <div class="title-right" style="display:inline-block;position: absolute;right:1.8em">
+          <span class="ui-icon ui-icon-person" style="display: inline-block;vertical-align: sub"></span>
+          <span>{{operation.operator.name}}</span>
+          <span class="ui-icon ui-icon-clock"
+                style="display: inline-block;vertical-align: sub;margin-left: 0.5em"></span>
+          <span>{{operation.time}}</span>
+        </div>
+      </div>
+      <!-- 2.1.2 有收纳块的标题栏 -->
+      <div class="ui-state-default relative"
+           style="line-height: 1.8em; border-width: 1px 0;"
+           @click="changeSpread(drawers[index])"
+           v-else>
+        <!-- 2.1.2.1 标题 -->
+        <div class="title-left" style="display: inline-block;font-weight:bold;padding-left: 0.5em">
+          <span class="ui-icon ui-icon-flag" style="display: inline-block;vertical-align: sub;"></span>
+          <span>{{operation.title}}</span>
+        </div>
+        <!-- 2.1.2.2 操作者和操作时间 -->
+        <div class="title-right" style="display:inline-block;position: absolute;right:1.8em">
+          <span class="ui-icon ui-icon-person" style="display: inline-block;vertical-align: sub"></span>
+          <span>{{operation.operator.name}}</span>
+          <span class="ui-icon ui-icon-clock"
+                style="display: inline-block;vertical-align: sub;margin-left: 0.5em"></span>
+          <span>{{operation.time}}</span>
+        </div>
+        <!-- 2.1.2.3 收纳状态 -->
+        <span
+          :class="{'verticalMiddle' : true, 'ui-icon': true, 'ui-icon-carat-1-n': drawers[index].isShow, 'ui-icon-carat-1-s': !drawers[index].isShow}"
+          :title="drawers[index].isShow ? '点击隐藏内容' : '点击展示内容'"></span>
+      </div>
+      <!-- 2.1 标题栏结束 -->
+      <!-- 2.2 收纳块开始 -->
+      <div v-if="!drawers[index].isEmpty && drawers[index].isShow" style="font-weight:normal;">
+        <!-- 2.2.1 操作结果 -->
+        <div v-if="!!operation.result" style="margin:0.4em" class="hlayout">
+          <div>结果：</div>
+          <div class="flex">{{operation.result}}</div>
+        </div>
+        <!-- 2.2.2 操作意见 -->
+        <div v-if="!!operation.comment" style="margin:0.4em" class="hlayout">
+          <div>意见：</div>
+          <div class="flex">{{operation.comment}}</div>
+        </div>
+        <!-- 2.2.3 操作附件 -->
+        <div v-if="!!operation.attachments" style="margin:0.4em" class="hlayout">
+          <div>附件：</div>
+          <div class="vlayout">
+            <div v-for="(index1, attachment) in operation.attachments">
+              <a @click="inlineById(attachment.id,$event)" href="">{{attachment.name}}.{{attachment.ext}}</a>
+            </div>
+          </div>
+        </div>
+        <!-- 2.2.4 操作字段 -->
+        <div v-if="!!operation.fields" style="margin:0.4em">
+          <table style="table-layout: fixed;border-collapse: collapse;width: 100%">
+            <colgroup>
+              <col style="width: 10%">
+              <col style="width: 30%">
+              <col style="width: 30%">
+              <col style="width: 30%">
+            </colgroup>
+            <thead>
+            <td style="border: 1px solid #aaaaaa;text-align: center">序号</td>
+            <td style="border: 1px solid #aaaaaa;text-align: center">修改字段</td>
+            <td style="border: 1px solid #aaaaaa;text-align: center">新值</td>
+            <td style="border: 1px solid #aaaaaa;text-align: center">原值</td>
+            </thead>
+            <tbody>
+            <template v-for="(index2, field) in operation.fields">
+              <tr>
+                <td style="border: 1px solid #aaaaaa">{{index2+1}}</td>
+                <td style="border: 1px solid #aaaaaa">{{field.name}}</td>
+                <td style="border: 1px solid #aaaaaa">{{field.newValue}}</td>
+                <td style="border: 1px solid #aaaaaa">{{field.oldValue}}</td>
+              </tr>
+            </template>
+            </tbody>
+          </table>
+        </div>
+        <!-- 2.2 收纳块结束 -->
+      </div>
+    </div>
+    <!-- 2 抽屉栏结束 -->
+  </div>
+</div>

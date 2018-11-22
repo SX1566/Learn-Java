@@ -1,0 +1,13 @@
+<div title="事故登记" class="bc-page" data-type='list'
+     data-js='["static/accident/accident-register/view.js"]'
+     data-option='{"width":1050, "height":386, "minHeight":200, "minWidth":600, "minimizable":true, "maximizable":true}'>
+  <bc-grid v-ref:grid :columns="columns" :url="url" :query.sync="condition" :pageable="true" @dblclick-row="dblclick">
+    <bc-toolbar slot="top">
+      <label v-for="status in statuses" :class="{'ui-button ui-widget':true, 'ui-state-default':true,
+          'ui-corner-left': status.sn === 0, 'ui-corner-right':status.sn === 3, 'ui-state-active': status.isChecked}"
+        :style="{padding: '0.25em', marginLeft: status.sn > 0 ? 0 : '0.25em', marginRight: '0', borderLeft: status.sn > 0 ? 0 : 1}">
+        <input type="checkbox" class="ui-widget-content" v-model="status.isChecked" @change="reload">{{status.label}}
+      </label>
+    </bc-toolbar>
+  </bc-grid>
+</div>
